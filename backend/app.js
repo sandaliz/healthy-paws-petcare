@@ -1,13 +1,13 @@
 //azwOuFMBmc34fmEY
 const express = require("express");
 const mongoose = require("mongoose");
+const router = require("./Routes/CareRoutes");
 
 const app = express();
 
 //middleware 
-app.use("/",(req, res, next) => {
-    res.send("Welcome to the User API"); 
-})
+app.use(express.json());
+app.use("/careCustomers", router);
 
 mongoose.connect("mongodb+srv://admin:azwOuFMBmc34fmEY@cluster0.4s8zmoj.mongodb.net/")
 .then(()=> console.log("connected to MongoDB"))
