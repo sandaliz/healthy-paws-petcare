@@ -4,9 +4,11 @@ const mongoose = require("mongoose");
 const router = require("./Routes/CareRoutes");
 
 const app = express();
+const cors = require("cors");
 
 //middleware 
 app.use(express.json());
+app.use(cors());
 app.use("/careCustomers", router);
 
 mongoose.connect("mongodb+srv://admin:azwOuFMBmc34fmEY@cluster0.4s8zmoj.mongodb.net/")

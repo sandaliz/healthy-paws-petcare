@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import './daycare.css';
 
 
@@ -10,9 +11,9 @@ function daycare() {
         <h1>🐾 Safe & Loving Pet Daycare & Boarding</h1>
         <p>Give your pet a second home while you’re away.</p>
         
-        <a href="/daycare/appointment" className="btn-appointment">
+        <Link to = "/appointmentDC" className="btn-appointment">
           Make Appointment
-        </a>
+        </Link>
       </section>
 
       {/* Why Choose Us */}
