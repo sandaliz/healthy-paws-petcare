@@ -4,6 +4,7 @@ import './App.css';
 import Home from './Components/Home/home';
 import Daycare from './Components/Daycare/daycare';
 import AppointmentDCs from './Components/AppointmentDetailsDC/AppointmentDCs';
+import AddAppointmentDC from './Components/AddAppointmentDC/AddAppointmentDC';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path = "/" element={<Home/>}/>
           <Route path = "/daycare" element={<Daycare/>}/>
           <Route path = "/appointmentDC" element={<AppointmentDCs/>}/>
+          <Route path = "/addappointmentDC" element={<AddAppointmentDC/>}/>
         </Routes>
       </React.Fragment>
     </div>

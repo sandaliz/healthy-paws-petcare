@@ -1,159 +1,196 @@
-/* General Styles */
+/* daycare.css */
+
 .daycare-container {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
-  background-color: #fafafa;
+  line-height: 1.6;
   padding: 0;
   margin: 0;
 }
 
-h1, h2, h3 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 15px;
-}
-
 /* Hero Section */
 .daycare-hero {
-  background: linear-gradient(135deg, #ffecd2, #fcb69f);
+  background: linear-gradient(135deg, #f9c5d1, #ffe6eb);
   text-align: center;
   padding: 60px 20px;
-  border-radius: 0 0 30px 30px;
+  border-radius: 12px;
 }
 
 .daycare-hero h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
+  color: #333;
 }
 
 .daycare-hero p {
   font-size: 1.2rem;
   margin-bottom: 20px;
+  color: #555;
+}
+
+/* Buttons */
+.btn-appointment, .btn-secondary, .btn-review, .btn-small {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 8px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s ease-in-out;
 }
 
 .btn-appointment {
-  display: inline-block;
-  padding: 12px 25px;
-  background: #ff6b6b;
+  background: #ff6b81;
   color: #fff;
-  text-decoration: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: 0.3s;
 }
 
 .btn-appointment:hover {
-  background: #e94e4e;
+  background: #ff4757;
+}
+
+.btn-secondary {
+  background: #f1f1f1;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.btn-review {
+  background: #4caf50;
+  color: #fff;
+}
+
+.btn-review:hover {
+  background: #43a047;
+}
+
+.btn-small {
+  background: #3498db;
+  color: #fff;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+}
+
+.btn-small:hover {
+  background: #2980b9;
 }
 
 /* Why Choose Us */
 .why-choose {
-  padding: 40px 20px;
-  background: #fff;
+  padding: 50px 20px;
+  text-align: center;
 }
 
 .why-list {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 15px;
+  margin-top: 20px;
 }
 
 .why-item {
-  background: #ffeaa7;
-  padding: 15px 20px;
-  border-radius: 12px;
-  font-weight: bold;
+  background: #fff8f0;
+  border: 1px solid #ffe0b2;
+  border-radius: 10px;
+  padding: 15px 25px;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Services */
+/* Services Section */
 .services {
-  padding: 40px 20px;
-  background: #f8f9fa;
+  padding: 50px 20px;
+  background: #fdfdfd;
+  text-align: center;
 }
 
 .service-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
 
 .service-card {
-  background: #fff;
+  background: #ffffff;
   padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
-  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+}
+
+.service-card.no-booking {
+  opacity: 0.8;
+  background: #fafafa;
 }
 
 .service-card h3 {
   margin-bottom: 10px;
+  color: #444;
 }
 
-.btn-small {
-  display: inline-block;
-  padding: 8px 18px;
-  background: #74b9ff;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: 0.3s;
-}
-
-.btn-small:hover {
-  background: #0984e3;
+.note {
+  font-size: 0.85rem;
+  color: #888;
 }
 
 /* Booking CTA */
 .booking-cta {
+  padding: 60px 20px;
+  background: #ffeff2;
   text-align: center;
-  background: #ffcccc;
-  padding: 50px 20px;
-  border-radius: 20px;
-  margin: 40px 20px;
+  border-radius: 10px;
 }
 
 /* Testimonials */
 .testimonials {
-  padding: 40px 20px;
-  background: #fff;
+  padding: 50px 20px;
+  background: #f9f9f9;
+  text-align: center;
 }
 
 .testimonial-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
+  margin-top: 20px;
 }
 
 .testimonial {
-  background: #dfe6e9;
+  background: #fff;
+  border-left: 4px solid #ff6b81;
   padding: 15px 20px;
-  border-radius: 10px;
-  max-width: 500px;
+  margin: 10px auto;
+  max-width: 600px;
+  border-radius: 8px;
   font-style: italic;
 }
 
-/* Rules */
+/* Rules Section */
 .rules {
-  padding: 40px 20px;
-  background: #f8f9fa;
+  padding: 50px 20px;
 }
 
 .rules ul {
-  list-style-type: "✔️ ";
-  padding-left: 20px;
+  list-style: disc;
+  margin: 20px auto;
   max-width: 600px;
-  margin: auto;
+  text-align: left;
 }
 
-/* Contact */
+/* Contact Section */
 .contact {
+  padding: 50px 20px;
+  background: #f1f1f1;
   text-align: center;
-  padding: 40px 20px;
-  background: #ffeaa7;
-  border-top: 2px solid #f1c40f;
+  border-radius: 12px;
+}
+
+.contact p {
+  margin: 5px 0;
 }
