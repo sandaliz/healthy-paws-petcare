@@ -1,18 +1,23 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './daycare.css';
 
-
-function daycare() {
+function Daycare() {
   return (
     <div className="daycare-container">
       {/* Hero Section */}
       <section className="daycare-hero">
         <h1>🐾 Safe & Loving Pet Daycare & Boarding</h1>
         <p>Give your pet a second home while you’re away.</p>
-        
-        <Link to = "/appointmentDC" className="btn-appointment">
+
+        <Link to="/addappointmentDC" className="btn-appointment">
           Make Appointment
+        </Link>
+        <Link to="/appointmentDC" className="btn-secondary">
+          View Appointments
+        </Link>
+        <Link to="/reviews" className="btn-review">
+          Add Review
         </Link>
       </section>
 
@@ -34,30 +39,28 @@ function daycare() {
           <div className="service-card">
             <h3>Daycare Stay</h3>
             <p>Half-day or full-day stays with supervised playtime.</p>
-            <a href="/daycare/appointment" className="btn-small">
+            <Link to="/daycare/appointment" className="btn-small">
               Book Now
-            </a>
+            </Link>
           </div>
           <div className="service-card">
             <h3>Overnight Boarding</h3>
             <p>Comfortable boarding with feeding & walks included.</p>
-            <a href="/daycare/appointment" className="btn-small">
+            <Link to="/daycare/appointment" className="btn-small">
               Book Now
-            </a>
+            </Link>
           </div>
-          <div className="service-card">
+          <div className="service-card no-booking">
             <h3>Grooming</h3>
-            <p>Keep your pet fresh & clean with our grooming service.</p>
-            <a href="/daycare/appointment" className="btn-small">
-              Book Now
-            </a>
+            <p>Keep your pet fresh & clean with our grooming service.  
+              <br /><span className="note">(Available only for pets staying in daycare)</span>
+            </p>
           </div>
-          <div className="service-card">
+          <div className="service-card no-booking">
             <h3>Walking</h3>
-            <p>Daily walks to keep your pet active and happy.</p>
-            <a href="/daycare/appointment" className="btn-small">
-              Book Now
-            </a>
+            <p>Daily walks to keep your pet active and happy.  
+              <br /><span className="note">(Available only for pets staying in daycare)</span>
+            </p>
           </div>
         </div>
       </section>
@@ -66,9 +69,15 @@ function daycare() {
       <section className="booking-cta">
         <h2>Ready to Book?</h2>
         <p>Fill out our daycare appointment form and reserve a spot for your pet today.</p>
-        <a href="/daycare/appointment" className="btn-appointment">
+        <Link to="/daycare/appointment" className="btn-appointment">
           Make Appointment
-        </a>
+        </Link>
+        <Link to="/appointmentDCs" className="btn-secondary">
+          View Appointments
+        </Link>
+        <Link to="/reviews" className="btn-review">
+          Add Review
+        </Link>
       </section>
 
       {/* Testimonials */}
@@ -99,7 +108,7 @@ function daycare() {
         <p>Open: Mon – Sat, 8:00 AM – 7:00 PM</p>
       </section>
     </div>
-  )
+  );
 }
 
-export default daycare
+export default Daycare;
