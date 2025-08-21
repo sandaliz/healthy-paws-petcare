@@ -3,8 +3,9 @@ import {Route,Routes} from 'react-router';
 import './App.css';
 import Home from './Components/Home/home';
 import Daycare from './Components/Daycare/daycare';
-import AppointmentDCs from './Components/AppointmentDetailsDC/AppointmentDCs';
+import AppointmentDCs from './Components/AppointmentDCs/AppointmentDCs'
 import AddAppointmentDC from './Components/AddAppointmentDC/AddAppointmentDC';
+
 
 function App() {
   return (
