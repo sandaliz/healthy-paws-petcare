@@ -1,0 +1,57 @@
+
+
+.inventory-nav-container {
+  width: 250px;
+  background-color: #54413C; 
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+.Nav-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Sidebar Items */
+.Nav-li {
+  margin: 4px 0;
+}
+
+.Nav-li h1 {
+  font-size: 15px;
+  font-weight: 500;
+  color: #FFFFFF; 
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+.Nav-li h1:hover {
+  color: #FFD58E;   
+  background-color: rgba(255, 213, 142, 0.12);  
+}
+
+
+.active {
+  background-color: rgba(255, 213, 142, 0.15); 
+  color: #FFD58E !important;
+  font-weight: 600;
+  border-left: 4px solid #FFD58E; 
+}
+
+
+a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
