@@ -1,0 +1,163 @@
+/* Alerts Page Container */
+.alerts-container {
+  margin-left: 270px; 
+  padding: 30px;
+  background: #FFFFFF; 
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  color: #54413C;
+}
+
+/* Header */
+.alerts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.alerts-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  color: #54413C;
+}
+
+
+.alerts-filters {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.alerts-filters select,
+.alerts-filters input[type="date"] {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.alerts-filters select:focus,
+.alerts-filters input[type="date"]:focus {
+  outline: none;
+  border-color: #54413C;
+  box-shadow: 0 0 0 3px rgba(84, 65, 60, 0.2); 
+}
+
+.alerts-filters button {
+  background-color: #54413C;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.alerts-filters button:hover {
+  background-color: #FFD58E; 
+  color: #54413C;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+
+.alert-date-group {
+  margin-bottom: 40px;
+}
+
+.alert-date-heading {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  color: #54413C;
+  margin-bottom: 15px;
+  border-left: 5px solid #FFD58E;
+  padding-left: 10px;
+}
+
+
+.alerts-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.alerts-table th {
+  background-color: #54413C;
+  color: #FFFFFF;            
+  padding: 12px;
+  text-align: left;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.alerts-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.alerts-table tr:hover {
+  background-color: #FFF8F1; 
+}
+
+
+
+/* Low Stock Badge */
+.low-stock-alert {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: #FFD58E; 
+  color: #54413C;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Expired Badge */
+.expired-alert {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: #FF6B6B; 
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Expiring Soon Badge */
+.soon-expire-alert {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: #FFE08C; 
+  color: #54413C;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+
+.all-stocked {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2E7D32; 
+  font-family: 'Roboto', sans-serif;
+}

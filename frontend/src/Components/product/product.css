@@ -1,0 +1,86 @@
+/* Product Catalog Page */
+.products-container {
+  margin-left: 270px; /* space for sidebar */
+  padding: 30px;
+  background: #FFFFFF; /* clean white background */
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif; /* main font */
+  color: #54413C; /* dark brown base text */
+}
+
+/* Header Section */
+.products-header {
+  display: flex;
+  justify-content: space-between; /* title left, button right */
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.products-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #54413C; /* dark brown */
+  font-family: 'Poppins', sans-serif; /* heading font */
+  margin: 0;
+}
+
+/* Add Product Button */
+.add-product-btn {
+  background-color: #54413C; /* dark brown */
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif; 
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+
+.add-product-btn:hover {
+  background-color: #FFD58E; 
+  color: #54413C; 
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Search Bar Section */
+.product-search {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start; /* 👈 align search to the left */
+}
+
+.product-search input {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  width: 250px;
+  transition: all 0.2s ease;
+}
+
+.product-search input:focus {
+  outline: none;
+  border-color: #54413C; /* dark brown */
+  box-shadow: 0 0 0 3px rgba(84, 65, 60, 0.2); /* subtle glow */
+}
+
+/* Table Headers */
+.product-table th {
+  background-color: #54413C;
+  color: #FFFFFF;            
+  z-index: 2;
+  padding: 12px;
+  text-align: left;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+/* Table Row Hover */
+.product-table tr:hover {
+  background-color: #FFF8F1; /* light peach hover */
+}
