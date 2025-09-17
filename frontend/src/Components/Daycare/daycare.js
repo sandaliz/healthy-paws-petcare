@@ -14,7 +14,7 @@ function Daycare() {
           Make Appointment
         </Link>
         <Link to="/appointmentDC" className="btn-secondary">
-          View Appointments
+          My Bookings
         </Link>
         <Link to="/reviews" className="btn-review">
           Add Review
@@ -39,14 +39,14 @@ function Daycare() {
           <div className="service-card">
             <h3>Daycare Stay</h3>
             <p>Half-day or full-day stays with supervised playtime.</p>
-            <Link to="/daycare/appointment" className="btn-small">
+            <Link to="/addappointmentDC" className="btn-small">
               Book Now
             </Link>
           </div>
           <div className="service-card">
             <h3>Overnight Boarding</h3>
             <p>Comfortable boarding with feeding & walks included.</p>
-            <Link to="/daycare/appointment" className="btn-small">
+            <Link to="/addappointmentDC" className="btn-small">
               Book Now
             </Link>
           </div>
@@ -69,10 +69,10 @@ function Daycare() {
       <section className="booking-cta">
         <h2>Ready to Book?</h2>
         <p>Fill out our daycare appointment form and reserve a spot for your pet today.</p>
-        <Link to="/daycare/appointment" className="btn-appointment">
+        <Link to="/addappointmentDC" className="btn-appointment">
           Make Appointment
         </Link>
-        <Link to="/appointmentDCs" className="btn-secondary">
+        <Link to="/appointmentDC" className="btn-secondary">
           View Appointments
         </Link>
         <Link to="/reviews" className="btn-review">

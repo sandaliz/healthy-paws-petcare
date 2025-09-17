@@ -1,0 +1,111 @@
+.upcoming-container {
+  padding: 20px;
+}
+
+.upcoming-list {
+  list-style: none;
+  padding: 0;
+}
+
+.upcoming-item {
+  background: #ffffff; /* white */
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(84, 65, 60, 0.15); /* subtle dark brown shadow */
+}
+
+.upcoming-info {
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  color: #54413C; /* dark brown text */
+}
+
+.action-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-view {
+  background: #FFD58E; /* highlight peach */
+  color: #54413C; /* dark brown text */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-view:hover {
+  background: #ffcc70; /* darker peach */
+  transform: translateY(-2px);
+}
+.upcoming-container {
+  padding: 20px;
+}
+
+.upcoming-list {
+  list-style: none;
+  padding: 0;
+}
+
+.upcoming-item {
+  background: #ffffff; /* white */
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(84, 65, 60, 0.15);
+}
+
+.upcoming-info {
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  color: #54413C;
+}
+
+.action-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-view {
+  background: #FFD58E;
+  color: #54413C;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-view:hover {
+  background: #ffcc70;
+}
+
+.btn-checkin {
+  background: #54413C; /* green for check-in */
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-checkin:hover {
+  background: #3c2f2a;
+}

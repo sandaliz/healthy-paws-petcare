@@ -11,6 +11,9 @@ function home() {
         <Link to = "/daycare" className = "active daycare">
         <h2>Daycare</h2>
         </Link>
+        <Link to = "/dashboardDC" className = "active daycare">
+        <h2>Daycare</h2>
+        </Link>
     </div>
   )
 }

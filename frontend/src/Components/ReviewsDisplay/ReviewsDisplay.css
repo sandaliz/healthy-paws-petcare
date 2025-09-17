@@ -1,0 +1,184 @@
+/* ReviewsDisplay.css */
+
+/* Page Container */
+.reviews-page-container {
+  font-family: 'Roboto', sans-serif;
+  padding: 40px 20px;
+  background-color: #FFFFFF; /* primary */
+  color: #333;
+}
+
+/* Header Section */
+.page-header {
+  background: linear-gradient(135deg, #FFD58E, #FFF5E1); /* highlight */
+  padding: 40px 20px;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.page-header h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #54413C; /* dark brown */
+  margin-bottom: 10px;
+}
+
+.page-header .motto {
+  font-size: 1.2rem;
+  font-style: italic;
+  color: #54413C;
+  margin-bottom: 8px;
+}
+
+.page-header .subtitle {
+  font-size: 1rem;
+  color: #333;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
+/* Add Review Button */
+.add-review-btn {
+  display: inline-block;
+  background-color: #54413C; /* dark brown */
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.add-review-btn:hover {
+  background-color: #3d302c;
+}
+
+/* Reviews Grid */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 2fr;
+  gap: 25px;
+  place-items: center;
+}
+
+/* Review Card */
+.review-card {
+  background: #ffffff;
+  border: 1px solid #FFD58E;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  width: 100%;
+  max-width: 500px;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+}
+
+.review-header {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #54413C;
+}
+
+/* Review Details */
+.review-detail {
+  margin: 8px 0;
+  font-size: 0.95rem;
+}
+
+.review-label {
+  font-weight: 600;
+  color: #54413C;
+  margin-right: 6px;
+}
+
+.review-rating {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFD58E; /* highlight */
+}
+
+/* Sentiment Styling */
+.review-sentiment.positive {
+  color: green;
+  font-weight: 600;
+}
+
+.review-sentiment.negative {
+  color: red;
+  font-weight: 600;
+}
+
+.review-sentiment.neutral {
+  color: #54413C;
+  font-weight: 600;
+}
+
+/* Comment */
+.review-comment {
+  margin-top: 12px;
+  font-style: italic;
+  color: #333;
+  background: #FFF8F0;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* No Reviews State */
+.no-reviews {
+  text-align: center;
+  padding: 40px;
+  background: #FFF8F0;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  color: #54413C;
+}
+
+/* Action buttons */
+.review-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  
+}
+
+.update-btn,
+.delete-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.3s ease;
+  
+}
+
+.update-btn {
+  background-color: #FFD58E; /* highlight */
+  color: #54413C;
+  border: none;
+  
+}
+
+.update-btn:hover {
+  background-color: #e6be7a;
+}
+
+.delete-btn {
+  background-color: #54413C; /* dark brown */
+  color: #fff;
+  border: none;
+}
+
+.delete-btn:hover {
+  background-color: #3d302c;
+}
