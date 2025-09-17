@@ -1,17 +1,42 @@
-//azwOuFMBmc34fmEY
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
+const financeRoutes = require("./Routes/finance/financeRoutes");
 
 const app = express();
+const PORT = process.env.PORT || 5001;
 
-//middleware 
-app.use("/",(req, res, next) => {
-    res.send("Welcome to the User API"); 
-})
+const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:5173")
+  .split(",")
+  .map(s => s.trim());
 
-mongoose.connect("mongodb+srv://admin:azwOuFMBmc34fmEY@cluster0.4s8zmoj.mongodb.net/")
-.then(()=> console.log("connected to MongoDB"))
-.then(() => {
-    app.listen(5000);
-})
-.catch((err) => console.log((err)));
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+}));
+
+app.use(express.json());
+
+// Routes
+app.use("/api/finance", financeRoutes);
+
+// Health
+app.get("/", (_, res) => res.send("Healthy Paws Finance API running"));
+
+app.use((req, res) => res.status(404).json({ message: "Not found" }));
+
+// DB
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project";
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
+  })
+  .catch((err) => {
+    console.error("Mongo connection error", err);
+    process.exit(1);
+  });
