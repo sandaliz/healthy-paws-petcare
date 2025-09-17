@@ -1,0 +1,60 @@
+/* DailyLogsPet.css */
+
+.daily-logs-pet-container {
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+  background-color: #FFFFFF;
+  color: #54413C;
+}
+
+.daily-logs-pet-container h2 {
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #54413C;
+}
+
+.btn-back {
+  background-color: #FFFFFF;
+  color: #54413C;
+  border: 1px solid #54413C;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+  background-color: #54413C;
+  color: #FFFFFF;
+}
+
+.daily-logs-pet-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.daily-logs-pet-table th,
+.daily-logs-pet-table td {
+  border: 1px solid #54413C;
+  padding: 10px;
+  text-align: center;
+}
+
+.daily-logs-pet-table th {
+  background-color: #54413C;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.daily-logs-pet-table tr:nth-child(even) {
+  background-color: #FFD58E; /* soft peach */
+}
+
+.daily-logs-pet-table tr:nth-child(odd) {
+  background-color: #FFFFFF;
+}

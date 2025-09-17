@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './AddAppointmentDC.css';
+import { useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 
-function AddAppointmentDC() {
-    const history = useNavigate();
+function UpdateAppointmentDC() {
     const [inputs, setInputs] = useState({
         ownerName: "",
         contactNumber: "",
@@ -13,6 +12,7 @@ function AddAppointmentDC() {
         species: "",
         healthDetails: "",
         dateStay: "",
+        pickUpDate: "",
         nightsStay: "",
         dropOffTime: "",
         pickUpTime: "",
@@ -23,6 +23,63 @@ function AddAppointmentDC() {
         emergencyAction: "",
         agree: false
     });
+
+    const history = useNavigate();
+    const id = useParams().id;
+
+    useEffect(() => {
+    const fetchHandler = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5000/careCustomers/${id}`);
+            console.log('API Response:', response.data);
+            
+            
+            const data = response.data.careCustomer || {};
+            
+            console.log('Fetched data:', data); 
+            if (data.dateStay) {
+                data.dateStay = new Date(data.dateStay).toISOString().split("T")[0];
+            }
+            if (data.pickUpDate) {
+                data.pickUpDate = new Date(data.pickUpDate).toISOString().split("T")[0];
+            }
+
+            setInputs(data);
+        } catch (error) {
+            console.error('Error fetching appointment:', error);
+            console.error('Error response:', error.response?.data); 
+        }
+    };
+    fetchHandler();
+}, [id]);
+
+    const sendRequest = async () => {
+        try {
+            await axios.put(`http://localhost:5000/careCustomers/${id}`, {
+                ownerName: String(inputs.ownerName),
+                contactNumber: String(inputs.contactNumber),
+                email: String(inputs.email),
+                petName: String(inputs.petName),
+                species: String(inputs.species),
+                healthDetails: String(inputs.healthDetails),
+                dateStay: inputs.dateStay ? new Date(inputs.dateStay) : null,
+                pickUpDate: inputs.pickUpDate ? new Date(inputs.pickUpDate) : null,
+                nightsStay: Number(inputs.nightsStay),
+                dropOffTime: String(inputs.dropOffTime),
+                pickUpTime: String(inputs.pickUpTime),
+                foodType: String(inputs.foodType),
+                feedingTimes: String(inputs.feedingTimes),
+                grooming: Boolean(inputs.grooming),
+                walking: Boolean(inputs.walking),
+                emergencyAction: String(inputs.emergencyAction),
+                agree: Boolean(inputs.agree)
+            });
+            return true;
+        } catch (error) {
+            console.error('Error updating appointment:', error);
+            return false;
+        }
+    };
 
     const [emailError, setEmailError] = useState("");
     const [contactError, setContactError] = useState("");
@@ -52,7 +109,6 @@ function AddAppointmentDC() {
                 }));
             }
 
-            // Validate contact number only if it's been touched or has value
             if (isContactTouched || value) {
                 validateContactNumber(value);
             }
@@ -66,14 +122,13 @@ function AddAppointmentDC() {
                 [name]: value,
             }));
 
-            // Validate email only if it's been touched or has value
             if (isEmailTouched || value) {
                 validateEmail(value);
             }
             return;
         }
 
-        // Checkbox handling - allow unchecking
+        // Checkbox handling
         if (type === "checkbox") {
             setInputs((prevState) => ({
                 ...prevState,
@@ -121,68 +176,50 @@ function AddAppointmentDC() {
         }
     };
 
-    const handleSubmit = (e) => {
-    e.preventDefault();
-
-    setIsEmailTouched(true);
-    setIsContactTouched(true);
-    validateEmail(inputs.email);
-    validateContactNumber(inputs.contactNumber);
-
-    if (emailError || contactError) {
-        return;
-    }
-
-    if (!inputs.contactNumber || inputs.contactNumber.length !== 10) {
-        setContactError("Contact number is required and must be 10 digits");
-        return;
-    }
-
-    if (!inputs.nightsStay || isNaN(inputs.nightsStay) || Number(inputs.nightsStay) < 1) {
-        alert("Number of nights stay must be a number and at least 1");
-        return;
-    }
-
-    sendRequest().then((res) => {
-        history(`/appointmentDisplayDC/${res.careCustomer._id}`);
-    });
-};
-
-const sendRequest = async () => {
-    const res = await axios.post("http://localhost:5000/careCustomers", {
-        ownerName: String(inputs.ownerName),
-        contactNumber: String(inputs.contactNumber),
-        email: String(inputs.email),
-        petName: String(inputs.petName),
-        species: String(inputs.species),
-        healthDetails: String(inputs.healthDetails),
-        dateStay: inputs.dateStay,
-        pickUpDate: inputs.pickUpDate,
-        nightsStay: Number(inputs.nightsStay),
-        dropOffTime: String(inputs.dropOffTime),
-        pickUpTime: String(inputs.pickUpTime),
-        foodType: String(inputs.foodType),
-        feedingTimes: String(inputs.feedingTimes),
-        grooming: Boolean(inputs.grooming),
-        walking: Boolean(inputs.walking),
-        emergencyAction: String(inputs.emergencyAction),
-        agree: Boolean(inputs.agree)
-    });
-
-    return res.data; // ✅ return the created appointment
-};
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        setIsEmailTouched(true);
+        setIsContactTouched(true);
+        validateEmail(inputs.email);
+        validateContactNumber(inputs.contactNumber);
+        
+        if (emailError || contactError) {
+            return;
+        }
+        
+        if (!inputs.contactNumber || inputs.contactNumber.length !== 10) {
+            setContactError("Contact number is required and must be 10 digits");
+            return;
+        }
+        
+        console.log('Updating appointment:', inputs);
+        const success = await sendRequest();
+        if (success) {
+            history('/appointmentDC');
+        } else {
+            alert('Failed to update appointment. Please try again.');
+        }
+    };
 
     return (
         <div className="appointment-container">
             <form onSubmit={handleSubmit} className="appointment-form">
-                <h2 className="form-title">Pet Care Booking Form</h2>
+                <h2 className="form-title">Update Pet Care Booking</h2>
 
-                {/* Pet Owner Details Section */}
+                {/* Pet Owner Details */}
                 <div className="form-section">
                     <h3 className="section-title">Pet Owner Details</h3>
                     <div className="input-group">
                         <label>Owner Name *</label>
-                        <input type="text" name="ownerName" placeholder="Enter owner's full name" value={inputs.ownerName} onChange={handleChange} required />
+                        <input 
+                            type="text" 
+                            name="ownerName" 
+                            placeholder="Enter owner's full name" 
+                            value={inputs.ownerName || ''} 
+                            onChange={handleChange} 
+                            required 
+                        />
                         <span className="instruction">Letters and spaces only</span>
                     </div>
 
@@ -192,14 +229,13 @@ const sendRequest = async () => {
                             type="text"
                             name="contactNumber"
                             placeholder="07XXXXXXXX"
-                            value={inputs.contactNumber}
+                            value={inputs.contactNumber || ''} 
                             onChange={handleChange}
                             onBlur={handleBlur}
                             required
                             maxLength="10"
                             className={contactError ? 'error-input' : ''}
                         />
-                        {/* Show error message if invalid */}
                         {contactError && <span className="error-message">{contactError}</span>}
                         <span className="instruction">Must start with 0 and contain exactly 10 digits</span>
                     </div>
@@ -210,29 +246,40 @@ const sendRequest = async () => {
                             type="email"
                             name="email"
                             placeholder="your.email@example.com"
-                            value={inputs.email}
+                            value={inputs.email || ''} 
                             onChange={handleChange}
                             onBlur={handleBlur}
                             required
                             className={emailError ? 'error-input' : ''}
                         />
-                        {/* Show error message if invalid */}
                         {emailError && <span className="error-message">{emailError}</span>}
                         <span className="instruction">Enter a valid email address (e.g., name@domain.com)</span>
                     </div>
                 </div>
 
-                {/* Pet Details Section */}
+                {/* Pet Details */}
                 <div className="form-section">
                     <h3 className="section-title">Pet Details</h3>
                     <div className="input-group">
                         <label>Pet Name *</label>
-                        <input type="text" name="petName" placeholder="Enter pet's name" value={inputs.petName} onChange={handleChange} required />
+                        <input 
+                            type="text" 
+                            name="petName" 
+                            placeholder="Enter pet's name" 
+                            value={inputs.petName || ''} 
+                            onChange={handleChange} 
+                            required 
+                        />
                     </div>
 
                     <div className="input-group">
                         <label>Species *</label>
-                        <select name="species" value={inputs.species} onChange={handleChange} required>
+                        <select 
+                            name="species" 
+                            value={inputs.species || ''} 
+                            onChange={handleChange} 
+                            required
+                        >
                             <option value="">Select Species</option>
                             <option value="dog">Dog</option>
                             <option value="cat">Cat</option>
@@ -241,53 +288,81 @@ const sendRequest = async () => {
 
                     <div className="input-group">
                         <label>Health Details</label>
-                        <textarea name="healthDetails" placeholder="Any health conditions, allergies, or special needs..." value={inputs.healthDetails} onChange={handleChange}></textarea>
+                        <textarea 
+                            name="healthDetails" 
+                            placeholder="Any health conditions, allergies, or special needs..." 
+                            value={inputs.healthDetails || ''} 
+                            onChange={handleChange}
+                        ></textarea>
                     </div>
                 </div>
 
-                {/* Booking Details Section */}
+                {/* Booking Details */}
                 <div className="form-section">
                     <h3 className="section-title">Booking Details</h3>
                     <div className="input-group">
-                    <label>Drop off date</label>
-                    <input
-                        type="date"
-                        name="dateStay"
-                        value={inputs.dateStay}
-                        onChange={handleChange}
-                        required
-                        min={new Date().toISOString().split("T")[0]}
+                        <label>Drop off date *</label>
+                        <input
+                            type="date"
+                            name="dateStay"
+                            value={inputs.dateStay || ''} 
+                            onChange={handleChange}
+                            required
                         />
                     </div>
                     <div className="input-group">
-                    <label>Pick up date</label>
-                    <input
-                        type="date"
-                        name="pickUpDate"
-                        value={inputs.pickUpDate}
-                        onChange={handleChange}
-                        required
-                        min={new Date().toISOString().split("T")[0]}
+                        <label>Pick up date *</label>
+                        <input
+                            type="date"
+                            name="pickUpDate"
+                            value={inputs.pickUpDate || ''} 
+                            onChange={handleChange}
+                            required
                         />
                     </div>
                     <div className="input-group">
                         <label>Number of Nights Stay *</label>
-                        <input type="number" name="nightsStay" placeholder="Enter number of nights" value={inputs.nightsStay} onChange={handleChange} required min="1" />
+                        <input 
+                            type="number" 
+                            name="nightsStay" 
+                            placeholder="Enter number of nights" 
+                            value={inputs.nightsStay || ''} 
+                            onChange={handleChange} 
+                            required 
+                            min="1" 
+                        />
                     </div>
 
                     <div className="input-group">
                         <label>Drop Off Time *</label>
-                        <input type="time" name="dropOffTime" value={inputs.dropOffTime} onChange={handleChange} required />
+                        <input 
+                            type="time" 
+                            name="dropOffTime" 
+                            value={inputs.dropOffTime || ''} 
+                            onChange={handleChange} 
+                            required 
+                        />
                     </div>
 
                     <div className="input-group">
                         <label>Pick Up Time *</label>
-                        <input type="time" name="pickUpTime" value={inputs.pickUpTime} onChange={handleChange} required />
+                        <input 
+                            type="time" 
+                            name="pickUpTime" 
+                            value={inputs.pickUpTime || ''} 
+                            onChange={handleChange} 
+                            required 
+                        />
                     </div>
 
                     <div className="input-group">
                         <label>Food Type *</label>
-                        <select name="foodType" value={inputs.foodType} onChange={handleChange} required>
+                        <select 
+                            name="foodType" 
+                            value={inputs.foodType || ''} 
+                            onChange={handleChange} 
+                            required
+                        >
                             <option value="">Select Food Type</option>
                             <option value="owner-provided">Owner Provided</option>
                             <option value="hospital-provided">Hospital Provided</option>
@@ -296,26 +371,47 @@ const sendRequest = async () => {
 
                     <div className="input-group">
                         <label>Feeding Times</label>
-                        <input type="text" name="feedingTimes" placeholder="e.g., 8:00 AM, 1:00 PM, 6:00 PM" value={inputs.feedingTimes} onChange={handleChange} />
+                        <input 
+                            type="text" 
+                            name="feedingTimes" 
+                            placeholder="e.g., 8:00 AM, 1:00 PM, 6:00 PM" 
+                            value={inputs.feedingTimes || ''} 
+                            onChange={handleChange} 
+                        />
                     </div>
 
                     <div className="checkbox-group">
                         <label className="checkbox-label">
-                            <input type="checkbox" name="grooming" checked={inputs.grooming} onChange={handleChange} />
+                            <input 
+                                type="checkbox" 
+                                name="grooming" 
+                                checked={inputs.grooming || false} 
+                                onChange={handleChange} 
+                            />
                             <span>Grooming Service</span>
                         </label>
                     </div>
 
                     <div className="checkbox-group">
                         <label className="checkbox-label">
-                            <input type="checkbox" name="walking" checked={inputs.walking} onChange={handleChange} />
+                            <input 
+                                type="checkbox" 
+                                name="walking" 
+                                checked={inputs.walking || false} 
+                                onChange={handleChange} 
+                            />
                             <span>Walking Service</span>
                         </label>
                     </div>
 
                     <div className="input-group">
                         <label>Emergency Action *</label>
-                        <select name="emergencyAction" value={inputs.emergencyAction} onChange={handleChange} required>
+                        <select 
+                            name="emergencyAction" 
+                            value={inputs.emergencyAction || ''} 
+                            onChange={handleChange} 
+                            required
+                        >
                             <option value="">Select Emergency Action</option>
                             <option value="contact-owner">Contact Owner First</option>
                             <option value="authorize-treatment">Authorize Necessary Treatment</option>
@@ -324,16 +420,22 @@ const sendRequest = async () => {
 
                     <div className="checkbox-group agreement">
                         <label className="checkbox-label">
-                            <input type="checkbox" name="agree" checked={inputs.agree} onChange={handleChange} required />
+                            <input 
+                                type="checkbox" 
+                                name="agree" 
+                                checked={inputs.agree || false} 
+                                onChange={handleChange} 
+                                required 
+                            />
                             <span>I agree to the terms and conditions *</span>
                         </label>
                     </div>
                 </div>
 
-                <button type="submit" className="submit-btn">Submit Booking</button>
+                <button type="submit" className="submit-btn">Update Booking</button>
             </form>
         </div>
-    )
+    );
 }
 
-export default AddAppointmentDC
+export default UpdateAppointmentDC;

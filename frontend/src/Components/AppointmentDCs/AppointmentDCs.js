@@ -10,7 +10,7 @@ const fetchHandler = async () => {
 
 function AppointmentDCs() {
   const [careCustomers, setCareCustomers] = useState([]);
-  
+
   useEffect(() => {
     fetchHandler().then((data) => {
       if (data && data.careCustomers) {
@@ -19,15 +19,22 @@ function AppointmentDCs() {
     });
   }, []);
 
+  
+  const handleDelete = (id) => {
+    setCareCustomers((prev) => prev.filter((cust) => cust._id !== id));
+  };
+
   return (
     <div>
-      <h1>Owner details</h1>
-      {careCustomers && careCustomers.map((careCustomer, i) => (
-          <div key={i}>
-            <AppointmentDC user={careCustomer} />
+      {careCustomers && careCustomers.length > 0 ? (
+        careCustomers.map((careCustomer) => (
+          <div key={careCustomer._id}>
+            <AppointmentDC careCustomer={careCustomer} onDelete={handleDelete} />
           </div>
         ))
-      }
+      ) : (
+        <p>No appointments found.</p>
+      )}
     </div>
   );
 }

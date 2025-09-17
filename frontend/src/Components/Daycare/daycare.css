@@ -1,16 +1,31 @@
 /* daycare.css */
 
-.daycare-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Global Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
   color: #333;
-  line-height: 1.6;
-  padding: 0;
+  background-color: #FFFFFF; /* primary */
   margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #2D2D2D;
+}
+
+button, .cta {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 /* Hero Section */
 .daycare-hero {
-  background: linear-gradient(135deg, #f9c5d1, #ffe6eb);
+  background: linear-gradient(135deg, #FFD58E, #FFF5E1); /* highlight gradient */
   text-align: center;
   padding: 60px 20px;
   border-radius: 12px;
@@ -19,13 +34,13 @@
 .daycare-hero h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
-  color: #333;
+  color: #54413C; /* dark brown */
 }
 
 .daycare-hero p {
   font-size: 1.2rem;
   margin-bottom: 20px;
-  color: #555;
+  color: #333;
 }
 
 /* Buttons */
@@ -40,42 +55,42 @@
 }
 
 .btn-appointment {
-  background: #ff6b81;
-  color: #fff;
+  background: #FFD58E; /* highlight */
+  color: #54413C;
 }
 
 .btn-appointment:hover {
-  background: #ff4757;
+  background: #E6B96F;
 }
 
 .btn-secondary {
-  background: #f1f1f1;
-  color: #333;
-  border: 1px solid #ccc;
+  background: #54413C; /* dark brown */
+  color: #FFFFFF;
+  border: none;
 }
 
 .btn-secondary:hover {
-  background: #e0e0e0;
+  background: #3d302c;
 }
 
 .btn-review {
-  background: #4caf50;
-  color: #fff;
+  background: #54413C;
+  color: #FFFFFF;
 }
 
 .btn-review:hover {
-  background: #43a047;
+  background: #3d302c;
 }
 
 .btn-small {
-  background: #3498db;
-  color: #fff;
+  background: #FFD58E;
+  color: #54413C;
   padding: 6px 14px;
   font-size: 0.9rem;
 }
 
 .btn-small:hover {
-  background: #2980b9;
+  background: #E6B96F;
 }
 
 /* Why Choose Us */
@@ -93,18 +108,19 @@
 }
 
 .why-item {
-  background: #fff8f0;
-  border: 1px solid #ffe0b2;
+  background: #FFF8F0;
+  border: 1px solid #FFD58E;
   border-radius: 10px;
   padding: 15px 25px;
   font-size: 1.1rem;
+  color: #54413C;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 /* Services Section */
 .services {
   padding: 50px 20px;
-  background: #fdfdfd;
+  background: #FFFFFF;
   text-align: center;
 }
 
@@ -134,7 +150,7 @@
 
 .service-card h3 {
   margin-bottom: 10px;
-  color: #444;
+  color: #54413C;
 }
 
 .note {
@@ -145,9 +161,10 @@
 /* Booking CTA */
 .booking-cta {
   padding: 60px 20px;
-  background: #ffeff2;
+  background: #FFD58E;
   text-align: center;
   border-radius: 10px;
+  color: #54413C;
 }
 
 /* Testimonials */
@@ -163,12 +180,13 @@
 
 .testimonial {
   background: #fff;
-  border-left: 4px solid #ff6b81;
+  border-left: 4px solid #54413C;
   padding: 15px 20px;
   margin: 10px auto;
   max-width: 600px;
   border-radius: 8px;
   font-style: italic;
+  color: #333;
 }
 
 /* Rules Section */
@@ -181,6 +199,7 @@
   margin: 20px auto;
   max-width: 600px;
   text-align: left;
+  color: #54413C;
 }
 
 /* Contact Section */
@@ -193,4 +212,5 @@
 
 .contact p {
   margin: 5px 0;
+  color: #333;
 }
