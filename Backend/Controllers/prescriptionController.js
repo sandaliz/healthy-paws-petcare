@@ -24,7 +24,6 @@ exports.createPrescription = async (req, res) => {
 
       prescriptionItems.push({
         productMongoId: product._id,
-        productCustomId: product.id, // your custom product id
         productName: product.name,
         quantity: item.quantity,
         cost: product.cost
@@ -56,14 +55,12 @@ exports.getAllPrescriptions = async (req, res) => {
 };
 
 // =============================
-// Get Single Prescription
+// Get By Id
 // =============================
 exports.getPrescriptionById = async (req, res) => {
   try {
     const prescription = await Prescription.findById(req.params.id);
-    if (!prescription) {
-      return res.status(404).json({ error: "Prescription not found" });
-    }
+    if (!prescription) return res.status(404).json({ error: "Prescription not found" });
     res.json(prescription);
   } catch (err) {
     res.status(500).json({ error: "Error fetching prescription" });
@@ -81,16 +78,13 @@ exports.updatePrescriptionStatus = async (req, res) => {
       { status },
       { new: true }
     );
+    if (!prescription) return res.status(404).json({ error: "Prescription not found" });
 
-    if (!prescription) {
-      return res.status(404).json({ error: "Prescription not found" });
-    }
-
-    // If status marked as 'paid', deduct stock
+    // If status is "paid", deduct stock & increment totalSold
     if (status === "paid") {
       for (let item of prescription.items) {
         await Product.findByIdAndUpdate(item.productMongoId, {
-          $inc: { currantStock: -item.quantity }
+          $inc: { currantStock: -item.quantity, totalSold: item.quantity }
         });
       }
     }
@@ -102,16 +96,37 @@ exports.updatePrescriptionStatus = async (req, res) => {
 };
 
 // =============================
-// Delete Prescription
+// Delete
 // =============================
 exports.deletePrescription = async (req, res) => {
   try {
     const removed = await Prescription.findByIdAndDelete(req.params.id);
-    if (!removed) {
-      return res.status(404).json({ error: "Prescription not found" });
-    }
+    if (!removed) return res.status(404).json({ error: "Prescription not found" });
     res.json({ message: "Prescription deleted" });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete prescription" });
+  }
+};
+
+// =============================
+// Insights: Daily Sales (All Sources)
+// =============================
+exports.getDailySalesCounts = async (req, res) => {
+  try {
+    const data = await Prescription.aggregate([
+      { $match: { status: "paid" } }, // only paid sales
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    res.json(data.map(d => ({ date: d._id, count: d.count })));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error fetching daily sales" });
   }
 };

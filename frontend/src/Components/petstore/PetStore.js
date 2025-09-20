@@ -10,10 +10,9 @@ function PetStore() {
   const [cart, setCart] = useState(
     () => JSON.parse(localStorage.getItem("cart")) || []
   );
-  const [searchTerm, setSearchTerm] = useState("");  // ✅ New state
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  // Fetch active products only
   useEffect(() => {
     axios
       .get(URL)
@@ -26,7 +25,6 @@ function PetStore() {
       .catch((err) => console.log(err));
   }, []);
 
-  // Add to Cart handler
   const addToCart = (product) => {
     if (product.currantStock <= 0) return;
 
@@ -48,22 +46,23 @@ function PetStore() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // ✅ Filter products based on search term
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
   );
 
   return (
     <div className="petstore-container">
-      {/* ✅ Header */}
       <div className="petstore-header">
         <h1>Healthy Paws Pet Store</h1>
-        <button className="go-to-cart" onClick={() => navigate("/cart")}>
+        <button
+          className="go-to-cart"
+          onClick={() => navigate("/cart")}
+          disabled={cart.length === 0}
+        >
           🛒 Go to Cart ({cart.reduce((acc, item) => acc + item.quantity, 0)})
         </button>
       </div>
 
-      {/* ✅ Hero Banner */}
       <div className="hero-banner">
         <img
           src="/images/hero-banner.jpg"
@@ -77,7 +76,6 @@ function PetStore() {
         </div>
       </div>
 
-      {/* ✅ Promotional Cards */}
       <div className="promo-section">
         <div className="promo-grid">
           <div className="promo-card deals">
@@ -93,7 +91,6 @@ function PetStore() {
         </div>
       </div>
 
-         {/* ✅ Search Bar */}
       <div className="search-container">
         <input
           type="text"
@@ -104,8 +101,6 @@ function PetStore() {
         />
       </div>
 
-
-      {/* ✅ Product List */}
       <div className="product-cards">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((p) => (

@@ -16,7 +16,7 @@ function Updateproduct() {
     imageUrl: ""
   });
 
-  const [file, setFile] = useState(null); 
+  const [file, setFile] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -37,6 +37,7 @@ function Updateproduct() {
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
   const handleSubmit = async (e) => {
@@ -81,7 +82,16 @@ function Updateproduct() {
         <input type="number" name="minimumThreshold" value={inputs.minimumThreshold} onChange={handleChange} required />
 
         <label>Category</label>
-        <input type="text" name="category" value={inputs.category} onChange={handleChange} required />
+        <select name="category" value={inputs.category} onChange={handleChange} required>
+          <option value="">-- Select Category --</option>
+          <option value="Medicine">Medicine</option>
+          <option value="Equipment">Equipment</option>
+          <option value="Food">Foods</option>
+          <option value="Accessory">Accessory</option>
+          <option value="Toy">Toy</option>
+          <option value="Grooming">Grooming</option>
+
+        </select>
 
         <label>Status</label>
         <select name="productStatus" value={inputs.productStatus || "Active"} onChange={handleChange}>

@@ -1,26 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";  // ✅ useParams for prescription
+import { useNavigate, useParams } from "react-router-dom";
 import "./Cart.css";
 
 function Cart() {
-  const { id } = useParams(); // ✅ prescriptionId from /cart/:id
+  const { id } = useParams();
   const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem("cart")) || []);
   const [prescription, setPrescription] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ Load data: either prescription OR normal cart
   useEffect(() => {
     if (id) {
-      // load prescription from backend
-      axios.get(`http://localhost:5000/prescriptions/${id}`)
-        .then(res => setPrescription(res.data))
-        .catch(err => console.error("Error fetching prescription:", err));
+      axios
+        .get(`http://localhost:5000/prescriptions/${id}`)
+        .then((res) => setPrescription(res.data))
+        .catch((err) => console.error("Error fetching prescription:", err));
     }
   }, [id]);
 
-  // ✅ Update qty (only in normal cart)
   const updateQuantity = (pid, delta) => {
     let updated = cart.map((item) =>
       item._id === pid ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
@@ -29,14 +27,13 @@ function Cart() {
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  // ✅ Remove item (only in normal cart)
   const removeItem = (pid) => {
     let updated = cart.filter((item) => item._id !== pid);
     setCart(updated);
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  // ✅ Calculate totals (prescription OR normal)
+  // Calc summary
   const subtotal = prescription
     ? prescription.items.reduce((acc, item) => acc + item.quantity * item.cost, 0)
     : cart.reduce((acc, item) => acc + item.quantity * item.cost, 0);
@@ -44,36 +41,35 @@ function Cart() {
   const delivery = (prescription ? prescription.items.length : cart.length) > 0 ? 150 : 0;
   const total = subtotal + delivery;
 
-  // ✅ Checkout: Prescription or Normal
   const placeOrder = async () => {
     try {
       setLoading(true);
 
       if (prescription) {
-        // mark prescription as paid
+        // Mark prescription as paid (backend will deduct stock + increment totalSold)
         await axios.put(`http://localhost:5000/prescriptions/${prescription._id}`, {
-          status: "paid"
+          status: "paid",
         });
         alert("✅ Prescription Order Completed!");
       } else {
-        // normal mode update stock
-        for (const item of cart) {
-          const newStock = item.currantStock - item.quantity;
-          if (newStock < 0) {
-            alert(`❌ Not enough stock for ${item.name}`);
-            setLoading(false);
-            return;
-          }
-          await axios.put(`http://localhost:5000/products/${item._id}`, {
-            currantStock: newStock,
-          });
-        }
+        // Normal PetStore checkout: send to /checkout endpoint
+        await axios.post("http://localhost:5000/checkout", {
+          items: cart.map((item) => ({
+            productMongoId: item._id,
+            productName: item.name,
+            quantity: item.quantity,
+            cost: item.cost,
+          })),
+          source: "petstore",
+        });
+
+        // Clear cart
         localStorage.removeItem("cart");
         setCart([]);
         alert("✅ Normal Order Completed! Thank you for shopping 🐾");
       }
 
-      navigate("/store"); // redirect
+      navigate("/store");
     } catch (err) {
       console.error("Error placing order:", err);
       alert("❌ Failed to process order.");
@@ -84,7 +80,6 @@ function Cart() {
 
   return (
     <div className="cart-page">
-      {/* Empty cart state */}
       {!prescription && cart.length === 0 ? (
         <div className="empty-cart">
           <h1>Your Basket</h1>
@@ -92,7 +87,6 @@ function Cart() {
         </div>
       ) : (
         <>
-          {/* Prescription Mode */}
           {prescription ? (
             <div className="cart-items">
               <h1>Prescription Basket</h1>
@@ -109,7 +103,6 @@ function Cart() {
               ))}
             </div>
           ) : (
-            // Normal Cart Mode
             <div className="cart-items">
               <h1>Your Basket</h1>
               {cart.map((item) => (
@@ -131,23 +124,37 @@ function Cart() {
             </div>
           )}
 
-          {/* Summary */}
           <div className="cart-summary">
             <h2>Basket Summary</h2>
             <div className="summary-box">
               <p>
                 Subtotal: <strong>LKR {subtotal}</strong>
               </p>
-              <p>Estimated delivery: <strong>LKR {delivery}</strong></p>
+              <p>
+                Estimated delivery: <strong>LKR {delivery}</strong>
+              </p>
               <hr />
-              <p className="summary-total">Total: <strong>LKR {total}</strong></p>
-              
-              <button 
-                className="checkout-btn" 
+              <p className="summary-total">
+                Total: <strong>LKR {total}</strong>
+              </p>
+
+              <button
+                className="checkout-btn"
                 onClick={placeOrder}
-                disabled={loading}
+                disabled={
+                  loading ||
+                  (prescription ? prescription.items.length === 0 : cart.length === 0)
+                }
               >
-                {loading ? "Processing..." : "Continue to Checkout"}
+                {loading
+                  ? "Processing..."
+                  : prescription
+                  ? prescription.items.length === 0
+                    ? "No Prescription Items"
+                    : "Continue to Checkout"
+                  : cart.length === 0
+                  ? "Cart is Empty"
+                  : "Continue to Checkout"}
               </button>
             </div>
           </div>
