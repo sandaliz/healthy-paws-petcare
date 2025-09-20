@@ -8,6 +8,7 @@ import Addproducts from "./Components/addproducts/addproducts";
 import Updateproduct from "./Components/updateproducts/updateproduct";
 import Alerts from "./Components/notifications&alerts/alerts";
 import PrescriptionList from "./Components/prescription/PrescriptionList";
+import Insights from "./Components/insights/insights";
 
 // Layouts
 import InventoryLayout from "./layouts/InventoryLayout";
@@ -22,7 +23,7 @@ import PrescriptionForm from "./Components/prescription/prescriptionform";
 function App() {
   return (
     <Routes>
-      
+      {/* ===== Inventory Layout Routes ===== */}
       <Route element={<InventoryLayout />}>
         <Route path="/" element={<Products />} />
         <Route path="/product" element={<Products />} />
@@ -31,15 +32,19 @@ function App() {
         <Route path="/alerts" element={<Alerts />} />   
         <Route path="/prescription-list" element={<PrescriptionList />} />
         <Route path="/report" element={<Products />} />
+
+        {/* ✅ Add Insights Dashboard Route */}
+        <Route path="/insights" element={<Insights />} />
       </Route>
 
-     
+      {/* ===== Store Layout Routes ===== */}
       <Route element={<StoreLayout />}>
         <Route path="/store" element={<PetStore />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/cart/:id" element={<Cart />} /> 
       </Route>
 
+      {/* ===== Standalone Route ===== */}
       <Route path="/prescription" element={<PrescriptionForm />} />
     </Routes>
   );

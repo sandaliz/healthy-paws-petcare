@@ -8,7 +8,10 @@ const URL = "http://localhost:5000/products";
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(""); // ✅ search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1); // ✅ Track current page
+  const productsPerPage = 7; // ✅ fixed number of products per page
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,16 +19,23 @@ function Products() {
     axios.get(URL)
       .then(res => {
         setProducts(res.data.products || []);
+        setCurrentPage(1); // ✅ reset to first page whenever products reload
       })
       .catch(err => console.log(err));
   }, [location]);
 
-  // ✅ filter products with search
+  // ✅ Filter products with search
   const filteredProducts = products.filter((p) =>
     Object.values(p).some((field) =>
       field && field.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
+
+  // ✅ Pagination logic
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   return (
     <div className="products-container">
@@ -41,13 +51,16 @@ function Products() {
         </button>
       </div>
 
-      {/* ✅ Search Bar */}
+      {/* Search Bar */}
       <div className="product-search">
         <input
           type="text"
           placeholder="Search products..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1); // ✅ reset to first page when searching
+          }}
         />
       </div>
 
@@ -69,8 +82,8 @@ function Products() {
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
+            {currentProducts.length > 0 ? (
+              currentProducts.map((product) => (
                 <DisplayProducts key={product._id} product={product} />
               ))
             ) : (
@@ -81,6 +94,35 @@ function Products() {
           </tbody>
         </table>
       </div>
+
+      {/* ✅ Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button 
+            disabled={currentPage === 1} 
+            onClick={() => setCurrentPage(prev => prev - 1)}
+          >
+            ⬅ Prev
+          </button>
+          
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              className={currentPage === i + 1 ? "active" : ""}
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          
+          <button 
+            disabled={currentPage === totalPages} 
+            onClick={() => setCurrentPage(prev => prev + 1)}
+          >
+            Next ➡
+          </button>
+        </div>
+      )}
     </div>
   );
 }
