@@ -25,13 +25,23 @@ const RegisterEdit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await axios.put(`${API_BASE}/api/register/${id}`, form);
-      alert("Updated successfully");
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      const payload = {
+        ...form,
+        PetAge: form.PetAge ? Number(form.PetAge) : 0,
+        PetWeight: form.PetWeight ? Number(form.PetWeight) : 0,
+        userId: user?._id, // ✅ attach userId
+      };
+
+      await axios.put(`${API_BASE}/api/register/${id}`, payload);
+      alert("Updated successfully ✅");
       navigate(`/register/view/${id}`);
     } catch (err) {
       console.error(err?.response?.data || err);
-      alert("Update failed");
+      alert("❌ Update failed, please check inputs");
     }
   };
 
@@ -48,6 +58,7 @@ const RegisterEdit = () => {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Owner */}
           <div className="md:col-span-2 font-semibold text-[#54413C]">Owner Information</div>
+
           <label className="block">
             <span className="text-sm text-gray-700">Owner Name</span>
             <input
@@ -58,6 +69,7 @@ const RegisterEdit = () => {
               required
             />
           </label>
+
           <label className="block">
             <span className="text-sm text-gray-700">Owner Email</span>
             <input
@@ -69,6 +81,7 @@ const RegisterEdit = () => {
               required
             />
           </label>
+
           <label className="block">
             <span className="text-sm text-gray-700">Owner Phone</span>
             <input
@@ -79,6 +92,7 @@ const RegisterEdit = () => {
               required
             />
           </label>
+
           <label className="block">
             <span className="text-sm text-gray-700">Emergency Contact</span>
             <input
@@ -89,6 +103,7 @@ const RegisterEdit = () => {
               required
             />
           </label>
+
           <label className="block md:col-span-2">
             <span className="text-sm text-gray-700">Address</span>
             <input
@@ -102,6 +117,7 @@ const RegisterEdit = () => {
 
           {/* Pet */}
           <div className="md:col-span-2 font-semibold text-[#54413C] mt-2">Pet Information</div>
+
           <label className="block">
             <span className="text-sm text-gray-700">Pet Name</span>
             <input
@@ -170,13 +186,18 @@ const RegisterEdit = () => {
             <select
               name="BloodGroup"
               className="w-full border p-2 rounded"
-              value={form.BloodGroup || "O"}
+              value={form.BloodGroup || "O+"}
               onChange={handleChange}
               required
             >
-              <option value="O">O</option>
-              <option value="O+">O+</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
               <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
             </select>
           </label>
 

@@ -58,11 +58,15 @@ const RegisterPet = () => {
     const ownerData = JSON.parse(sessionStorage.getItem("ownerData")) || {};
     if (!validate()) return;
 
+    // ✅ Get logged-in user from local storage
+    const user = JSON.parse(localStorage.getItem("user"));
+
     const payload = {
       ...ownerData,
       ...petData,
-      PetAge: petData.PetAge ? Number(petData.PetAge) : "",
-      PetWeight: petData.PetWeight ? Number(petData.PetWeight) : "",
+      PetAge: petData.PetAge ? Number(petData.PetAge) : undefined,
+      PetWeight: petData.PetWeight ? Number(petData.PetWeight) : undefined,
+      userId: user?._id, // ✅ IMPORTANT: attach foreign key
     };
 
     try {
@@ -95,7 +99,6 @@ const RegisterPet = () => {
         <div className="glass-wrap">
           <img src={bgUrl} alt="" className="glass-bg" aria-hidden="true" />
           <div className="glass-card">
-            {/* disable browser's required popups */}
             <form onSubmit={handleSubmit} noValidate className="form-grid">
               <div className="md:col-span-2 section-title">Pet Details</div>
 
