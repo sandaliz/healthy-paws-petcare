@@ -1,0 +1,17 @@
+/* Error messages */
+.error-text {
+  color: #dc2626;        /* Tailwind red-600 */
+  font-size: 0.875rem;   /* 14px text-sm */
+  margin-top: 0.25rem;
+}
+
+/* Input error styles */
+.input.error {
+  border-color: #dc2626;
+}
+
+.label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
+}

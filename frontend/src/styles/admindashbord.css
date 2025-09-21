@@ -1,0 +1,424 @@
+/* ================================
+   MAIN LAYOUT
+================================= */
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #54413c, #ffd58e); /* gradient bg */
+  color: #333;
+  overflow: hidden;
+}
+
+/* ================================
+   SIDEBAR
+================================= */
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  background-color: #54413c; /* Dark brown */
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar .logo {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 12px;
+  margin: 10px 0;
+  background-color: #ffd58e; /* Peach */
+  color: #54413c;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  text-align: center;
+}
+
+.sidebar ul li:hover {
+  background-color: #fff;
+  color: #54413c;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+   LOGOUT BUTTON
+================================= */
+.logout-btn {
+  margin-top: auto;
+  margin-bottom: 20px;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.3s ease, transform 0.1s;
+}
+.logout-btn:hover { background: #c0392b; }
+.logout-btn:active { transform: scale(0.96); }
+
+/* ================================
+   MAIN DASHBOARD CONTENT
+================================= */
+.dashboard-content {
+  flex: 1;
+  padding: 40px;
+  background: transparent;
+  overflow-y: auto;
+}
+
+.dashboard-content h1 {
+  margin-bottom: 20px;
+  color: #54413c;
+}
+
+/* ================================
+   HERO BANNER
+================================= */
+.hero-banner {
+  width: 100%;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.hero-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 40px;
+  border-radius: 12px;
+}
+
+.hero-overlay h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.hero-overlay p {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #f1f1f1;
+}
+
+/* ================================
+   TOP SECTION (Calendar + Timeline)
+================================= */
+.top-section {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Glass Effect Cards (Calendar, Timeline, Tasks) */
+.calendar-card,
+.timeline-card,
+.task-section {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+   CALENDAR
+================================= */
+.calendar-card {
+  flex: 1;
+}
+
+.calendar-card h2 {
+  margin-bottom: 10px;
+  color: #54413c;
+}
+
+.selected-date {
+  margin-top: 15px;
+  color: #54413c;
+  font-weight: 500;
+}
+
+/* React Calendar styling */
+.react-calendar {
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.1);
+  padding: 10px;
+}
+
+.react-calendar__tile--now {
+  background: #ffd58e !important;
+  color: #54413c !important;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.react-calendar__tile--active {
+  background: #54413c !important;
+  color: #fff !important;
+  border-radius: 6px;
+}
+
+/* ================================
+   TIMELINE
+================================= */
+.timeline-card {
+  flex: 1;
+}
+
+.timeline-card h2 {
+  margin-bottom: 15px;
+  color: #54413c;
+}
+
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.timeline li {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.timeline .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.dot.red    { background: #e74c3c; }
+.dot.green  { background: #27ae60; }
+.dot.blue   { background: #3498db; }
+.dot.orange { background: #e67e22; }
+.dot.purple { background: #9b59b6; }
+
+.timeline-info {
+  flex: 1;
+}
+
+.timeline-title {
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.timeline-time {
+  font-size: 12px;
+  color: #666;
+}
+
+.tag {
+  background: #e74c3c;
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+/* ================================
+   TASK LIST
+================================= */
+.task-section h2 {
+  margin-bottom: 15px;
+  color: #54413c;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-list li {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border-radius: 6px;
+}
+
+.task-list li:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.task-list li.completed {
+  text-decoration: line-through;
+  color: #888;
+  font-style: italic;
+}
+
+/* ================================
+   STATS CARDS
+================================= */
+.stats-cards {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+.stat-card {
+  background: #f4f7fb;
+  padding: 20px;
+  border-radius: 8px;
+  flex: 1;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.stat-card h3 {
+  margin-bottom: 10px;
+  color: #555;
+}
+.stat-card p {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* ================================
+   SECTION HEADER
+================================= */
+.section-header {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.section-header h2 {
+  font-size: 28px;
+  background: linear-gradient(90deg, #36A2EB, #9966FF);
+  background-clip: text;              /* ✅ added standard property */
+  -webkit-background-clip: text;      /* ✅ prefixed for WebKit */
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.section-header .subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* ================================
+   CHART SECTION
+================================= */
+.chart-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0;
+}
+
+.chart-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.chart-legend-item {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ================================
+   ROLE CARDS GRID
+================================= */
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.role-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease-in-out;
+}
+.role-card:hover {
+  transform: translateY(-4px);
+}
+
+.role-card-header {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+}
+.role-icon {
+  font-size: 22px;
+  margin-right: 8px;
+}
+
+.role-card-body {
+  padding: 15px;
+  background: #fff;
+  text-align: center;
+}
+.role-card-body p {
+  margin: 4px 0;
+  color: #444;
+}
+.role-card .emails {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #555;
+}
