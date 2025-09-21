@@ -19,7 +19,7 @@ const RegisterOwner = ({ user }) => {
 
   const [errors, setErrors] = useState({});
 
-  // ✅ Prefill OwnerEmail only when user.email changes (not every time ownerData changes)
+  // ✅ pre-fill email if user is logged in
   useEffect(() => {
     if (user?.email) {
       setOwnerData((prev) => ({ ...prev, OwnerEmail: user.email }));
@@ -45,7 +45,6 @@ const RegisterOwner = ({ user }) => {
 
     setErrors(tempErrors);
 
-    // Show toast if there are errors
     if (Object.keys(tempErrors).length > 0) {
       toast.error("⚠️ Please fill all the details correctly!");
       return false;
@@ -56,6 +55,7 @@ const RegisterOwner = ({ user }) => {
   const handleNext = (e) => {
     e.preventDefault();
     if (!validate()) return;
+    // Save in session storage for next step
     sessionStorage.setItem("ownerData", JSON.stringify(ownerData));
     navigate("/register/pet");
   };
@@ -69,7 +69,6 @@ const RegisterOwner = ({ user }) => {
 
         <div className="glass-wrap">
           <div className="glass-card">
-            {/* disable browser validation */}
             <form onSubmit={handleNext} noValidate className="form-grid">
               <div className="section-title">Contact Details</div>
 

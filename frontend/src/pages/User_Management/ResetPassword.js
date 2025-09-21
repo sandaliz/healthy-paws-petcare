@@ -54,7 +54,7 @@ const ResetPassword = () => {
           <div className="side-image-container">
             <img src={assets.reset_side_image} alt="Illustration on side" />
           </div>
-          <div className="form-container">
+          <div className="form-container glassmorphic">
             <h1 className="title">Reset Password</h1>
             <p className="subtitle">
               Enter the email associated with your account and we'll send an email with instructions to reset your password.
