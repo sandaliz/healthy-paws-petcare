@@ -8,9 +8,11 @@ import Daycare from './Components/Daycare/daycare';
 import AppointmentDCs from './Components/AppointmentDCs/AppointmentDCs';
 import AddAppointmentDC from './Components/AddAppointmentDC/AddAppointmentDC';
 import UpdateAppointmentDC from './Components/UpdateAppointmentDC/UpdateAppointmentDC';
+import UpdateApphisDC from './Components/UpdateApphisDC/UpdateApphisDC';
 import Review from './Components/Review/Review';
 import AddReviews from './Components/AddReviews/AddReviews';
 import UpdateReviews from './Components/UpdateReviews/UpdateReviews';
+import StarRating from "./Components/StarRating/StarRating";
 import AppointmentDisplayDC from './Components/AppointmentDisplayDC/AppointmentDisplayDC';
 import DailyLogsPet from './Components/DailyLogsPet/DailyLogsPet'
 
@@ -22,6 +24,7 @@ import UpcomingAppointmentsDC from './Components/DashboardDC/UpcomingAppointment
 import AppointmentHistory from './Components/DashboardDC/AppointmentDCHistory/AppointmentDCHistory';
 import DailyLogs from './Components/DashboardDC/DailyLogs/DailyLogs';
 import AppointmentDetailsDC from './Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC';
+import ReviewsDC from './Components/DashboardDC/ReviewsDC/ReviewsDC';
 
 function App() {
   return (
@@ -32,9 +35,11 @@ function App() {
       <Route path="/appointmentDC" element={<AppointmentDCs />} />
       <Route path="/addappointmentDC" element={<AddAppointmentDC />} />
       <Route path="/updateAppointmentDC/:id" element={<UpdateAppointmentDC />} />
+      <Route path="/updateApphisDC/:id" element={<UpdateApphisDC />} />
       <Route path="/reviews" element={<Review />} />
       <Route path="/addreviews" element={<AddReviews />} />
       <Route path="/updatereview/:id" element={<UpdateReviews />} />
+      <Route path="/StarRating" element={<StarRating />} />
       <Route path="/appointmentDisplayDC/:id" element={<AppointmentDisplayDC />} />
       <Route path="/daycareLogs/:appointmentId" element={<DailyLogsPet />} />
 
@@ -47,6 +52,7 @@ function App() {
         <Route path="appointmentHistory" element={<AppointmentHistory />} />
         <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
         <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
+        <Route path="reviews" element={<ReviewsDC />} />
       </Route>
     </Routes>
   );

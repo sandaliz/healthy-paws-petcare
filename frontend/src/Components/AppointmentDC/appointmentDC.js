@@ -3,7 +3,7 @@ import './AppointmentDC.css';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function AppointmentDC({ careCustomer, onDelete }) {
+function AppointmentDC({ careCustomer, onStatusChange }) {
   const {
     _id,
     ownerName,
@@ -28,16 +28,6 @@ function AppointmentDC({ careCustomer, onDelete }) {
 
   const navigate = useNavigate();
 
-  const deleteHandler = async () => {
-    try {
-      await axios.delete(`http://localhost:5000/careCustomers/${_id}`);
-      onDelete(_id); // update parent state immediately
-    } catch (err) {
-      console.error("Error deleting appointment:", err);
-      alert("Failed to delete appointment. Please try again.");
-    }
-  };
-
   const formatDate = (date) => {
     if (!date) return 'N/A';
     try {
@@ -52,20 +42,33 @@ function AppointmentDC({ careCustomer, onDelete }) {
   };
 
   const handleReschedule = () => {
-    console.log('Rescheduling appointment:', _id);
     alert(`Reschedule appointment ${_id}`);
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (window.confirm('Are you sure you want to cancel this appointment?')) {
-      deleteHandler();
+      try {
+        const res = await axios.put(`http://localhost:5000/careCustomers/${_id}/status`, {
+          status: 'Cancelled'
+        });
+
+        if (res.status === 200) {
+          alert('Appointment cancelled successfully!');
+          onStatusChange(_id, 'Cancelled'); // Update parent state
+        }
+      } catch (err) {
+        console.error('Error cancelling appointment:', err);
+        alert('Failed to cancel appointment. Please try again.');
+      }
     }
   };
 
   const handleViewLogs = () => {
-    // Navigate to daycare logs page for this appointment
     navigate(`/daycareLogs/${_id}`);
   };
+
+  // Only Pending appointments can reschedule or cancel
+  const canModify = status === 'Pending';
 
   return (
     <div className="appointment-container">
@@ -74,35 +77,22 @@ function AppointmentDC({ careCustomer, onDelete }) {
         <div className="appointment-id">ID: {_id}</div>
       </div>
 
-      {/* Action Buttons */}
       <div className="action-buttons">
-        <Link to={`/appointmentDC/${_id}`}>
-          <button 
-            className="btn-reschedule"
-            onClick={handleReschedule}
-            disabled={status === 'pending'}
-          >
+        <Link to={`/updateApphisDC/${_id}`}>
+          <button className="btn-reschedule" onClick={handleReschedule} disabled={!canModify}>
             Reschedule
           </button>
         </Link>
-        <button 
-          className="btn-cancel"
-          onClick={handleCancel}
-          disabled={status === 'cancelled'}
-        >
+        <button className="btn-cancel" onClick={handleCancel} disabled={!canModify}>
           Cancel
         </button>
-        <button 
-          className="btn-view-logs"
-          onClick={handleViewLogs}
-        >
+        <button className="btn-view-logs" onClick={handleViewLogs}>
           View Daycare Logs
         </button>
       </div>
 
-      {/* Status Badge */}
-      <div className={`status-badge status-${status}`}>
-        {status?.toLowerCase() || 'Pending'}
+      <div className={`status-badge status-${status.toLowerCase()}`}>
+        {status || 'Pending'}
       </div>
 
       {/* Contact Information */}

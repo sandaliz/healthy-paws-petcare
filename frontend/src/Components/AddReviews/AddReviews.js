@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import './AddReviews.css'; 
+import StarRating from "../StarRating/StarRating"; 
 
 function AddReviews() {
   const history = useNavigate();
@@ -12,10 +13,14 @@ function AddReviews() {
     species: "",
     grooming: false,
     walking: false,
-    rating: "",
-    sentiment: "",
+    rating: 0,
     comment: ""
   });
+
+  // Update handler for stars
+  const handleRatingChange = (value) => {
+    setInputs({ ...inputs, rating: value });
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -59,7 +64,6 @@ function AddReviews() {
       grooming: Boolean(inputs.grooming),
       walking: Boolean(inputs.walking),
       rating: Number(inputs.rating),
-      sentiment: String(inputs.sentiment),
       comment: String(inputs.comment)
     });
   };
@@ -72,7 +76,7 @@ function AddReviews() {
         {/* Owner + Pet Info */}
         <div className="form-section">
           <div className="input-group">
-            <label>Owner Name *</label>
+            <label>Owner Name </label>
             <input
               type="text"
               name="ownerName"
@@ -84,7 +88,7 @@ function AddReviews() {
           </div>
 
           <div className="input-group">
-            <label>Pet Name *</label>
+            <label>Pet Name </label>
             <input
               type="text"
               name="petName"
@@ -96,7 +100,7 @@ function AddReviews() {
           </div>
 
           <div className="input-group">
-            <label>Species *</label>
+            <label>Species </label>
             <select
               name="species"
               value={inputs.species}
@@ -141,35 +145,13 @@ function AddReviews() {
         {/* Rating & Comment */}
         <div className="form-section">
           <div className="input-group">
-            <label>Rating (1–5) *</label>
-            <input
-              type="number"
-              name="rating"
-              min="1"
-              max="5"
-              value={inputs.rating}
-              onChange={handleChange}
-              required
-            />
+            <label>Rating  </label>
+            <StarRating rating={inputs.rating} setRating={handleRatingChange} />
           </div>
 
+          
           <div className="input-group">
-            <label>Sentiment *</label>
-            <select
-              name="sentiment"
-              value={inputs.sentiment}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Sentiment</option>
-              <option value="good">Good</option>
-              <option value="bad">Bad</option>
-              <option value="neutral">Neutral</option>
-            </select>
-          </div>
-
-          <div className="input-group">
-            <label>Comment *</label>
+            <label>Comment </label>
             <textarea
               name="comment"
               placeholder="Write your feedback..."

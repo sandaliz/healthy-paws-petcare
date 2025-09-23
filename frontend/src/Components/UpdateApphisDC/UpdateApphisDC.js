@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router';
 
-function UpdateAppointmentDC() {
+function UpdateApphisDC() {
     const [inputs, setInputs] = useState({
         ownerName: "",
         contactNumber: "",
@@ -196,8 +196,7 @@ function UpdateAppointmentDC() {
         console.log('Updating appointment:', inputs);
         const success = await sendRequest();
         if (success) {
-            history(`/appointmentDisplayDC/${id}`);
-            
+            history('/appointmentDC');
         } else {
             alert('Failed to update appointment. Please try again.');
         }
@@ -439,4 +438,4 @@ function UpdateAppointmentDC() {
     );
 }
 
-export default UpdateAppointmentDC;
+export default UpdateApphisDC;

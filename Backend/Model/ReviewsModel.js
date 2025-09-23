@@ -27,13 +27,11 @@ const reviewSchema = new Schema({
         type: Number,
         required: true,
         min: 1,
-        max: 5,   //  1–5 rating system
+        max: 5,
     },
-    
     sentiment: {
         type: String,
-        enum: ["good", "bad", "neutral"], // optional classification
-        default: "neutral",
+        enum: ["good", "neutral", "bad"],
     },
     comment: {
         type: String,
@@ -41,7 +39,4 @@ const reviewSchema = new Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model(
-    "ReviewsModel",
-    reviewSchema
-);
+module.exports = mongoose.model("ReviewsModel", reviewSchema);
