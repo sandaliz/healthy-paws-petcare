@@ -6,7 +6,7 @@ import "./PendingAppointmentsDC.css";
 
 const URL = "http://localhost:5000/careCustomers";
 
-function PendingAppointments() {
+function PendingAppointments({ onReject }) {
   const [pendingAppointments, setPendingAppointments] = useState([]);
   const navigate = useNavigate();
 
@@ -28,23 +28,54 @@ function PendingAppointments() {
     }
   };
 
-  const approveHandler = async (id) => {
+    const approveHandler = async (id) => {
+    const confirm = window.confirm("Do you want to approve this appointment?");
+    if (!confirm) return;
+
     try {
-      await axios.put(`${URL}/${id}`, { status: "Approved" });
+      await axios.put(`${URL}/${id}/status`, { status: "Approved" });
+      alert("Appointment approved successfully ");
       setPendingAppointments((prev) => prev.filter((appt) => appt._id !== id));
     } catch (err) {
       console.error("Error approving appointment:", err);
+      alert(err.response?.data?.message || "Error approving appointment");
     }
   };
 
-  const rejectHandler = async (id) => {
-    try {
-      await axios.put(`${URL}/${id}`, { status: "Rejected" });
-      setPendingAppointments((prev) => prev.filter((appt) => appt._id !== id));
-    } catch (err) {
-      console.error("Error rejecting appointment:", err);
-    }
-  };
+
+  const rejectHandler = async (appt) => {
+  const confirm = window.confirm(`Reject appointment of ${appt.petName}?`);
+  if (!confirm) return;
+
+  try {
+    const res = await axios.put(`http://localhost:5000/checkinout/reject/${appt._id}`);
+    const rejectedAppt = res.data.careCustomer;
+
+    const rejectedRecord = {
+      _id: rejectedAppt._id,
+      ownerName: rejectedAppt.ownerName,
+      petName: rejectedAppt.petName,
+      status: rejectedAppt.status, // "Rejected"
+      checkInTime: null,
+      checkOutTime: null,
+      createdAt: new Date(),
+      services: [
+        rejectedAppt.grooming ? "Grooming" : null,
+        rejectedAppt.walking ? "Walking" : null,
+      ].filter(Boolean),
+    };
+
+    // Notify parent to immediately add to history
+    if (onReject) onReject(rejectedRecord);
+    alert("Appointment rejected successfully ");
+    // Remove from pending list
+    setPendingAppointments((prev) => prev.filter((a) => a._id !== appt._id));
+  } catch (err) {
+    console.error("Error rejecting appointment:", err);
+    alert(err.response?.data?.message || "Error rejecting appointment");
+  }
+};
+
 
   const viewDetails = (appointmentId) => {
     navigate(`/dashboardDC/appointmentDetailsDC/${appointmentId}`, {
@@ -80,7 +111,7 @@ function PendingAppointments() {
                 </button>
                 <button
                   className="btn-reject"
-                  onClick={() => rejectHandler(appt._id)}
+                  onClick={() => rejectHandler(appt)}
                 >
                   Reject
                 </button>

@@ -187,7 +187,7 @@ const sendRequest = async () => {
                     </div>
 
                     <div className="input-group">
-                        <label>Contact Number *</label>
+                        <label>Contact Number </label>
                         <input
                             type="text"
                             name="contactNumber"
@@ -205,7 +205,7 @@ const sendRequest = async () => {
                     </div>
 
                     <div className="input-group">
-                        <label>Email Address *</label>
+                        <label>Email Address </label>
                         <input
                             type="email"
                             name="email"
@@ -226,12 +226,12 @@ const sendRequest = async () => {
                 <div className="form-section">
                     <h3 className="section-title">Pet Details</h3>
                     <div className="input-group">
-                        <label>Pet Name *</label>
+                        <label>Pet Name </label>
                         <input type="text" name="petName" placeholder="Enter pet's name" value={inputs.petName} onChange={handleChange} required />
                     </div>
 
                     <div className="input-group">
-                        <label>Species *</label>
+                        <label>Species </label>
                         <select name="species" value={inputs.species} onChange={handleChange} required>
                             <option value="">Select Species</option>
                             <option value="dog">Dog</option>
@@ -271,22 +271,22 @@ const sendRequest = async () => {
                         />
                     </div>
                     <div className="input-group">
-                        <label>Number of Nights Stay *</label>
+                        <label>Number of Nights Stay </label>
                         <input type="number" name="nightsStay" placeholder="Enter number of nights" value={inputs.nightsStay} onChange={handleChange} required min="1" />
                     </div>
 
                     <div className="input-group">
-                        <label>Drop Off Time *</label>
+                        <label>Drop Off Time </label>
                         <input type="time" name="dropOffTime" value={inputs.dropOffTime} onChange={handleChange} required />
                     </div>
 
                     <div className="input-group">
-                        <label>Pick Up Time *</label>
+                        <label>Pick Up Time </label>
                         <input type="time" name="pickUpTime" value={inputs.pickUpTime} onChange={handleChange} required />
                     </div>
 
                     <div className="input-group">
-                        <label>Food Type *</label>
+                        <label>Food Type </label>
                         <select name="foodType" value={inputs.foodType} onChange={handleChange} required>
                             <option value="">Select Food Type</option>
                             <option value="owner-provided">Owner Provided</option>
@@ -314,7 +314,7 @@ const sendRequest = async () => {
                     </div>
 
                     <div className="input-group">
-                        <label>Emergency Action *</label>
+                        <label>Emergency Action </label>
                         <select name="emergencyAction" value={inputs.emergencyAction} onChange={handleChange} required>
                             <option value="">Select Emergency Action</option>
                             <option value="contact-owner">Contact Owner First</option>

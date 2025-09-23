@@ -307,7 +307,7 @@ const getTodaysLogs = async (req, res) => {
     }
 };
 
-exports.createDailyLog = createDailyLog;;
+exports.createDailyLog = createDailyLog;
 exports.getAllDailyLogs = getAllDailyLogs;
 exports.getLogsByAppointment = getLogsByAppointment;
 exports.getDailyLogById = getDailyLogById;

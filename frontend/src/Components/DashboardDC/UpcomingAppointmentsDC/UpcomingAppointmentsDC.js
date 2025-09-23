@@ -29,9 +29,8 @@ function UpcomingAppointmentsDC() {
   const handleCheckIn = async (appointmentId) => {
     try {
       const res = await axios.post(CHECKIN_URL, {
-        appointment: appointmentId,
-        checkedInBy: "Receptionist",
-        checkInTime: new Date(),
+        appointmentId,              
+        checkedInBy: "Receptionist" 
       });
 
       if (res.status === 201) {

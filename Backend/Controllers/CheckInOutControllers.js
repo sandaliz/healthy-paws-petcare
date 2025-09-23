@@ -2,304 +2,192 @@ const mongoose = require("mongoose");
 const CheckInOut = require("../Model/CheckInOutModel");
 const CareCustomer = require("../Model/CareModel");
 
-// Check-in a pet
+
 const checkInPet = async (req, res) => {
-    try {
-        const {
-            appointment,
-            checkInTime,
-            checkedInBy
-        } = req.body;
+  try {
+    const { appointmentId, checkedInBy } = req.body;
 
-        // Validate required fields
-        if (!appointment || !checkedInBy) {
-            return res.status(400).json({
-                message: "Appointment ID and checkedInBy are required"
-            });
-        }
+    const appointment = await CareCustomer.findById(appointmentId);
+    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
 
-        // Validate appointment ID format
-        if (!mongoose.Types.ObjectId.isValid(appointment)) {
-            return res.status(400).json({ message: "Invalid appointment ID format" });
-        }
-
-        // Check if appointment exists
-        const existingAppointment = await CareCustomer.findById(appointment);
-        if (!existingAppointment) {
-            return res.status(404).json({ message: "Appointment not found" });
-        }
-
-        // Check if pet is already checked in (no check-out time)
-        const existingCheckIn = await CheckInOut.findOne({
-            appointment,
-            checkOutTime: { $exists: false }
-        });
-
-        if (existingCheckIn) {
-            return res.status(400).json({ 
-                message: "Pet is already checked in. Please check out first." 
-            });
-        }
-
-        const checkInOut = new CheckInOut({
-            appointment,
-            checkInTime: checkInTime || new Date(),
-            checkedInBy
-        });
-
-        await checkInOut.save();
-        
-        // Update appointment status to "Checked-In"
-        await CareCustomer.findByIdAndUpdate(
-            appointment,
-            { status: "Checked-In" },
-            { new: true }
-        );
-
-        // Populate appointment details
-        await checkInOut.populate('appointment');
-
-        res.status(201).json({
-            message: "Pet checked in successfully",
-            checkInOut
-        });
-
-    } catch (error) {
-        console.error("Error during check-in:", error);
-        
-        if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map(err => ({
-                field: err.path,
-                message: err.message
-            }));
-            return res.status(400).json({ message: "Validation error", errors });
-        }
-        
-        res.status(500).json({ message: "Server error", error: error.message });
+    // Only allow check-in if status is Approved
+    if (appointment.status !== "Approved") {
+      return res.status(400).json({ message: "Appointment is not approved for check-in" });
     }
+
+    const checkInRecord = new CheckInOut({
+      appointment: appointment._id,
+      checkInTime: new Date(),
+      checkedInBy,
+    });
+
+    await checkInRecord.save();
+
+    // Update appointment status
+    appointment.status = "Checked-In";
+    await appointment.save();
+
+    return res.status(201).json({ message: "Pet checked in successfully", checkInRecord });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
 
-// Check-out a pet
+
 const checkOutPet = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { checkOutTime, checkedOutBy, notes } = req.body;
+  try {
+    const { id } = req.params;
 
-        // Validate checkInOut ID format
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid check-in record ID format" });
-        }
+    const checkInRecord = await CheckInOut.findById(id).populate("appointment");
+    if (!checkInRecord) return res.status(404).json({ message: "Check-in record not found" });
 
-        // Find the check-in record
-        const checkInRecord = await CheckInOut.findById(id).populate('appointment');
-        
-        if (!checkInRecord) {
-            return res.status(404).json({ message: "Check-in record not found" });
-        }
-
-        if (checkInRecord.checkOutTime) {
-            return res.status(400).json({ message: "Pet is already checked out" });
-        }
-
-        // Update check-out details
-        checkInRecord.checkOutTime = checkOutTime || new Date();
-        if (checkedOutBy) checkInRecord.checkedOutBy = checkedOutBy;
-        if (notes) checkInRecord.notes = notes;
-
-        await checkInRecord.save();
-
-        // Update appointment status to "Completed"
-        await CareCustomer.findByIdAndUpdate(
-            checkInRecord.appointment._id,
-            { status: "Completed" },
-            { new: true }
-        );
-
-        res.status(200).json({
-            message: "Pet checked out successfully",
-            checkInOut: checkInRecord
-        });
-
-    } catch (error) {
-        console.error("Error during check-out:", error);
-        res.status(500).json({ message: "Server error", error: error.message });
+    if (checkInRecord.checkOutTime) {
+      return res.status(400).json({ message: "Pet already checked out" });
     }
+
+    checkInRecord.checkOutTime = new Date();
+    checkInRecord.checkedOutBy = "System"; // you can replace with req.user if staff login
+    await checkInRecord.save();
+
+    // Update appointment status to Completed
+    const appointment = checkInRecord.appointment;
+    appointment.status = "Completed";
+    await appointment.save();
+
+    return res.status(200).json({ message: "Pet checked out successfully", checkInRecord });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
 
-// Get all check-in/out records
-const getAllCheckInOutRecords = async (req, res) => {
-    try {
-        const checkInOutRecords = await CheckInOut.find()
-            .populate('appointment')
-            .sort({ checkInTime: -1 });
 
-        res.status(200).json({
-            message: "Check-in/out records retrieved successfully",
-            count: checkInOutRecords.length,
-            checkInOutRecords
-        });
+// ✅ Reject Appointment - **NO CheckInOut record created**
+const rejectAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-    } catch (error) {
-        console.error("Error fetching check-in/out records:", error);
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
+    const appointment = await CareCustomer.findById(id);
+    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+
+    appointment.status = "Rejected";
+    await appointment.save();
+
+    return res.status(200).json({ message: "Appointment rejected", careCustomer: appointment });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
 
-// Get check-in/out records by appointment ID
-const getRecordsByAppointment = async (req, res) => {
-    try {
-        const { appointmentId } = req.params;
+const cancelAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
-            return res.status(400).json({ message: "Invalid appointment ID format" });
-        }
+    const appointment = await CareCustomer.findById(id);
+    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
 
-        const checkInOutRecords = await CheckInOut.find({ appointment: appointmentId })
-            .populate('appointment')
-            .sort({ checkInTime: -1 });
+    appointment.status = "Cancelled";
+    await appointment.save();
 
-        res.status(200).json({
-            message: "Check-in/out records retrieved successfully",
-            count: checkInOutRecords.length,
-            checkInOutRecords
-        });
+    // Create CheckInOut history with empty times
+    const history = new CheckInOut({
+      appointment: appointment._id,
+      checkInTime: null,
+      checkOutTime: null,
+      checkedInBy: "System",
+      checkedOutBy: "System",
+    });
+    await history.save();
 
-    } catch (error) {
-        console.error("Error fetching check-in/out records by appointment:", error);
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
+    return res.status(200).json({ message: "Appointment cancelled", history });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
 
-// Get current checked-in pets (no check-out time)
+const getHistory = async (req, res) => {
+  try {
+    const history = await CheckInOut.find({
+      $or: [
+        { checkOutTime: { $ne: null } }, // Completed
+      ]
+    })
+      .populate("appointment")
+      .sort({ createdAt: -1 });
+
+    const rejectedAndCancelled = await CheckInOut.find({
+      checkInTime: null,
+      checkOutTime: null,
+    })
+      .populate("appointment")
+      .sort({ createdAt: -1 });
+
+    const fullHistory = [...history, ...rejectedAndCancelled];
+
+    return res.status(200).json({ history: fullHistory });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
 const getCurrentCheckedInPets = async (req, res) => {
-    try {
-        const checkedInPets = await CheckInOut.find({
-            checkOutTime: { $exists: false }
-        })
-        .populate('appointment')
-        .sort({ checkInTime: -1 });
+  try {
+    const checkedInPets = await CheckInOut.find({ checkOutTime: null })
+      .populate("appointment")
+      .sort({ createdAt: -1 });
 
-        res.status(200).json({
-            message: "Current checked-in pets retrieved successfully",
-            count: checkedInPets.length,
-            checkedInPets
-        });
-
-    } catch (error) {
-        console.error("Error fetching current checked-in pets:", error);
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
+    return res.status(200).json({ checkedInPets });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
 
-// Get check-in/out record by ID
-const getCheckInOutById = async (req, res) => {
-    try {
-        const { id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid check-in record ID format" });
-        }
-
-        const checkInOutRecord = await CheckInOut.findById(id).populate('appointment');
-
-        if (!checkInOutRecord) {
-            return res.status(404).json({ message: "Check-in/out record not found" });
-        }
-
-        res.status(200).json({
-            message: "Check-in/out record retrieved successfully",
-            checkInOutRecord
-        });
-
-    } catch (error) {
-        console.error("Error fetching check-in/out record:", error);
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
+const deleteEmptyHistory = async (req, res) => {
+  try {
+    const result = await CheckInOut.deleteMany({ appointment: null });
+    return res.json({
+      message: "Deleted history records without appointment details",
+      deletedCount: result.deletedCount,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Error deleting records", error: err.message });
+  }
 };
 
-// Update check-in/out record
-const updateCheckInOutRecord = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updateData = req.body;
+const deleteHistoryById = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid check-in record ID format" });
-        }
+    const result = await CheckInOut.deleteOne({ _id: id });
 
-        // If appointment is being updated, validate it exists
-        if (updateData.appointment) {
-            const appointmentExists = await CareCustomer.findById(updateData.appointment);
-            if (!appointmentExists) {
-                return res.status(404).json({ message: "Appointment not found" });
-            }
-        }
-
-        const checkInOutRecord = await CheckInOut.findByIdAndUpdate(
-            id,
-            updateData,
-            { 
-                new: true, 
-                runValidators: true 
-            }
-        ).populate('appointment');
-
-        if (!checkInOutRecord) {
-            return res.status(404).json({ message: "Check-in/out record not found" });
-        }
-
-        res.status(200).json({
-            message: "Check-in/out record updated successfully",
-            checkInOutRecord
-        });
-
-    } catch (error) {
-        console.error("Error updating check-in/out record:", error);
-        
-        if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map(err => ({
-                field: err.path,
-                message: err.message
-            }));
-            return res.status(400).json({ message: "Validation error", errors });
-        }
-        
-        res.status(500).json({ message: "Server error", error: error.message });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Record not found" });
     }
+
+    return res.json({
+      message: `Record with _id ${id} deleted successfully`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Error deleting record", error: err.message });
+  }
 };
 
-// Delete check-in/out record
-const deleteCheckInOutRecord = async (req, res) => {
-    try {
-        const { id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid check-in record ID format" });
-        }
-
-        const checkInOutRecord = await CheckInOut.findByIdAndDelete(id);
-
-        if (!checkInOutRecord) {
-            return res.status(404).json({ message: "Check-in/out record not found" });
-        }
-
-        res.status(200).json({
-            message: "Check-in/out record deleted successfully",
-            checkInOutRecord
-        });
-
-    } catch (error) {
-        console.error("Error deleting check-in/out record:", error);
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
-};
 
 exports.checkInPet = checkInPet;
 exports.checkOutPet = checkOutPet;
-exports.getAllCheckInOutRecords = getAllCheckInOutRecords;
-exports.getRecordsByAppointment = getRecordsByAppointment;
+exports.rejectAppointment = rejectAppointment;
+exports.cancelAppointment = cancelAppointment;
+exports.getHistory = getHistory;
 exports.getCurrentCheckedInPets = getCurrentCheckedInPets;
-exports.getCheckInOutById = getCheckInOutById;
-exports.updateCheckInOutRecord = updateCheckInOutRecord;
-exports.deleteCheckInOutRecord = deleteCheckInOutRecord;
+exports.deleteEmptyHistory = deleteEmptyHistory;
+exports.deleteHistoryById = deleteHistoryById;
 

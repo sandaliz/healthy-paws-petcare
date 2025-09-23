@@ -1,30 +1,29 @@
 const Reviews = require("../Model/ReviewsModel");
 
+// Helper function to calculate sentiment from rating
+const calculateSentiment = (rating) => {
+    if (rating <= 2) return "bad";
+    if (rating === 3) return "neutral";
+    return "good"; // 4-5
+};
+
 // Get all reviews
-const getAllReviews = async (req, res, next) => {
-
-    let reviews;
-
+const getAllReviews = async (req, res) => {
     try {
-        reviews = await Reviews.find();
-        
+        const reviews = await Reviews.find();
+        return res.status(200).json({ reviews });
     } catch (err) {
         console.log(err);
+        return res.status(500).json({ message: "Server error" });
     }
-    
-    if(!reviews) {
-        return res.status(404).json({message:"Details not found"});
-    }
-
-    return res.status(200).json({ reviews });
-
 };
 
 // Add new review
-const addReview = async (req, res, next) => {
-    const { ownerName, petName, grooming, walking, species, rating, sentiment, comment } = req.body;
-
+const addReview = async (req, res) => {
+    const { ownerName, petName, grooming, walking, species, rating, comment } = req.body;
     try {
+        const sentiment = calculateSentiment(Number(rating));
+
         const review = new Reviews({
             ownerName,
             petName,
@@ -35,84 +34,63 @@ const addReview = async (req, res, next) => {
             sentiment,
             comment
         });
+
         await review.save();
         return res.status(201).json({ review });
     } catch (err) {
         console.log(err);
+        return res.status(500).json({ message: "Unable to add review" });
     }
-
-    if(!reviews){
-        return res.status(404).json({ message: "Unable to add review" });
-    }
-    return res.status(200).json({ careCustomers });
-    
 };
 
 // Get review by ID
-const getReviewById = async (req, res, next) => {
+const getReviewById = async (req, res) => {
     const id = req.params.id;
-
-    let review;
     try {
-        review = await Reviews.findById(id);
-        
-        } catch (err) {
-            console.log(err);
-        }
-
-        if (!review) {
-            return res.status(404).json({ message: "Review not found" });
-        }
+        const review = await Reviews.findById(id);
+        if (!review) return res.status(404).json({ message: "Review not found" });
         return res.status(200).json({ review });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Server error" });
+    }
 };
 
 // Update review
-const updateReview = async (req, res, next) => {
+const updateReview = async (req, res) => {
     const id = req.params.id;
-    const { ownerName, petName, grooming, walking, species, rating, sentiment, comment } = req.body;
-
-    let review;
+    const { ownerName, petName, grooming, walking, species, rating, comment } = req.body;
 
     try {
-        review = await Reviews.findByIdAndUpdate(
-            id,
-            { ownerName: ownerName, petName: petName, 
-                grooming: grooming, walking: walking,
-                species: species, rating: rating,
-                sentiment: sentiment, comment: comment
+        const sentiment = calculateSentiment(Number(rating));
 
-            }, { new: true });
-            review = await review.save();
-        
+        const review = await Reviews.findByIdAndUpdate(
+            id,
+            { ownerName, petName, grooming, walking, species, rating, sentiment, comment },
+            { new: true }
+        );
+
+        if (!review) return res.status(404).json({ message: "Unable to update review" });
+        return res.status(200).json({ review });
     } catch (err) {
         console.log(err);
+        return res.status(500).json({ message: "Server error" });
     }
-
-    if (!review) {
-            return res.status(404).json({ message: "Unable to update review" });
-        }
-        return res.status(200).json({ review });
-
 };
 
 // Delete review
-const deleteReview = async (req, res, next) => {
+const deleteReview = async (req, res) => {
     const id = req.params.id;
-    let review;
     try {
-        review = await Reviews.findByIdAndDelete(id);
-        
+        const review = await Reviews.findByIdAndDelete(id);
+        if (!review) return res.status(404).json({ message: "Unable to delete review" });
+        return res.status(200).json({ review });
     } catch (err) {
         console.log(err);
+        return res.status(500).json({ message: "Server error" });
     }
-    if (!review) {
-            return res.status(404).json({ message: "Unable to delete review" });
-        }
-        return res.status(200).json({ review });
 };
 
-exports.getAllReviews = getAllReviews;
-exports.addReview = addReview;
-exports.getReviewById = getReviewById;
-exports.updateReview = updateReview;
-exports.deleteReview = deleteReview;
+
+
+module.exports = { getAllReviews, addReview, getReviewById, updateReview, deleteReview };

@@ -15,6 +15,7 @@ function DashboardDC() {
       case 'pendingAppointments': return 'pending';
       case 'upcomingAppointments': return 'upcoming';
       case 'appointmentHistory': return 'history';
+      case 'reviews': return 'reviews';
       default: return 'dashboard';
     }
   })();
@@ -33,6 +34,9 @@ function DashboardDC() {
       case 'history':
         navigate('/dashboardDC/appointmentHistory');
         break;
+      case 'reviews':
+        navigate('/dashboardDC/reviews');
+        break;  
       default:
         navigate('/dashboardDC');
     }

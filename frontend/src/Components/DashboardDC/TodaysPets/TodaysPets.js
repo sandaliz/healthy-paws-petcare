@@ -31,6 +31,7 @@ function TodaysPets() {
     try {
       const res = await axios.put(`${CHECKOUT_URL}/${checkInOutId}`, {
         checkOutTime: new Date() // only sending checkout time
+        
       });
 
       if (res.status === 200) {
@@ -59,6 +60,18 @@ function TodaysPets() {
     });
   };
 
+  // Format date as DD/MM/YYYY HH:mm
+function formatDateTime(dateTimeStr) {
+  if (!dateTimeStr) return "-";
+  const dt = new Date(dateTimeStr);
+  const day = String(dt.getDate()).padStart(2, "0");
+  const month = String(dt.getMonth() + 1).padStart(2, "0");
+  const year = dt.getFullYear();
+  const hours = String(dt.getHours()).padStart(2, "0");
+  const minutes = String(dt.getMinutes()).padStart(2, "0");
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
   return (
     <div className="todays-pets-container">
       <h2>Today's Checked-In Pets</h2>
@@ -79,7 +92,7 @@ function TodaysPets() {
               <tr key={pet._id}>
                 <td>{pet.appointment.ownerName}</td>
                 <td>{pet.appointment.petName}</td>
-                <td>{new Date(pet.checkInTime).toLocaleTimeString("en-GB")}</td>
+                <td>{formatDateTime(pet.checkInTime)}</td>
                 <td>
                   <button
                     className="btn-view"

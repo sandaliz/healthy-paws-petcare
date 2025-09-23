@@ -6,6 +6,7 @@ const reviewRouter = require("./Routes/ReviewsRoutes");
 const dailyLogsRouter = require("./Routes/DailyLogsRoutes");
 const checkInOutRouter = require("./Routes/CheckInOutRoutes"); 
 
+
 const app = express();
 const cors = require("cors");
 
@@ -16,6 +17,7 @@ app.use("/careCustomers", router);
 app.use("/reviews", reviewRouter);
 app.use("/dailyLogs", dailyLogsRouter);
 app.use("/checkinout", checkInOutRouter);
+
 
 mongoose.connect("mongodb+srv://admin:azwOuFMBmc34fmEY@cluster0.4s8zmoj.mongodb.net/")
 .then(()=> console.log("connected to MongoDB"))

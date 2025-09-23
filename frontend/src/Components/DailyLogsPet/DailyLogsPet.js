@@ -34,43 +34,33 @@ function DailyLogsPet() {
   if (dailyLogs.length === 0) return <p>No daily logs found for this appointment.</p>;
 
   return (
-    <div className="daily-logs-pet-container">
-      <h2>Daycare Logs</h2>
+  <div className="daily-logs-pet-container">
+    <h2>Daycare Logs</h2>
 
-      <button className="btn-back" onClick={() => navigate(-1)}>
-        Back to Appointment
-      </button>
+    <button className="btn-back" onClick={() => navigate(-1)}>
+      Back to Appointment
+    </button>
 
-      <table className="daily-logs-pet-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Feeding</th>
-            <th>Note</th>
-            <th>Playtime</th>
-            <th>Walking</th>
-            <th>Grooming</th>
-            <th>Mood</th>
-            <th>Logged By</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dailyLogs.map((log) => (
-            <tr key={log._id}>
-              <td>{new Date(log.date).toLocaleDateString()}</td>
-              <td>{log.feeding}</td>
-              <td>{log.note || "-"}</td>
-              <td>{log.playtime || "-"}</td>
-              <td>{log.walking || "-"}</td>
-              <td>{log.grooming || "-"}</td>
-              <td>{log.mood}</td>
-              <td>{log.loggedBy}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="daily-logs-grid">
+      {dailyLogs.map((log) => (
+        <div key={log._id} className="daily-log-card">
+          <div className="daily-log-date">
+            {new Date(log.date).toLocaleDateString()}
+          </div>
+          <p className="daily-log-item"><strong>Feeding:</strong> {log.feeding}</p>
+          <p className="daily-log-item"><strong>Note:</strong> {log.note || "-"}</p>
+          <p className="daily-log-item"><strong>Playtime:</strong> {log.playtime || "-"}</p>
+          <p className="daily-log-item"><strong>Walking:</strong> {log.walking || "-"}</p>
+          <p className="daily-log-item"><strong>Grooming:</strong> {log.grooming || "-"}</p>
+          <p className={`daily-log-item mood-${log.mood?.toLowerCase()}`}>
+            <strong>Mood:</strong> {log.mood}
+          </p>
+          <p className="daily-log-item"><strong>Logged By:</strong> {log.loggedBy}</p>
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
 }
 
 export default DailyLogsPet;

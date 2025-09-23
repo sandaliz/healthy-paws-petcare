@@ -3,12 +3,13 @@ import './SideBarDC.css';
 
 function SideBarDC({ activeTab, setActiveTab, todaysPetsCount, pendingAppointmentsCount }) {
   const menuItems = [
-    { id: 'todaysPets', label: `Today's Pets (${todaysPetsCount})`, icon: '🐶' },
+    { id: 'todaysPets', label: `Today's Pets (${todaysPetsCount})` },
     
-    { id: 'history', label: 'Appointment History', icon: '📅' },
+    { id: 'history', label: 'Appointment History' },
     
-    { id: 'pending', label: `Pending Appointments (${pendingAppointmentsCount})`, icon: '⏳' },
-    { id: 'upcoming', label: 'Upcoming Appointments', icon: '📅' },
+    { id: 'pending', label: `Pending Appointments (${pendingAppointmentsCount})` },
+    { id: 'upcoming', label: 'Upcoming Appointments' },
+    { id: 'reviews', label: 'Reviews' },
     
   ];
 

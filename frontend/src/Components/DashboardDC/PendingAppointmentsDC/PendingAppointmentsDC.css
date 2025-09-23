@@ -24,19 +24,33 @@
 }
 
 .btn-approve {
-  background: #4caf50;
+  background: linear-gradient(45deg, #54413C, #54413C); /* subtle green gradient */
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 8px 16px; /* slightly larger for modern feel */
+  border-radius: 50px; /* pill-shaped */
   cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-approve:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btn-reject {
-  background: #f44336;
+  background: linear-gradient(45deg, #FFD58E, #FFD58E); /* subtle red gradient */
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 8px 16px; /* slightly larger for modern feel */
+  border-radius: 50px; /* pill-shaped */
   cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-reject:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
