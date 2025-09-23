@@ -1,0 +1,95 @@
+.pet-card {
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+}
+
+.pet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.pet-header h4 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #54413C;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+}
+
+.pet-details p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #666;
+  margin: 6px 0;
+}
+
+.pet-details strong {
+  color: #54413C;
+}
+
+.pet-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.btn-view, .btn-log {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-view {
+  background-color: #FFD58E;
+  color: #54413C;
+}
+
+.btn-view:hover {
+  background-color: #f8c672;
+}
+
+.btn-log {
+  background-color: #54413C;
+  color: white;
+}
+
+.btn-log:hover {
+  background-color: #45352f;
+}
+
+.pet-expanded-details {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eaeaea;
+}
+
+.pet-expanded-details p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #666;
+  margin: 6px 0;
+}
+
+.pet-expanded-details strong {
+  color: #54413C;
+}
