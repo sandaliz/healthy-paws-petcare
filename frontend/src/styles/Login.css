@@ -96,7 +96,8 @@ h1, h2, h3 {
 
 /* Form inputs */
 .form { display: flex; flex-direction: column; gap: 1.2rem; }
-.input {
+
+.login-input {
   width: 100%;
   height: 50px;
   padding: 0 1rem;
@@ -108,15 +109,18 @@ h1, h2, h3 {
   color: #333;
   box-sizing: border-box;
 }
-.input::placeholder {
+
+.login-input::placeholder {
   color: #888;
   text-align: left;
 }
-.input:focus {
+
+.login-input:focus {
   border-color: #FFD58E;
   box-shadow: 0 0 0 2px rgba(255,213,142,0.3);
   outline: none;
 }
+
 .input-error { border-color: red !important; }
 .error-text { font-size: 0.8rem; color: red; margin-top: 0.3rem; }
 
@@ -149,39 +153,48 @@ h1, h2, h3 {
   .doodle-panel { width: 95%; padding: 2rem; }
 }
 
-/* === NEW Icon Styling === */
-.input-wrapper {
+/* === Login Specific Icon Styling === */
+.login-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
-.input-wrapper .input {
+.login-input-wrapper .login-input {
   padding-left: 2.8rem; /* space for left icon */
   padding-right: 2.8rem; /* space for right icon (eye toggle) */
+  width: 100%;
 }
 
-.input-icon {
+.login-left-icon {
   position: absolute;
+  left: 0.8rem;
   width: 20px;
   height: 20px;
   color: #888;
+  z-index: 1;
+  pointer-events: none;
 }
 
-.left-icon {
-  left: 0.8rem;
-  pointer-events: none; /* icon not clickable */
-}
-
-.right-icon {
+.login-right-icon {
+  position: absolute;
   right: 0.8rem;
+  width: 20px;
+  height: 20px;
+  color: #888;
+  z-index: 2;
+}
+
+.login-eye-toggle {
   cursor: pointer;
 }
 
-.eye-toggle svg {
+.login-eye-toggle svg {
   width: 22px;
   height: 22px;
 }
+
 .login-subtitle {
   font-family: 'Roboto', sans-serif;
   font-size: 0.95rem;

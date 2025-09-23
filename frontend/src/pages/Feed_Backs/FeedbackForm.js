@@ -1,4 +1,4 @@
-// src/pages/FeedbackForm.js
+// src/pages/FeedbackForm.js (improved error handling)
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -10,6 +10,7 @@ import DashboardNavbar from "../../Components/Navbar";
 
 const FeedbackForm = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     petOwnerName: "",
     petName: "",
@@ -24,22 +25,45 @@ const FeedbackForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (formData.rating === 0) {
+      toast.warning("Please provide a rating!");
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/feedback",
-        formData
-      );
+      // ✅ Ensure rating is number before sending
+      const payload = { 
+        ...formData, 
+        rating: Number(formData.rating) 
+      };
+
+      const res = await axios.post("http://localhost:5000/api/feedback", payload);
+
       if (res.data.success) {
-        toast.success("🎉 Feedback submitted successfully!");
+        toast.success("🎉 Feedback submitted successfully! Check your email for confirmation.");
+        console.log("✅ Server response:", res.data);
+
         setTimeout(() => {
           navigate(`/feedback/${res.data.data._id}`, {
-            state: { message: "Feedback submitted successfully!" },
+            state: { message: "Feedback submitted successfully! Confirmation email sent." },
           });
-        }, 1500);
+        }, 2000);
+      } else {
+        toast.error("⚠️ Something went wrong on the server.");
       }
     } catch (err) {
-      console.error("Error submitting feedback:", err);
-      toast.error("❌ Failed to submit feedback. Please try again.");
+      console.error("❌ Error submitting feedback:", err.response?.data || err.message);
+      
+      if (err.response?.data?.message) {
+        toast.error(`❌ ${err.response.data.message}`);
+      } else {
+        toast.error("❌ Failed to submit feedback. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -52,7 +76,7 @@ const FeedbackForm = () => {
       }}
     >
       <DashboardNavbar />
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={3000} />
 
       <div className="flex flex-1 items-center justify-center px-6 mt-20">
         <div className="bg-white shadow-2xl rounded-lg flex flex-col md:flex-row max-w-5xl w-full overflow-hidden">
@@ -77,38 +101,42 @@ const FeedbackForm = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
-                className="w-full border p-3 rounded focus:ring-2 focus:ring-[#FFD58E]"
+                className="w-full border p-3 rounded focus:ring-2 focus:ring-[#FFD58E] focus:outline-none"
                 name="petOwnerName"
                 placeholder="Your Name"
                 value={formData.petOwnerName}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
               <input
-                className="w-full border p-3 rounded focus:ring-2 focus:ring-[#FFD58E]"
+                className="w-full border p-3 rounded focus:ring-2 focus:ring-[#FFD58E] focus:outline-none"
                 name="petName"
                 placeholder="Pet's Name"
                 value={formData.petName}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
               <input
-                className="w-full border p-3 rounded focus:ring-2 focus:ring-[#FFD58E]"
+                className="w-full border p-3 rounded focus:ring-2 focus:ring-[#FFD58E] focus:outline-none"
                 type="email"
                 name="email"
                 placeholder="Your Email"
                 value={formData.email}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
               <textarea
-                className="w-full border p-3 rounded focus:ring-2 focus:ring-[#FFD58E]"
+                className="w-full border p-3 rounded focus:ring-2 focus:ring-[#FFD58E] focus:outline-none"
                 name="message"
                 placeholder="Your Feedback"
                 value={formData.message}
                 onChange={handleChange}
                 rows={4}
                 required
+                disabled={isSubmitting}
               />
 
               <div>
@@ -121,12 +149,14 @@ const FeedbackForm = () => {
                 <StarRating
                   rating={formData.rating}
                   setRating={(r) => setFormData({ ...formData, rating: r })}
+                  disabled={isSubmitting}
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-lg transition-all"
+                disabled={isSubmitting}
+                className="w-full py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   backgroundColor: "#54413C",
                   color: "#FFFFFF",
@@ -134,15 +164,19 @@ const FeedbackForm = () => {
                   fontWeight: 600,
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = "#FFD58E";
-                  e.currentTarget.style.color = "#54413C";
+                  if (!isSubmitting) {
+                    e.currentTarget.style.backgroundColor = "#FFD58E";
+                    e.currentTarget.style.color = "#54413C";
+                  }
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = "#54413C";
-                  e.currentTarget.style.color = "#FFFFFF";
+                  if (!isSubmitting) {
+                    e.currentTarget.style.backgroundColor = "#54413C";
+                    e.currentTarget.style.color = "#FFFFFF";
+                  }
                 }}
               >
-                Submit Feedback
+                {isSubmitting ? "Submitting..." : "Submit Feedback"}
               </button>
             </form>
           </div>

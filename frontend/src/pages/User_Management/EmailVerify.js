@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import assets from '../../assets/assets';
+import '../../styles/EmailVerify.css';
 
 const EmailVerify = () => {
   const location = useLocation();
@@ -12,6 +12,7 @@ const EmailVerify = () => {
 
   const [otp, setOtp] = useState(Array(6).fill(''));
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
 
   if (!email) {
     navigate('/reset-password');
@@ -26,10 +27,10 @@ const EmailVerify = () => {
 
       // Move to next input
       if (value && index < 5) {
-        document.getElementById(`otp-${index + 1}`).focus();
+        document.getElementById(`verify-otp-${index + 1}`).focus();
       }
 
-      // Auto-submit if 6 digits are entered
+      // Auto-submit when 6 digits entered
       if (newOtp.join('').length === 6) {
         handleSubmit(newOtp.join(''));
       }
@@ -66,39 +67,70 @@ const EmailVerify = () => {
     }
   };
 
+  const handleResendCode = async () => {
+    if (!email) return;
+    setResending(true);
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/auth/send-reset-otp',
+        { email }
+      );
+      setResending(false);
+      if (res.data.success) {
+        toast.success('📩 A new OTP has been sent to your email');
+      } else {
+        toast.error(res.data.message || 'Failed to resend code');
+      }
+    } catch (err) {
+      setResending(false);
+      toast.error(err.response?.data?.message || 'Error resending code');
+    }
+  };
+
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-4"
-      style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FFD58E 100%)' }}
-    >
-      {/* Top Image */}
-      <img src={assets.verify_otp} alt="Verify OTP" className="w-32 sm:w-36 mb-6" />
+    <div className="email-verify-page">
+      <div className="verify-background-container">
+        <div className="verify-content">
+          <h2 className="verify-title">Reset your password</h2>
+          <p className="verify-subtitle">
+            Enter the 6-digit code sent to your email. This code is valid for the next 10 minutes.
+          </p>
 
-      <h2 className="text-3xl font-bold mb-6 text-[#54413C] text-center">
-        Email Verification
-      </h2>
+          <div className="verify-otp-inputs">
+            {otp.map((value, index) => (
+              <input
+                key={index}
+                id={`verify-otp-${index}`}
+                type="text"
+                maxLength="1"
+                value={value}
+                disabled={loading}
+                onChange={(e) => handleChange(e, index)}
+                className="verify-otp-input"
+              />
+            ))}
+          </div>
 
-      <div className="flex flex-col gap-4 bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <div className="flex justify-between gap-2">
-          {otp.map((value, index) => (
-            <input
-              key={index}
-              id={`otp-${index}`}
-              type="text"
-              maxLength="1"
-              value={value}
-              disabled={loading}
-              onChange={(e) => handleChange(e, index)}
-              className="w-12 h-12 text-center border rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-            />
-          ))}
+          <button
+            className="verify-reset-button"
+            disabled={loading}
+            onClick={() => handleSubmit(otp.join(''))}
+          >
+            {loading ? 'Verifying...' : 'Reset password'}
+          </button>
+
+          <p className="verify-resend-text">
+            Didn't get the code?{" "}
+            <span
+              className="verify-resend-link"
+              style={{ cursor: "pointer", color: "blue" }}
+              onClick={handleResendCode}
+            >
+              {resending ? "Resending..." : "Resend code"}
+            </span>
+          </p>
         </div>
-
-        {loading && (
-          <p className="text-center text-yellow-600 font-medium">Verifying...</p>
-        )}
       </div>
-
       <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );

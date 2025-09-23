@@ -1,4 +1,3 @@
-// App.js (Frontend)
 import './App.css';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
@@ -39,10 +38,13 @@ import Chatbot from './Components/Chatbot';
 // New Profile Page
 import ProfilePage from './pages/User_Management/ProfilePage';
 
-//Admin panale
+//Admin panel
 import FeedbackPage from "./pages/admin_dashbord/FeedbackPage";
 import UsersPage from './pages/admin_dashbord/Users';
 import PetRegisterPage from './pages/admin_dashbord/petRegister';
+
+// ✅ Import ProtectedRoute
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("user")) || {};
@@ -63,14 +65,63 @@ function App() {
       <Route path="/feedback/edit/:id" element={<FeedbackEdit />} />
       <Route path="/my-feedbacks" element={<FeedbackList user={currentUser} />} />
 
-      {/* Dashboard Routes */}
-      <Route path="/super-admin-dashboard" element={<SuperAdminDashboard />} />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      <Route path="/user-dashboard" element={<UserDashboard />} />
-      <Route path="/finance-dashboard" element={<FinanceManagerDashboard />} />
-      <Route path="/inventory-dashboard" element={<InventoryManagerDashboard />} />
-      <Route path="/pet-caretaker-dashboard" element={<PetCaretakerDashboard />} />
-      <Route path="/receptionist-dashboard" element={<ReceptionistDashboard />} />
+      {/* Dashboard Routes → wrapped with ProtectedRoute */}
+      <Route
+        path="/super-admin-dashboard"
+        element={
+          <ProtectedRoute>
+            <SuperAdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/user-dashboard"
+        element={
+          <ProtectedRoute>
+            <UserDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/finance-dashboard"
+        element={
+          <ProtectedRoute>
+            <FinanceManagerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/inventory-dashboard"
+        element={
+          <ProtectedRoute>
+            <InventoryManagerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/pet-caretaker-dashboard"
+        element={
+          <ProtectedRoute>
+            <PetCaretakerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/receptionist-dashboard"
+        element={
+          <ProtectedRoute>
+            <ReceptionistDashboard />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Registration Routes */}
       <Route path="/register/owner" element={<RegisterOwner user={currentUser} />} />
@@ -82,13 +133,13 @@ function App() {
       {/* Chatbot */}
       <Route path="/chatbot" element={<Chatbot />} />
 
-      {/*Profile Page */}
+      {/* Profile Page */}
       <Route path="/profile" element={<ProfilePage />} />
 
-       {/* Admin panale Routes */}
-       <Route path="/admin-dashboard/feedbacks" element={<FeedbackPage />} />
-       <Route path="/admin-dashboard/users" element={<UsersPage />} />
-       <Route path="/admin-dashboard/petRegister" element={<PetRegisterPage />} />
+      {/* Admin panel Routes */}
+      <Route path="/admin-dashboard/feedbacks" element={<FeedbackPage />} />
+      <Route path="/admin-dashboard/users" element={<UsersPage />} />
+      <Route path="/admin-dashboard/petRegister" element={<PetRegisterPage />} />
     </Routes>
   );
 }

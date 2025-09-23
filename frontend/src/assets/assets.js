@@ -24,6 +24,7 @@ import useravatar from './useravatar.png';
 import pawbackground from './pawbackground.png';
 import reset_bg_image from './reset_bg_image.png';
 import reset_side_image from './reset_side_image.png'
+import reset_password_illustration from './reset_password_illustration.png';
 const assets = {
   arrow_icon,
   lock_icon,
@@ -48,7 +49,8 @@ const assets = {
   LOG_page,
   register_bg,
   reset_bg_image,
-  reset_side_image
+  reset_side_image,
+  reset_password_illustration
 };
 
 export default assets;
