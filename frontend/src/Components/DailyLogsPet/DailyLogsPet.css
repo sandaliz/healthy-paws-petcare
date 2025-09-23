@@ -1,0 +1,90 @@
+/* DailyLogsPet.css */
+
+.daily-logs-pet-container {
+  padding: 20px 30px;
+  background-color: #f9f9fb;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin: 20px;
+}
+
+.daily-logs-pet-container h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-back {
+  background-color: #55413c;
+  color: #fff;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #6d574f;
+}
+
+/* Logs as cards */
+.daily-logs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.daily-log-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.daily-log-card:hover {
+  transform: translateY(-4px);
+}
+
+.daily-log-date {
+  font-size: 15px;
+  font-weight: 600;
+  color: #55413c;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+.daily-log-item {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.daily-log-item strong {
+  color: #55413c;
+}
+
+/* Mood colors */
+.mood-happy {
+  color: green;
+  font-weight: 600;
+}
+.mood-sad {
+  color: red;
+  font-weight: 600;
+}
+.mood-playful {
+  color: #ff9800;
+  font-weight: 600;
+}
+.mood-neutral {
+  color: #555;
+  font-weight: 600;
+}
