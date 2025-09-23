@@ -2,10 +2,6 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
 
-// Public
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-
 // ---------------- Public pages ----------------
 import Home from './pages/Home';
 import Login from './pages/User_Management/Login';
@@ -55,7 +51,7 @@ import Updateproduct from "./Components/updateproducts/updateproduct";
 import Alerts from "./Components/notifications&alerts/alerts";
 import PrescriptionList from "./Components/prescription/PrescriptionList";
 import Insights from "./Components/insights/insights";
-import InventoryHome from "./Components/Home/home";   // renamed to avoid clash with pages/Home
+import InventoryHome from "./Components/Home/home";
 
 // Layouts
 import InventoryLayout from "./layouts/InventoryLayout";
@@ -65,6 +61,8 @@ import StoreLayout from "./layouts/StoreLayout";
 import PetStore from "./Components/petstore/PetStore";
 import Cart from "./Components/petstore/Cart";
 import PrescriptionForm from "./Components/prescription/prescriptionform";
+
+// ---------------- Daycare & Reviews ----------------
 import Daycare from './Components/Daycare/daycare';
 import AppointmentDCs from './Components/AppointmentDCs/AppointmentDCs';
 import AddAppointmentDC from './Components/AddAppointmentDC/AddAppointmentDC';
@@ -75,9 +73,9 @@ import AddReviews from './Components/AddReviews/AddReviews';
 import UpdateReviews from './Components/UpdateReviews/UpdateReviews';
 import StarRating from "./Components/StarRating/StarRating";
 import AppointmentDisplayDC from './Components/AppointmentDisplayDC/AppointmentDisplayDC';
-import DailyLogsPet from './Components/DailyLogsPet/DailyLogsPet'
+import DailyLogsPet from './Components/DailyLogsPet/DailyLogsPet';
 
-// Dashboard & nested pages
+// ---------------- Dashboard & nested pages (Daycare) ----------------
 import DashboardDC from './Components/DashboardDC/DashboardDC/DashboardDC';
 import TodaysPets from './Components/DashboardDC/TodaysPets/TodaysPets';
 import PendingAppointments from './Components/DashboardDC/PendingAppointmentsDC/PendingAppointmentsDC';
@@ -107,27 +105,13 @@ function App() {
       <Route path="/my-feedbacks" element={<FeedbackList user={currentUser} />} />
 
       {/* -------- Dashboards (Protected) -------- */}
-      <Route path="/super-admin-dashboard" element={
-        <ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>
-      }/>
-      <Route path="/admin-dashboard" element={
-        <ProtectedRoute><AdminDashboard /></ProtectedRoute>
-      }/>
-      <Route path="/user-dashboard" element={
-        <ProtectedRoute><UserDashboard /></ProtectedRoute>
-      }/>
-      <Route path="/finance-dashboard" element={
-        <ProtectedRoute><FinanceManagerDashboard /></ProtectedRoute>
-      }/>
-      <Route path="/inventory-dashboard" element={
-        <ProtectedRoute><InventoryManagerDashboard /></ProtectedRoute>
-      }/>
-      <Route path="/pet-caretaker-dashboard" element={
-        <ProtectedRoute><PetCaretakerDashboard /></ProtectedRoute>
-      }/>
-      <Route path="/receptionist-dashboard" element={
-        <ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>
-      }/>
+      <Route path="/super-admin-dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
+      <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+      <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
+      <Route path="/finance-dashboard" element={<ProtectedRoute><FinanceManagerDashboard /></ProtectedRoute>} />
+      <Route path="/inventory-dashboard" element={<ProtectedRoute><InventoryManagerDashboard /></ProtectedRoute>} />
+      <Route path="/pet-caretaker-dashboard" element={<ProtectedRoute><PetCaretakerDashboard /></ProtectedRoute>} />
+      <Route path="/receptionist-dashboard" element={<ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>} />
 
       {/* -------- Registration -------- */}
       <Route path="/register/owner" element={<RegisterOwner user={currentUser} />} />
@@ -164,12 +148,10 @@ function App() {
         <Route path="/cart/:id" element={<Cart />} />
       </Route>
 
-      {/* -------- Standalone -------- */}
+      {/* -------- Prescription -------- */}
       <Route path="/prescription" element={<PrescriptionForm />} />
-    </Routes>
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<Home />} />
+
+      {/* -------- Daycare & Reviews -------- */}
       <Route path="/daycare" element={<Daycare />} />
       <Route path="/appointmentDC" element={<AppointmentDCs />} />
       <Route path="/addappointmentDC" element={<AddAppointmentDC />} />
@@ -182,7 +164,7 @@ function App() {
       <Route path="/appointmentDisplayDC/:id" element={<AppointmentDisplayDC />} />
       <Route path="/daycareLogs/:appointmentId" element={<DailyLogsPet />} />
 
-      {/* Dashboard Layout with Nested Routes */}
+      {/* -------- Daycare Dashboard (Nested) -------- */}
       <Route path="/dashboardDC/*" element={<DashboardDC />}>
         <Route path="" element={<div>Welcome to HealthyPaws Daycare Dashboard</div>} />
         <Route path="todaysPets" element={<TodaysPets />} />

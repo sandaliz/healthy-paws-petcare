@@ -1,6 +1,8 @@
-const express = require("express");
+// Routes/CheckInOutRoutes.js (ESM version)
+import express from "express";
+import * as CheckInOutController from "../Controllers/CheckInOutControllers.js";
+
 const router = express.Router();
-const CheckInOutController = require("../Controllers/CheckInOutControllers");
 
 router.post("/checkin", CheckInOutController.checkInPet);
 router.put("/checkout/:id", CheckInOutController.checkOutPet);
@@ -11,4 +13,4 @@ router.get("/current", CheckInOutController.getCurrentCheckedInPets);
 router.delete("/history/empty", CheckInOutController.deleteEmptyHistory);
 router.delete("/history/:id", CheckInOutController.deleteHistoryById);
 
-module.exports = router;
+export default router;

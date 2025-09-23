@@ -1,38 +1,47 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+// Model/CheckInOutModel.js (ESM version)
+import mongoose from "mongoose";
 
-const checkInOutSchema = new Schema({
+const { Schema } = mongoose;
+
+const checkInOutSchema = new Schema(
+  {
     checkInOutID: {
-        type: String,
-        unique: true,
-        
+      type: String,
+      unique: true,
     },
     appointment: {
-        type: Schema.Types.ObjectId,
-        ref: "CareCustomer",
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "CareCustomer",
+      required: true,
     },
     checkInTime: {
-        type: Date,
-        required: true
+      type: Date,
+      required: true,
     },
     checkOutTime: {
-        type: Date
+      type: Date,
     },
     checkedInBy: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     checkedOutBy: {
-        type: String
+      type: String,
     },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
-checkInOutSchema.pre('save', function(next) {
-    if (!this.checkInOutID) {
-        this.checkInOutID = 'CIO' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
-    }
-    next();
+checkInOutSchema.pre("save", function (next) {
+  if (!this.checkInOutID) {
+    this.checkInOutID =
+      "CIO" +
+      Date.now() +
+      Math.random().toString(36).substr(2, 5).toUpperCase();
+  }
+  next();
 });
 
-module.exports = mongoose.model("CheckInOut", checkInOutSchema);
+const CheckInOut = mongoose.model("CheckInOut", checkInOutSchema);
+
+export default CheckInOut;

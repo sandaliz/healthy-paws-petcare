@@ -1,9 +1,10 @@
-const mongoose = require("mongoose");
-const CheckInOut = require("../Model/CheckInOutModel");
-const CareCustomer = require("../Model/CareModel");
+// Controllers/CheckInOutControllers.js (ESM)
+import mongoose from "mongoose";
+import CheckInOut from "../Model/CheckInOutModel.js";
+import CareCustomer from "../Model/CareModel.js";
 
-
-const checkInPet = async (req, res) => {
+// Check in Pet
+export const checkInPet = async (req, res) => {
   try {
     const { appointmentId, checkedInBy } = req.body;
 
@@ -23,7 +24,6 @@ const checkInPet = async (req, res) => {
 
     await checkInRecord.save();
 
-    // Update appointment status
     appointment.status = "Checked-In";
     await appointment.save();
 
@@ -34,8 +34,8 @@ const checkInPet = async (req, res) => {
   }
 };
 
-
-const checkOutPet = async (req, res) => {
+// Check Out Pet
+export const checkOutPet = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -47,10 +47,9 @@ const checkOutPet = async (req, res) => {
     }
 
     checkInRecord.checkOutTime = new Date();
-    checkInRecord.checkedOutBy = "System"; // you can replace with req.user if staff login
+    checkInRecord.checkedOutBy = "System"; // replace with req.user if auth is added
     await checkInRecord.save();
 
-    // Update appointment status to Completed
     const appointment = checkInRecord.appointment;
     appointment.status = "Completed";
     await appointment.save();
@@ -62,9 +61,8 @@ const checkOutPet = async (req, res) => {
   }
 };
 
-
-// ✅ Reject Appointment - **NO CheckInOut record created**
-const rejectAppointment = async (req, res) => {
+// Reject Appointment
+export const rejectAppointment = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -81,7 +79,8 @@ const rejectAppointment = async (req, res) => {
   }
 };
 
-const cancelAppointment = async (req, res) => {
+// Cancel Appointment
+export const cancelAppointment = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -91,7 +90,6 @@ const cancelAppointment = async (req, res) => {
     appointment.status = "Cancelled";
     await appointment.save();
 
-    // Create CheckInOut history with empty times
     const history = new CheckInOut({
       appointment: appointment._id,
       checkInTime: null,
@@ -108,12 +106,11 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
-const getHistory = async (req, res) => {
+// Get History
+export const getHistory = async (req, res) => {
   try {
     const history = await CheckInOut.find({
-      $or: [
-        { checkOutTime: { $ne: null } }, // Completed
-      ]
+      $or: [{ checkOutTime: { $ne: null } }],
     })
       .populate("appointment")
       .sort({ createdAt: -1 });
@@ -134,8 +131,8 @@ const getHistory = async (req, res) => {
   }
 };
 
-
-const getCurrentCheckedInPets = async (req, res) => {
+// Get Currently Checked-In Pets
+export const getCurrentCheckedInPets = async (req, res) => {
   try {
     const checkedInPets = await CheckInOut.find({ checkOutTime: null })
       .populate("appointment")
@@ -148,8 +145,8 @@ const getCurrentCheckedInPets = async (req, res) => {
   }
 };
 
-
-const deleteEmptyHistory = async (req, res) => {
+// Delete empty history
+export const deleteEmptyHistory = async (req, res) => {
   try {
     const result = await CheckInOut.deleteMany({ appointment: null });
     return res.json({
@@ -161,7 +158,8 @@ const deleteEmptyHistory = async (req, res) => {
   }
 };
 
-const deleteHistoryById = async (req, res) => {
+// Delete history by ID
+export const deleteHistoryById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -179,15 +177,3 @@ const deleteHistoryById = async (req, res) => {
     return res.status(500).json({ message: "Error deleting record", error: err.message });
   }
 };
-
-
-
-exports.checkInPet = checkInPet;
-exports.checkOutPet = checkOutPet;
-exports.rejectAppointment = rejectAppointment;
-exports.cancelAppointment = cancelAppointment;
-exports.getHistory = getHistory;
-exports.getCurrentCheckedInPets = getCurrentCheckedInPets;
-exports.deleteEmptyHistory = deleteEmptyHistory;
-exports.deleteHistoryById = deleteHistoryById;
-
