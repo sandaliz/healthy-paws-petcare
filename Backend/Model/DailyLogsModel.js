@@ -1,55 +1,64 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+// Model/DailyLogsModel.js  (ESM version)
+import mongoose from "mongoose";
 
-const dailyLogSchema = new Schema({
+const { Schema } = mongoose;
+
+const dailyLogSchema = new Schema(
+  {
     logID: {
-        type: String,
-        unique: true,
-        
+      type: String,
+      unique: true,
     },
     appointment: {
-        type: Schema.Types.ObjectId,
-        ref: "CareCustomer",
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "CareCustomer",
+      required: true,
     },
     date: {
-        type: Date,
-        default: Date.now,
-        required: true
+      type: Date,
+      default: Date.now,
+      required: true,
     },
     feeding: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     note: {
-        type: String
+      type: String,
     },
     playtime: {
-        type: String
+      type: String,
     },
     walking: {
-        type: String
+      type: String,
     },
     grooming: {
-        type: String
+      type: String,
     },
     mood: {
-        type: String,
-        enum: ["excellent", "good", "okay", "poor"],
-        default: "good"
+      type: String,
+      enum: ["excellent", "good", "okay", "poor"],
+      default: "good",
     },
     loggedBy: {
-        type: String,
-        required: true
-    }
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-}, { timestamps: true });
-
-dailyLogSchema.pre('save', function(next) {
-    if (!this.logID) {
-        this.logID = 'LOG' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
-    }
-    next();
+// Auto-generate custom logID
+dailyLogSchema.pre("save", function (next) {
+  if (!this.logID) {
+    this.logID =
+      "LOG" +
+      Date.now() +
+      Math.random().toString(36).substr(2, 5).toUpperCase();
+  }
+  next();
 });
 
-module.exports = mongoose.model("DailyLog", dailyLogSchema);
+const DailyLog = mongoose.model("DailyLog", dailyLogSchema);
+
+export default DailyLog;

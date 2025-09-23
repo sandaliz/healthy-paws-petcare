@@ -1,4 +1,4 @@
-// app.js (Backend Root)
+// app.js (Backend Root, ESM)
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -17,13 +17,13 @@ import prescriptionRoutes from "./Routes/prescriptionRoutes.js";
 import { sendPrescriptionEmail } from "./Controllers/emailController.js";
 import checkoutRoutes from "./Routes/checkoutRoutes.js";
 
+import careRoutes from "./Routes/CareRoutes.js";
+import reviewRouter from "./Routes/ReviewsRoutes.js";
+import dailyLogsRouter from "./Routes/DailyLogsRoutes.js";
+import checkInOutRouter from "./Routes/CheckInOutRoutes.js";
+
 import User from "./Model/userModel.js";
 import bcrypt from "bcryptjs";
-const router = require("./Routes/CareRoutes");
-const reviewRouter = require("./Routes/ReviewsRoutes");
-const dailyLogsRouter = require("./Routes/DailyLogsRoutes");
-const checkInOutRouter = require("./Routes/CheckInOutRoutes"); 
-
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,7 +33,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:5173")
+const allowedOrigins = (
+  process.env.CORS_ORIGINS ||
+  "http://localhost:3000,http://localhost:5173"
+)
   .split(",")
   .map((s) => s.trim());
 
@@ -50,17 +53,25 @@ app.use(
 // -------------------- Routes --------------------
 app.get("/", (req, res) => res.send("Welcome to Pet Care Management API"));
 
+// Core APIs
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);      
+app.use("/api/users", userRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/register", registerRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
+// Products / Checkout
 app.use("/products", productRoutes);
 app.use("/prescriptions", prescriptionRoutes);
 app.post("/send-prescription", sendPrescriptionEmail);
 app.use("/checkout", checkoutRoutes);
+
+// Extra APIs
+app.use("/careCustomers", careRoutes);
+app.use("/reviews", reviewRouter);
+app.use("/dailyLogs", dailyLogsRouter);
+app.use("/checkinout", checkInOutRouter);
 
 // -------------------- Super Admin Auto-Creation --------------------
 const createSuperAdmin = async () => {
@@ -68,7 +79,9 @@ const createSuperAdmin = async () => {
     const { SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD } = process.env;
 
     if (!SUPER_ADMIN_EMAIL || !SUPER_ADMIN_PASSWORD) {
-      console.error("❌ Missing SUPER_ADMIN_EMAIL or SUPER_ADMIN_PASSWORD in .env");
+      console.error(
+        "❌ Missing SUPER_ADMIN_EMAIL or SUPER_ADMIN_PASSWORD in .env"
+      );
       return;
     }
 
@@ -93,7 +106,10 @@ const createSuperAdmin = async () => {
 
 // -------------------- DB Connection --------------------
 mongoose
-  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project", { dbName: "test" })
+  .connect(
+    process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project",
+    { dbName: "test" }
+  )
   .then(async () => {
     console.log("✅ Connected to MongoDB (Database: test)");
     await createSuperAdmin();
@@ -102,20 +118,3 @@ mongoose
     );
   })
   .catch((err) => console.error("❌ MongoDB connection error:", err.message));
-const cors = require("cors");
-
-//middleware 
-app.use(express.json());
-app.use(cors());
-app.use("/careCustomers", router);
-app.use("/reviews", reviewRouter);
-app.use("/dailyLogs", dailyLogsRouter);
-app.use("/checkinout", checkInOutRouter);
-
-
-mongoose.connect("mongodb+srv://admin:azwOuFMBmc34fmEY@cluster0.4s8zmoj.mongodb.net/")
-.then(()=> console.log("connected to MongoDB"))
-.then(() => {
-    app.listen(5000);
-})
-.catch((err) => console.log((err)));

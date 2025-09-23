@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+// Routes/ReviewsRoutes.js (ESM version)
+import express from "express";
+import * as ReviewsController from "../Controllers/ReviewsControllers.js";
 
-// Insert Controller
-const ReviewsController = require("../Controllers/ReviewsControllers");
+const router = express.Router();
 
 router.get("/", ReviewsController.getAllReviews);
 router.post("/", ReviewsController.addReview);
@@ -10,4 +10,4 @@ router.get("/:id", ReviewsController.getReviewById);
 router.put("/:id", ReviewsController.updateReview);
 router.delete("/:id", ReviewsController.deleteReview);
 
-module.exports = router;
+export default router;

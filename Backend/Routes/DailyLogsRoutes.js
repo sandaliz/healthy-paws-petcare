@@ -1,6 +1,8 @@
-const express = require("express");
+// Routes/DailyLogsRoutes.js (ESM version)
+import express from "express";
+import * as DailyLogsControllers from "../Controllers/DailyLogsControllers.js";
+
 const router = express.Router();
-const DailyLogsControllers = require("../Controllers/DailyLogsControllers");
 
 router.post("/", DailyLogsControllers.createDailyLog);
 router.get("/", DailyLogsControllers.getAllDailyLogs);
@@ -15,5 +17,4 @@ router.get("/date/range", DailyLogsControllers.getLogsByDateRange);
 // Get today's logs
 router.get("/date/today", DailyLogsControllers.getTodaysLogs);
 
-module.exports = router;
-
+export default router;
