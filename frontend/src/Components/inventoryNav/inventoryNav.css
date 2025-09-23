@@ -1,0 +1,71 @@
+/* Sidebar container */
+.inventory-nav-container {
+  width: 240px;
+  background-color: #4B352D;  /* Dark brown */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;   /* <-- ADDED padding inside */
+  box-sizing: border-box;
+}
+
+/* Header */
+.nav-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 10px 24px 10px;  /* extra bottom gap */
+  color: #FFD58E;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+/* UL reset */
+.Nav-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;   /* <-- space between sidebar items */
+  flex: 1;
+}
+
+/* Sidebar items style */
+.Nav-li {
+  border-radius: 8px; /* smoother edges */
+  overflow: hidden;   /* keeps hover background neat */
+}
+
+.Nav-li a {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 8px;   /* more button-like */
+  transition: all 0.3s ease;
+}
+
+.nav-icon {
+  font-size: 18px;
+  margin-right: 12px;
+}
+
+/* Hover effect */
+.Nav-li a:hover {
+  background-color: rgba(255, 213, 142, 0.15);
+  color: #FFD58E;
+}
+
+/* Active state */
+.Nav-li.active a {
+  background-color: #FFD58E;
+  color: #4B352D;
+  font-weight: 600;
+}

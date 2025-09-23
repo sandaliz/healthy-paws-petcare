@@ -1,4 +1,4 @@
-// app.js (Backend)
+// app.js (Backend Root)
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -10,8 +10,12 @@ import userRoutes from "./Routes/userRoutes.js";
 import feedbackRoutes from "./Routes/feedback.js";
 import registerRoutes from "./Routes/register.js";
 import chatRoutes from "./Routes/chatRoutes.js";
-
 import dashboardRoutes from "./Routes/dashboardRoutes.js";
+
+import productRoutes from "./Routes/productRoutes.js";
+import prescriptionRoutes from "./Routes/prescriptionRoutes.js";
+import { sendPrescriptionEmail } from "./Controllers/emailController.js";
+import checkoutRoutes from "./Routes/checkoutRoutes.js";
 
 import User from "./Model/userModel.js";
 import bcrypt from "bcryptjs";
@@ -19,32 +23,47 @@ import bcrypt from "bcryptjs";
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware
+// -------------------- Middleware --------------------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:5173")
+  .split(",")
+  .map((s) => s.trim());
+
 app.use(
   cors({
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+      return cb(new Error("Not allowed by CORS"));
+    },
     credentials: true,
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
   })
 );
 
-// Routes Mount
+// -------------------- Routes --------------------
 app.get("/", (req, res) => res.send("Welcome to Pet Care Management API"));
+
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);       // 👈 includes /profile, /:id update
+app.use("/api/users", userRoutes);      
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/register", registerRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-// ---------- Super Admin Auto-Creation ----------
+
+app.use("/products", productRoutes);
+app.use("/prescriptions", prescriptionRoutes);
+app.post("/send-prescription", sendPrescriptionEmail);
+app.use("/checkout", checkoutRoutes);
+
+// -------------------- Super Admin Auto-Creation --------------------
 const createSuperAdmin = async () => {
   try {
     const { SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD } = process.env;
 
     if (!SUPER_ADMIN_EMAIL || !SUPER_ADMIN_PASSWORD) {
-      console.error("Missing SUPER_ADMIN_EMAIL or SUPER_ADMIN_PASSWORD in .env");
+      console.error("❌ Missing SUPER_ADMIN_EMAIL or SUPER_ADMIN_PASSWORD in .env");
       return;
     }
 
@@ -58,23 +77,23 @@ const createSuperAdmin = async () => {
         role: "SUPER_ADMIN",
       });
       await superAdmin.save();
-      console.log("Super Admin created successfully");
+      console.log("✅ Super Admin created successfully");
     } else {
-      console.log("Super Admin already exists");
+      console.log("ℹ️ Super Admin already exists");
     }
   } catch (error) {
-    console.error("Error creating Super Admin:", error.message);
+    console.error("🚨 Error creating Super Admin:", error.message);
   }
 };
 
-// Connect DB & start server
+// -------------------- DB Connection --------------------
 mongoose
-  .connect(process.env.MONGO_URI, { dbName: "test" })
+  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project", { dbName: "test" })
   .then(async () => {
-    console.log("Connected to MongoDB (Database: test)");
+    console.log("✅ Connected to MongoDB (Database: test)");
     await createSuperAdmin();
     app.listen(port, () =>
-      console.log(`Server running on http://localhost:${port}`)
+      console.log(`🚀 Server running on http://localhost:${port}`)
     );
   })
-  .catch((err) => console.error("MongoDB connection error:", err.message));
+  .catch((err) => console.error("❌ MongoDB connection error:", err.message));
