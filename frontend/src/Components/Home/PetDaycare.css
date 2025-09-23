@@ -1,0 +1,112 @@
+.daycare-section {
+  background: linear-gradient(135deg, #ffffff 0%, #fdf6ed 100%); /* Light white → peach */
+  padding: 4rem 6%;
+  display: flex;
+  justify-content: center;
+}
+
+.daycare-container {
+  max-width: 1200px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+/* LEFT IMAGES */
+.daycare-images {
+  flex: 1;
+  display: flex;
+  gap: 1rem;
+}
+
+.daycare-img {
+  flex: 1;
+  max-width: 280px;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+  backdrop-filter: blur(14px);  /* Liquid glass feel on image edges */
+}
+
+/* RIGHT CONTENT */
+.daycare-content {
+  flex: 1.2;
+  color: #54413C; /* Dark brown */
+}
+
+.daycare-content h2 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.daycare-content .subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #54413C;
+  opacity: 0.85;
+}
+
+.daycare-content h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #54413C;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.feature-list li {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: #FFD58E; /* Palette Peach */
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* LIQUID GLASS CTA BUTTON */
+.glass-btn {
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 213, 142, 0.85) 0%,
+    rgba(255, 213, 142, 0.65) 100%
+  );
+  color: #54413C;
+  box-shadow:
+    inset 1px 1px 2px rgba(255,255,255,0.6),
+    0 6px 15px rgba(0,0,0,0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+
+.glass-btn:hover {
+  background: linear-gradient(
+    135deg,
+    #FFD58E 0%, 
+    rgba(255, 213, 142, 0.8) 100%
+  );
+  transform: translateY(-2px) scale(1.02);
+}
