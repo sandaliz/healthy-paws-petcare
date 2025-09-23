@@ -33,7 +33,6 @@ function Cart() {
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  // Calc summary
   const subtotal = prescription
     ? prescription.items.reduce((acc, item) => acc + item.quantity * item.cost, 0)
     : cart.reduce((acc, item) => acc + item.quantity * item.cost, 0);
@@ -46,24 +45,24 @@ function Cart() {
       setLoading(true);
 
       if (prescription) {
-        // Mark prescription as paid (backend will deduct stock + increment totalSold)
         await axios.put(`http://localhost:5000/prescriptions/${prescription._id}`, {
           status: "paid",
         });
         alert("✅ Prescription Order Completed!");
       } else {
-        // Normal PetStore checkout: send to /checkout endpoint
-        await axios.post("http://localhost:5000/checkout", {
+        const response = await axios.post("http://localhost:5000/checkout", {
           items: cart.map((item) => ({
-            productMongoId: item._id,
+            productMongoId: item._id, // MUST be actual product _id
             productName: item.name,
             quantity: item.quantity,
             cost: item.cost,
           })),
           source: "petstore",
+          // userId: "guest" → backend will default since no login yet
         });
 
-        // Clear cart
+        console.log("Checkout Response:", response.data);
+
         localStorage.removeItem("cart");
         setCart([]);
         alert("✅ Normal Order Completed! Thank you for shopping 🐾");
@@ -71,8 +70,8 @@ function Cart() {
 
       navigate("/store");
     } catch (err) {
-      console.error("Error placing order:", err);
-      alert("❌ Failed to process order.");
+      console.error("Error placing order:", err.response?.data || err.message);
+      alert("❌ Failed to process order: " + (err.response?.data?.error || err.message));
     } finally {
       setLoading(false);
     }
@@ -83,7 +82,7 @@ function Cart() {
       {!prescription && cart.length === 0 ? (
         <div className="empty-cart">
           <h1>Your Basket</h1>
-          <p>Your cart is empty 🐾</p>
+          <p>Your cart is empty </p>
         </div>
       ) : (
         <>
@@ -92,12 +91,8 @@ function Cart() {
               <h1>Prescription Basket</h1>
               {prescription.items.map((item, i) => (
                 <div key={i} className="cart-item">
-                  <div className="item-info">
-                    <h2>{item.productName}</h2>
-                  </div>
-                  <div className="quantity">
-                    <input type="text" value={item.quantity} readOnly />
-                  </div>
+                  <div className="item-info"><h2>{item.productName}</h2></div>
+                  <div className="quantity"><input type="text" value={item.quantity} readOnly /></div>
                   <div className="price">LKR {item.quantity * item.cost}</div>
                 </div>
               ))}
@@ -107,18 +102,14 @@ function Cart() {
               <h1>Your Basket</h1>
               {cart.map((item) => (
                 <div key={item._id} className="cart-item">
-                  <div className="item-info">
-                    <h2>{item.name}</h2>
-                  </div>
+                  <div className="item-info"><h2>{item.name}</h2></div>
                   <div className="quantity">
                     <button onClick={() => updateQuantity(item._id, -1)}>-</button>
                     <input type="text" value={item.quantity} readOnly />
                     <button onClick={() => updateQuantity(item._id, 1)}>+</button>
                   </div>
                   <div className="price">LKR {item.quantity * item.cost}</div>
-                  <button className="remove-btn" onClick={() => removeItem(item._id)}>
-                    Remove
-                  </button>
+                  <button className="remove-btn" onClick={() => removeItem(item._id)}>Remove</button>
                 </div>
               ))}
             </div>
@@ -127,24 +118,15 @@ function Cart() {
           <div className="cart-summary">
             <h2>Basket Summary</h2>
             <div className="summary-box">
-              <p>
-                Subtotal: <strong>LKR {subtotal}</strong>
-              </p>
-              <p>
-                Estimated delivery: <strong>LKR {delivery}</strong>
-              </p>
+              <p>Subtotal: <strong>LKR {subtotal}</strong></p>
+              <p>Estimated delivery: <strong>LKR {delivery}</strong></p>
               <hr />
-              <p className="summary-total">
-                Total: <strong>LKR {total}</strong>
-              </p>
+              <p className="summary-total">Total: <strong>LKR {total}</strong></p>
 
               <button
                 className="checkout-btn"
                 onClick={placeOrder}
-                disabled={
-                  loading ||
-                  (prescription ? prescription.items.length === 0 : cart.length === 0)
-                }
+                disabled={loading || (prescription ? prescription.items.length === 0 : cart.length === 0)}
               >
                 {loading
                   ? "Processing..."

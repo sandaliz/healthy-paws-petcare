@@ -9,6 +9,7 @@ import Updateproduct from "./Components/updateproducts/updateproduct";
 import Alerts from "./Components/notifications&alerts/alerts";
 import PrescriptionList from "./Components/prescription/PrescriptionList";
 import Insights from "./Components/insights/insights";
+import Home from "./Components/Home/home";
 
 // Layouts
 import InventoryLayout from "./layouts/InventoryLayout";
@@ -23,6 +24,7 @@ import PrescriptionForm from "./Components/prescription/prescriptionform";
 function App() {
   return (
     <Routes>
+      <Route path="/home" element={<Home />} />
       {/* ===== Inventory Layout Routes ===== */}
       <Route element={<InventoryLayout />}>
         <Route path="/" element={<Products />} />
