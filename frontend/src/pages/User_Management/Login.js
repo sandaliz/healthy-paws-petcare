@@ -10,9 +10,9 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline'; 
 
-import '../../styles/Login.css'; // Import CSS
+import '../../styles/Login.css'; 
 
-const BASE_URL = "http://localhost:5000"; // backend URL
+const BASE_URL = "http://localhost:5000"; 
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -31,13 +31,21 @@ const Login = () => {
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    setEmailError(value && !validateEmail(value) ? 'Please enter a valid email address' : '');
+    setEmailError(
+      value && !validateEmail(value) 
+        ? 'Please enter a valid email address' 
+        : ''
+    );
   };
 
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
-    setPasswordError(value && !validatePassword(value) ? 'Password must be at least 8 characters long' : '');
+    setPasswordError(
+      value && !validatePassword(value) 
+        ? 'Password must be at least 8 characters long' 
+        : ''
+    );
   };
 
   const handleLogin = async (e) => {
@@ -56,25 +64,48 @@ const Login = () => {
     setLoading(true);
 
     try {
+      // Step 1: Login
       const res = await axios.post(
         `${BASE_URL}/api/auth/login`,
         { email, password },
         { withCredentials: true }
       );
 
-      setLoading(false);
-
       if (res.data.success) {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        console.log("User stored:", res.data.user);
+        const token = res.data.token;
+        const user = res.data.user;
 
-        navigate(res.data.redirectUrl);
+        // Save token + user temporarily
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Step 2: Verify account active with /check-auth
+        try {
+          const authCheck = await axios.get(`${BASE_URL}/api/auth/check-auth`, {
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true,
+          });
+
+          if (authCheck.data.success && authCheck.data.user.isActive) {
+            // ✅ Active → allow login
+            navigate(res.data.redirectUrl);
+          } else {
+            // ❌ Inactive → block
+            setError("Your account has been deactivated. Please contact admin.");
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+          }
+        } catch {
+          setError("Your account has been deactivated. Please contact admin.");
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        }
       }
     } catch (err) {
-      setLoading(false);
       setError(err.response?.data?.message || 'Login failed');
     }
+
+    setLoading(false);
   };
 
   return (
@@ -90,7 +121,10 @@ const Login = () => {
           {/* Login card */}
           <div className="login-card">
             <h2 className="login-title">Login to Your Account</h2>
-             <p className="login-subtitle">Welcome back! Please enter your details to continue.</p>
+            <p className="login-subtitle">
+              Welcome back! Please enter your details to continue.
+            </p>
+
             {error && (
               <div className="error-box">
                 <ExclamationCircleIcon className="error-icon" />
@@ -99,17 +133,19 @@ const Login = () => {
             )}
 
             <form onSubmit={handleLogin} className="form">
-
+              
               {/* Email */}
               <div className="form-field">
-                <div className="input-wrapper">
-                  <EnvelopeIcon className="input-icon left-icon" />
+                <div className="input-wrapper login-input-wrapper">
+                  <EnvelopeIcon className="input-icon login-left-icon" />
                   <input
+                    id="email"
+                    name="email"
                     type="email"
                     value={email}
                     onChange={handleEmailChange}
                     placeholder="Email"
-                    className={`input ${emailError ? 'input-error' : ''}`}
+                    className={`input login-input ${emailError ? 'input-error' : ''}`}
                   />
                 </div>
                 {emailError && <p className="error-text">{emailError}</p>}
@@ -117,17 +153,19 @@ const Login = () => {
 
               {/* Password */}
               <div className="form-field">
-                <div className="input-wrapper">
-                  <LockClosedIcon className="input-icon left-icon" />
+                <div className="input-wrapper login-input-wrapper">
+                  <LockClosedIcon className="input-icon login-left-icon" />
                   <input
+                    id="password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={handlePasswordChange}
                     placeholder="Password"
-                    className={`input ${passwordError ? 'input-error' : ''}`}
+                    className={`input login-input ${passwordError ? 'input-error' : ''}`}
                   />
                   <span
-                    className="input-icon right-icon eye-toggle"
+                    className="input-icon login-right-icon login-eye-toggle"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
@@ -138,7 +176,9 @@ const Login = () => {
 
               {/* Forgot Password */}
               <div className="form-links">
-                <Link to="/reset-password" className="link">Forgot Password?</Link>
+                <Link to="/reset-password" className="link">
+                  Forgot Password?
+                </Link>
               </div>
 
               {/* Login Button */}
@@ -153,7 +193,10 @@ const Login = () => {
 
             {/* Signup */}
             <p className="signup-text">
-              Don’t have an account? <Link to="/signup" className="signup-link">Create Account</Link>
+              Don't have an account?{" "}
+              <Link to="/signup" className="signup-link">
+                Create Account
+              </Link>
             </p>
           </div>
         </div>

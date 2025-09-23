@@ -224,13 +224,21 @@ export const getProfile = async (req, res) => {
 // ---------- Check if user is authenticated ----------
 export const isAuthenticated = async (req, res) => {
   try {
-    if (req.user) {
-      return res.status(200).json({ success: true, user: req.user });
-    } else {
+    if (!req.user) {
       return res
         .status(401)
         .json({ success: false, message: "Not authenticated" });
     }
+
+    // ✅ Always fetch the latest user record for accurate active status
+    const dbUser = await User.findById(req.user.id).select("-password");
+    if (!dbUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    return res.status(200).json({ success: true, user: dbUser });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -239,7 +247,6 @@ export const isAuthenticated = async (req, res) => {
     });
   }
 };
-
 // ---------- Assign role (SUPER_ADMIN only) ----------
 export const assignRole = async (req, res) => {
   const { userId, role } = req.body;

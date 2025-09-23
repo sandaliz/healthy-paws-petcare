@@ -61,15 +61,26 @@ const RegisterPet = () => {
     // ✅ Get logged-in user from local storage
     const user = JSON.parse(localStorage.getItem("user"));
 
+    // ✅ Match schema field names exactly (PascalCase)
     const payload = {
-      ...ownerData,
-      ...petData,
-      PetAge: petData.PetAge ? Number(petData.PetAge) : undefined,
-      PetWeight: petData.PetWeight ? Number(petData.PetWeight) : undefined,
-      userId: user?._id, // ✅ IMPORTANT: attach foreign key
+      OwnerName: ownerData.OwnerName,
+      OwnerEmail: ownerData.OwnerEmail,
+      OwnerPhone: ownerData.OwnerPhone,
+      EmergencyContact: ownerData.EmergencyContact,
+      OwnerAddress: ownerData.OwnerAddress,
+      PetName: petData.PetName,
+      PetSpecies: petData.PetSpecies,
+      PetBreed: petData.PetBreed,
+      PetAge: petData.PetAge ? Number(petData.PetAge) : 0,
+      PetWeight: petData.PetWeight ? Number(petData.PetWeight) : 0,
+      BloodGroup: petData.BloodGroup,
+      PetGender: petData.PetGender,
+      SpecialNotes: petData.SpecialNotes || "",
+      userId: user?._id, // ✅ Required by schema
     };
 
     try {
+      console.log("Submitting payload:", payload);
       const res = await axios.post(`${API_BASE}/api/register`, payload);
       if (res.data.success) {
         toast.success("Pet registered successfully!");

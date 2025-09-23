@@ -49,39 +49,39 @@ const ResetPassword = () => {
 
   return (
     <div className="reset-password-page">
-      <div className="image-background-container" style={{ backgroundImage: `url(${assets.reset_bg_image})` }}>
-        <div className="overlay-content">
-          <div className="side-image-container">
-            <img src={assets.reset_side_image} alt="Illustration on side" />
+      <div className="reset-background-container">
+        <div className="reset-overlay-content">
+          <div className="reset-side-image-container">
+            <img src={assets.reset_side_image} alt="Password reset illustration" />
           </div>
-          <div className="form-container glassmorphic">
-            <h1 className="title">Reset Password</h1>
-            <p className="subtitle">
+          <div className="reset-form-container">
+            <h1 className="reset-title">Reset Password</h1>
+            <p className="reset-subtitle">
               Enter the email associated with your account and we'll send an email with instructions to reset your password.
             </p>
             <form onSubmit={handleSendOtp} className="reset-form">
-              <div className="input-group">
-                <EnvelopeIcon className="email-icon" />
+              <div className="reset-input-group">
+                <EnvelopeIcon className="reset-email-icon" />
                 <input
                   type="email"
                   placeholder="Email address"
                   value={email}
                   onChange={handleEmailChange}
-                  className={`email-input ${emailError ? 'input-error' : ''}`}
+                  className={`reset-email-input ${emailError ? 'reset-input-error' : ''}`}
                   required
                 />
               </div>
               {emailError && (
-                <p className="error-message">
-                  <ExclamationCircleIcon className="error-icon" />
+                <p className="reset-error-message">
+                  <ExclamationCircleIcon className="reset-error-icon" />
                   {emailError}
                 </p>
               )}
               <button type="submit" disabled={loading || emailError} className="reset-button">
                 {loading ? (
-                  <span className="loading-spinner">
+                  <span className="reset-loading-spinner">
                     <svg
-                      className="animate-spin spinner-icon"
+                      className="animate-spin reset-spinner-icon"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -100,7 +100,7 @@ const ResetPassword = () => {
                 )}
               </button>
             </form>
-            <a href="/login" className="remember-link">
+            <a href="/login" className="reset-remember-link">
               Wait, I remember my password
             </a>
           </div>

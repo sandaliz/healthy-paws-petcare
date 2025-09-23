@@ -117,7 +117,7 @@ const Register = () => {
   };
 
   return (
-    <div className="register-image-wrapper">
+    <div className="register-page">
       <img src={assets.register_bg} alt="Register Background" className="register-bg-image" />
       <div className="register-form-overlay">
         <h2 className="register-title">Create an Account</h2>
@@ -126,14 +126,14 @@ const Register = () => {
         </p>
         <form onSubmit={handleRegister} className="register-form">
           <div className="input-group">
-            <div className="input-wrapper">
-              <UserIcon className="input-icon" />
+            <div className="input-wrapper register-input-wrapper">
+              <UserIcon className="input-icon register-left-icon" />
               <input
                 type="text"
                 placeholder="Full Name"
                 value={name}
                 onChange={handleNameChange}
-                className={`input-field ${nameError ? 'input-error' : ''}`}
+                className={`input-field register-input ${nameError ? 'input-error' : ''}`}
                 required
               />
             </div>
@@ -146,14 +146,14 @@ const Register = () => {
           </div>
 
           <div className="input-group">
-            <div className="input-wrapper">
-              <EnvelopeIcon className="input-icon" />
+            <div className="input-wrapper register-input-wrapper">
+              <EnvelopeIcon className="input-icon register-left-icon" />
               <input
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={handleEmailChange}
-                className={`input-field ${emailError ? 'input-error' : ''}`}
+                className={`input-field register-input ${emailError ? 'input-error' : ''}`}
                 required
               />
             </div>
@@ -166,17 +166,17 @@ const Register = () => {
           </div>
 
           <div className="input-group">
-            <div className="input-wrapper">
-              <LockClosedIcon className="input-icon" />
+            <div className="input-wrapper register-input-wrapper">
+              <LockClosedIcon className="input-icon register-left-icon" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 value={password}
                 onChange={handlePasswordChange}
-                className={`input-field ${passwordError ? 'input-error' : ''}`}
+                className={`input-field register-input ${passwordError ? 'input-error' : ''}`}
                 required
               />
-              <div className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
+              <div className="register-password-toggle" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <EyeSlashIcon className="toggle-icon" /> : <EyeIcon className="toggle-icon" />}
               </div>
             </div>
@@ -190,17 +190,17 @@ const Register = () => {
           </div>
 
           <div className="input-group">
-            <div className="input-wrapper">
-              <LockClosedIcon className="input-icon" />
+            <div className="input-wrapper register-input-wrapper">
+              <LockClosedIcon className="input-icon register-left-icon" />
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
-                className={`input-field ${confirmPasswordError ? 'input-error' : ''}`}
+                className={`input-field register-input ${confirmPasswordError ? 'input-error' : ''}`}
                 required
               />
-              <div className="password-toggle" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+              <div className="register-password-toggle" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                 {showConfirmPassword ? <EyeSlashIcon className="toggle-icon" /> : <EyeIcon className="toggle-icon" />}
               </div>
             </div>
