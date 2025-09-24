@@ -4,7 +4,6 @@ import Loyalty from "../../Model/finance/loyaltyModel.js";
 
 export const getFinancialManagerDashboard = async (req, res) => {
   try {
-    // Revenue should reflect collected money only
     const payments = await Payment.find({ status: "Completed" })
       .populate("userID", "OwnerName OwnerEmail");
     const invoices = await Invoice.find()

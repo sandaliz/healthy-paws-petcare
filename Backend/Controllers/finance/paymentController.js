@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET);
 
-// ----- Helpers -----
 function computeDiscount(coupon, invoiceTotal) {
   if (!coupon) return 0;
   if (!coupon.canApply(invoiceTotal)) return 0;
@@ -433,13 +432,11 @@ export const confirmStripePayment = async (req, res) => {
       return res.json({ message: "Payment already confirmed", payment });
     }
 
-    // Mark completed and store charge id
     const latestCharge = pi.latest_charge || pi.charges?.data?.[0]?.id || null;
     payment.stripeChargeId = latestCharge || payment.stripeChargeId;
     payment.status = "Completed";
     await payment.save();
 
-    // Handle coupon usage (ISSUED vs GLOBAL)
     if (payment.couponId) {
       try {
         const applied = await Coupon.findById(payment.couponId);
@@ -463,11 +460,9 @@ export const confirmStripePayment = async (req, res) => {
       const chargeEmail = pi?.charges?.data?.[0]?.billing_details?.email || pi?.receipt_email || null;
       const typedEmail = (typeof typedEmailRaw === 'string' && typedEmailRaw.trim()) ? typedEmailRaw.trim() : null;
 
-      // resolve owner for display name
       const owner = await resolveOwnerDoc({ invoice, payment });
       const toEmail = typedEmail || chargeEmail || owner?.OwnerEmail || null;
 
-      // Send once
       if (!payment.receiptEmailSentAt && toEmail) {
         await sendPaymentEmail({
           to: toEmail,
@@ -496,7 +491,6 @@ export const getAllPayments = async (req, res) => {
     if (req.query.excludeFailed === "1") filter.status = { $ne: "Failed" };
     if (req.query.userId) filter.userID = req.query.userId;
 
-    // Use lean and fix missing userID from invoice.userID as a response-time fallback
     const payments = await Payment.find(filter)
       .populate("userID", "OwnerName OwnerEmail")
       .populate({

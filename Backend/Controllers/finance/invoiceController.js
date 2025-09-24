@@ -1,7 +1,5 @@
-// Controllers/finance/invoiceController.js
 import Invoice from "../../Model/finance/invoiceModel.js";
 
-// Helpers
 const generateInvoiceID = () => {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
   const random = Math.floor(100 + Math.random() * 900);
@@ -10,7 +8,6 @@ const generateInvoiceID = () => {
 
 const toMoney = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 
-// Create a new invoice
 export const createInvoice = async (req, res) => {
   try {
     const { userID, lineItems } = req.body;
@@ -74,7 +71,6 @@ export const getInvoiceList = async (req, res) => {
   }
 };
 
-// Get invoice by ID
 export const getInvoiceById = async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id).populate("userID", "OwnerName OwnerEmail");
@@ -86,7 +82,6 @@ export const getInvoiceById = async (req, res) => {
   }
 };
 
-// Get invoice by business invoice number
 export const getInvoiceByBusinessId = async (req, res) => {
   try {
     const invoice = await Invoice.findOne({ invoiceID: req.params.no }).populate("userID", "OwnerName OwnerEmail");
@@ -98,7 +93,6 @@ export const getInvoiceByBusinessId = async (req, res) => {
   }
 };
 
-// Update invoice
 export const updateInvoice = async (req, res) => {
   try {
     const { lineItems, status, dueDate } = req.body;
@@ -165,7 +159,6 @@ export const updateInvoice = async (req, res) => {
   }
 };
 
-// Delete invoice
 export const deleteInvoice = async (req, res) => {
   try {
     const invoice = await Invoice.findByIdAndDelete(req.params.id);
