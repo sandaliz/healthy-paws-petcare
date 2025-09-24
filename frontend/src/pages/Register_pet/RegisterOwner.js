@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../styles/theme.css";
 import "../../styles/validation.css";
+import "../../styles/theme.css";
 
 const RegisterOwner = ({ user }) => {
   const navigate = useNavigate();
@@ -19,7 +19,6 @@ const RegisterOwner = ({ user }) => {
 
   const [errors, setErrors] = useState({});
 
-  // ✅ pre-fill email if user is logged in
   useEffect(() => {
     if (user?.email) {
       setOwnerData((prev) => ({ ...prev, OwnerEmail: user.email }));
@@ -61,92 +60,88 @@ const RegisterOwner = ({ user }) => {
   };
 
   return (
-    <main className="owner-page">
-      <div className="owner-container">
-        <header className="owner-header">
+    <main className="ro-page">
+      <div className="ro-container">
+        <header className="ro-header">
           <h2>Owner Information</h2>
         </header>
 
-        <div className="glass-wrap">
-          <div className="glass-card">
-            <form onSubmit={handleNext} noValidate className="form-grid">
-              <div className="section-title">Contact Details</div>
+        <div className="ro-glass-wrap">
+          <form onSubmit={handleNext} noValidate className="ro-form-grid">
+            <div className="ro-section-title">Contact Details</div>
 
-              <div>
-                <label className="label" htmlFor="OwnerName">Owner Name</label>
-                <input
-                  id="OwnerName"
-                  className={`input ${errors.OwnerName ? "error" : ""}`}
-                  name="OwnerName"
-                  placeholder="Enter full name"
-                  value={ownerData.OwnerName}
-                  onChange={handleChange}
-                />
-                {errors.OwnerName && <p className="error-text">{errors.OwnerName}</p>}
-              </div>
+            <div>
+              <label className="ro-label" htmlFor="OwnerName">Owner Name</label>
+              <input
+                id="OwnerName"
+                className={`ro-input ${errors.OwnerName ? "error" : ""}`}
+                name="OwnerName"
+                placeholder="Enter full name"
+                value={ownerData.OwnerName}
+                onChange={handleChange}
+              />
+              {errors.OwnerName && <p className="ro-error-text">{errors.OwnerName}</p>}
+            </div>
 
-              <div>
-                <label className="label" htmlFor="OwnerEmail">Email</label>
-                <input
-                  id="OwnerEmail"
-                  className={`input ${errors.OwnerEmail ? "error" : ""}`}
-                  type="text"
-                  name="OwnerEmail"
-                  placeholder="name@example.com"
-                  value={ownerData.OwnerEmail}
-                  onChange={handleChange}
-                />
-                {errors.OwnerEmail && <p className="error-text">{errors.OwnerEmail}</p>}
-              </div>
+            <div>
+              <label className="ro-label" htmlFor="OwnerEmail">Email</label>
+              <input
+                id="OwnerEmail"
+                className={`ro-input ${errors.OwnerEmail ? "error" : ""}`}
+                type="text"
+                name="OwnerEmail"
+                placeholder="name@example.com"
+                value={ownerData.OwnerEmail}
+                onChange={handleChange}
+              />
+              {errors.OwnerEmail && <p className="ro-error-text">{errors.OwnerEmail}</p>}
+            </div>
 
-              <div>
-                <label className="label" htmlFor="OwnerPhone">Phone</label>
-                <input
-                  id="OwnerPhone"
-                  className={`input ${errors.OwnerPhone ? "error" : ""}`}
-                  name="OwnerPhone"
-                  placeholder="07XXXXXXXX"
-                  value={ownerData.OwnerPhone}
-                  onChange={handleChange}
-                />
-                {errors.OwnerPhone && <p className="error-text">{errors.OwnerPhone}</p>}
-              </div>
+            <div>
+              <label className="ro-label" htmlFor="OwnerPhone">Phone</label>
+              <input
+                id="OwnerPhone"
+                className={`ro-input ${errors.OwnerPhone ? "error" : ""}`}
+                name="OwnerPhone"
+                placeholder="07XXXXXXXX"
+                value={ownerData.OwnerPhone}
+                onChange={handleChange}
+              />
+              {errors.OwnerPhone && <p className="ro-error-text">{errors.OwnerPhone}</p>}
+            </div>
 
-              <div>
-                <label className="label" htmlFor="EmergencyContact">Emergency Contact</label>
-                <input
-                  id="EmergencyContact"
-                  className={`input ${errors.EmergencyContact ? "error" : ""}`}
-                  name="EmergencyContact"
-                  placeholder="Emergency contact number"
-                  value={ownerData.EmergencyContact}
-                  onChange={handleChange}
-                />
-                {errors.EmergencyContact && (
-                  <p className="error-text">{errors.EmergencyContact}</p>
-                )}
-              </div>
+            <div>
+              <label className="ro-label" htmlFor="EmergencyContact">Emergency Contact</label>
+              <input
+                id="EmergencyContact"
+                className={`ro-input ${errors.EmergencyContact ? "error" : ""}`}
+                name="EmergencyContact"
+                placeholder="Emergency contact number"
+                value={ownerData.EmergencyContact}
+                onChange={handleChange}
+              />
+              {errors.EmergencyContact && <p className="ro-error-text">{errors.EmergencyContact}</p>}
+            </div>
 
-              <div style={{ gridColumn: "1 / -1" }}>
-                <label className="label" htmlFor="OwnerAddress">Address</label>
-                <input
-                  id="OwnerAddress"
-                  className={`input ${errors.OwnerAddress ? "error" : ""}`}
-                  name="OwnerAddress"
-                  placeholder="Street, City"
-                  value={ownerData.OwnerAddress}
-                  onChange={handleChange}
-                />
-                {errors.OwnerAddress && <p className="error-text">{errors.OwnerAddress}</p>}
-              </div>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label className="ro-label" htmlFor="OwnerAddress">Address</label>
+              <input
+                id="OwnerAddress"
+                className={`ro-input ${errors.OwnerAddress ? "error" : ""}`}
+                name="OwnerAddress"
+                placeholder="Street, City"
+                value={ownerData.OwnerAddress}
+                onChange={handleChange}
+              />
+              {errors.OwnerAddress && <p className="ro-error-text">{errors.OwnerAddress}</p>}
+            </div>
 
-              <div className="actions">
-                <button type="submit" className="btn-primary">
-                  Next: Pet Info →
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="actions">
+              <button type="submit" className="ro-btn-primary">
+                Next: Pet Info →
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </main>

@@ -1,4 +1,3 @@
-// src/Components/AppointmentDetailsDC/AppointmentDetailsDC.js
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,11 +6,10 @@ import "./AppointmentDetailsDC.css";
 const URL = "http://localhost:5000/careCustomers";
 
 function AppointmentDetailsDC() {
-  const { id } = useParams(); // get appointment id from URL
+  const { id } = useParams();
   const [appointment, setAppointment] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Wrap fetch in useCallback so it can be added to useEffect deps
   const fetchAppointment = useCallback(async () => {
     try {
       const res = await axios.get(`${URL}/${id}`);
@@ -30,7 +28,7 @@ function AppointmentDetailsDC() {
   const approveHandler = async () => {
     try {
       await axios.put(`${URL}/${id}`, { status: "Approved" });
-      navigate("/pending-appointments"); // ✅ corrected route (matches your App.js)
+      navigate("/pending-appointments");
     } catch (err) {
       console.error("Error approving:", err);
     }
@@ -50,7 +48,7 @@ function AppointmentDetailsDC() {
   }
 
   return (
-    <div className="appointment-details-dc">
+    <div className="ad-dc-container">
       <h2>Appointment Details</h2>
 
       <p><strong>Owner:</strong> {appointment.ownerName}</p>
@@ -65,7 +63,6 @@ function AppointmentDetailsDC() {
       </p>
       <p><strong>Nights:</strong> {appointment.nightsStay}</p>
 
-      {/* ✅ Newly Added Fields */}
       <p><strong>Drop Off Time:</strong> {appointment.dropOffTime}</p>
       <p><strong>Pick Up Time:</strong> {appointment.pickUpTime}</p>
       <p><strong>Health Details:</strong> {appointment.healthDetails}</p>
@@ -76,9 +73,13 @@ function AppointmentDetailsDC() {
 
       <p><strong>Status:</strong> {appointment.status}</p>
 
-      <div className="action-btns">
-        <button className="btn-approve" onClick={approveHandler}>Approve</button>
-        <button className="btn-reject" onClick={rejectHandler}>Reject</button>
+      <div className="ad-dc-action-btns">
+        <button className="ad-dc-btn ad-dc-btn-approve" onClick={approveHandler}>
+          Approve
+        </button>
+        <button className="ad-dc-btn ad-dc-btn-reject" onClick={rejectHandler}>
+          Reject
+        </button>
       </div>
     </div>
   );

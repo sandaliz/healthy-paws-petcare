@@ -17,7 +17,6 @@ function PetStore() {
     axios
       .get(URL)
       .then((res) => {
-        // ✅ Fix: backend sends an array, NOT { products: [] }
         const activeProducts = (res.data || []).filter(
           (p) => p.productStatus?.toLowerCase() === "active"
         );
@@ -52,11 +51,11 @@ function PetStore() {
   );
 
   return (
-    <div className="petstore-container">
-      <div className="petstore-header">
+    <div className="ps-container">
+      <div className="ps-header">
         <h1>Healthy Paws Pet Store</h1>
         <button
-          className="go-to-cart"
+          className="ps-go-to-cart"
           onClick={() => navigate("/cart")}
           disabled={cart.length === 0}
         >
@@ -64,52 +63,52 @@ function PetStore() {
         </button>
       </div>
 
-      <div className="hero-banner">
+      <div className="ps-hero-banner">
         <img
           src="/images/hero-banner.jpg"
           alt="Happy pets with treats and toys"
-          className="hero-image"
+          className="ps-hero-image"
         />
-        <div className="hero-content">
+        <div className="ps-hero-content">
           <h2>Celebrate Pet-titude this September</h2>
           <p>From bedding to treats and toys, we've got all the must-haves.</p>
-          <button className="hero-cta">Shop now</button>
+          <button className="ps-hero-cta">Shop now</button>
         </div>
       </div>
 
-      <div className="promo-section">
-        <div className="promo-grid">
-          <div className="promo-card deals">
+      <div className="ps-promo-section">
+        <div className="ps-promo-grid">
+          <div className="ps-promo-card ps-deals">
             <h3>Super Deals</h3>
             <p>Limited time only!</p>
-            <button className="promo-cta">Shop now</button>
+            <button className="ps-promo-cta">Shop now</button>
           </div>
-          <div className="promo-card featured">
+          <div className="ps-promo-card ps-featured">
             <h3>Premium Quality</h3>
             <p>The finest ingredients for your beloved pets.</p>
-            <button className="promo-cta">Shop now</button>
+            <button className="ps-promo-cta">Shop now</button>
           </div>
         </div>
       </div>
 
-      <div className="search-container">
+      <div className="ps-search-container">
         <input
           type="text"
-          className="search-bar"
+          className="ps-search-bar"
           placeholder="🔎 Search for products (e.g. dog food, cat bed)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
-      <div className="product-cards">
+      <div className="ps-product-cards">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((p) => (
-            <div key={p._id} className="product-card">
-              <div className="product-image-wrapper">
+            <div key={p._id} className="ps-product-card">
+              <div className="ps-product-image-wrapper">
                 <img src={p.imageUrl} alt={p.name} />
                 {p.currantStock <= 0 && (
-                  <span className="out-of-stock-badge">Out of Stock</span>
+                  <span className="ps-out-of-stock-badge">Out of Stock</span>
                 )}
               </div>
               <h3>{p.name}</h3>
@@ -124,7 +123,7 @@ function PetStore() {
             </div>
           ))
         ) : (
-          <p className="no-results">❌ No products found!</p>
+          <p className="ps-no-results">❌ No products found!</p>
         )}
       </div>
     </div>

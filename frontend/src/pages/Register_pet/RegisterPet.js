@@ -1,12 +1,13 @@
-// src/pages/RegisterPet.js
+// src/pages/Register_pet/RegisterPet.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../styles/theme.css";
 import "../../styles/validation.css";
+import "../../styles/theme.css";
 
+// ✅ Background image (no longer unused!)
 const bgUrl =
   "https://images.unsplash.com/photo-1558944351-208ebd80c955?q=80&w=1600&auto=format&fit=crop";
 
@@ -58,10 +59,7 @@ const RegisterPet = () => {
     const ownerData = JSON.parse(sessionStorage.getItem("ownerData")) || {};
     if (!validate()) return;
 
-    // ✅ Get logged-in user from local storage
     const user = JSON.parse(localStorage.getItem("user"));
-
-    // ✅ Match schema field names exactly (PascalCase)
     const payload = {
       OwnerName: ownerData.OwnerName,
       OwnerEmail: ownerData.OwnerEmail,
@@ -76,11 +74,10 @@ const RegisterPet = () => {
       BloodGroup: petData.BloodGroup,
       PetGender: petData.PetGender,
       SpecialNotes: petData.SpecialNotes || "",
-      userId: user?._id, // ✅ Required by schema
+      userId: user?._id,
     };
 
     try {
-      console.log("Submitting payload:", payload);
       const res = await axios.post(`${API_BASE}/api/register`, payload);
       if (res.data.success) {
         toast.success("Pet registered successfully!");
@@ -98,148 +95,152 @@ const RegisterPet = () => {
   };
 
   return (
-    <main className="min-h-screen py-12 px-6 md:px-8">
+    <main className="rp-page">
       <ToastContainer />
-      <div className="max-w-3xl mx-auto">
-        <header className="mb-6 text-center">
-          <h2 style={{ fontFamily: "Poppins, sans-serif", color: "#2D2D2D" }}>
-            Pet Information
-          </h2>
+      <div className="rp-container">
+        <header className="rp-header">
+          <h2>Pet Information</h2>
         </header>
 
-        <div className="glass-wrap">
-          <img src={bgUrl} alt="" className="glass-bg" aria-hidden="true" />
-          <div className="glass-card">
-            <form onSubmit={handleSubmit} noValidate className="form-grid">
-              <div className="md:col-span-2 section-title">Pet Details</div>
+        {/* ✅ Glass-morphism card with background image applied */}
+        <div
+          className="rp-glass-wrap"
+          style={{
+            backgroundImage: `url(${bgUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundBlendMode: "overlay",
+          }}
+        >
+          <form onSubmit={handleSubmit} noValidate className="rp-form-grid">
+            <div className="rp-section-title">Pet Details</div>
 
-              <div>
-                <label className="label" htmlFor="PetName">Pet Name</label>
-                <input
-                  id="PetName"
-                  className="input"
-                  name="PetName"
-                  placeholder="Enter pet name"
-                  value={petData.PetName}
-                  onChange={handleChange}
-                />
-                {errors.PetName && <p className="error-text">{errors.PetName}</p>}
-              </div>
+            <div>
+              <label className="rp-label" htmlFor="PetName">Pet Name</label>
+              <input
+                id="PetName"
+                className="rp-input"
+                name="PetName"
+                placeholder="Enter pet name"
+                value={petData.PetName}
+                onChange={handleChange}
+              />
+              {errors.PetName && <p className="rp-error-text">{errors.PetName}</p>}
+            </div>
 
-              <div>
-                <label className="label" htmlFor="PetSpecies">Species</label>
-                <select
-                  id="PetSpecies"
-                  className="input"
-                  name="PetSpecies"
-                  value={petData.PetSpecies}
-                  onChange={handleChange}
-                >
-                  <option value="dog">Dog</option>
-                  <option value="cat">Cat</option>
-                </select>
-              </div>
+            <div>
+              <label className="rp-label" htmlFor="PetSpecies">Species</label>
+              <select
+                id="PetSpecies"
+                className="rp-select"
+                name="PetSpecies"
+                value={petData.PetSpecies}
+                onChange={handleChange}
+              >
+                <option value="dog">Dog</option>
+                <option value="cat">Cat</option>
+              </select>
+            </div>
 
-              <div>
-                <label className="label" htmlFor="PetBreed">Breed</label>
-                <input
-                  id="PetBreed"
-                  className="input"
-                  name="PetBreed"
-                  placeholder="Breed"
-                  value={petData.PetBreed}
-                  onChange={handleChange}
-                />
-                {errors.PetBreed && <p className="error-text">{errors.PetBreed}</p>}
-              </div>
+            <div>
+              <label className="rp-label" htmlFor="PetBreed">Breed</label>
+              <input
+                id="PetBreed"
+                className="rp-input"
+                name="PetBreed"
+                placeholder="Breed"
+                value={petData.PetBreed}
+                onChange={handleChange}
+              />
+              {errors.PetBreed && <p className="rp-error-text">{errors.PetBreed}</p>}
+            </div>
 
-              <div>
-                <label className="label" htmlFor="PetAge">Age (years)</label>
-                <input
-                  id="PetAge"
-                  className="input"
-                  type="number"
-                  min="0"
-                  name="PetAge"
-                  placeholder="0"
-                  value={petData.PetAge}
-                  onChange={handleChange}
-                />
-                {errors.PetAge && <p className="error-text">{errors.PetAge}</p>}
-              </div>
+            <div>
+              <label className="rp-label" htmlFor="PetAge">Age (years)</label>
+              <input
+                id="PetAge"
+                className="rp-input"
+                type="number"
+                min="0"
+                name="PetAge"
+                placeholder="0"
+                value={petData.PetAge}
+                onChange={handleChange}
+              />
+              {errors.PetAge && <p className="rp-error-text">{errors.PetAge}</p>}
+            </div>
 
-              <div>
-                <label className="label" htmlFor="PetWeight">Weight (kg)</label>
-                <input
-                  id="PetWeight"
-                  className="input"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  name="PetWeight"
-                  placeholder="0.0"
-                  value={petData.PetWeight}
-                  onChange={handleChange}
-                />
-                {errors.PetWeight && <p className="error-text">{errors.PetWeight}</p>}
-              </div>
+            <div>
+              <label className="rp-label" htmlFor="PetWeight">Weight (kg)</label>
+              <input
+                id="PetWeight"
+                className="rp-input"
+                type="number"
+                step="0.1"
+                min="0"
+                name="PetWeight"
+                placeholder="0.0"
+                value={petData.PetWeight}
+                onChange={handleChange}
+              />
+              {errors.PetWeight && <p className="rp-error-text">{errors.PetWeight}</p>}
+            </div>
 
-              <div>
-                <label className="label" htmlFor="BloodGroup">Blood Group</label>
-                <select
-                  id="BloodGroup"
-                  className="input"
-                  name="BloodGroup"
-                  value={petData.BloodGroup}
-                  onChange={handleChange}
-                >
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-                {errors.BloodGroup && <p className="error-text">{errors.BloodGroup}</p>}
-              </div>
+            <div>
+              <label className="rp-label" htmlFor="BloodGroup">Blood Group</label>
+              <select
+                id="BloodGroup"
+                className="rp-select"
+                name="BloodGroup"
+                value={petData.BloodGroup}
+                onChange={handleChange}
+              >
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+              {errors.BloodGroup && <p className="rp-error-text">{errors.BloodGroup}</p>}
+            </div>
 
-              <div>
-                <label className="label" htmlFor="PetGender">Gender</label>
-                <select
-                  id="PetGender"
-                  className="input"
-                  name="PetGender"
-                  value={petData.PetGender}
-                  onChange={handleChange}
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-                {errors.PetGender && <p className="error-text">{errors.PetGender}</p>}
-              </div>
+            <div>
+              <label className="rp-label" htmlFor="PetGender">Gender</label>
+              <select
+                id="PetGender"
+                className="rp-select"
+                name="PetGender"
+                value={petData.PetGender}
+                onChange={handleChange}
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              {errors.PetGender && <p className="rp-error-text">{errors.PetGender}</p>}
+            </div>
 
-              <div className="md:col-span-2">
-                <label className="label" htmlFor="SpecialNotes">Special Notes</label>
-                <textarea
-                  id="SpecialNotes"
-                  className="input"
-                  name="SpecialNotes"
-                  placeholder="Any medical conditions, allergies..."
-                  value={petData.SpecialNotes}
-                  onChange={handleChange}
-                  rows={4}
-                />
-              </div>
+            <div className="md:col-span-2">
+              <label className="rp-label" htmlFor="SpecialNotes">Special Notes</label>
+              <textarea
+                id="SpecialNotes"
+                className="rp-textarea"
+                name="SpecialNotes"
+                placeholder="Any medical conditions, allergies..."
+                value={petData.SpecialNotes}
+                onChange={handleChange}
+                rows={4}
+              />
+            </div>
 
-              <div className="md:col-span-2" style={{ marginTop: 8 }}>
-                <button type="submit" className="btn-primary">
-                  Submit Registration →
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="md:col-span-2" style={{ marginTop: 8 }}>
+              <button type="submit" className="rp-btn-primary">
+                Submit Registration →
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </main>

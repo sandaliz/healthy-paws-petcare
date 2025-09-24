@@ -29,10 +29,7 @@ const Chatbot = () => {
       const data = await res.json();
 
       setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          { text: data.reply, sender: "bot" },
-        ]);
+        setMessages((prev) => [...prev, { text: data.reply, sender: "bot" }]);
         setIsLoading(false);
       }, 900);
     } catch {
@@ -46,42 +43,37 @@ const Chatbot = () => {
 
   return (
     <div
-      className="chat-container"
-      style={{
-        backgroundImage: `url(${assets.pawbackground})`,
-      }}
+      className="cb-container"
+      style={{ backgroundImage: `url(${assets.pawbackground})` }}
     >
-      {/* Header with subtitle/description */}
-      <div className="chat-header">
-        PetCare <span className="highlight">Assistant</span> 🐾
-        <p className="chat-subtitle">
+      {/* Header */}
+      <div className="cb-header">
+        PetCare <span className="cb-highlight">Assistant</span> 🐾
+        <p className="cb-subtitle">
           Your friendly virtual vet – helping with health, timings, diet & more
         </p>
       </div>
 
       {/* Messages */}
-      <div className="chat-messages">
+      <div className="cb-messages">
         {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`message-row ${msg.sender}-row`}
-          >
+          <div key={idx} className={`cb-row ${msg.sender}`}>
             {msg.sender === "bot" && (
-              <img src={assets.botavatar} alt="bot" className="avatar" />
+              <img src={assets.botavatar} alt="bot" className="cb-avatar" />
             )}
 
-            <div className={`message ${msg.sender}-message`}>{msg.text}</div>
+            <div className={`cb-message ${msg.sender}`}>{msg.text}</div>
 
             {msg.sender === "user" && (
-              <img src={assets.useravatar} alt="user" className="avatar" />
+              <img src={assets.useravatar} alt="user" className="cb-avatar" />
             )}
           </div>
         ))}
 
         {isLoading && (
-          <div className="message-row bot-row">
-            <img src={assets.botavatar} alt="bot" className="avatar" />
-            <div className="message bot-message typing-indicator">
+          <div className="cb-row bot">
+            <img src={assets.botavatar} alt="bot" className="cb-avatar" />
+            <div className="cb-message bot cb-typing">
               <span>.</span><span>.</span><span>.</span>
             </div>
           </div>
@@ -89,7 +81,7 @@ const Chatbot = () => {
       </div>
 
       {/* Input */}
-      <div className="chat-input">
+      <div className="cb-input">
         <input
           type="text"
           value={input}

@@ -1,21 +1,14 @@
 /* AppointmentDisplayDC.css */
 
-/* General body */
-body {
+/* Container for appointment details */
+.ad-disp-container {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   line-height: 1.5;
   color: #333;
   background-color: #FFF;
-  margin: 0;
-  padding: 0;
-}
-
-/* Container for appointment details */
-.appointment-details-container {
   max-width: 800px;
   margin: 2rem auto;
-  background-color: #FFF;
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -23,7 +16,7 @@ body {
 }
 
 /* Heading */
-.appointment-details-container h2 {
+.ad-disp-container h2 {
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   color: #54413C; /* dark brown */
@@ -33,7 +26,7 @@ body {
 }
 
 /* Individual detail cards */
-.detail-card {
+.ad-disp-detail-card {
   display: flex;
   justify-content: space-between;
   padding: 0.8rem 1rem;
@@ -45,12 +38,12 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-.detail-card b {
+.ad-disp-detail-card b {
   font-weight: 600;
 }
 
 /* Buttons container */
-.appointment-buttons {
+.ad-disp-buttons {
   display: flex;
   justify-content: center;
   gap: 1rem;
@@ -59,7 +52,7 @@ body {
 }
 
 /* Buttons styling */
-.appointment-buttons button {
+.ad-disp-btn {
   background-color: #54413C; /* dark brown */
   color: #FFF; /* white text */
   border: none;
@@ -72,7 +65,7 @@ body {
   transition: all 0.3s ease;
 }
 
-.appointment-buttons button:hover {
+.ad-disp-btn:hover {
   background-color: #FFD58E;
   color: #54413C;
   transform: translateY(-2px);
@@ -81,15 +74,15 @@ body {
 
 /* Responsive */
 @media (max-width: 600px) {
-  .appointment-details-container {
+  .ad-disp-container {
     padding: 1rem;
   }
-  
-  .appointment-buttons {
+
+  .ad-disp-buttons {
     flex-direction: column;
   }
 
-  .appointment-buttons button {
+  .ad-disp-btn {
     width: 100%;
     margin-bottom: 0.5rem;
   }

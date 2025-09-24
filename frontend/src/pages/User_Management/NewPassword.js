@@ -5,7 +5,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import assets from '../../assets/assets';
-import '../../styles/NewPassword.css';
+import '../../styles/NewPassword.css';  // ✅ scoped version
 
 const NewPassword = () => {
   const location = useLocation();
@@ -68,42 +68,42 @@ const NewPassword = () => {
   };
 
   return (
-    <div className="new-password-page">
-      <div className="new-password-container">
+    <div className="np-page">
+      <div className="np-container">
         
         {/* Left side image */}
-        <div className="password-image-container">
+        <div className="np-img-box">
           <img
             src={assets.reset_password_illustration}
             alt="Reset Password Illustration"
-            className="password-illustration"
+            className="np-illustration"
           />
         </div>
 
-        {/* Right side form */}
-        <div className="new-password-card">
-          <h1 className="new-password-title">Set New Password</h1>
-          <form onSubmit={handleResetPassword} className="new-password-form">
+        {/* Right side form card */}
+        <div className="np-card">
+          <h1 className="np-title">Set New Password</h1>
+          <form onSubmit={handleResetPassword} className="np-form">
             
-            {/* New Password */}
-            <div className="input-group">
+            {/* New Password Input */}
+            <div className="np-input-group">
               <input
                 type={showNewPassword ? 'text' : 'password'}
                 placeholder="Enter new password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="input-field"
+                className="np-input"
                 required
               />
-              <div className="toggle-visibility"
+              <div className="np-toggle"
                 onClick={() => setShowNewPassword(!showNewPassword)}
               >
                 {showNewPassword ? <AiOutlineEyeInvisible size={22} /> : <AiOutlineEye size={22} />}
               </div>
             </div>
 
-            {/* ✅ Password Requirements Live Update */}
-            <ul className="password-requirements">
+            {/* Password Requirements Live */}
+            <ul className="np-requirements">
               {validRequirements.map((req, index) => (
                 <li key={index} className={req.valid ? "valid" : "invalid"}>
                   <input type="checkbox" checked={req.valid} readOnly />
@@ -112,24 +112,24 @@ const NewPassword = () => {
               ))}
             </ul>
 
-            {/* Confirm Password */}
-            <div className="input-group">
+            {/* Confirm Password Input */}
+            <div className="np-input-group">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="input-field"
+                className="np-input"
                 required
               />
-              <div className="toggle-visibility"
+              <div className="np-toggle"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? <AiOutlineEyeInvisible size={22} /> : <AiOutlineEye size={22} />}
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="submit-button">
+            <button type="submit" disabled={loading} className="np-submit">
               {loading ? 'Resetting...' : 'Reset Password'}
             </button>
           </form>

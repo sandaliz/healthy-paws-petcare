@@ -1,105 +1,97 @@
-/* daycare.css */
-
-/* Global Styles */
-body {
+/* Daycare specific container */
+.dc-container {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   line-height: 1.5;
   color: #333;
-  background-color: #FFFFFF; /* primary */
-  margin: 0;
-  padding: 0;
+  background-color: #FFFFFF;
 }
 
-h1, h2, h3 {
+/* Headings scoped */
+.dc-container h1,
+.dc-container h2,
+.dc-container h3 {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   color: #2D2D2D;
 }
 
-button, .cta {
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-}
-
 /* Hero Section */
-.daycare-hero {
-  background: linear-gradient(135deg, #FFD58E, #FFF5E1); /* highlight gradient */
+.dc-hero {
+  background: linear-gradient(135deg, #FFD58E, #FFF5E1);
   text-align: center;
   padding: 60px 20px;
   border-radius: 12px;
 }
 
-.daycare-hero h1 {
+.dc-hero h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
-  color: #54413C; /* dark brown */
+  color: #54413C;
 }
 
-.daycare-hero p {
+.dc-hero p {
   font-size: 1.2rem;
   margin-bottom: 20px;
   color: #333;
 }
 
 /* Buttons */
-.btn-appointment, .btn-secondary, .btn-review, .btn-small {
+.dc-btn {
   display: inline-block;
   padding: 10px 20px;
   margin: 8px;
   border-radius: 8px;
-  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
   text-decoration: none;
-  transition: 0.3s ease-in-out;
-}
-
-.btn-appointment {
-  background: #FFD58E; /* highlight */
-  color: #54413C;
-}
-
-.btn-appointment:hover {
-  background: #E6B96F;
-}
-
-.btn-secondary {
-  background: #54413C; /* dark brown */
-  color: #FFFFFF;
+  cursor: pointer;
+  transition: .3s ease-in-out;
   border: none;
 }
 
-.btn-secondary:hover {
-  background: #3d302c;
+.dc-btn-appointment {
+  background: #FFD58E;
+  color: #54413C;
+}
+.dc-btn-appointment:hover {
+  background: #E6B96F;
 }
 
-.btn-review {
+.dc-btn-secondary {
   background: #54413C;
-  color: #FFFFFF;
+  color: #FFF;
 }
-
-.btn-review:hover {
+.dc-btn-secondary:hover {
   background: #3d302c;
 }
 
-.btn-small {
+.dc-btn-review {
+  background: #54413C;
+  color: #FFF;
+}
+.dc-btn-review:hover {
+  background: #3d302c;
+}
+
+.dc-btn-small {
   background: #FFD58E;
   color: #54413C;
   padding: 6px 14px;
   font-size: 0.9rem;
 }
-
-.btn-small:hover {
+.dc-btn-small:hover {
   background: #E6B96F;
 }
 
 /* Why Choose Us */
-.why-choose {
+.dc-why {
   padding: 50px 20px;
   text-align: center;
 }
 
-.why-list {
+.dc-why-list {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -107,7 +99,7 @@ button, .cta {
   margin-top: 20px;
 }
 
-.why-item {
+.dc-why-item {
   background: #FFF8F0;
   border: 1px solid #FFD58E;
   border-radius: 10px;
@@ -117,49 +109,46 @@ button, .cta {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Services Section */
-.services {
+/* Services */
+.dc-services {
   padding: 50px 20px;
-  background: #FFFFFF;
+  background: #FFF;
   text-align: center;
 }
 
-.service-cards {
+.dc-service-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
   gap: 20px;
   margin-top: 20px;
 }
 
-.service-card {
-  background: #ffffff;
+.dc-service-card {
+  background: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
+  transition: transform .2s;
 }
-
-.service-card:hover {
+.dc-service-card:hover {
   transform: translateY(-5px);
 }
-
-.service-card.no-booking {
+.dc-service-card.dc-no-booking {
   opacity: 0.8;
   background: #fafafa;
 }
-
-.service-card h3 {
+.dc-service-card h3 {
   margin-bottom: 10px;
   color: #54413C;
 }
 
-.note {
+.dc-note {
   font-size: 0.85rem;
   color: #888;
 }
 
 /* Booking CTA */
-.booking-cta {
+.dc-booking-cta {
   padding: 60px 20px;
   background: #FFD58E;
   text-align: center;
@@ -168,17 +157,17 @@ button, .cta {
 }
 
 /* Testimonials */
-.testimonials {
+.dc-testimonials {
   padding: 50px 20px;
   background: #f9f9f9;
   text-align: center;
 }
 
-.testimonial-list {
+.dc-testimonial-list {
   margin-top: 20px;
 }
 
-.testimonial {
+.dc-testimonial {
   background: #fff;
   border-left: 4px solid #54413C;
   padding: 15px 20px;
@@ -189,12 +178,12 @@ button, .cta {
   color: #333;
 }
 
-/* Rules Section */
-.rules {
+/* Rules */
+.dc-rules {
   padding: 50px 20px;
 }
 
-.rules ul {
+.dc-rules ul {
   list-style: disc;
   margin: 20px auto;
   max-width: 600px;
@@ -202,15 +191,15 @@ button, .cta {
   color: #54413C;
 }
 
-/* Contact Section */
-.contact {
+/* Contact */
+.dc-contact {
   padding: 50px 20px;
   background: #f1f1f1;
   text-align: center;
   border-radius: 12px;
 }
 
-.contact p {
+.dc-contact p {
   margin: 5px 0;
   color: #333;
 }

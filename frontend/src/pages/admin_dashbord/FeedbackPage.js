@@ -1,14 +1,14 @@
 // src/pages/admin_dashbord/FeedbackPage.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { NavLink, useNavigate } from "react-router-dom"; // ✅ useNavigate
+import { NavLink, useNavigate } from "react-router-dom";
 
-// Charting
+// Chart.js
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-// ✅ PDF export
+// PDF Export
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
@@ -16,9 +16,10 @@ import autoTable from "jspdf-autotable";
 import "../../styles/admindashbord.css";
 import "../../styles/feedback.css";
 
-// ✅ Import logo
+// Assets
 import logo from "../../assets/logo.png";
 
+// Register Chart plugins
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const FeedbackPage = () => {
@@ -29,34 +30,37 @@ const FeedbackPage = () => {
   const [readFeedbacks, setReadFeedbacks] = useState({});
   const navigate = useNavigate();
 
+  /* ================================
+     AUTH HANDLER
+  ================================= */
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/login");
   };
 
-  // Fetch feedbacks
+  /* ================================
+     FETCHING DATA
+  ================================= */
   const fetchFeedbacks = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/feedback");
       if (res.data.success) setFeedbacks(res.data.data);
-    } catch (error) {
-      console.error("Error fetching feedbacks:", error);
+    } catch (err) {
+      console.error("Error fetching feedbacks:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch stats
   const fetchStats = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/feedback/stats/average-rating");
       if (res.data.success) setStats(res.data.data);
-    } catch (error) {
-      console.error("Error fetching stats:", error);
+    } catch (err) {
+      console.error("Error fetching stats:", err);
     }
   };
 
-  // Fetch report
   const fetchReport = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/feedback/report");
@@ -72,6 +76,9 @@ const FeedbackPage = () => {
     fetchReport();
   }, []);
 
+  /* ================================
+     ACTION HANDLERS
+  ================================= */
   const deleteFeedback = async (id) => {
     if (!window.confirm("Delete this feedback?")) return;
     try {
@@ -79,8 +86,8 @@ const FeedbackPage = () => {
       setFeedbacks(feedbacks.filter((f) => f._id !== id));
       fetchStats();
       fetchReport();
-    } catch (error) {
-      console.error("Delete error:", error);
+    } catch (err) {
+      console.error("Delete error:", err);
     }
   };
 
@@ -88,7 +95,9 @@ const FeedbackPage = () => {
     setReadFeedbacks((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Pie chart data
+  /* ================================
+     CHART CONFIG
+  ================================= */
   const pieData = stats
     ? {
         labels: ["Positive", "Negative"],
@@ -115,10 +124,12 @@ const FeedbackPage = () => {
         font: { weight: "bold", size: 12 },
       },
     },
-    maintainAspectRatio: false, // ✅ keep size bound to container
+    maintainAspectRatio: false,
   };
 
-  // PDF Builder
+  /* ================================
+     PDF BUILDER
+  ================================= */
   const buildPDF = () => {
     const doc = new jsPDF("p", "mm", "a4");
 
@@ -155,7 +166,7 @@ const FeedbackPage = () => {
       y += 110;
     }
 
-    // Good Feedbacks table
+    // Good Feedbacks Table
     doc.setTextColor(0, 100, 0);
     doc.text("Good Feedbacks", 15, y);
     const goodRows = report.feedbacks.good.map(fb => [
@@ -170,7 +181,7 @@ const FeedbackPage = () => {
       headStyles: { fillColor: [84, 65, 60], textColor: 255 },
     });
 
-    // Bad Feedbacks table
+    // Bad Feedbacks Table
     y = doc.lastAutoTable.finalY + 10;
     doc.setTextColor(150, 0, 0);
     doc.text("Bad Feedbacks", 15, y);
@@ -200,6 +211,9 @@ const FeedbackPage = () => {
     doc.save("Feedback_Report.pdf");
   };
 
+  /* ================================
+     RENDER
+  ================================= */
   return (
     <div className="dashboard-container">
       {/* Sidebar */}
@@ -218,7 +232,9 @@ const FeedbackPage = () => {
       <main className="dashboard-content">
         <div className="section-header">
           <h2>📝 Customer Feedback</h2>
-          <p className="subtitle">Insights into customer experience, satisfaction trends, and service quality</p>
+          <p className="subtitle">
+            Insights into customer experience, satisfaction trends, and service quality
+          </p>
         </div>
 
         {loading ? (
@@ -289,7 +305,7 @@ const FeedbackPage = () => {
         )}
 
         {report && (
-          <div style={{ marginTop: "20px", display: "flex", gap: "15px", justifyContent: "center" }}>
+          <div className="report-buttons">
             <button className="btn-preview" onClick={previewPDF}>👀 Preview Report</button>
             <button className="btn-download" onClick={downloadPDF}>📥 Download Report</button>
           </div>

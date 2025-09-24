@@ -1,4 +1,3 @@
-// src/Components/DashboardDC/TodaysPets/TodaysPets.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -26,21 +25,15 @@ function TodaysPets() {
     }
   };
 
-  // Handle checkout and remove pet from today's list
   const handleCheckOut = async (checkInOutId) => {
     try {
       const res = await axios.put(`${CHECKOUT_URL}/${checkInOutId}`, {
-        checkOutTime: new Date() // only sending checkout time
-        
+        checkOutTime: new Date()
       });
 
       if (res.status === 200) {
         alert("Pet checked out successfully!");
-
-        // Remove pet from the current checked-in list
-        setCheckedInPets(prev =>
-          prev.filter(pet => pet._id !== checkInOutId)
-        );
+        setCheckedInPets(prev => prev.filter(pet => pet._id !== checkInOutId));
       }
     } catch (err) {
       console.error("Error during check-out:", err);
@@ -61,22 +54,22 @@ function TodaysPets() {
   };
 
   // Format date as DD/MM/YYYY HH:mm
-function formatDateTime(dateTimeStr) {
-  if (!dateTimeStr) return "-";
-  const dt = new Date(dateTimeStr);
-  const day = String(dt.getDate()).padStart(2, "0");
-  const month = String(dt.getMonth() + 1).padStart(2, "0");
-  const year = dt.getFullYear();
-  const hours = String(dt.getHours()).padStart(2, "0");
-  const minutes = String(dt.getMinutes()).padStart(2, "0");
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
-}
+  function formatDateTime(dateTimeStr) {
+    if (!dateTimeStr) return "-";
+    const dt = new Date(dateTimeStr);
+    const day = String(dt.getDate()).padStart(2, "0");
+    const month = String(dt.getMonth() + 1).padStart(2, "0");
+    const year = dt.getFullYear();
+    const hours = String(dt.getHours()).padStart(2, "0");
+    const minutes = String(dt.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  }
 
   return (
-    <div className="todays-pets-container">
+    <div className="tp-container">
       <h2>Today's Checked-In Pets</h2>
       {checkedInPets.length > 0 ? (
-        <table className="pets-table">
+        <table className="tp-table">
           <thead>
             <tr>
               <th>Owner</th>
@@ -95,7 +88,7 @@ function formatDateTime(dateTimeStr) {
                 <td>{formatDateTime(pet.checkInTime)}</td>
                 <td>
                   <button
-                    className="btn-view"
+                    className="tp-btn tp-btn-view"
                     onClick={() => viewDetails(pet.appointment._id)}
                   >
                     View
@@ -103,7 +96,7 @@ function formatDateTime(dateTimeStr) {
                 </td>
                 <td>
                   <button
-                    className="btn-logs"
+                    className="tp-btn tp-btn-logs"
                     onClick={() => addDailyLog(pet.appointment._id)}
                   >
                     Add Log
@@ -111,7 +104,7 @@ function formatDateTime(dateTimeStr) {
                 </td>
                 <td>
                   <button
-                    className="btn-checkout"
+                    className="tp-btn tp-btn-checkout"
                     onClick={() => handleCheckOut(pet._id)}
                   >
                     Check-Out

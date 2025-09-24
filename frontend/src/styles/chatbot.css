@@ -1,19 +1,7 @@
-/* === Global Fonts & Colours === */
-body {
-  font-family: "Roboto", sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #333;
-}
+/* === CHATBOT STYLES (cb-) === */
 
-h1, h2, h3, .chat-header, button {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  color: #2D2D2D;
-}
-
-/* === Full-page container === */
-.chat-container {
+/* Full-page container */
+.cb-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -25,26 +13,28 @@ h1, h2, h3, .chat-header, button {
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
+
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
 }
 
 /* === Header === */
-.chat-header {
-  background: #54413C; /* Dark Brown */
+.cb-header {
+  background: #54413C;
   padding: 16px;
   color: #FFFFFF;
   font-size: 22px;
   font-weight: 700;
   text-align: center;
   font-family: "Poppins", sans-serif;
-  border-bottom: 2px solid #FFD58E; /* Peach underline accent */
+  border-bottom: 2px solid #FFD58E;
 }
-
-.chat-header .highlight {
-  color: #FFD58E; /* highlight "Assistant" */
+.cb-header .cb-highlight {
+  color: #FFD58E;
 }
-
-/* Sub-description line */
-.chat-subtitle {
+.cb-subtitle {
   font-size: 14px;
   font-weight: 400;
   margin-top: 4px;
@@ -53,7 +43,7 @@ h1, h2, h3, .chat-header, button {
 }
 
 /* === Messages Area === */
-.chat-messages {
+.cb-messages {
   flex: 1;
   padding: 16px;
   overflow-y: auto;
@@ -70,16 +60,16 @@ h1, h2, h3, .chat-header, button {
 }
 
 /* === Message Rows === */
-.message-row {
+.cb-row {
   display: flex;
   align-items: flex-end;
   gap: 8px;
 }
-.bot-row { justify-content: flex-start; }
-.user-row { justify-content: flex-end; }
+.cb-row.bot { justify-content: flex-start; }
+.cb-row.user { justify-content: flex-end; }
 
 /* Avatars */
-.avatar {
+.cb-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -88,7 +78,7 @@ h1, h2, h3, .chat-header, button {
 }
 
 /* === Message Bubbles === */
-.message {
+.cb-message {
   padding: 12px 16px;
   border-radius: 16px;
   max-width: 70%;
@@ -96,28 +86,25 @@ h1, h2, h3, .chat-header, button {
   line-height: 1.3;
   box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
-
-.bot-message {
-  background: #FFFFFF;
+.cb-message.bot {
+  background: #fff;
   border: 1px solid #ddd;
   color: #333;
 }
-
-.user-message {
+.cb-message.user {
   background: #FFD58E;
   color: #54413C;
   font-weight: 500;
 }
 
-/* === Input Bar (more visible) === */
-.chat-input {
+/* === Input Bar === */
+.cb-input {
   display: flex;
   border-top: 2px solid #FFD58E;
   background: #FFFFFF;
   box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
 }
-
-.chat-input input {
+.cb-input input {
   flex: 1;
   padding: 16px;
   font-size: 15px;
@@ -126,15 +113,13 @@ h1, h2, h3, .chat-header, button {
   outline: none;
   background: rgba(255,255,255,0.9);
 }
-
-.chat-input input::placeholder {
+.cb-input input::placeholder {
   color: #888;
   font-style: italic;
 }
-
-.chat-input button {
+.cb-input button {
   background: #54413C;
-  color: #FFFFFF;
+  color: #fff;
   font-size: 15px;
   border: none;
   padding: 16px 22px;
@@ -144,24 +129,23 @@ h1, h2, h3, .chat-header, button {
   transition: 0.3s;
   border-left: 2px solid #FFD58E;
 }
-
-.chat-input button:hover {
+.cb-input button:hover {
   background: #FFD58E;
   color: #54413C;
 }
 
 /* === Typing Dots Animation === */
-.typing-indicator span {
+.cb-typing span {
   display: inline-block;
-  animation: blink 1.4s infinite both;
+  animation: cb-blink 1.4s infinite both;
   font-size: 20px;
   margin-right: 2px;
   color: #54413C;
 }
-.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+.cb-typing span:nth-child(2) { animation-delay: 0.2s; }
+.cb-typing span:nth-child(3) { animation-delay: 0.4s; }
 
-@keyframes blink {
+@keyframes cb-blink {
   0%   { opacity: 0.2; }
   20%  { opacity: 1; }
   100% { opacity: 0.2; }

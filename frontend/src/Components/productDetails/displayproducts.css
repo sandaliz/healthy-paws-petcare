@@ -1,10 +1,10 @@
 /* Table wrapper */
-.product-table-wrapper {
+.dp-product-table-wrapper {
   margin-top: 20px;
   overflow-x: auto;
 }
 
-.product-table {
+.dp-product-table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
@@ -14,12 +14,12 @@
 }
 
 /* Table Header */
-.product-table thead {
+.dp-product-table thead {
   background-color: #54413C;
   color: #FFFFFF;
 }
 
-.product-table th {
+.dp-product-table th {
   text-align: left;
   padding: 12px;
   font-family: 'Poppins', sans-serif;
@@ -27,7 +27,7 @@
 }
 
 /* Table Cells */
-.product-table td {
+.dp-product-table td {
   padding: 12px;
   border-bottom: 1px solid #eee;
   font-size: 14px;
@@ -35,33 +35,33 @@
 }
 
 /* Hover effect */
-.product-table tr:hover {
+.dp-product-table tr:hover {
   background-color: #FFF8F1;
 }
 
 /* Status Badges */
-.status-badge {
+.dp-status-badge {
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
 }
-.status-active {
+.dp-status-active {
   background-color: #DCFCE7;
   color: #166534;
 }
-.status-inactive {
+.dp-status-inactive {
   background-color: #FEE2E2;
   color: #991B1B;
 }
 
 /* Action buttons */
-.action-buttons {
+.dp-action-buttons {
   display: flex;
   gap: 6px;
 }
 
-.action-buttons button {
+.dp-action-buttons button {
   padding: 6px 12px;
   border: none;
   border-radius: 6px;
@@ -73,21 +73,21 @@
 }
 
 /* Update button */
-.btn-update {
+.dp-btn-update {
   background-color: #54413C;
   color: #fff;
 }
-.btn-update:hover {
+.dp-btn-update:hover {
   background-color: #FFD58E;
   color: #54413C;
 }
 
 /* Delete button */
-.btn-delete {
+.dp-btn-delete {
   background-color: #FFD58E;
   color: #54413C;
 }
-.btn-delete:hover {
+.dp-btn-delete:hover {
   background-color: #54413C;
   color: #fff;
 }

@@ -39,19 +39,19 @@ function DisplayProducts({ product }) {
       <td>{minimumThreshold}</td>
       <td>{category}</td>
       <td>
-        <span className={`status-badge ${productStatus?.toLowerCase() === 'active' ? 'status-active' : 'status-inactive'}`}>
+        <span className={`dp-status-badge ${productStatus?.toLowerCase() === 'active' ? 'dp-status-active' : 'dp-status-inactive'}`}>
           {productStatus}
         </span>
       </td>
       <td>
-        <div className="action-buttons">
+        <div className="dp-action-buttons">
           <button
-            className="btn-update"
+            className="dp-btn-update"
             onClick={() => navigate(`/updateproduct/${_id}`)}
           >
             Edit
           </button>
-          <button className="btn-delete" onClick={handleDelete}>
+          <button className="dp-btn-delete" onClick={handleDelete}>
             Delete
           </button>
         </div>

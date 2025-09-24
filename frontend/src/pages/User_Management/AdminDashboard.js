@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom"; // ✅ added useNavigate
+import { NavLink, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "../../styles/admindashbord.css";
 import "react-calendar/dist/Calendar.css";
@@ -7,12 +7,11 @@ import heroImage from "../../assets/welcome_image.png";
 
 const AdminDashboard = () => {
   const [date, setDate] = useState(new Date());
-  const navigate = useNavigate(); // ✅ hook for navigation
+  const navigate = useNavigate();
 
-  // ✅ Define Logout function
   const handleLogout = () => {
-    localStorage.removeItem("user"); // clear auth/session
-    navigate("/login"); // redirect back to login
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   const events = [
@@ -30,78 +29,61 @@ const AdminDashboard = () => {
   ]);
 
   const toggleTask = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+    setTasks(tasks.map((t) => t.id === id ? { ...t, completed: !t.completed } : t));
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="ad-container">
       {/* Sidebar */}
-      <aside className="sidebar">
-        <h2 className="logo">🐾 Admin</h2>
+      <aside className="ad-sidebar">
+        <h2 className="ad-logo">🐾 Admin</h2>
         <ul>
           <li><NavLink to="/admin-dashboard">📊 Dashboard</NavLink></li>
           <li><NavLink to="/admin-dashboard/feedbacks">📝 Feedback</NavLink></li>
           <li><NavLink to="/admin-dashboard/petRegister">🐕 Pet Registration</NavLink></li>
           <li><NavLink to="/admin-dashboard/users">🔐 Users</NavLink></li>
         </ul>
-        {/* ✅ Logout Button now works */}
-        <button className="logout-btn" onClick={handleLogout}>🚪 Logout</button>
+        <button className="ad-logout-btn" onClick={handleLogout}>🚪 Logout</button>
       </aside>
 
       {/* Main Content */}
-      <main className="dashboard-content">
-        {/* Full Hero Image Banner */}
-        <section
-          className="hero-banner"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        >
-          <div className="hero-overlay">
+      <main className="ad-main">
+        <section className="ad-hero-banner" style={{ backgroundImage: `url(${heroImage})` }}>
+          <div className="ad-hero-overlay">
             <h1>Welcome Back, Admin 👋</h1>
             <p>Here’s an overview of today’s schedule and activities</p>
           </div>
         </section>
 
-        {/* Calendar + Timeline */}
-        <div className="top-section">
-          <section className="calendar-card">
+        <div className="ad-top-section">
+          <section className="ad-calendar-card">
             <h2>📅 Calendar</h2>
             <Calendar onChange={setDate} value={date} />
-            <p className="selected-date">
-              Selected: <b>{date.toDateString()}</b>
-            </p>
+            <p className="ad-selected-date">Selected: <b>{date.toDateString()}</b></p>
           </section>
 
-          <section className="timeline-card">
+          <section className="ad-timeline-card">
             <h2>🕒 Today's Timeline</h2>
-            <ul className="timeline">
+            <ul className="ad-timeline">
               {events.map((event) => (
                 <li key={event.id}>
-                  <span className={`dot ${event.color}`}></span>
-                  <div className="timeline-info">
-                    <p className="timeline-title">{event.title}</p>
-                    <p className="timeline-time">{event.time}</p>
+                  <span className={`ad-dot ${event.color}`}></span>
+                  <div className="ad-timeline-info">
+                    <p className="ad-timeline-title">{event.title}</p>
+                    <p className="ad-timeline-time">{event.time}</p>
                   </div>
-                  {event.tag && <span className="tag">{event.tag}</span>}
+                  {event.tag && <span className="ad-tag">{event.tag}</span>}
                 </li>
               ))}
             </ul>
           </section>
         </div>
 
-        {/* Task Section */}
-        <section className="task-section">
+        <section className="ad-task-section">
           <h2>Today's Tasks</h2>
-          <ul className="task-list">
+          <ul className="ad-task-list">
             {tasks.map((task) => (
-              <li
-                key={task.id}
-                className={task.completed ? "completed" : ""}
-                onClick={() => toggleTask(task.id)}
-              >
+              <li key={task.id} className={task.completed ? "completed" : ""} onClick={() => toggleTask(task.id)}>
                 {task.completed ? "✔ " : "⬜ "} {task.text}
               </li>
             ))}
