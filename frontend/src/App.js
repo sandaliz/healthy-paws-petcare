@@ -18,7 +18,7 @@ import FeedbackList from './pages/Feed_Backs/FeedbackList';
 
 // ---------------- Dashboards ----------------
 import SuperAdminDashboard from './pages/User_Management/SuperAdminDashboard';
-import AdminDashboard from './pages/User_Management/AdminDashboard';
+import AdminDashboard from './pages/admin_dashbord/AdminDashboard';
 import UserDashboard from './pages/User_Management/UserDashboard';
 import FinanceManagerDashboard from './pages/User_Management/FinanceManagerDashbord';
 import InventoryManagerDashboard from './pages/User_Management/InventoryManagerDashboard';

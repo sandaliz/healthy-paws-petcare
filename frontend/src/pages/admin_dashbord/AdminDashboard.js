@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "../../styles/admindashbord.css";
 import "react-calendar/dist/Calendar.css";
 import heroImage from "../../assets/welcome_image.png"; 
+import AdminSidebar from "./AdminSidebar"; // ✅ new import
 
 const AdminDashboard = () => {
   const [date, setDate] = useState(new Date());
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
 
   const events = [
     { id: 1, title: "All Hands Meeting", time: "10:00 AM", color: "red" },
@@ -29,28 +23,21 @@ const AdminDashboard = () => {
   ]);
 
   const toggleTask = (id) => {
-    setTasks(tasks.map((t) => t.id === id ? { ...t, completed: !t.completed } : t));
+    setTasks(tasks.map((t) => 
+      t.id === id ? { ...t, completed: !t.completed } : t
+    ));
   };
 
   return (
     <div className="ad-container">
-      {/* Sidebar */}
-      <aside className="ad-sidebar">
-        <h2 className="ad-logo">🐾 Admin</h2>
-        <ul>
-          <li><NavLink to="/admin-dashboard">📊 Dashboard</NavLink></li>
-          <li><NavLink to="/admin-dashboard/feedbacks">📝 Feedback</NavLink></li>
-          <li><NavLink to="/admin-dashboard/petRegister">🐕 Pet Registration</NavLink></li>
-          <li><NavLink to="/admin-dashboard/users">🔐 Users</NavLink></li>
-        </ul>
-        <button className="ad-logout-btn" onClick={handleLogout}>🚪 Logout</button>
-      </aside>
+      {/* Sidebar (Now imported) */}
+      <AdminSidebar />
 
       {/* Main Content */}
       <main className="ad-main">
         <section className="ad-hero-banner" style={{ backgroundImage: `url(${heroImage})` }}>
           <div className="ad-hero-overlay">
-            <h1>Welcome Back, Admin 👋</h1>
+            <h1 className="ad-welcome-title">Welcome Back, Admin 👋</h1>
             <p>Here’s an overview of today’s schedule and activities</p>
           </div>
         </section>
@@ -83,7 +70,11 @@ const AdminDashboard = () => {
           <h2>Today's Tasks</h2>
           <ul className="ad-task-list">
             {tasks.map((task) => (
-              <li key={task.id} className={task.completed ? "completed" : ""} onClick={() => toggleTask(task.id)}>
+              <li
+                key={task.id}
+                className={task.completed ? "completed-task" : "pending-task"}
+                onClick={() => toggleTask(task.id)}
+              >
                 {task.completed ? "✔ " : "⬜ "} {task.text}
               </li>
             ))}

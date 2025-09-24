@@ -1,25 +1,24 @@
 // src/pages/admin_dashbord/FeedbackPage.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { NavLink, useNavigate } from "react-router-dom";
-
-// Chart.js
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-// PDF Export
+// ✅ PDF export
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-// Styles
-import "../../styles/admindashbord.css";
-import "../../styles/feedback.css";
+// ✅ Styles
+import "../../styles/admindashbord.css";   // shared dashboard layout
+import "../../styles/adminFeedback.css";   // 🔥 renamed: dedicated for admin feedback
 
-// Assets
+// ✅ Sidebar
+import AdminSidebar from "./AdminSidebar";
+
+// ✅ Logo for report
 import logo from "../../assets/logo.png";
 
-// Register Chart plugins
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const FeedbackPage = () => {
@@ -28,39 +27,30 @@ const FeedbackPage = () => {
   const [stats, setStats] = useState(null);
   const [report, setReport] = useState(null);
   const [readFeedbacks, setReadFeedbacks] = useState({});
-  const navigate = useNavigate();
 
-  /* ================================
-     AUTH HANDLER
-  ================================= */
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
-
-  /* ================================
-     FETCHING DATA
-  ================================= */
+  // Fetch feedbacks
   const fetchFeedbacks = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/feedback");
       if (res.data.success) setFeedbacks(res.data.data);
-    } catch (err) {
-      console.error("Error fetching feedbacks:", err);
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch stats
   const fetchStats = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/feedback/stats/average-rating");
       if (res.data.success) setStats(res.data.data);
-    } catch (err) {
-      console.error("Error fetching stats:", err);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
     }
   };
 
+  // Fetch report
   const fetchReport = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/feedback/report");
@@ -76,9 +66,6 @@ const FeedbackPage = () => {
     fetchReport();
   }, []);
 
-  /* ================================
-     ACTION HANDLERS
-  ================================= */
   const deleteFeedback = async (id) => {
     if (!window.confirm("Delete this feedback?")) return;
     try {
@@ -86,8 +73,8 @@ const FeedbackPage = () => {
       setFeedbacks(feedbacks.filter((f) => f._id !== id));
       fetchStats();
       fetchReport();
-    } catch (err) {
-      console.error("Delete error:", err);
+    } catch (error) {
+      console.error("Delete error:", error);
     }
   };
 
@@ -95,9 +82,7 @@ const FeedbackPage = () => {
     setReadFeedbacks((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  /* ================================
-     CHART CONFIG
-  ================================= */
+  // Pie chart data
   const pieData = stats
     ? {
         labels: ["Positive", "Negative"],
@@ -127,13 +112,9 @@ const FeedbackPage = () => {
     maintainAspectRatio: false,
   };
 
-  /* ================================
-     PDF BUILDER
-  ================================= */
+  // PDF Builder
   const buildPDF = () => {
     const doc = new jsPDF("p", "mm", "a4");
-
-    // Header
     doc.setFillColor(84, 65, 60);
     doc.rect(0, 0, 210, 40, "F");
     doc.addImage(logo, "PNG", 15, 5, 25, 25);
@@ -147,7 +128,6 @@ const FeedbackPage = () => {
     doc.setFontSize(10);
     doc.text(`Generated on: ${today}`, 160, 22);
 
-    // Summary
     let y = 50;
     doc.setFontSize(12);
     doc.setTextColor(20);
@@ -158,7 +138,6 @@ const FeedbackPage = () => {
     doc.text(`Bad Feedbacks: ${report.counts.bad}`, 15, y);
     y += 10;
 
-    // Pie Chart
     const chartCanvas = document.querySelector("canvas");
     if (chartCanvas) {
       const chartImg = chartCanvas.toDataURL("image/png", 1.0);
@@ -166,7 +145,6 @@ const FeedbackPage = () => {
       y += 110;
     }
 
-    // Good Feedbacks Table
     doc.setTextColor(0, 100, 0);
     doc.text("Good Feedbacks", 15, y);
     const goodRows = report.feedbacks.good.map(fb => [
@@ -181,7 +159,6 @@ const FeedbackPage = () => {
       headStyles: { fillColor: [84, 65, 60], textColor: 255 },
     });
 
-    // Bad Feedbacks Table
     y = doc.lastAutoTable.finalY + 10;
     doc.setTextColor(150, 0, 0);
     doc.text("Bad Feedbacks", 15, y);
@@ -211,30 +188,13 @@ const FeedbackPage = () => {
     doc.save("Feedback_Report.pdf");
   };
 
-  /* ================================
-     RENDER
-  ================================= */
   return (
-    <div className="dashboard-container">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <h2 className="logo">🐾 Admin</h2>
-        <ul>
-          <li><NavLink to="/admin-dashboard">📊 Dashboard</NavLink></li>
-          <li><NavLink to="/admin-dashboard/feedbacks">📝 Feedback</NavLink></li>
-          <li><NavLink to="/admin-dashboard/petRegister">🐕 Pet Registration</NavLink></li>
-          <li><NavLink to="/admin-dashboard/users">👥 Users</NavLink></li>
-        </ul>
-        <button className="logout-btn" onClick={handleLogout}>🚪 Logout</button>
-      </aside>
-
-      {/* Main Content */}
-      <main className="dashboard-content">
-        <div className="section-header">
+    <div className="admin-feedback-container">
+      <AdminSidebar />
+      <main className="admin-feedback-main">
+        <div className="feedback-header">
           <h2>📝 Customer Feedback</h2>
-          <p className="subtitle">
-            Insights into customer experience, satisfaction trends, and service quality
-          </p>
+          <p className="feedback-subtitle">Insights into customer experience, satisfaction trends, and service quality</p>
         </div>
 
         {loading ? (
@@ -256,24 +216,14 @@ const FeedbackPage = () => {
             </thead>
             <tbody>
               {feedbacks.map((fb) => (
-                <tr key={fb._id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={!!readFeedbacks[fb._id]}
-                      onChange={() => toggleRead(fb._id)}
-                    />
-                  </td>
+                <tr key={fb._id} className={readFeedbacks[fb._id] ? "read-row" : ""}>
+                  <td><input type="checkbox" checked={!!readFeedbacks[fb._id]} onChange={() => toggleRead(fb._id)} /></td>
                   <td>{fb.petOwnerName}</td>
                   <td>{fb.petName}</td>
                   <td>{fb.email}</td>
                   <td>{fb.message}</td>
                   <td>{"⭐".repeat(fb.rating)}</td>
-                  <td>
-                    <button className="btn-delete" onClick={() => deleteFeedback(fb._id)}>
-                      🗑 Delete
-                    </button>
-                  </td>
+                  <td><button className="btn-delete" onClick={() => deleteFeedback(fb._id)}>🗑 Delete</button></td>
                 </tr>
               ))}
             </tbody>
@@ -281,31 +231,28 @@ const FeedbackPage = () => {
         )}
 
         {stats && (
-          <div className="feedback-stats-container">
-            {/* Chart */}
-            <div className="chart-container small-chart">
+          <div className="feedback-stats">
+            <div className="chart-container">
               <h3>📊 Feedback Ratio</h3>
               <div className="chart-wrapper">
                 <Pie data={pieData} options={pieOptions} />
               </div>
             </div>
-
-            {/* Tips */}
             <div className="tips-container">
               <h3>💡 How to Improve Feedback</h3>
               <ul>
-                <li>Respond quickly to customer concerns ⏱</li>
+                <li>Respond quickly to concerns ⏱</li>
                 <li>Show gratitude for every feedback 🙏</li>
                 <li>Train staff for empathy and care 💕</li>
                 <li>Turn negatives into opportunities ✨</li>
-                <li>Reward loyal and positive customers 🎁</li>
+                <li>Reward positive and loyal customers 🎁</li>
               </ul>
             </div>
           </div>
         )}
 
         {report && (
-          <div className="report-buttons">
+          <div className="feedback-btns">
             <button className="btn-preview" onClick={previewPDF}>👀 Preview Report</button>
             <button className="btn-download" onClick={downloadPDF}>📥 Download Report</button>
           </div>

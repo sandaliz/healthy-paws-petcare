@@ -1,5 +1,5 @@
 /* ================================
-   MAIN LAYOUT (AdminDashboard)
+   ROOT CONTAINER
 ================================= */
 .ad-container {
   display: flex;
@@ -11,85 +11,17 @@
 }
 
 /* ================================
-   SIDEBAR
-================================= */
-.ad-sidebar {
-  width: 240px;
-  min-width: 240px;
-  background-color: #54413c;
-  color: #fff;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-
-.ad-sidebar .ad-logo {
-  text-align: center;
-  font-size: 22px;
-  margin-bottom: 30px;
-  font-weight: bold;
-}
-
-.ad-sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.ad-sidebar ul li {
-  padding: 12px;
-  margin: 10px 0;
-  background-color: #ffd58e;
-  color: #54413c;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  text-align: center;
-}
-
-.ad-sidebar ul li:hover {
-  background-color: #fff;
-  color: #54413c;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-/* ================================
-   LOGOUT BUTTON
-================================= */
-.ad-logout-btn {
-  margin-top: auto;
-  margin-bottom: 20px;
-  background: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  text-align: center;
-  transition: background 0.3s ease, transform 0.1s;
-}
-.ad-logout-btn:hover { background: #c0392b; }
-.ad-logout-btn:active { transform: scale(0.96); }
-
-/* ================================
    MAIN DASHBOARD CONTENT
 ================================= */
 .ad-main {
   flex: 1;
+  margin-left: 240px; /* fix overlap with sidebar */
   padding: 40px;
   background: transparent;
   overflow-y: auto;
 }
 
-.ad-main h1 {
+.ad-main .ad-title {
   margin-bottom: 20px;
   color: #54413c;
 }
@@ -120,12 +52,12 @@
   padding: 20px 40px;
   border-radius: 12px;
 }
-.ad-hero-overlay h1 {
+.ad-hero-overlay .ad-hero-heading {
   margin: 0;
   font-size: 28px;
   font-weight: bold;
 }
-.ad-hero-overlay p {
+.ad-hero-overlay .ad-hero-subtext {
   margin-top: 10px;
   font-size: 16px;
   color: #f1f1f1;
@@ -140,13 +72,13 @@
   margin-bottom: 30px;
 }
 
-/* Glass effect cards */
+/* glass cards */
 .ad-calendar-card,
 .ad-timeline-card,
 .ad-task-section {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 20px;
@@ -157,20 +89,25 @@
    CALENDAR
 ================================= */
 .ad-calendar-card { flex: 1; }
-.ad-calendar-card h2 { margin-bottom: 10px; color: #54413c; }
-.ad-selected-date { margin-top: 15px; font-weight: 500; color: #54413c; }
+.ad-calendar-card .ad-card-title { margin-bottom: 10px; color: #54413c; }
 
-.react-calendar {
+.ad-selected-date {
+  margin-top: 15px;
+  font-weight: 500;
+  color: #54413c;
+}
+
+.ad-calendar-card .react-calendar {
   border: none;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.9);
   box-shadow: inset 0 1px 4px rgba(0,0,0,0.1);
   padding: 10px;
 }
-.react-calendar__tile--now {
+.ad-calendar-card .react-calendar__tile--now {
   background: #ffd58e !important; color: #54413c !important; border-radius: 6px; font-weight: bold;
 }
-.react-calendar__tile--active {
+.ad-calendar-card .react-calendar__tile--active {
   background: #54413c !important; color: #fff !important; border-radius: 6px;
 }
 
@@ -178,7 +115,7 @@
    TIMELINE
 ================================= */
 .ad-timeline-card { flex: 1; }
-.ad-timeline-card h2 { margin-bottom: 15px; color: #54413c; }
+.ad-timeline-card .ad-card-title { margin-bottom: 15px; color: #54413c; }
 
 .ad-timeline {
   list-style: none; padding: 0; margin: 0;
@@ -186,7 +123,7 @@
 .ad-timeline li {
   display: flex; align-items: center;
   margin: 15px 0; padding: 10px;
-  background: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.6);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
@@ -202,22 +139,31 @@
 .ad-timeline-time { font-size: 12px; color: #666; }
 
 .ad-tag {
-  background: #e74c3c; color: #fff; font-size: 11px;
-  padding: 3px 6px; border-radius: 6px; font-weight: bold;
+  background: #e74c3c; 
+  color: #fff; 
+  font-size: 11px;
+  padding: 3px 6px; 
+  border-radius: 6px; 
+  font-weight: bold;
 }
 
 /* ================================
    TASK LIST
 ================================= */
-.ad-task-section h2 { margin-bottom: 15px; color: #54413c; }
+.ad-task-section .ad-card-title { margin-bottom: 15px; color: #54413c; }
 
 .ad-task-list { list-style: none; padding: 0; margin: 0; }
 .ad-task-list li {
-  padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.3);
-  color: #333; cursor: pointer; transition: background 0.3s ease;
+  padding: 10px; 
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  color: #333; 
+  cursor: pointer; 
+  transition: background 0.3s ease;
   border-radius: 6px;
 }
-.ad-task-list li:hover { background-color: rgba(255, 255, 255, 0.3); }
+.ad-task-list li:hover { background-color: rgba(255, 255, 255, 0.4); }
 .ad-task-list li.completed {
-  text-decoration: line-through; color: #888; font-style: italic;
+  text-decoration: line-through; 
+  color: #888; 
+  font-style: italic;
 }
