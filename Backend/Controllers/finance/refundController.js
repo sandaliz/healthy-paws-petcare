@@ -9,7 +9,6 @@ import { sendRefundEmail, sendRefundRejectedEmail } from "../../config/finance/e
 const stripe = new Stripe(process.env.STRIPE_SECRET);
 const REFUND_WINDOW_DAYS = parseInt(process.env.REFUND_WINDOW_DAYS || "7", 10);
 
-// ----- Helpers -----
 export const findPaymentByFlexibleId = async (id) => {
   if (!id) return null;
   if (mongoose.Types.ObjectId.isValid(id)) {
@@ -40,7 +39,6 @@ export async function resolveOwnerDoc({ invoice, payment }) {
   return null;
 }
 
-// ----- Controller Functions -----
 export const createRefundRequest = async (req, res) => {
   try {
     const { paymentID, userID, reason, amount } = req.body;

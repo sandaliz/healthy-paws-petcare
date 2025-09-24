@@ -1,6 +1,5 @@
 import Salary from "../../Model/finance/salaryModel.js";
 
-// ----- Create salary -----
 export const createSalary = async (req, res) => {
   try {
     let { employeeID, baseSalary, allowances, deductions, month, year } = req.body;
@@ -50,7 +49,6 @@ export const updateSalary = async (req, res) => {
   }
 };
 
-// ----- Delete salary -----
 export const deleteSalary = async (req, res) => {
   try {
     const salary = await Salary.findByIdAndDelete(req.params.id);
