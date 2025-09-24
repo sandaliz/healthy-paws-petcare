@@ -1,17 +1,20 @@
-const Loyalty = require("../../Model/finance/loyaltyModel.js");
-const Register = require("../../Model/registerModel");
+// Controllers/finance/loyaltyController.js
+import Loyalty from "../../Model/finance/loyaltyModel.js";
+import Register from "../../Model/registerModel.js";
 
-const getAllLoyalty = async (req, res) => {
+// Fetch all loyalty records
+export const getAllLoyalty = async (req, res) => {
   try {
     const loyalties = await Loyalty.find().populate("userID", "OwnerName OwnerEmail");
     res.json({ loyalties });
   } catch (err) {
-    console.error(err);
+    console.error("getAllLoyalty error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-const addLoyaltyPoints = async (req, res) => {
+// Add loyalty points based on spending
+export const addLoyaltyPoints = async (req, res) => {
   try {
     const { userID, amountSpent } = req.body;
     if (!userID || amountSpent == null) {
@@ -21,15 +24,16 @@ const addLoyaltyPoints = async (req, res) => {
     let loyalty = await Loyalty.findOne({ userID });
     if (!loyalty) loyalty = new Loyalty({ userID });
 
-    await loyalty.addPoints(amountSpent);
+    await loyalty.addPoints(amountSpent); // Method should handle point calculation & tier updates
     res.json({ message: "Points added and tier updated automatically", loyalty });
   } catch (err) {
-    console.error(err);
+    console.error("addLoyaltyPoints error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-const updateLoyaltyTier = async (req, res) => {
+// Manually update loyalty tier
+export const updateLoyaltyTier = async (req, res) => {
   try {
     const { id } = req.params;
     const { tier } = req.body;
@@ -37,23 +41,23 @@ const updateLoyaltyTier = async (req, res) => {
     const loyalty = await Loyalty.findById(id);
     if (!loyalty) return res.status(404).json({ message: "Loyalty record not found" });
 
-    await loyalty.updateTier(tier);
+    await loyalty.updateTier(tier); // Method should handle tier validation
     res.json({ message: "Tier updated manually", loyalty });
   } catch (err) {
-    console.error(err);
+    console.error("updateLoyaltyTier error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-const deleteLoyalty = async (req, res) => {
+// Delete a loyalty record
+export const deleteLoyalty = async (req, res) => {
   try {
     const loyalty = await Loyalty.findByIdAndDelete(req.params.id);
     if (!loyalty) return res.status(404).json({ message: "Loyalty record not found" });
+
     res.json({ message: "Loyalty record deleted", loyalty });
   } catch (err) {
-    console.error(err);
+    console.error("deleteLoyalty error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
-
-module.exports = { getAllLoyalty, addLoyaltyPoints, updateLoyaltyTier, deleteLoyalty };

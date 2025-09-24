@@ -1,3 +1,4 @@
+/* frontend/src/Components/finance/css/clientPay.css */
 :root{
   --brown:#54413C;
   --peach:#FFD58E;
@@ -125,6 +126,11 @@ button, .cta {
 .status-pill.paid { background: #DCFCE7; color: #065F46; border-color: #BBF7D0; }
 .status-pill.pending { background: #FEF9C3; color: #713F12; border-color: #FDE68A; }
 .status-pill.overdue { background: #FEE2E2; color: #7F1D1D; border-color: #FCA5A5; }
+/* NEW: refunded/cancelled + refund-request states */
+.status-pill.refunded { background: #E0E7FF; color: #3730A3; border-color: #C7D2FE; }
+.status-pill.cancelled { background: #F3F4F6; color: #374151; border-color: #E5E7EB; }
+.status-pill.approved { background: #DCFCE7; color: #065F46; border-color: #BBF7D0; }
+.status-pill.rejected { background: #FEE2E2; color: #7F1D1D; border-color: #FCA5A5; }
 
 /* Items table */
 .items-wrap { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
@@ -193,7 +199,7 @@ button, .cta {
   background: #FFF0D4;
   border: 1px solid var(--peach);
   border-radius: 999px;
-  color: var(--brown);
+  color: #54413C;
   font-weight: 700;
 }
 .stripe-control {
@@ -201,9 +207,18 @@ button, .cta {
   border: 1px solid #cfd3d8;
   border-radius: 10px;
   background: #fff;
-  min-height: 48px; /* prevents any visual overlap */
+  min-height: 48px;
   box-sizing: border-box;
 }
+
+/* NEW: input error state */
+.input.input-error,
+.stripe-control.input-error {
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+}
+
+/* Stripe grid */
 .stripe-grid-3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

@@ -17,6 +17,7 @@ export default function PaySuccess() {
   useEffect(() => {
     let cancelled = false;
     if (!invoiceId) return;
+
     (async () => {
       try {
         setLoading(true);
@@ -28,6 +29,7 @@ export default function PaySuccess() {
         if (!cancelled) setLoading(false);
       }
     })();
+
     return () => { cancelled = true; };
   }, [invoiceId]);
 
@@ -72,7 +74,7 @@ export default function PaySuccess() {
   );
 }
 
-function fmtLKR(n) {
+export function fmtLKR(n) {
   const num = Number(n);
   if (!Number.isFinite(num)) return String(n || 'LKR 0.00');
   try {

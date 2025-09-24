@@ -1,10 +1,14 @@
-const mongoose = require("mongoose");
+// models/loyaltyModel.js
+import mongoose from "mongoose";
 
-const loyaltySchema = new mongoose.Schema({
-  userID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", required: true, unique: true },
-  points: { type: Number, default: 0, min: 0 },
-  tier: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], default: "Bronze" }
-}, { timestamps: true });
+const loyaltySchema = new mongoose.Schema(
+  {
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", required: true, unique: true },
+    points: { type: Number, default: 0, min: 0 },
+    tier: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], default: "Bronze" },
+  },
+  { timestamps: true }
+);
 
 const getTierFromPoints = (points) => {
   if (points >= 2000) return "Platinum";
@@ -27,5 +31,4 @@ loyaltySchema.methods.updateTier = function(newTier) {
   return this.save();
 };
 
-module.exports = mongoose.model("Loyalty", loyaltySchema);
-
+export default mongoose.model("Loyalty", loyaltySchema);

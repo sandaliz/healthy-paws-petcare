@@ -1,17 +1,22 @@
-const mongoose = require("mongoose");
+// models/salaryModel.js
+import mongoose from "mongoose";
 
-const salarySchema = new mongoose.Schema({
-  employeeID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", required: true },
-  baseSalary: { type: Number, required: true, min: 0 },
-  allowances: { type: Number, default: 0, min: 0 },
-  deductions: { type: Number, default: 0, min: 0 },
-  netSalary: { type: Number, min: 0 },
-  month: { type: Number, required: true, min: 1, max: 12 },
-  year: { type: Number, required: true },
-  status: { type: String, enum: ["Pending", "Paid"], default: "Pending" }
-}, { timestamps: true });
+const salarySchema = new mongoose.Schema(
+  {
+    employeeID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", required: true },
+    baseSalary: { type: Number, required: true, min: 0 },
+    allowances: { type: Number, default: 0, min: 0 },
+    deductions: { type: Number, default: 0, min: 0 },
+    netSalary: { type: Number, min: 0 },
+    month: { type: Number, required: true, min: 1, max: 12 },
+    year: { type: Number, required: true },
+    status: { type: String, enum: ["Pending", "Paid"], default: "Pending" }
+  },
+  { timestamps: true }
+);
 
-salarySchema.pre("save", function(next) {
+// Calculate netSalary before save
+salarySchema.pre("save", function (next) {
   this.netSalary =
     Number(this.baseSalary) +
     Number(this.allowances || 0) -
@@ -19,8 +24,8 @@ salarySchema.pre("save", function(next) {
   next();
 });
 
-// Ensure netSalary updates when using findByIdAndUpdate / findOneAndUpdate
-salarySchema.pre("findOneAndUpdate", async function(next) {
+// Ensure netSalary updates for findOneAndUpdate / findByIdAndUpdate
+salarySchema.pre("findOneAndUpdate", async function (next) {
   try {
     let update = this.getUpdate() || {};
     const $set = update.$set || update;
@@ -43,8 +48,9 @@ salarySchema.pre("findOneAndUpdate", async function(next) {
   }
 });
 
-salarySchema.statics.generateMonthlyReport = async function(month, year) {
+// Generate monthly salary report
+salarySchema.statics.generateMonthlyReport = async function (month, year) {
   return await this.find({ month, year }).populate("employeeID", "OwnerName OwnerEmail");
 };
 
-module.exports = mongoose.model("Salary", salarySchema);
+export default mongoose.model("Salary", salarySchema);
