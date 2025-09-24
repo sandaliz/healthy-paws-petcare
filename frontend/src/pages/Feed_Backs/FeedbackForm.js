@@ -84,7 +84,7 @@ const FeedbackForm = () => {
 
           {/* RIGHT SECTION */}
           <div className="feedback-card-right">
-            <h2 className="feedback-title">We Value Your Feedback 🐾</h2>
+            <h2 className="feedback-title">We Value Your Feedback </h2>
             <p className="feedback-subtitle">
               Help us improve by sharing your experience with Healthy Paws.
             </p>
