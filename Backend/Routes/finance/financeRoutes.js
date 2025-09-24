@@ -1,54 +1,174 @@
-const express = require("express");
+// routes/financeRoutes.js
+import express from "express";
 const router = express.Router();
 
-const invoiceCtrl = require("../../Controllers/finance/invoiceController");
-const paymentCtrl = require("../../Controllers/finance/paymentController");
-const couponCtrl = require("../../Controllers/finance/couponController");
-const salaryCtrl = require("../../Controllers/finance/salaryController");
-const loyaltyCtrl = require("../../Controllers/finance/loyaltyController");
-const dashboardCtrl = require("../../Controllers/finance/dashboardController");
-const refundCtrl = require("../../Controllers/finance/refundController");
+import {
+  createInvoice,
+  getInvoiceList,
+  getInvoiceById,
+  getInvoiceByBusinessId,
+  updateInvoice,
+  deleteInvoice
+} from "../../Controllers/finance/invoiceController.js";
 
-// Invoice
-router.post("/invoice", invoiceCtrl.createInvoice);
-router.get("/invoices", invoiceCtrl.getInvoiceList);
-router.get("/invoice/:id", invoiceCtrl.getInvoiceById);
-router.put("/invoice/:id", invoiceCtrl.updateInvoice);
-router.delete("/invoice/:id", invoiceCtrl.deleteInvoice);
+import {
+  processOfflinePayment,
+  confirmOfflinePayment,
+  createStripePayment,
+  confirmStripePayment,
+  getAllPayments
+} from "../../Controllers/finance/paymentController.js";
 
-// Payment
-router.post("/payment/offline", paymentCtrl.processOfflinePayment);
-router.put("/payment/offline/confirm/:id", paymentCtrl.confirmOfflinePayment);
-router.post("/payment/stripe", paymentCtrl.createStripePayment);
-router.post("/payment/stripe/confirm", paymentCtrl.confirmStripePayment);
-router.get("/payments", paymentCtrl.getAllPayments);
+import {
+  createCoupon,
+  getCoupons,
+  updateCoupon,
+  deleteCoupon,
+  validateCoupon,
+  claimCoupon,
+  getUserAvailableCoupons,
+  validateUserCoupon
+} from "../../Controllers/finance/couponController.js";
 
-// Coupon
-router.post("/coupon", couponCtrl.createCoupon);
-router.get("/coupons", couponCtrl.getCoupons);
-router.put("/coupon/:id", couponCtrl.updateCoupon);
-router.delete("/coupon/:id", couponCtrl.deleteCoupon);
-router.post("/coupon/validate", couponCtrl.validateCoupon); // NEW
+import {
+  createSalary,
+  getSalaries,
+  updateSalary,
+  deleteSalary
+} from "../../Controllers/finance/salaryController.js";
 
-// Salary
-router.post("/salary", salaryCtrl.createSalary);
-router.get("/salaries", salaryCtrl.getSalaries);
-router.put("/salary/:id", salaryCtrl.updateSalary);
-router.delete("/salary/:id", salaryCtrl.deleteSalary);
+import {
+  getAllLoyalty,
+  addLoyaltyPoints,
+  updateLoyaltyTier,
+  deleteLoyalty
+} from "../../Controllers/finance/loyaltyController.js";
 
-// Loyalty
-router.get("/loyalty", loyaltyCtrl.getAllLoyalty);
-router.post("/loyalty/add-points", loyaltyCtrl.addLoyaltyPoints);
-router.put("/loyalty/update-tier/:id", loyaltyCtrl.updateLoyaltyTier);
-router.delete("/loyalty/:id", loyaltyCtrl.deleteLoyalty);
+import { getFinancialManagerDashboard } from "../../Controllers/finance/dashboardController.js";
 
-// Refund
-router.post("/refund", refundCtrl.createRefundRequest);
-router.get("/refunds", refundCtrl.getAllRefundRequests);
-router.put("/refund/approve/:id", refundCtrl.approveRefund);
-router.put("/refund/reject/:id", refundCtrl.rejectRefund);
+import {
+  createRefundRequest,
+  getAllRefundRequests,
+  approveRefund,
+  rejectRefund
+} from "../../Controllers/finance/refundController.js";
 
-// Dashboard
-router.get("/financial-dashboard", dashboardCtrl.getFinancialManagerDashboard);
+import requireRole from "../../middleware/finance/auth.js";
+import validate from "../../middleware/finance/validate.js";
+import { body } from "express-validator";
 
-module.exports = router;
+// ----- Invoice Routes -----
+router.post(
+  "/invoice",
+  requireRole("Billing", "Admin"),
+  [
+    body("userID").isMongoId(),
+    body("lineItems").isArray({ min: 1 }),
+    body("lineItems.*.description").isString().trim().notEmpty(),
+    body("lineItems.*.quantity").isFloat({ gt: 0 }),
+    body("lineItems.*.unitPrice").isFloat({ gte: 0 }),
+  ],
+  validate,
+  createInvoice
+);
+router.get("/invoices", getInvoiceList);
+router.get("/invoice/:id", getInvoiceById);
+router.get("/invoice/by-no/:no", getInvoiceByBusinessId);
+router.put("/invoice/:id", requireRole("Billing", "Admin"), updateInvoice);
+router.delete("/invoice/:id", requireRole("Billing", "Admin"), deleteInvoice);
+
+// ----- Payment Routes -----
+router.post(
+  "/payment/offline",
+  requireRole("Owner", "Billing", "Admin", "Receptionist"),
+  [
+    body("invoiceID").isMongoId(),
+    body("userID").isMongoId(),
+    body("method").isIn(["Cash", "Card", "BankTransfer"]),
+    body("couponId").optional().isMongoId(),
+    body("couponCode").optional().isString(),
+  ],
+  validate,
+  processOfflinePayment
+);
+router.put("/payment/offline/confirm/:id", requireRole("Billing", "Admin"), confirmOfflinePayment);
+
+router.post(
+  "/payment/stripe",
+  requireRole("Owner", "Billing", "Admin", "Receptionist"),
+  [
+    body("invoiceID").isMongoId(),
+    body("userID").isMongoId(),
+    body("couponId").optional().isMongoId(),
+    body("couponCode").optional().isString(),
+    body("currency").optional().isString(),
+  ],
+  validate,
+  createStripePayment
+);
+router.post(
+  "/payment/stripe/confirm",
+  requireRole("Owner", "Billing", "Admin", "Receptionist"),
+  [body("paymentIntentId").isString().notEmpty(), body("email").optional().isEmail()],
+  validate,
+  confirmStripePayment
+);
+router.get("/payments", getAllPayments);
+
+// ----- Coupon Routes -----
+router.post(
+  "/coupon",
+  requireRole("Billing", "Admin"),
+  [
+    body("code").isString().trim().notEmpty(),
+    body("discountType").isIn(["Percentage", "Fixed"]),
+    body("discountValue").isFloat({ gt: 0 }),
+    body("minInvoiceAmount").optional().isFloat({ gte: 0 }),
+    body("usageLimit").optional().isInt({ min: 0 }),
+    body("expiryDate").isISO8601().toDate(),
+    body("description").optional().isString(),
+  ],
+  validate,
+  createCoupon
+);
+router.get("/coupons", getCoupons);
+router.put("/coupon/:id", requireRole("Billing", "Admin"), updateCoupon);
+router.delete("/coupon/:id", requireRole("Billing", "Admin"), deleteCoupon);
+router.post("/coupon/validate", validateCoupon);
+router.post("/coupon/claim", requireRole("Owner", "Billing", "Admin", "Receptionist"), claimCoupon);
+router.get("/coupon/user-available", getUserAvailableCoupons);
+router.post("/coupon/validate-user", validateUserCoupon);
+
+// ----- Salary Routes -----
+router.post("/salary", requireRole("Billing", "Admin", "HR"), createSalary);
+router.get("/salaries", requireRole("Billing", "Admin", "HR"), getSalaries);
+router.put("/salary/:id", requireRole("Billing", "Admin", "HR"), updateSalary);
+router.delete("/salary/:id", requireRole("Billing", "Admin", "HR"), deleteSalary);
+
+// ----- Loyalty Routes -----
+router.get("/loyalty", requireRole("Billing", "Admin", "Receptionist"), getAllLoyalty);
+router.post("/loyalty/add-points", requireRole("Billing", "Admin", "Receptionist"), addLoyaltyPoints);
+router.put("/loyalty/update-tier/:id", requireRole("Billing", "Admin"), updateLoyaltyTier);
+router.delete("/loyalty/:id", requireRole("Billing", "Admin"), deleteLoyalty);
+
+// ----- Refund Routes -----
+router.post(
+  "/refund",
+  requireRole("Owner", "Billing", "Admin", "Receptionist"),
+  [
+    body("paymentID").notEmpty(),
+    body("userID").isMongoId(),
+    body("reason").isString().trim().notEmpty(),
+    body("amount").optional().isFloat({ gt: 0 }),
+  ],
+  validate,
+  createRefundRequest
+);
+router.get("/refunds", requireRole("Billing", "Admin", "Receptionist", "Owner"), getAllRefundRequests);
+router.put("/refund/approve/:id", requireRole("Billing", "Admin"), approveRefund);
+router.put("/refund/reject/:id", requireRole("Billing", "Admin"), rejectRefund);
+
+// ----- Dashboard -----
+router.get("/financial-dashboard", requireRole("Billing", "Admin"), getFinancialManagerDashboard);
+
+export default router;

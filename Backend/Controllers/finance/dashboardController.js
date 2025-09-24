@@ -1,8 +1,8 @@
-const Invoice = require("../../Model/finance/invoiceModel");
-const Payment = require("../../Model/finance/paymentModel");
-const Loyalty = require("../../Model/finance/loyaltyModel");
+import Invoice from "../../Model/finance/invoiceModel.js";
+import Payment from "../../Model/finance/paymentModel.js";
+import Loyalty from "../../Model/finance/loyaltyModel.js";
 
-const getFinancialManagerDashboard = async (req, res) => {
+export const getFinancialManagerDashboard = async (req, res) => {
   try {
     // Revenue should reflect collected money only
     const payments = await Payment.find({ status: "Completed" })
@@ -29,7 +29,7 @@ const getFinancialManagerDashboard = async (req, res) => {
       (invoicesByUser[uid] ||= []).push(inv);
     }
 
-    // union users from invoices, payments, loyalty
+    // Union users from invoices, payments, loyalty
     const userIds = new Set([
       ...Object.keys(invoicesByUser),
       ...Object.keys(paymentsByUser),
@@ -71,5 +71,3 @@ const getFinancialManagerDashboard = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-module.exports = { getFinancialManagerDashboard };

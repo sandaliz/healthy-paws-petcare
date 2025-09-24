@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
-import { api } from './financeApi';
+import { api } from './financeApi.js';
 import './css/clientPay.css';
 
 export default function ClientPay() {
@@ -89,15 +89,17 @@ export default function ClientPay() {
     try {
       if (!invoice || !ownerId) return toast.error('Owner and invoice required');
       setBusy(true);
-      await api.post('/payment/offline', {
+      const newPayment = await api.post('/payment/offline', {
         invoiceID: invoice._id,
         userID: ownerId,
         method: 'Cash',
         couponId: offlineCouponId || undefined,
       });
-      toast.success('Recorded: Pay at counter');
+      toast.success('Recorded: Pay at counter within 10 days!');
       setShowOfflineModal(false);
-      setTimeout(() => nav('/'), 900);
+      setTimeout(() => {
+        nav(`/pay/summary?user=${ownerId}&new=${newPayment._id}`);
+        }, 900);
     } catch (e) {
       toast.error(e.message || 'Failed to record offline payment');
     } finally {

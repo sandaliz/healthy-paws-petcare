@@ -1,8 +1,11 @@
+
 import React from 'react';
 import { Link, Routes, Route, useLocation } from 'react-router-dom';
+import CouponWall from '../finance/CouponWall';
 import ClientPay from '../finance/ClientPay';
 import OnlinePay from '../finance/OnlinePay';
 import PaySuccess from '../finance/PaySuccess';
+import PaymentSummary from '../finance/PaymentSummary';
 import DashboardApp from '../finance/dashboard/DashboardApp';
 
 function Home() {
@@ -54,6 +57,19 @@ function Home() {
             >
               Open Finance Dashboard
             </Link>
+            <Link to = "/daycare" className = "active daycare">
+        <h2>Daycare</h2>
+        </Link>
+        <Link to = "/dashboardDC" className = "active daycare">
+        <h2>Daycare</h2>
+        </Link>
+        <Link to = "/inventory" className = "Products">
+        <h2>Products</h2>
+        </Link>
+        <Link to = "/store" className = "store">
+        <h2>Store</h2>
+        </Link>
+         <CouponWall />
           </div>
         </>
       )}
@@ -62,9 +78,12 @@ function Home() {
         <Route path="/pay" element={<ClientPay />} />
         <Route path="/pay/online" element={<OnlinePay />} />
         <Route path="/pay/success" element={<PaySuccess />} />
+        <Route path="/pay/summary" element={<PaymentSummary />} />
         <Route path="/fm/*" element={<DashboardApp />} />
       </Routes>
+        
     </div>
   );
 }
+
 export default Home;

@@ -1,6 +1,7 @@
-const Salary = require("../../Model/finance/salaryModel");
+import Salary from "../../Model/finance/salaryModel.js";
 
-const createSalary = async (req, res) => {
+// ----- Create salary -----
+export const createSalary = async (req, res) => {
   try {
     let { employeeID, baseSalary, allowances, deductions, month, year } = req.body;
 
@@ -8,20 +9,12 @@ const createSalary = async (req, res) => {
       return res.status(400).json({ message: "Required fields missing" });
     }
 
-    // default values if missing
     allowances = allowances != null ? allowances : 0;
     deductions = deductions != null ? deductions : 0;
 
-    const salary = new Salary({
-      employeeID,
-      baseSalary,
-      allowances,
-      deductions,
-      month,
-      year
-    });
-
+    const salary = new Salary({ employeeID, baseSalary, allowances, deductions, month, year });
     await salary.save();
+
     res.status(201).json({ message: "Salary record created", salary });
   } catch (err) {
     console.error("createSalary error:", err);
@@ -29,11 +22,10 @@ const createSalary = async (req, res) => {
   }
 };
 
-const getSalaries = async (req, res) => {
+// ----- Get all salaries -----
+export const getSalaries = async (req, res) => {
   try {
-    const salaries = await Salary.find()
-      .populate("employeeID", "OwnerName OwnerEmail");
-
+    const salaries = await Salary.find().populate("employeeID", "OwnerName OwnerEmail");
     res.json({ salaries });
   } catch (err) {
     console.error("getSalaries error:", err);
@@ -41,11 +33,10 @@ const getSalaries = async (req, res) => {
   }
 };
 
-const updateSalary = async (req, res) => {
+// ----- Update salary -----
+export const updateSalary = async (req, res) => {
   try {
-    let body = { ...req.body };
-
-    // ensure defaults when updating too
+    const body = { ...req.body };
     if (body.allowances == null) body.allowances = 0;
     if (body.deductions == null) body.deductions = 0;
 
@@ -59,7 +50,8 @@ const updateSalary = async (req, res) => {
   }
 };
 
-const deleteSalary = async (req, res) => {
+// ----- Delete salary -----
+export const deleteSalary = async (req, res) => {
   try {
     const salary = await Salary.findByIdAndDelete(req.params.id);
     if (!salary) return res.status(404).json({ message: "Salary record not found" });
@@ -69,11 +61,4 @@ const deleteSalary = async (req, res) => {
     console.error("deleteSalary error:", err);
     res.status(500).json({ message: "Server error" });
   }
-};
-
-module.exports = {
-  createSalary,
-  getSalaries,
-  updateSalary,
-  deleteSalary
 };

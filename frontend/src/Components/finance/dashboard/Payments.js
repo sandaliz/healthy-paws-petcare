@@ -25,6 +25,7 @@ export default function Payments() {
   const PAGE_SIZE = 10;
 
   const [view, setView] = useState(null);
+  const [confirmPay, setConfirmPay] = useState(null); // confirm popup
 
   const load = async () => {
     try {
@@ -49,8 +50,9 @@ export default function Payments() {
       arr = arr.filter(p => {
         const pid = (p.paymentID || '').toLowerCase();
         const inv = (p.invoiceID?.invoiceID || '').toLowerCase();
-        const owner = (p.userID?.OwnerName || '').toLowerCase();
-        return pid.includes(q) || inv.includes(q) || owner.includes(q);
+        const owner = (p.userID?.OwnerName || p.invoiceID?.userID?.OwnerName || '').toLowerCase();
+        const email = (p.userID?.OwnerEmail || p.invoiceID?.userID?.OwnerEmail || '').toLowerCase();
+        return pid.includes(q) || inv.includes(q) || owner.includes(q) || email.includes(q);
       });
     }
     return arr;
@@ -66,6 +68,7 @@ export default function Payments() {
     try {
       await api.put(`/payment/offline/confirm/${p._id}`);
       toast.success('Offline payment confirmed');
+      setConfirmPay(null);
       load();
     } catch (e) {
       toast.error(e?.response?.data?.message || 'Confirm failed');
@@ -98,7 +101,7 @@ export default function Payments() {
             <Search size={16} />
             <input
               className="input"
-              placeholder="Search payment ID, invoice, or owner"
+              placeholder="Search payment ID, invoice, owner, email"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
@@ -143,8 +146,12 @@ export default function Payments() {
                     <td className="mono">{p.invoiceID?.invoiceID || '-'}</td>
                     <td>
                       <div className="owner">
-                        <div className="name">{p.userID?.OwnerName || '-'}</div>
-                        <div className="email">{p.userID?.OwnerEmail || '-'}</div>
+                        <div className="name">
+                          {p.userID?.OwnerName || p.invoiceID?.userID?.OwnerName || '-'}
+                        </div>
+                        <div className="email">
+                          {p.userID?.OwnerEmail || p.invoiceID?.userID?.OwnerEmail || '-'}
+                        </div>
                       </div>
                     </td>
                     <td><MethodPill method={p.method} /></td>
@@ -155,7 +162,9 @@ export default function Payments() {
                         <button className="btn ghost" title="View" onClick={() => setView(p)}><Eye size={16} /></button>
                         <button className="btn ghost" title="Copy client link" onClick={() => copyInvoiceLink(p.invoiceID?._id)}><Copy size={16} /></button>
                         {p.status === 'Pending' && p.method !== 'Stripe' && (
-                          <button className="btn secondary" title="Confirm offline" onClick={() => confirmOffline(p)}><CheckCircle2 size={16} /> Confirm</button>
+                          <button className="btn secondary" title="Confirm offline" onClick={() => setConfirmPay(p)}>
+                            <CheckCircle2 size={16} /> Confirm
+                          </button>
                         )}
                       </div>
                     </td>
@@ -178,6 +187,16 @@ export default function Payments() {
       </div>
 
       {view && <PaymentModal open={!!view} onClose={() => setView(null)} p={view} />}
+
+      {confirmPay && (
+        <ConfirmModal
+          open={!!confirmPay}
+          onClose={() => setConfirmPay(null)}
+          title="Confirm offline payment"
+          message={`Confirm marking ${confirmPay.paymentID} as Completed?`}
+          onConfirm={() => confirmOffline(confirmPay)}
+        />
+      )}
     </div>
   );
 }
@@ -186,8 +205,8 @@ function PaymentModal({ open, onClose, p }) {
   return (
     <Modal open={open} onClose={onClose} title={`Payment ${p.paymentID}`}>
       <div className="summary vlist">
-        <div className="kv"><span>Owner</span><b>{p.userID?.OwnerName || '-'}</b></div>
-        <div className="kv"><span>Email</span><b>{p.userID?.OwnerEmail || '-'}</b></div>
+        <div className="kv"><span>Owner</span><b>{p.userID?.OwnerName || p.invoiceID?.userID?.OwnerName || '-'}</b></div>
+        <div className="kv"><span>Email</span><b>{p.userID?.OwnerEmail || p.invoiceID?.userID?.OwnerEmail || '-'}</b></div>
         <div className="kv"><span>Method</span><b><MethodPill method={p.method} /></b></div>
         <div className="kv"><span>Status</span><b><Tag status={p.status} /></b></div>
         <div className="kv"><span>Amount</span><b>{fmtLKR(p.amount)}</b></div>
@@ -196,6 +215,18 @@ function PaymentModal({ open, onClose, p }) {
       </div>
       <div className="row end" style={{ marginTop: 10 }}>
         <button className="btn ghost" onClick={onClose}>Close</button>
+      </div>
+    </Modal>
+  );
+}
+
+function ConfirmModal({ open, onClose, title, message, onConfirm }) {
+  return (
+    <Modal open={open} onClose={onClose} title={title}>
+      <div className="vlist"><div className="kv"><b>{message}</b></div></div>
+      <div className="row end" style={{ marginTop: 10 }}>
+        <button className="btn ghost" onClick={onClose}>Cancel</button>
+        <button className="btn primary" onClick={onConfirm}>Yes, proceed</button>
       </div>
     </Modal>
   );
