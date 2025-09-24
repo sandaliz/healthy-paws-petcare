@@ -1,4 +1,5 @@
 // src/pages/FeedbackForm.js
+// src/pages/FeedbackForm.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -82,10 +83,14 @@ const FeedbackForm = () => {
             />
           </div>
 
-          {/* RIGHT SECTION */}
-          <div className="feedback-card-right">
-            <h2 className="feedback-title">We Value Your Feedback </h2>
-            <p className="feedback-subtitle">
+          <div className="md:w-1/2 p-10">
+            <h2
+              className="text-3xl font-bold mb-4"
+              style={{ fontFamily: "Poppins, sans-serif", color: "#2D2D2D" }}
+            >
+              We Value Your Feedback 🐾
+            </h2>
+            <p className="mb-6 text-gray-600">
               Help us improve by sharing your experience with Healthy Paws.
             </p>
 
