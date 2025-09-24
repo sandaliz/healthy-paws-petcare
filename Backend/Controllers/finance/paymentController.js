@@ -1,6 +1,6 @@
 import Payment from "../../Model/finance/paymentModel.js";
 import Invoice from "../../Model/finance/invoiceModel.js";
-import Register from "../../Model/registerModel.js";
+import register from "../../Model/register.js";
 import Coupon from "../../Model/finance/couponModel.js";
 import Stripe from "stripe";
 import { sendPaymentEmail } from "../../config/finance/email.js";
@@ -126,7 +126,7 @@ async function resolveOwnerDoc({ invoice, payment }) {
     null;
   if (id) {
     try {
-      const doc = await Register.findById(id).select("OwnerName OwnerEmail").lean();
+      const doc = await register.findById(id).select("OwnerName OwnerEmail").lean();
       if (doc) return doc;
     } catch (_) {}
   }
