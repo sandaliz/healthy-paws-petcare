@@ -1,6 +1,6 @@
 /* src/Components/AppointmentDetailsDC/AppointmentDetailsDC.css */
 
-body {
+.ad-dc-container {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   line-height: 1.5;
@@ -8,51 +8,49 @@ body {
   background-color: #FFFFFF; /* Primary background */
   margin: 0;
   padding: 0;
+  max-width: 800px;
+  margin: 40px auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0px 4px 12px rgba(84, 65, 60, 0.2);
 }
 
-h1, h2, h3 {
+.ad-dc-container h1,
+.ad-dc-container h2,
+.ad-dc-container h3 {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   color: #2D2D2D;
 }
 
-.appointment-details-dc {
-  max-width: 800px;
-  margin: 40px auto;
-  background-color: #FFFFFF;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0px 4px 12px rgba(84, 65, 60, 0.2); /* Soft shadow with dark brown */
-}
-
-.appointment-details-dc h2 {
+.ad-dc-container h2 {
   margin-bottom: 20px;
-  border-bottom: 2px solid #FFD58E; /* Highlight underline */
+  border-bottom: 2px solid #FFD58E;
   padding-bottom: 10px;
-  color: #54413C; /* Dark brown heading */
+  color: #54413C;
 }
 
-.appointment-details-dc p {
+.ad-dc-container p {
   margin: 10px 0;
   padding: 8px 12px;
   background: #fdf7f1;
   border-radius: 8px;
-  border-left: 4px solid #FFD58E; /* Highlight bar */
+  border-left: 4px solid #FFD58E;
 }
 
-.appointment-details-dc strong {
-  color: #54413C; /* Dark brown labels */
+.ad-dc-container strong {
+  color: #54413C;
 }
 
 /* Action Buttons */
-.action-btns {
+.ad-dc-action-btns {
   margin-top: 20px;
   display: flex;
   gap: 15px;
 }
 
-button {
+.ad-dc-btn {
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 600;
@@ -63,20 +61,18 @@ button {
   transition: all 0.3s ease;
 }
 
-.btn-approve {
-  background-color: #54413C; /* Dark Brown */
+.ad-dc-btn-approve {
+  background-color: #54413C;
   color: #FFFFFF;
 }
-
-.btn-approve:hover {
-  background-color: #3c2f2a; /* Slightly darker brown */
+.ad-dc-btn-approve:hover {
+  background-color: #3c2f2a;
 }
 
-.btn-reject {
-  background-color: #FFD58E; /* Highlight color */
+.ad-dc-btn-reject {
+  background-color: #FFD58E;
   color: #54413C;
 }
-
-.btn-reject:hover {
-  background-color: #f5c77a; /* Slightly darker peach */
+.ad-dc-btn-reject:hover {
+  background-color: #f5c77a;
 }

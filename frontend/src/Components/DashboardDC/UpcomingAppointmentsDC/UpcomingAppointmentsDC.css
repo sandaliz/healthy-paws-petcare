@@ -1,57 +1,44 @@
-.upcoming-container {
+.uaDC-container {
   padding: 20px;
 }
 
-.upcoming-list {
-  list-style: none;
-  padding: 0;
+.uaDC-title {
+  font-family: "Poppins", sans-serif;
+  color: #54413C;
+  margin-bottom: 16px;
 }
 
-.upcoming-item {
+.uaDC-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.uaDC-item {
   background: #ffffff;
   border: 1px solid #ddd;
   margin-bottom: 12px;
   padding: 12px;
-  border-radius: 12px; /* slightly more rounded for pill feel */
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 12px rgba(84, 65, 60, 0.15);
 }
 
-.upcoming-info {
+.uaDC-info {
   font-family: "Roboto", sans-serif;
   font-size: 15px;
   color: #54413C;
 }
 
-.action-btns {
+.uaDC-actions {
   display: flex;
   gap: 10px;
 }
 
-/* View button: pill-shaped gradient */
-.btn-view {
-  background: linear-gradient(90deg, #FFD58E, #FFD58E); /* keep original peach color */
-  color: #54413C;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 50px; /* pill shape */
-  cursor: pointer;
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btn-view:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 197, 102, 0.5);
-}
-
-/* Check-in button: pill-shaped gradient */
-.btn-checkin {
-  background: linear-gradient(90deg, #54413C, #54413C); /* keep original dark brown */
-  color: #ffffff;
+/* Shared button style */
+.uaDC-btn {
   border: none;
   padding: 8px 18px;
   border-radius: 50px;
@@ -61,7 +48,30 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.btn-checkin:hover {
+/* View button */
+.uaDC-btn-view {
+  background: linear-gradient(90deg, #FFD58E, #FFD58E);
+  color: #54413C;
+}
+
+.uaDC-btn-view:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 197, 102, 0.5);
+}
+
+/* Check-in button */
+.uaDC-btn-checkin {
+  background: linear-gradient(90deg, #54413C, #54413C);
+  color: #ffffff;
+}
+
+.uaDC-btn-checkin:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(84, 65, 60, 0.5);
+}
+
+.uaDC-empty {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  color: #777;
 }

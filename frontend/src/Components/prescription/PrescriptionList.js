@@ -49,9 +49,9 @@ function PrescriptionList() {
   }
 
   return (
-    <div className="prescription-table-wrapper">
+    <div className="pl-table-wrapper">
       <h2>Prescription List</h2>
-      <table className="prescription-table">
+      <table className="pl-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -66,8 +66,8 @@ function PrescriptionList() {
               <td>{p._id.slice(0, 6)}</td>
               <td>
                 <span
-                  className={`status-badge ${
-                    p.status === "paid" ? "status-paid" : "status-pending"
+                  className={`pl-status-badge ${
+                    p.status === "paid" ? "pl-status-paid" : "pl-status-pending"
                   }`}
                 >
                   {p.status}
@@ -83,13 +83,13 @@ function PrescriptionList() {
                 </ul>
               </td>
               <td>
-                <div className="action-buttons">
+                <div className="pl-action-buttons">
                   {p.status === "pending" ? (
-                    <button className="btn-send" onClick={() => openQR(p)}>
+                    <button className="pl-btn-send" onClick={() => openQR(p)}>
                       Send to Customer
                     </button>
                   ) : (
-                    <button className="btn-paid" disabled>
+                    <button className="pl-btn-paid" disabled>
                       Paid 
                     </button>
                   )}
@@ -138,7 +138,7 @@ function PrescriptionList() {
                 width: "100%",
               }}
             />
-            <button onClick={sendEmail} className="btn-send">
+            <button onClick={sendEmail} className="pl-btn-send">
               Send QR
             </button>
             <button onClick={closeQR} style={{ marginLeft: "10px", padding: "6px 10px" }}>

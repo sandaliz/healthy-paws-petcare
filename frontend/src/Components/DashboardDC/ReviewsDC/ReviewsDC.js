@@ -1,4 +1,4 @@
-// ReviewsDC.js
+// src/pages/DashboardDC/ReviewsDC.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
@@ -10,7 +10,7 @@ function ReviewsDC() {
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [sentimentFilter, setSentimentFilter] = useState('all');
 
-  // Fetch reviews
+  // Fetch reviews from backend
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -24,17 +24,16 @@ function ReviewsDC() {
     fetchReviews();
   }, []);
 
-  // Filter reviews based on sentiment
+  // Filter reviews based on sentiment choice
   useEffect(() => {
     if (sentimentFilter === 'all') {
       setFilteredReviews(reviews);
     } else {
-      const filtered = reviews.filter(r => r.sentiment === sentimentFilter);
-      setFilteredReviews(filtered);
+      setFilteredReviews(reviews.filter(r => r.sentiment === sentimentFilter));
     }
   }, [sentimentFilter, reviews]);
 
-  // Generate PDF
+  // Generate PDF of current reviews
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.text("PetCare Reviews", 14, 15);
@@ -48,8 +47,8 @@ function ReviewsDC() {
         review.ownerName,
         review.petName,
         review.species,
-        services,
-        review.rating,           // Number instead of stars
+        services || "—",
+        review.rating,
         review.sentiment,
         review.comment
       ]);
@@ -60,14 +59,13 @@ function ReviewsDC() {
       body: tableRows,
       startY: 25,
       styles: { fontSize: 10 },
-      headStyles: { fillColor: [85, 65, 60], textColor: 255 },
+      headStyles: { fillColor: [84, 65, 60], textColor: 255 },
       didParseCell: function (data) {
-        // Color-code sentiment
-        if (data.column.index === 5) { // Sentiment column
+        if (data.column.index === 5) {
           const val = data.cell.raw;
-          if (val === 'good') data.cell.styles.textColor = [0, 128, 0];       // Green
-          else if (val === 'bad') data.cell.styles.textColor = [255, 0, 0];   // Red
-          else if (val === 'neutral') data.cell.styles.textColor = [85, 65, 60]; // Brownish
+          if (val === 'good') data.cell.styles.textColor = [0, 128, 0];
+          else if (val === 'bad') data.cell.styles.textColor = [255, 0, 0];
+          else if (val === 'neutral') data.cell.styles.textColor = [85, 65, 60];
         }
       }
     });
@@ -80,7 +78,7 @@ function ReviewsDC() {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <span key={i} className={`star ${i <= rating ? 'filled' : ''}`}>
+        <span key={i} className={`dcd-star ${i <= rating ? 'filled' : ''}`}>
           {i <= rating ? '★' : '☆'}
         </span>
       );
@@ -89,15 +87,15 @@ function ReviewsDC() {
   };
 
   return (
-    <div className="reviews-dc-container">
-      <div className="reviews-header">
+    <div className="dcd-reviews-container">
+      <div className="dcd-reviews-header">
         <h1>Customer Reviews</h1>
 
-        <div className="header-actions">
+        <div className="dcd-reviews-header-actions">
           <select
             value={sentimentFilter}
             onChange={(e) => setSentimentFilter(e.target.value)}
-            className="sentiment-filter"
+            className="dcd-reviews-filter"
           >
             <option value="all">All Sentiments</option>
             <option value="good">Positive</option>
@@ -105,24 +103,26 @@ function ReviewsDC() {
             <option value="neutral">Neutral</option>
           </select>
 
-          <button className="pdf-btn" onClick={generatePDF}>
+          <button className="dcd-reviews-pdf-btn" onClick={generatePDF}>
             Download PDF
           </button>
         </div>
       </div>
 
       {filteredReviews.length === 0 ? (
-        <p className="no-reviews">No reviews found.</p>
+        <p className="dcd-no-reviews">No reviews found.</p>
       ) : (
-        <div className="reviews-grid">
+        <div className="dcd-reviews-grid">
           {filteredReviews.map((review) => (
-            <div key={review._id} className="review-card">
-              <h3 className="review-owner">{review.ownerName}'s Review</h3>
+            <div key={review._id} className="dcd-review-card">
+              <h3 className="dcd-review-owner">{review.ownerName}'s Review</h3>
               <p><strong>Pet:</strong> {review.petName} ({review.species})</p>
               <p><strong>Services:</strong> {review.grooming ? 'Grooming ' : ''}{review.walking ? 'Walking' : ''}</p>
-              <p className="review-rating"><strong>Rating:</strong> {renderStars(review.rating)}</p>
-              <p className={`review-sentiment ${review.sentiment}`}><strong>Sentiment:</strong> {review.sentiment}</p>
-              <p className="review-comment">"{review.comment}"</p>
+              <p className="dcd-review-rating"><strong>Rating:</strong> {renderStars(review.rating)}</p>
+              <p className={`dcd-review-sentiment ${review.sentiment}`}>
+                <strong>Sentiment:</strong> {review.sentiment}
+              </p>
+              <p className="dcd-review-comment">"{review.comment}"</p>
             </div>
           ))}
         </div>

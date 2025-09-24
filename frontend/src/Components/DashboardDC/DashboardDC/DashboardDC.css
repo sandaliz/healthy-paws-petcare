@@ -1,23 +1,25 @@
-.dashboard-container {
+/* DayCare Dashboard (dcd-) */
+
+.dcd-container {
   display: flex;
   min-height: 100vh;
   background-color: #f5f5f5;
 }
 
-.dashboard-main {
+.dcd-main {
   flex: 1;
   margin-left: 280px;
   padding: 0;
 }
 
-.dashboard-header {
+.dcd-header {
   background-color: #FFFFFF;
   padding: 24px 32px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid #eaeaea;
 }
 
-.dashboard-header h1 {
+.dcd-header h1 {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 28px;
@@ -25,24 +27,24 @@
   margin: 0 0 8px 0;
 }
 
-.dashboard-header p {
+.dcd-header p {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   color: #666;
   margin: 0;
 }
 
-.dashboard-content {
+.dcd-content {
   padding: 32px;
 }
 
-.dashboard-grid {
+.dcd-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
 }
 
-.loading {
+.dcd-loading {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,27 +55,27 @@
 }
 
 @media (max-width: 1024px) {
-  .dashboard-grid {
+  .dcd-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .dashboard-main {
+  .dcd-main {
     margin-left: 0;
   }
-  
-  .sidebar {
+
+  .dcd-sidebar {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     z-index: 1000;
   }
-  
-  .sidebar.open {
+
+  .dcd-sidebar.open {
     transform: translateX(0);
   }
-  
-  .dashboard-content {
+
+  .dcd-content {
     padding: 20px;
   }
 }

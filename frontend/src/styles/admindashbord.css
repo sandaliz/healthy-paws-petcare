@@ -1,11 +1,11 @@
 /* ================================
-   MAIN LAYOUT
+   MAIN LAYOUT (AdminDashboard)
 ================================= */
-.dashboard-container {
+.ad-container {
   display: flex;
   height: 100vh;
   font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #54413c, #ffd58e); /* gradient bg */
+  background: linear-gradient(135deg, #54413c, #ffd58e);
   color: #333;
   overflow: hidden;
 }
@@ -13,10 +13,10 @@
 /* ================================
    SIDEBAR
 ================================= */
-.sidebar {
+.ad-sidebar {
   width: 240px;
   min-width: 240px;
-  background-color: #54413c; /* Dark brown */
+  background-color: #54413c;
   color: #fff;
   padding: 20px;
   display: flex;
@@ -27,23 +27,23 @@
   height: 100vh;
 }
 
-.sidebar .logo {
+.ad-sidebar .ad-logo {
   text-align: center;
   font-size: 22px;
   margin-bottom: 30px;
   font-weight: bold;
 }
 
-.sidebar ul {
+.ad-sidebar ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.sidebar ul li {
+.ad-sidebar ul li {
   padding: 12px;
   margin: 10px 0;
-  background-color: #ffd58e; /* Peach */
+  background-color: #ffd58e;
   color: #54413c;
   border-radius: 8px;
   cursor: pointer;
@@ -52,7 +52,7 @@
   text-align: center;
 }
 
-.sidebar ul li:hover {
+.ad-sidebar ul li:hover {
   background-color: #fff;
   color: #54413c;
   font-weight: 600;
@@ -62,7 +62,7 @@
 /* ================================
    LOGOUT BUTTON
 ================================= */
-.logout-btn {
+.ad-logout-btn {
   margin-top: auto;
   margin-bottom: 20px;
   background: #e74c3c;
@@ -76,20 +76,20 @@
   text-align: center;
   transition: background 0.3s ease, transform 0.1s;
 }
-.logout-btn:hover { background: #c0392b; }
-.logout-btn:active { transform: scale(0.96); }
+.ad-logout-btn:hover { background: #c0392b; }
+.ad-logout-btn:active { transform: scale(0.96); }
 
 /* ================================
    MAIN DASHBOARD CONTENT
 ================================= */
-.dashboard-content {
+.ad-main {
   flex: 1;
   padding: 40px;
   background: transparent;
   overflow-y: auto;
 }
 
-.dashboard-content h1 {
+.ad-main h1 {
   margin-bottom: 20px;
   color: #54413c;
 }
@@ -97,7 +97,7 @@
 /* ================================
    HERO BANNER
 ================================= */
-.hero-banner {
+.ad-hero-banner {
   width: 100%;
   height: 220px;
   background-size: cover;
@@ -109,7 +109,7 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.hero-overlay {
+.ad-hero-overlay {
   background: rgba(0, 0, 0, 0.45);
   color: #fff;
   position: absolute;
@@ -120,14 +120,12 @@
   padding: 20px 40px;
   border-radius: 12px;
 }
-
-.hero-overlay h1 {
+.ad-hero-overlay h1 {
   margin: 0;
   font-size: 28px;
   font-weight: bold;
 }
-
-.hero-overlay p {
+.ad-hero-overlay p {
   margin-top: 10px;
   font-size: 16px;
   color: #f1f1f1;
@@ -136,16 +134,16 @@
 /* ================================
    TOP SECTION (Calendar + Timeline)
 ================================= */
-.top-section {
+.ad-top-section {
   display: flex;
   gap: 20px;
   margin-bottom: 30px;
 }
 
-/* Glass Effect Cards (Calendar, Timeline, Tasks) */
-.calendar-card,
-.timeline-card,
-.task-section {
+/* Glass effect cards */
+.ad-calendar-card,
+.ad-timeline-card,
+.ad-task-section {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -158,22 +156,10 @@
 /* ================================
    CALENDAR
 ================================= */
-.calendar-card {
-  flex: 1;
-}
+.ad-calendar-card { flex: 1; }
+.ad-calendar-card h2 { margin-bottom: 10px; color: #54413c; }
+.ad-selected-date { margin-top: 15px; font-weight: 500; color: #54413c; }
 
-.calendar-card h2 {
-  margin-bottom: 10px;
-  color: #54413c;
-}
-
-.selected-date {
-  margin-top: 15px;
-  color: #54413c;
-  font-weight: 500;
-}
-
-/* React Calendar styling */
 .react-calendar {
   border: none;
   border-radius: 10px;
@@ -181,244 +167,57 @@
   box-shadow: inset 0 1px 4px rgba(0,0,0,0.1);
   padding: 10px;
 }
-
 .react-calendar__tile--now {
-  background: #ffd58e !important;
-  color: #54413c !important;
-  border-radius: 6px;
-  font-weight: bold;
+  background: #ffd58e !important; color: #54413c !important; border-radius: 6px; font-weight: bold;
 }
-
 .react-calendar__tile--active {
-  background: #54413c !important;
-  color: #fff !important;
-  border-radius: 6px;
+  background: #54413c !important; color: #fff !important; border-radius: 6px;
 }
 
 /* ================================
    TIMELINE
 ================================= */
-.timeline-card {
-  flex: 1;
-}
+.ad-timeline-card { flex: 1; }
+.ad-timeline-card h2 { margin-bottom: 15px; color: #54413c; }
 
-.timeline-card h2 {
-  margin-bottom: 15px;
-  color: #54413c;
+.ad-timeline {
+  list-style: none; padding: 0; margin: 0;
 }
-
-.timeline {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.timeline li {
-  display: flex;
-  align-items: center;
-  margin: 15px 0;
-  padding: 10px;
+.ad-timeline li {
+  display: flex; align-items: center;
+  margin: 15px 0; padding: 10px;
   background: rgba(255,255,255,0.4);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.timeline .dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 12px;
-}
+.ad-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 12px; }
+.ad-dot.red { background: #e74c3c; }
+.ad-dot.green { background: #27ae60; }
+.ad-dot.blue { background: #3498db; }
+.ad-dot.orange { background: #e67e22; }
 
-.dot.red    { background: #e74c3c; }
-.dot.green  { background: #27ae60; }
-.dot.blue   { background: #3498db; }
-.dot.orange { background: #e67e22; }
-.dot.purple { background: #9b59b6; }
+.ad-timeline-info { flex: 1; }
+.ad-timeline-title { margin: 0; font-weight: 600; color: #333; }
+.ad-timeline-time { font-size: 12px; color: #666; }
 
-.timeline-info {
-  flex: 1;
-}
-
-.timeline-title {
-  margin: 0;
-  font-weight: 600;
-  color: #333;
-}
-
-.timeline-time {
-  font-size: 12px;
-  color: #666;
-}
-
-.tag {
-  background: #e74c3c;
-  color: #fff;
-  font-size: 11px;
-  padding: 3px 6px;
-  border-radius: 6px;
-  font-weight: bold;
+.ad-tag {
+  background: #e74c3c; color: #fff; font-size: 11px;
+  padding: 3px 6px; border-radius: 6px; font-weight: bold;
 }
 
 /* ================================
    TASK LIST
 ================================= */
-.task-section h2 {
-  margin-bottom: 15px;
-  color: #54413c;
-}
+.ad-task-section h2 { margin-bottom: 15px; color: #54413c; }
 
-.task-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.task-list li {
-  padding: 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.3);
-  color: #333;
-  cursor: pointer;
-  transition: background 0.3s ease;
+.ad-task-list { list-style: none; padding: 0; margin: 0; }
+.ad-task-list li {
+  padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.3);
+  color: #333; cursor: pointer; transition: background 0.3s ease;
   border-radius: 6px;
 }
-
-.task-list li:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.task-list li.completed {
-  text-decoration: line-through;
-  color: #888;
-  font-style: italic;
-}
-
-/* ================================
-   STATS CARDS
-================================= */
-.stats-cards {
-  display: flex;
-  gap: 20px;
-  margin: 20px 0;
-}
-.stat-card {
-  background: #f4f7fb;
-  padding: 20px;
-  border-radius: 8px;
-  flex: 1;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-.stat-card h3 {
-  margin-bottom: 10px;
-  color: #555;
-}
-.stat-card p {
-  font-size: 22px;
-  font-weight: bold;
-  color: #333;
-}
-
-/* ================================
-   SECTION HEADER
-================================= */
-.section-header {
-  margin: 20px 0;
-  text-align: center;
-}
-
-.section-header h2 {
-  font-size: 28px;
-  background: linear-gradient(90deg, #36A2EB, #9966FF);
-  background-clip: text;              /* ✅ added standard property */
-  -webkit-background-clip: text;      /* ✅ prefixed for WebKit */
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-
-.section-header .subtitle {
-  font-size: 14px;
-  color: #666;
-  margin: 0;
-}
-
-/* ================================
-   CHART SECTION
-================================= */
-.chart-flex {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 40px;
-  margin: 20px 0;
-}
-
-.chart-details {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 20px;
-}
-
-.chart-legend-item {
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.legend-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-/* ================================
-   ROLE CARDS GRID
-================================= */
-.role-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.role-card {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease-in-out;
-}
-.role-card:hover {
-  transform: translateY(-4px);
-}
-
-.role-card-header {
-  padding: 12px 15px;
-  display: flex;
-  align-items: center;
-  color: white;
-  font-weight: bold;
-}
-.role-icon {
-  font-size: 22px;
-  margin-right: 8px;
-}
-
-.role-card-body {
-  padding: 15px;
-  background: #fff;
-  text-align: center;
-}
-.role-card-body p {
-  margin: 4px 0;
-  color: #444;
-}
-.role-card .emails {
-  margin-top: 10px;
-  font-size: 13px;
-  color: #555;
+.ad-task-list li:hover { background-color: rgba(255, 255, 255, 0.3); }
+.ad-task-list li.completed {
+  text-decoration: line-through; color: #888; font-style: italic;
 }

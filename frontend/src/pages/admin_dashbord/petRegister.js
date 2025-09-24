@@ -1,17 +1,16 @@
-// src/pages/admin_dashbord/PetRegisterPage.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // ✅ for logout redirect
+import { useNavigate } from "react-router-dom";
 import "../../styles/petRegister.css";
 
 const PetRegisterPage = () => {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // ✅
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("user"); // clear session
-    navigate("/login");              // send back to login page
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   const fetchPets = async () => {
@@ -40,43 +39,35 @@ const PetRegisterPage = () => {
     }
   };
 
-  if (loading) return <p className="loading">⏳ Loading pets...</p>;
+  if (loading) return <p className="pr-loading">⏳ Loading pets...</p>;
 
   return (
-    <div className="dashboard-container">
-      {/* Sidebar same across Admin pages + ✅ Logout */}
-      <aside className="sidebar">
-        <h2 className="logo">🐾 Admin</h2>
-        <ul>
-          <li>
-            <a href="/admin-dashboard">📊 Dashboard</a>
-          </li>
-          <li>
-            <a href="/admin-dashboard/feedbacks">📝 Feedback</a>
-          </li>
-          <li>
-            <a href="/admin-dashboard/pet-registration">🐕 Pet Registration</a>
-          </li>
-          <li>
-            <a href="/admin-dashboard/users">👥 Users</a>
-          </li>
-        </ul>
-        {/* ✅ Logout Button */}
-        <button className="logout-btn" onClick={handleLogout}>🚪 Logout</button>
+    <div className="pr-dashboard-container">
+      {/* Sidebar */}
+      <aside className="pr-sidebar">
+        <div>
+          <h2 className="pr-logo">🐾 Admin</h2>
+          <ul>
+            <li><a href="/admin-dashboard">📊 Dashboard</a></li>
+            <li><a href="/admin-dashboard/feedbacks">📝 Feedback</a></li>
+            <li><a href="/admin-dashboard/pet-registration">🐕 Pet Registration</a></li>
+            <li><a href="/admin-dashboard/users">👥 Users</a></li>
+          </ul>
+        </div>
+        <button className="pr-logout-btn" onClick={handleLogout}>🚪 Logout</button>
       </aside>
 
       {/* Main Content */}
-      <main className="dashboard-content">
-        {/* Styled topic like UsersPage */}
-        <div className="section-header">
+      <main className="pr-dashboard-content">
+        <div className="pr-section-header">
           <h2>🐕 Pet Registrations</h2>
-          <p className="subtitle">Manage and review all registered pets with their owners</p>
+          <p className="pr-subtitle">Manage and review all registered pets with their owners</p>
         </div>
 
         {pets.length === 0 ? (
           <p>No pets found.</p>
         ) : (
-          <table className="pet-table">
+          <table className="pr-table">
             <thead>
               <tr>
                 <th>Pet Name</th>
@@ -103,7 +94,7 @@ const PetRegisterPage = () => {
                   <td>{pet.OwnerEmail}</td>
                   <td>
                     <button
-                      className="delete-btn"
+                      className="pr-delete-btn"
                       onClick={() => handleDelete(pet._id)}
                       title="Delete Pet"
                     >

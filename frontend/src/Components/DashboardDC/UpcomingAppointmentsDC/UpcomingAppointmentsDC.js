@@ -29,8 +29,8 @@ function UpcomingAppointmentsDC() {
   const handleCheckIn = async (appointmentId) => {
     try {
       const res = await axios.post(CHECKIN_URL, {
-        appointmentId,              
-        checkedInBy: "Receptionist" 
+        appointmentId,
+        checkedInBy: "Receptionist",
       });
 
       if (res.status === 201) {
@@ -52,28 +52,28 @@ function UpcomingAppointmentsDC() {
   };
 
   return (
-    <div className="upcoming-container">
-      <h2>Upcoming Appointments</h2>
+    <div className="uaDC-container">
+      <h2 className="uaDC-title">Upcoming Appointments</h2>
       {upcomingAppointments.length > 0 ? (
-        <ul className="upcoming-list">
+        <ul className="uaDC-list">
           {upcomingAppointments.map((appt) => (
-            <li key={appt._id} className="upcoming-item">
-              <div className="upcoming-info">
+            <li key={appt._id} className="uaDC-item">
+              <div className="uaDC-info">
                 <strong>Owner:</strong> {appt.ownerName} |{" "}
                 <strong>Pet:</strong> {appt.petName} |{" "}
                 <strong>Date:</strong>{" "}
                 {new Date(appt.dateStay).toLocaleDateString("en-GB")} |{" "}
                 <strong>Status:</strong> {appt.status}
               </div>
-              <div className="action-btns">
+              <div className="uaDC-actions">
                 <button
-                  className="btn-view"
+                  className="uaDC-btn uaDC-btn-view"
                   onClick={() => viewDetails(appt._id)}
                 >
                   View
                 </button>
                 <button
-                  className="btn-checkin"
+                  className="uaDC-btn uaDC-btn-checkin"
                   onClick={() => handleCheckIn(appt._id)}
                 >
                   Check-In
@@ -83,7 +83,7 @@ function UpcomingAppointmentsDC() {
           ))}
         </ul>
       ) : (
-        <p>No upcoming appointments.</p>
+        <p className="uaDC-empty">No upcoming appointments.</p>
       )}
     </div>
   );

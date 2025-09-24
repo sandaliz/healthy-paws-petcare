@@ -1,31 +1,104 @@
-.reviews-dc-container {
+/* Reviews section of DayCare Dashboard (dcd-reviews-)  */
+
+.dcd-reviews-container {
   padding: 40px 20px;
   font-family: 'Roboto', sans-serif;
   background-color: #ffffff;
   color: #333;
 }
 
-/* PDF button */
-.pdf-btn {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: #fff;
+.dcd-reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.pdf-btn:hover {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 6px 14px rgba(239, 68, 68, 0.4);
+.dcd-reviews-header h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #54413C;
 }
 
-.header-actions {
+.dcd-reviews-header-actions {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.sentiment-filter {
+/* Dropdown */
+.dcd-reviews-filter {
   padding: 8px 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 0.95rem;
+}
+
+/* PDF Download Button */
+.dcd-reviews-pdf-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.dcd-reviews-pdf-btn:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 14px rgba(239, 68, 68, 0.4);
+}
+
+/* Grid */
+.dcd-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Review card */
+.dcd-review-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+.dcd-review-owner {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #54413C;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.dcd-review-rating { color: #fbbf24; }
+
+.dcd-review-sentiment.good { color: green; }
+.dcd-review-sentiment.bad { color: red; }
+.dcd-review-sentiment.neutral { color: #54413C; }
+
+.dcd-review-comment {
+  font-style: italic;
+  margin-top: 8px;
+}
+
+/* Stars */
+.dcd-star {
+  font-size: 18px;
+  margin-right: 2px;
+  color: #ccc;
+}
+.dcd-star.filled {
+  color: #fbbf24;
+}
+
+/* Empty state */
+.dcd-no-reviews {
+  text-align: center;
+  color: #666;
+  font-family: 'Roboto', sans-serif;
 }

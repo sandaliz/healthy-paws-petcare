@@ -1,153 +1,87 @@
-/* ===== Prescription Page Styling ===== */
-.prescription-table-wrapper {
-  margin-left: 270px; /* same sidebar spacing */
-  padding: 30px;
-  background: #FFFFFF;
-  min-height: 100vh;
-  font-family: 'Roboto', sans-serif;
-  color: #54413C;
+/* Table wrapper */
+.pl-table-wrapper {
+  margin-top: 20px;
+  overflow-x: auto;
 }
 
-/* Page Title */
-.prescription-table-wrapper h2 {
-  font-size: 26px;
-  font-weight: 700;
-  font-family: 'Poppins', sans-serif;
-  color: #54413C;
-  margin-bottom: 20px;
-}
-
-/* Prescription Table */
-.prescription-table {
+.pl-table {
   width: 100%;
   border-collapse: collapse;
-  background: #FFFFFF;
+  background: #fff;
+  border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  border-radius: 8px;
   overflow: hidden;
 }
 
-.prescription-table th {
+.pl-table thead {
   background-color: #54413C;
   color: #FFFFFF;
-  padding: 12px;
+}
+
+.pl-table th {
   text-align: left;
-  font-size: 14px;
-  font-family: 'Poppins', sans-serif;
-}
-
-.prescription-table td {
   padding: 12px;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
+}
+
+.pl-table td {
+  padding: 12px;
   border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #54413C;
 }
 
-.prescription-table tr:hover {
-  background-color: #FFF8F1; /* warm hover */
+.pl-table tr:hover {
+  background-color: #FFF8F1;
 }
 
-/* Item List inside Table Cell */
-.prescription-table td ul {
-  margin: 0;
-  padding-left: 20px;
-  list-style-type: disc;
-}
-
-.prescription-table td ul li {
-  margin-bottom: 4px;
-}
-
-/* ===== Status Badges ===== */
-.status-badge {
-  display: inline-block;
+/* Status Badges */
+.pl-status-badge {
   padding: 4px 10px;
-  border-radius: 20px;
+  border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
-  text-transform: capitalize;
+}
+.pl-status-paid {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+.pl-status-pending {
+  background-color: #FEE2E2;
+  color: #991B1B;
 }
 
-/* Paid = stick to warm neutral palette */
-.status-paid {
-  background-color: #FFD58E; /* warm golden peach */
-  color: #54413C;            /* dark brown text */
-  border: 1px solid #E6B875; /* subtle darker border */
-}
-
-/* Pending = softer beige tone */
-.status-pending {
-  background-color: #F6ECE6; /* light warm beige */
-  color: #8a4b21;            /* slightly darker earth tone */
-  border: 1px solid #e0c3b2;
-}
-
-/* ===== Action Buttons ===== */
-.action-buttons {
+/* Action buttons */
+.pl-action-buttons {
   display: flex;
-  gap: 10px;
+  gap: 6px;
 }
 
-/* Primary Send Button */
-.btn-send {
-  background-color: #54413C;
-  color: #FFFFFF;
+.pl-btn-send {
+  padding: 6px 12px;
   border: none;
   border-radius: 6px;
-  padding: 8px 14px;
   font-size: 13px;
   font-weight: 600;
+  font-family: 'Poppins', sans-serif;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  background-color: #54413C;
+  color: #fff;
+  transition: 0.2s;
 }
-
-.btn-send:hover {
+.pl-btn-send:hover {
   background-color: #FFD58E;
   color: #54413C;
-  transform: translateY(-2px);
 }
 
-/* Disabled Paid Button */
-.btn-paid {
-  background-color: #FFD58E; 
-  color: #54413C;            
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  opacity: 0.8;
-  cursor: not-allowed;
-}
-
-/* ===== Modal Styling ===== */
-.ReactModal__Content h3 {
-  font-family: 'Poppins', sans-serif;
-  color: #54413C;
-  margin-bottom: 15px;
-}
-
-.ReactModal__Content p {
-  font-size: 14px;
-  line-height: 1.4;
-  margin-bottom: 12px;
-}
-
-/* Modal buttons stay consistent */
-.ReactModal__Content .btn-send {
-  margin-top: 8px;
-}
-
-.ReactModal__Content button {
-  border: none;
-  border-radius: 6px;
+.pl-btn-paid {
   padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.ReactModal__Content button:hover:not(:disabled) {
-  transform: translateY(-2px);
+  font-family: 'Poppins', sans-serif;
+  background-color: #FFD58E;
+  color: #54413C;
 }

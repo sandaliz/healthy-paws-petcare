@@ -7,7 +7,6 @@ function DashboardDC() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Determine active tab from URL
   const path = location.pathname.split('/')[2] || 'dashboard';
   const activeTab = (() => {
     switch (path) {
@@ -22,39 +21,30 @@ function DashboardDC() {
 
   const handleSetActiveTab = (tab) => {
     switch (tab) {
-      case 'todaysPets':
-        navigate('/dashboardDC/todaysPets');
-        break;
-      case 'pending':
-        navigate('/dashboardDC/pendingAppointments');
-        break;
-      case 'upcoming':
-        navigate('/dashboardDC/upcomingAppointments');
-        break;
-      case 'history':
-        navigate('/dashboardDC/appointmentHistory');
-        break;
-      case 'reviews':
-        navigate('/dashboardDC/reviews');
-        break;  
-      default:
-        navigate('/dashboardDC');
+      case 'todaysPets': navigate('/dashboardDC/todaysPets'); break;
+      case 'pending': navigate('/dashboardDC/pendingAppointments'); break;
+      case 'upcoming': navigate('/dashboardDC/upcomingAppointments'); break;
+      case 'history': navigate('/dashboardDC/appointmentHistory'); break;
+      case 'reviews': navigate('/dashboardDC/reviews'); break;
+      default: navigate('/dashboardDC');
     }
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dcd-container">
       <SidebarDC
         activeTab={activeTab}
         setActiveTab={handleSetActiveTab}
         todaysPetsCount={0}
         pendingAppointmentsCount={0}
       />
-      <main className="dashboard-main">
-        <header className="dashboard-header">
+      <main className="dcd-main">
+        <header className="dcd-header">
           <h1>Daycare Dashboard</h1>
         </header>
-        <Outlet /> {/* Nested route content renders here */}
+        <div className="dcd-content">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
