@@ -1,0 +1,93 @@
+/* ================================
+   PET REGISTER ADMIN CONTAINER
+================================= */
+.apr-container {
+  display: flex;
+  height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #ffd58e, #54413c);
+  color: #333;
+}
+
+/* ================================
+   MAIN CONTENT
+================================= */
+.apr-content {
+  flex: 1;
+  margin-left: 240px; /* leave space for sidebar */
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* ================================
+   HEADER
+================================= */
+.apr-header h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #54413c;
+  margin-bottom: 5px;
+}
+
+.apr-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* ================================
+   LOADING TEXT
+================================= */
+.apr-loading {
+  margin-left: 260px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* ================================
+   TABLE
+================================= */
+.apr-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+.apr-table th {
+  background: #54413c;
+  color: white;
+  padding: 12px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.apr-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.apr-table tr:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ================================
+   DELETE BUTTON
+================================= */
+.apr-delete-btn {
+  background: #e74c3c;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 13px;
+}
+
+.apr-delete-btn:hover {
+  background: #c0392b;
+}

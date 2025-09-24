@@ -1,0 +1,162 @@
+/* ================================
+   USERS PAGE CONTAINER
+================================= */
+.aup-container {
+  display: flex;
+  height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #f8f9fd, #e1e5f2);
+  color: #333;
+}
+
+/* ================================
+   MAIN CONTENT
+================================= */
+.aup-content {
+  flex: 1;
+  margin-left: 240px; /* keep space for sidebar */
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* ================================
+   HEADER
+================================= */
+.aup-header h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.aup-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* ================================
+   LOADING & ERROR
+================================= */
+.aup-loading,
+.aup-error {
+  margin-left: 260px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+/* ================================
+   SUMMARY STATS CARDS
+================================= */
+.aup-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.aup-stat-card {
+  flex: 1;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.aup-stat-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.aup-stat-card p {
+  font-size: 24px;
+  font-weight: bold;
+  color: #222;
+  margin-top: 8px;
+}
+
+/* ================================
+   PIE CHART
+================================= */
+.aup-chart-section {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.aup-pie {
+  width: 280px;
+  height: 280px;
+}
+
+.aup-legend {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.aup-legend-item {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.aup-legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* ================================
+   ROLE CARDS
+================================= */
+.aup-role-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.aup-role-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.25s;
+}
+
+.aup-role-card:hover {
+  transform: translateY(-6px);
+}
+
+.aup-role-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  padding: 12px 16px;
+}
+
+.aup-role-icon {
+  font-size: 18px;
+}
+
+.aup-role-card-body {
+  padding: 16px;
+}
+
+.aup-role-card-body p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.aup-role-emails p {
+  font-size: 13px;
+  margin: 2px 0;
+  color: #555;
+}

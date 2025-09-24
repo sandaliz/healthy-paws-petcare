@@ -1,0 +1,77 @@
+/* Scoped styles JUST for Header component */
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5rem;
+  padding: 0 1rem;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  color: #2D2D2D;
+  line-height: 1.6;
+  background: linear-gradient(135deg, #fff7e6, #ffe6cc); /* Smooth light background */
+  border-radius: 16px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.header-img {
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  border: 4px solid #54413C; /* Matches button color */
+}
+
+.header-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.875rem; /* sm:text-3xl equivalent */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #2D2D2D;
+}
+
+.header-wave {
+  width: 2rem;
+  aspect-ratio: 1 / 1;
+}
+
+.header-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.25rem; /* sm:5xl equivalent */
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2D2D2D;
+}
+
+.header-text {
+  max-width: 500px;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  color: #444;
+}
+
+.header-btn {
+  background-color: #54413C;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.7rem 2.2rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(84, 65, 60, 0.2);
+  transition: all 0.3s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.header-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(84, 65, 60, 0.3);
+}
