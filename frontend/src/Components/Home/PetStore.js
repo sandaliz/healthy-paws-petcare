@@ -17,9 +17,7 @@ const PetStore = () => {
           <span className="highlight-text">Trusted Companion</span>
         </h2>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-          veniam, quis nostrud exercitation ullamco laboris nisi ut.
+          We believe every pet deserves love, comfort, and the very best products to keep them happy and healthy. From nutritious food to cozy beds and playful toys, we’re here to make caring for your furry and feathered! friends simple and joyful.
         </p>
         <div className="petstore-buttons">
           <button className="glass-btn highlight">Shop Now</button>
