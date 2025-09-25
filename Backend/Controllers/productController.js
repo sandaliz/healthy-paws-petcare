@@ -12,6 +12,23 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
+// 🔹 Get single product by ID
+export const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json(product);
+  } catch (err) {
+    console.error("Error fetching product by ID:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 // 🔹 Add new product
 export const addProducts = async (req, res) => {
   try {
@@ -105,10 +122,9 @@ export const getTopFoods = async (req, res) => {
   }
 };
 
-// 🔹 Insights - Stock Report (🔧 fixed)
+// 🔹 Insights - Stock Report
 export const generateStockReport = async (req, res) => {
   try {
-    // Return more fields needed by frontend PDF
     const data = await Product.find().select("name category cost totalSold currantStock minimumThreshold");
     res.json(data);
   } catch (err) {

@@ -1,7 +1,46 @@
-/* Table wrapper */
+/* ---------- Dashboard Layout ---------- */
+.dp-dashboard {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: #fdfdfc;
+}
+
+/* Sidebar */
+.dp-sidebar {
+  width: 250px;
+  background-color: #4A2E2B;
+  color: white;
+  padding: 20px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Main Content */
+.dp-main-content {
+  margin-left: 250px;              /* leave space for sidebar */
+  padding: 20px 30px;
+  width: calc(100% - 250px);       /* fill rest of viewport */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+/* Ensure all direct children like search bar, tables stretch fully */
+.dp-main-content > * {
+  width: 100%;
+}
+
+/* ---------- Table Wrapper ---------- */
 .dp-product-table-wrapper {
   margin-top: 20px;
   overflow-x: auto;
+  width: 100%;
+  flex-grow: 1;
 }
 
 .dp-product-table {
@@ -11,9 +50,11 @@
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   overflow: hidden;
+  table-layout: auto;   /* lets columns adapt */
+  min-width: 100%;      /* force table to span full content width */
 }
 
-/* Table Header */
+/* ---------- Table Header ---------- */
 .dp-product-table thead {
   background-color: #54413C;
   color: #FFFFFF;
@@ -22,11 +63,11 @@
 .dp-product-table th {
   text-align: left;
   padding: 12px;
-  font-family: 'Poppins', sans-serif;
   font-size: 14px;
+  white-space: nowrap; /* keep headers neat */
 }
 
-/* Table Cells */
+/* ---------- Table Body ---------- */
 .dp-product-table td {
   padding: 12px;
   border-bottom: 1px solid #eee;
@@ -34,12 +75,12 @@
   color: #54413C;
 }
 
-/* Hover effect */
+/* Hover */
 .dp-product-table tr:hover {
   background-color: #FFF8F1;
 }
 
-/* Status Badges */
+/* ---------- Status Badges ---------- */
 .dp-status-badge {
   padding: 4px 10px;
   border-radius: 12px;
@@ -55,10 +96,11 @@
   color: #991B1B;
 }
 
-/* Action buttons */
+/* ---------- Action Buttons ---------- */
 .dp-action-buttons {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap; /* keeps buttons tidy if space is tight */
 }
 
 .dp-action-buttons button {

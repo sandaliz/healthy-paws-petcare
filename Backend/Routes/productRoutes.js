@@ -7,6 +7,7 @@ const router = express.Router();
 
 // CRUD
 router.get("/", productController.getAllProducts);
+router.get("/:id", productController.getProductById);   // ✅ NEW: get single product by ID
 router.post("/", upload.single("image"), productController.addProducts);
 router.put("/:id", upload.single("image"), productController.updateProducts);
 router.delete("/:id", productController.deleteProducts);
@@ -17,4 +18,4 @@ router.get("/insights/fast-moving", productController.getFastestMoving);
 router.get("/insights/top-foods", productController.getTopFoods);
 router.get("/insights/stock-report", productController.generateStockReport);
 
-export default router;  // ✅ replaces module.exports
+export default router;
