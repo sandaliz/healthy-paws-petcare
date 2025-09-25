@@ -1,11 +1,13 @@
 import React from "react";
 import { FaComments } from "react-icons/fa"; // Chat bubble icon
+import { useNavigate } from "react-router-dom"; // ✅ Router hook
 import "./ChatbotButton.css";
 
 export default function ChatbotButton() {
+  const navigate = useNavigate(); // ✅ Navigation hook
+
   const handleClick = () => {
-    alert("Chatbot will open here! 🤖"); 
-    // Later you can replace with chatbot modal logic or API
+    navigate("/chatbot"); // ✅ Redirect to chatbot route
   };
 
   return (

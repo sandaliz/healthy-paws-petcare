@@ -21,7 +21,6 @@ const Home = () => {
       <About />
       <Footer />
 
-      {/* ✅ Fixed chatbot button, always visible at bottom-right */}
       <ChatbotButton />
     </div>
   );

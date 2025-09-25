@@ -16,7 +16,7 @@ function SideBarDC({ activeTab, setActiveTab, todaysPetsCount, pendingAppointmen
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <h2>HealthyPaws Daycare 🐾</h2>
+        <h2>HealthyPaws Daycare</h2>
       </div>
       
       <nav className="sidebar-nav">
