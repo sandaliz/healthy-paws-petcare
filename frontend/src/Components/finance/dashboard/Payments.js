@@ -25,7 +25,7 @@ export default function Payments() {
   const PAGE_SIZE = 10;
 
   const [view, setView] = useState(null);
-  const [confirmPay, setConfirmPay] = useState(null); // confirm popup
+  const [confirmPay, setConfirmPay] = useState(null);
 
   const load = async () => {
     try {
@@ -59,10 +59,7 @@ export default function Payments() {
   }, [payments, method, status, search]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const pageItems = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-    return filtered.slice(start, start + PAGE_SIZE);
-  }, [filtered, page]);
+  const pageItems = useMemo(() => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [filtered, page]);
 
   const confirmOffline = async (p) => {
     try {
@@ -112,7 +109,7 @@ export default function Payments() {
           <select className="input" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
             {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
-          <label className="check" style={{ marginLeft: 6 }}>
+          <label className="check check-exclude-failed">
             <input type="checkbox" checked={excludeFailed} onChange={(e) => { setExcludeFailed(e.target.checked); setPage(1); }} />
             <span>Exclude failed</span>
           </label>
@@ -146,12 +143,8 @@ export default function Payments() {
                     <td className="mono">{p.invoiceID?.invoiceID || '-'}</td>
                     <td>
                       <div className="owner">
-                        <div className="name">
-                          {p.userID?.OwnerName || p.invoiceID?.userID?.OwnerName || '-'}
-                        </div>
-                        <div className="email">
-                          {p.userID?.OwnerEmail || p.invoiceID?.userID?.OwnerEmail || '-'}
-                        </div>
+                        <div className="name">{p.userID?.OwnerName || p.invoiceID?.userID?.OwnerName || '-'}</div>
+                        <div className="email">{p.userID?.OwnerEmail || p.invoiceID?.userID?.OwnerEmail || '-'}</div>
                       </div>
                     </td>
                     <td><MethodPill method={p.method} /></td>
@@ -213,7 +206,7 @@ function PaymentModal({ open, onClose, p }) {
         <div className="kv"><span>Invoice</span><b className="mono">{p.invoiceID?.invoiceID || '-'}</b></div>
         <div className="kv"><span>Created</span><b>{fmtDate(p.createdAt)}</b></div>
       </div>
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end pm-modal-actions">
         <button className="btn ghost" onClick={onClose}>Close</button>
       </div>
     </Modal>
@@ -224,7 +217,7 @@ function ConfirmModal({ open, onClose, title, message, onConfirm }) {
   return (
     <Modal open={open} onClose={onClose} title={title}>
       <div className="vlist"><div className="kv"><b>{message}</b></div></div>
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end pm-confirm-actions">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn primary" onClick={onConfirm}>Yes, proceed</button>
       </div>

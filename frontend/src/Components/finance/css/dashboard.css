@@ -173,3 +173,28 @@
 }
 .stripe-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 @media (max-width: 720px) { .stripe-grid-3 { grid-template-columns: 1fr; } }
+
+.inv-add-item { margin-top: 8px; }
+.inv-totals-actions { margin-top: 10px; }
+.inv-edit-notice { margin-bottom: 10px; }
+.inv-status-notice { margin-top: 6px; }
+.inv-status-actions { margin-top: 10px; }
+.inv-items-card { margin-top: 8px; }
+.inv-view-actions { margin-top: 10px; }
+
+.pm-modal-actions { margin-top: 10px; }
+.pm-confirm-actions { margin-top: 10px; }
+
+.rf-view-actions { margin-top: 10px; }
+.rf-reject-actions { margin-top: 10px; }
+
+.sal-create-actions { margin-top: 10px; }
+.sal-edit-actions { margin-top: 10px; }
+
+.loyalty-actions {
+  margin-top: 10px;
+}
+
+.check-exclude-failed { margin-left: 6px; }
+.pm-modal-actions { margin-top: 10px; }
+.pm-confirm-actions { margin-top: 10px; }

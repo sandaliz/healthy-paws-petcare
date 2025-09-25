@@ -1,5 +1,5 @@
 import Loyalty from "../../Model/finance/loyaltyModel.js";
-import Register from "../../Model/registerModel.js";
+import register from "../../Model/register.js";
 
 export const getAllLoyalty = async (req, res) => {
   try {

@@ -7,7 +7,6 @@ import './css/clientPay.css';
 export default function ClientPay() {
   const nav = useNavigate();
 
-  // inject Google fonts once
   useEffect(() => {
     const id = 'hp-fonts';
     if (!document.getElementById(id)) {
@@ -19,12 +18,10 @@ export default function ClientPay() {
     }
   }, []);
 
-  const [ownerId, setOwnerId] = useState(localStorage.getItem('hp_ownerId') || '');
   const [invoiceId, setInvoiceId] = useState('');
   const [invoice, setInvoice] = useState(null);
   const [loadingInv, setLoadingInv] = useState(false);
 
-  // Offline coupon (shown only in modal)
   const [offlineCouponCode, setOfflineCouponCode] = useState('');
   const [offlineCouponId, setOfflineCouponId] = useState(null);
   const [offlineDiscount, setOfflineDiscount] = useState(0);
@@ -33,18 +30,26 @@ export default function ClientPay() {
   const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  // fetch invoice when invoiceId set
+  const [invoiceError, setInvoiceError] = useState('');
+
   useEffect(() => {
-    if (!invoiceId) { setInvoice(null); return; }
+    if (!invoiceId) {
+      setInvoice(null);
+      return;
+    }
     let cancelled = false;
     (async () => {
       try {
         setLoadingInv(true);
         const inv = await api.get(`/invoice/${invoiceId}`);
-        if (!cancelled) setInvoice(inv);
+        if (!cancelled) {
+          setInvoice(inv);
+          setInvoiceError('');
+        }
       } catch (e) {
         if (!cancelled) {
           setInvoice(null);
+          setInvoiceError('Invoice not found or invalid ID');
           toast.error(e.message || 'Failed to load invoice');
         }
       } finally {
@@ -53,12 +58,6 @@ export default function ClientPay() {
     })();
     return () => { cancelled = true; }
   }, [invoiceId]);
-
-  const saveOwner = () => {
-    if (!ownerId.trim()) return toast.error('Enter your Account _id');
-    localStorage.setItem('hp_ownerId', ownerId.trim());
-    toast.success('Saved your ID');
-  };
 
   const applyOfflineCoupon = async () => {
     try {
@@ -87,19 +86,22 @@ export default function ClientPay() {
 
   const confirmOffline = async () => {
     try {
-      if (!invoice || !ownerId) return toast.error('Owner and invoice required');
+      if (!invoice) return toast.error('Invoice required');
       setBusy(true);
+
       const newPayment = await api.post('/payment/offline', {
         invoiceID: invoice._id,
-        userID: ownerId,
+        userID: invoice.userID?._id || invoice.userID,
         method: 'Cash',
         couponId: offlineCouponId || undefined,
       });
-      toast.success('Recorded: Pay at counter within 10 days!');
+
+      toast.success('Payment recorded! Pay at reception within 10 days.');
       setShowOfflineModal(false);
+
       setTimeout(() => {
-        nav(`/pay/summary?user=${ownerId}&new=${newPayment._id}`);
-        }, 900);
+        nav(`/pay/summary?user=${invoice.userID?._id || invoice.userID}&new=${newPayment.payment._id}`);
+      }, 900);
     } catch (e) {
       toast.error(e.message || 'Failed to record offline payment');
     } finally {
@@ -128,44 +130,32 @@ export default function ClientPay() {
       <div className="page-header">
         <div>
           <h1>Make a Payment</h1>
-          <p className="muted">Enter your details, review your invoice, and choose how you’d like to pay.</p>
+          <p className="muted">Enter your invoice ID to review it, then select how you’d like to pay.</p>
         </div>
       </div>
 
       <div className="card">
-        {/* Section: IDs */}
         <div className="section">
-          <h2 className="section-title">Your Details</h2>
-          <div className="field">
-            <label>Your Account ID (Mongo _id)</label>
-            <div className="row">
-              <input
-                className="input"
-                placeholder="e.g. 66f…"
-                value={ownerId}
-                onChange={(e) => setOwnerId(e.target.value)}
-              />
-              <button className="btn secondary" onClick={saveOwner}>Save</button>
-            </div>
-          </div>
-
+          <h2 className="section-title">Find Your Invoice</h2>
           <div className="field">
             <label>Invoice ID (Mongo _id)</label>
             <input
-              className="input"
-              placeholder="e.g. 66f…"
+              className={`input ${invoiceError ? 'input-error' : ''}`}
+              placeholder="e.g. 66f4c0..."
               value={invoiceId}
-              onChange={(e) => setInvoiceId(e.target.value)}
+              onChange={(e) => {
+                setInvoiceId(e.target.value);
+                setInvoiceError('');
+              }}
             />
-            {loadingInv && <div className="muted" style={{ marginTop: 8 }}>Loading invoice…</div>}
+            {loadingInv && <div className="muted loading-small">Loading invoice…</div>}
+            {invoiceError && <div className="error">{invoiceError}</div>}
           </div>
         </div>
 
-        {/* Section: Invoice */}
         {!!invoice && !loadingInv && (
           <div className="section">
             <h2 className="section-title">Invoice Summary</h2>
-
             <div className="summary-grid">
               <div className="summary-item">
                 <span className="label">Invoice</span>
@@ -183,10 +173,7 @@ export default function ClientPay() {
 
             <div className="items-wrap">
               <div className="items-header">
-                <div>Description</div>
-                <div>Qty</div>
-                <div>Rate</div>
-                <div className="right">Line Total</div>
+                <div>Description</div><div>Qty</div><div>Rate</div><div className="right">Line Total</div>
               </div>
               <div className="items-body">
                 {(invoice.lineItems || []).map((li, i) => {
@@ -204,64 +191,52 @@ export default function ClientPay() {
                 })}
               </div>
               <div className="totals">
-                <div className="totals-row">
-                  <span>Subtotal</span>
-                  <span className="mono">{fmtLKR(totalBeforeDiscount)}</span>
-                </div>
-                <div className="totals-row grand">
-                  <span>Amount Due</span>
-                  <span className="mono">{fmtLKR(totalBeforeDiscount)}</span>
-                </div>
+                <div className="totals-row"><span>Subtotal</span><span className="mono">{fmtLKR(totalBeforeDiscount)}</span></div>
+                <div className="totals-row grand"><span>Amount Due</span><span className="mono">{fmtLKR(totalBeforeDiscount)}</span></div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Section: Actions (coupon now only shown after choosing method) */}
-        <div className="section">
-          <h2 className="section-title">Choose your method</h2>
-          <div className="row wrap">
-            <button
-              className="btn primary"
-              onClick={() => {
-                setShowOfflineModal(true);
-                // reset offline coupon on open
-                setOfflineCouponCode('');
-                setOfflineCouponId(null);
-                setOfflineDiscount(0);
-              }}
-              disabled={!invoice || !ownerId}
-            >
-              Pay at Counter (Offline)
-            </button>
-            <button
-              className="btn dark"
-              onClick={() => {
-                if (!invoice || !ownerId) return toast.error('Enter owner and invoice first');
-                const qp = new URLSearchParams();
-                qp.set('invoice', invoice._id);
-                // No coupon in main page now; handled on online page
-                nav(`/pay/online?${qp.toString()}`);
-              }}
-              disabled={!invoice || !ownerId}
-            >
-              Pay Online (Card)
-            </button>
+        {invoice && (
+          <div className="section">
+            <h2 className="section-title">Choose your method</h2>
+            <div className="row wrap">
+              <button
+                className="btn primary"
+                onClick={() => {
+                  setShowOfflineModal(true);
+                  setOfflineCouponCode('');
+                  setOfflineCouponId(null);
+                  setOfflineDiscount(0);
+                }}
+              >
+                Pay at Counter (Offline)
+              </button>
+              <button
+                className="btn dark"
+                onClick={() => {
+                  const qp = new URLSearchParams();
+                  qp.set('invoice', invoice._id);
+                  nav(`/pay/online?${qp.toString()}`);
+                }}
+              >
+                Pay Online (Card)
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Offline modal with coupon support */}
       {showOfflineModal && (
         <div className="modal">
           <div className="modal-box">
             <h3>Confirm offline payment</h3>
-            <p className="muted" style={{ marginTop: 4 }}>
-              This will create a pending payment. Please pay at Healthy Paws clinic
+            <p className="muted offline-msg">
+              This will create a <b>pending payment</b>. Please pay at Healthy Paws reception
               {invoice ? ` before ${fmtDate(invoice.dueDate)}` : ''}.
             </p>
 
-            {/* Coupon row inside modal */}
             <div className="modal-coupon">
               <label className="modal-coupon-label">Have a coupon?</label>
               <div className="row">
@@ -280,15 +255,16 @@ export default function ClientPay() {
               </div>
 
               {offlineDiscount > 0 && (
-                <div className="applied" style={{ marginTop: 6 }}>
-                  Discount applied: <b>{fmtLKR(offlineDiscount)}</b> — Pay at counter: <b>{fmtLKR(offlineAmountAfterDiscount)}</b>
+                <div className="applied-discount">
+                  Discount applied: <b>{fmtLKR(offlineDiscount)}</b> — 
+                  Pay at counter: <b>{fmtLKR(offlineAmountAfterDiscount)}</b>
                 </div>
               )}
             </div>
 
-            <div className="row end" style={{ marginTop: 12 }}>
+            <div className="row end offline-actions">
               <button className="btn ghost" onClick={() => setShowOfflineModal(false)}>Close</button>
-              <button className="btn primary" onClick={confirmOffline} disabled={busy || !invoice || !ownerId}>
+              <button className="btn primary" onClick={confirmOffline} disabled={busy}>
                 {busy ? 'Saving…' : 'Confirm'}
               </button>
             </div>
@@ -314,12 +290,10 @@ function toNum(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
 function fmtLKR(n) {
   try {
     return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR', maximumFractionDigits: 2 }).format(Number(n) || 0);
-  } catch {
-    return `LKR ${Number(n || 0).toFixed(2)}`;
-  }
+  } catch { return `LKR ${Number(n || 0).toFixed(2)}`; }
 }
 function fmtDate(d) {
   if (!d) return '-';
-  try { return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
+  try { return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
   catch { return String(d); }
 }

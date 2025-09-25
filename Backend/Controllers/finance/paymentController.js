@@ -331,7 +331,7 @@ export const createStripePayment = async (req, res) => {
           amount: Math.round(finalAmount * 100),
           currency: usedCurrency,
           metadata: { invoiceID: String(invoiceID), userID: String(canonicalOwnerId) },
-          automatic_payment_methods: { enabled: true },
+          automatic_payment_methods: { enabled: false },
         });
         payment.stripePaymentIntentId = newPI.id;
       }

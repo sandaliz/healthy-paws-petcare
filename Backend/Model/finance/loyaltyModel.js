@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const loyaltySchema = new mongoose.Schema(
   {
-    userID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", required: true, unique: true },
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: "register", required: true, unique: true },
     points: { type: Number, default: 0, min: 0 },
     tier: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], default: "Bronze" },
   },

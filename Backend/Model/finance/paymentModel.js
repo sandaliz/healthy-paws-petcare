@@ -5,7 +5,7 @@ const paymentSchema = new mongoose.Schema(
   {
     paymentID: { type: String, required: true, unique: true }, // business id e.g., PAY-xxxx
     invoiceID: { type: mongoose.Schema.Types.ObjectId, ref: "Invoice", required: true },
-    userID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", required: true },
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: "register", required: true },
 
     method: {
       type: String,

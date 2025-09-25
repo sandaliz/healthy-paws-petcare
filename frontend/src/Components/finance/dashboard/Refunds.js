@@ -47,8 +47,7 @@ export default function Refunds() {
         return owner.includes(q) || pid.includes(q) || inv.includes(q);
       });
     }
-    // Show pending first
-    arr = [...arr].sort((a,b) => (a.status==='Pending'? -1:1));
+    arr = [...arr].sort((a, b) => (a.status === 'Pending' ? -1 : 1));
     return arr;
   }, [items, search, status]);
 
@@ -191,7 +190,7 @@ function RefundViewModal({ open, onClose, r }) {
         <div className="kv"><span>Submitted</span><b>{fmtDate(r.createdAt)}</b></div>
         {r.processedAt && <div className="kv"><span>Processed</span><b>{fmtDate(r.processedAt)}</b></div>}
       </div>
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end rf-view-actions">
         <button className="btn ghost" onClick={onClose}>Close</button>
       </div>
     </Modal>
@@ -206,7 +205,7 @@ function RejectModal({ open, onClose, onReject }) {
         <label>Reason</label>
         <textarea className="input" rows={4} value={reason} onChange={(e) => setReason(e.target.value)} />
       </div>
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end rf-reject-actions">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn primary" onClick={() => onReject(reason)}>Reject</button>
       </div>

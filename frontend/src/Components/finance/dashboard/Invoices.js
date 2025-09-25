@@ -10,7 +10,7 @@ import {
 import '../css/dashboard.css';
 
 const STATUS_OPTIONS = ['All', 'Pending', 'Overdue', 'Cancelled', 'Paid', 'Refunded'];
-const ALLOWED_STATUS_UPDATE = ['Pending', 'Overdue', 'Cancelled']; // Paid/Refunded are set via payment/refund flows
+const ALLOWED_STATUS_UPDATE = ['Pending', 'Overdue', 'Cancelled'];
 
 export default function Invoices() {
   const [invoices, setInvoices] = useState([]);
@@ -22,9 +22,9 @@ export default function Invoices() {
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 
-  const [view, setView] = useState(null);            // invoice to view
-  const [edit, setEdit] = useState(null);            // invoice to edit
-  const [statusEdit, setStatusEdit] = useState(null);// invoice to update status
+  const [view, setView] = useState(null);
+  const [edit, setEdit] = useState(null);
+  const [statusEdit, setStatusEdit] = useState(null);
   const [createOpen, setCreateOpen] = useState(false);
 
   const load = async () => {
@@ -291,7 +291,7 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
             </div>
           );
         })}
-        <div className="row end" style={{ marginTop: 8 }}>
+        <div className="row end inv-add-item">
           <button className="btn" onClick={addItem}><Plus size={16} /> Add item</button>
         </div>
       </div>
@@ -306,7 +306,7 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
         </table>
       </div>
 
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end inv-totals-actions">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Create'}</button>
       </div>
@@ -329,7 +329,7 @@ function ViewInvoiceModal({ open, onClose, invoice }) {
         <div className="kv"><span>Due</span><b>{fmtDate(invoice.dueDate)}</b></div>
       </div>
 
-      <div className="items-card" style={{ marginTop: 8 }}>
+      <div className="items-card inv-items-card">
         <div className="items-header">Items</div>
         <ul className="items-list">
           {(invoice.lineItems || []).map((li, i) => (
@@ -352,7 +352,7 @@ function ViewInvoiceModal({ open, onClose, invoice }) {
         </div>
       </div>
 
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end inv-view-actions">
         <button className="btn primary" onClick={() => {
           const url = `${window.location.origin}/pay/online?invoice=${invoice._id}`;
           navigator.clipboard.writeText(url).then(() => toast.success('Client payment link copied'));
@@ -363,7 +363,7 @@ function ViewInvoiceModal({ open, onClose, invoice }) {
   );
 }
 
-/* Edit Invoice (line items only; restricted if Paid/Refunded) */
+/* Edit Invoice */
 function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
   const restricted = ['Paid','Refunded'].includes(invoice.status);
   const [items, setItems] = useState(() => (invoice.lineItems || []).map(li => ({
@@ -402,7 +402,7 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
   return (
     <Modal open={open} onClose={onClose} title={`Edit Invoice ${invoice.invoiceID || invoice._id}`}>
       {restricted && (
-        <div className="notice error" style={{ marginBottom: 10 }}>
+        <div className="notice error inv-edit-notice">
           This invoice is {invoice.status}. Line items cannot be edited.
         </div>
       )}
@@ -424,7 +424,7 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
           );
         })}
         {!restricted && (
-          <div className="row end" style={{ marginTop: 8 }}>
+          <div className="row end inv-add-item">
             <button className="btn" onClick={addItem}><Plus size={16} /> Add item</button>
           </div>
         )}
@@ -440,7 +440,7 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
         </table>
       </div>
 
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end inv-totals-actions">
         <button className="btn ghost" onClick={onClose}>Close</button>
         {!restricted && <button className="btn primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Save changes'}</button>}
       </div>
@@ -448,7 +448,7 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
   );
 }
 
-/* Status picker */
+/* Status picker modal */
 function StatusModal({ open, onClose, invoice, onUpdate }) {
   const [next, setNext] = useState(() => ALLOWED_STATUS_UPDATE.includes(invoice.status) ? invoice.status : 'Pending');
 
@@ -460,10 +460,10 @@ function StatusModal({ open, onClose, invoice, onUpdate }) {
           {ALLOWED_STATUS_UPDATE.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
-      <div className="notice" style={{ marginTop: 6 }}>
+      <div className="notice inv-status-notice">
         Paid and Refunded are set via payment/refund flows only.
       </div>
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end inv-status-actions">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn primary" onClick={() => onUpdate(invoice._id, next)}>Update</button>
       </div>
