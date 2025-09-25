@@ -21,6 +21,10 @@ import careRoutes from "./Routes/CareRoutes.js";
 import reviewRouter from "./Routes/ReviewsRoutes.js";
 import dailyLogsRouter from "./Routes/DailyLogsRoutes.js";
 import checkInOutRouter from "./Routes/CheckInOutRoutes.js";
+import emergencyRoutes from "./Routes/EmergencyRoutes.js";
+import reminderRoutes from "./Routes/ReminderRoutes.js";
+import { scheduleReminder } from "./services/ReminderScheduler.js";
+
 
 import User from "./Model/userModel.js";
 import bcrypt from "bcryptjs";
@@ -68,10 +72,13 @@ app.post("/send-prescription", sendPrescriptionEmail);
 app.use("/checkout", checkoutRoutes);
 
 // Extra APIs
+scheduleReminder(); 
 app.use("/careCustomers", careRoutes);
 app.use("/reviews", reviewRouter);
 app.use("/dailyLogs", dailyLogsRouter);
 app.use("/checkinout", checkInOutRouter);
+app.use("/api/emergencies", emergencyRoutes);
+app.use("/api/reminders", reminderRoutes);
 
 // -------------------- Super Admin Auto-Creation --------------------
 const createSuperAdmin = async () => {

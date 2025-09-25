@@ -7,12 +7,13 @@ const URL = "http://localhost:5000/products";
 function Alerts() {
   const [notifications, setNotifications] = useState([]);
   const [alertTypeFilter, setAlertTypeFilter] = useState("all");
-  const [dateFilter, setDateFilter] = useState(""); // store selected date
+  const [dateFilter, setDateFilter] = useState("");
 
   useEffect(() => {
     axios.get(URL)
       .then(res => {
-        const allProducts = res.data.products || [];
+        // ✅ Backend returns an array, not { products: [] }
+        const allProducts = Array.isArray(res.data) ? res.data : res.data.products || [];
         const today = new Date();
         let alerts = [];
 
@@ -58,24 +59,24 @@ function Alerts() {
 
         setNotifications(alerts);
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log("Error fetching alerts:", err));
   }, []);
 
-  // 🔎 Filter Logic
+  // 🔎 Filtering logic
   const filteredNotifications = notifications.filter((notif) => {
     let matchesType =
       alertTypeFilter === "all" ? true : notif.type === alertTypeFilter;
 
     let matchesDate = true;
     if (dateFilter) {
-      let notifDate = notif.notificationDate.toLocaleDateString("en-CA"); // yyyy-mm-dd format
+      let notifDate = notif.notificationDate.toLocaleDateString("en-CA");
       matchesDate = notifDate === dateFilter;
     }
 
     return matchesType && matchesDate;
   });
 
-  // Group by Date after filtering
+  // 🔎 Group by Date
   const groupByDate = () => {
     const groups = {};
     filteredNotifications.forEach((n) => {
@@ -95,7 +96,7 @@ function Alerts() {
         <h1>Notifications & Alerts</h1>
       </div>
 
-      {/* 🔎 Filters */}
+      {/* Filters */}
       <div className="alerts-filters">
         {/* Filter by Alert Type */}
         <select
@@ -116,7 +117,12 @@ function Alerts() {
         />
 
         {/* Reset Filters */}
-        <button onClick={() => {setAlertTypeFilter("all"); setDateFilter("");}}>
+        <button
+          onClick={() => {
+            setAlertTypeFilter("all");
+            setDateFilter("");
+          }}
+        >
           Reset
         </button>
       </div>
@@ -175,9 +181,7 @@ function Alerts() {
           ))}
         </div>
       ) : (
-        <p className="all-stocked">
-          ✅ No alerts found for the selected filters!
-        </p>
+        <p className="all-stocked">No alerts found for the selected filters!</p>
       )}
     </div>
   );

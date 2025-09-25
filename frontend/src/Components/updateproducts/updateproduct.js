@@ -22,13 +22,16 @@ function Updateproduct() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const res = await axios.get("http://localhost:5000/products");
-      const product = res.data.products.find((p) => p._id === id);
-      if (product) {
+      try {
+        const res = await axios.get(`http://localhost:5000/products/${id}`);
+        let product = res.data;
+
         if (product.expirationDate) {
           product.expirationDate = product.expirationDate.split("T")[0];
         }
         setInputs(product);
+      } catch (err) {
+        console.error("Error fetching product:", err);
       }
     };
     fetchProduct();
@@ -42,21 +45,27 @@ function Updateproduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    Object.keys(inputs).forEach((key) => {
-      if (key === "expirationDate") {
-        formData.append(key, new Date(inputs.expirationDate).toISOString());
-      } else {
-        formData.append(key, inputs[key]);
-      }
-    });
-    if (file) formData.append("image", file);
+    try {
+      const formData = new FormData();
 
-    await axios.put(`http://localhost:5000/products/${id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" }
-    });
+      Object.keys(inputs).forEach((key) => {
+        if (key === "expirationDate") {
+          formData.append(key, new Date(inputs.expirationDate).toISOString());
+        } else {
+          formData.append(key, inputs[key]);
+        }
+      });
 
-    navigate("/product");
+      if (file) formData.append("image", file);
+
+      await axios.put(`http://localhost:5000/products/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      navigate("/product");
+    } catch (err) {
+      console.error("Error updating product:", err);
+    }
   };
 
   return (
@@ -90,7 +99,6 @@ function Updateproduct() {
           <option value="Accessory">Accessory</option>
           <option value="Toy">Toy</option>
           <option value="Grooming">Grooming</option>
-
         </select>
 
         <label>Status</label>

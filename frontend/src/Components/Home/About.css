@@ -7,7 +7,7 @@
   justify-content: flex-start;
 
   /* ✅ full background image */
-  background: url("D:\petcare\ITP_Project\frontend\public\images\aboutc.jpg") no-repeat center center/cover;
+  background: url("../../assets/aboutc.jpg") no-repeat center center/cover;
 }
 
 /* overlay tint (optional to keep text readable) */

@@ -10,6 +10,13 @@ const careSchema = new Schema(
       unique: true,
     },
 
+    // Foreign key reference to logged-in User
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // must match model name in UserModel.js
+      required: true,
+    },
+
     // Pet Owner Information
     ownerName: {
       type: String,

@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 
 
 // ---------------- Public pages ----------------
-import Home from './pages/Home';
+
 import Login from './pages/User_Management/Login';
 import Register from './pages/User_Management/Register'; 
 import EmailVerify from './pages/User_Management/EmailVerify';
@@ -19,11 +19,9 @@ import FeedbackList from './pages/Feed_Backs/FeedbackList';
 // ---------------- Dashboards ----------------
 import SuperAdminDashboard from './pages/User_Management/SuperAdminDashboard';
 import AdminDashboard from './pages/admin_dashbord/AdminDashboard';
-import UserDashboard from './pages/User_Management/UserDashboard';
 import FinanceManagerDashboard from './pages/User_Management/FinanceManagerDashbord';
-import InventoryManagerDashboard from './pages/User_Management/InventoryManagerDashboard';
-import PetCaretakerDashboard from './pages/User_Management/PetCaretakerDashbord';
 import ReceptionistDashboard from './pages/User_Management/ReceptionistDashbord';
+import UserDashboard from './pages/User_Management/UserDashboard';
 
 // ---------------- Registration pages ----------------
 import RegisterOwner from './pages/Register_pet/RegisterOwner';
@@ -91,7 +89,8 @@ function App() {
   return (
     <Routes>
       {/* -------- Public Routes -------- */}
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<InventoryHome />} />
+      <Route path="/home" element={<InventoryHome />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Register />} />
       <Route path="/reset-password" element={<ResetPassword />} />
@@ -107,11 +106,11 @@ function App() {
       {/* -------- Dashboards (Protected) -------- */}
       <Route path="/super-admin-dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
       <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-      <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
       <Route path="/finance-dashboard" element={<ProtectedRoute><FinanceManagerDashboard /></ProtectedRoute>} />
-      <Route path="/inventory-dashboard" element={<ProtectedRoute><InventoryManagerDashboard /></ProtectedRoute>} />
-      <Route path="/pet-caretaker-dashboard" element={<ProtectedRoute><PetCaretakerDashboard /></ProtectedRoute>} />
+      <Route path="/inventory-dashboard" element={<ProtectedRoute><InventoryLayout /></ProtectedRoute>} />
+      <Route path="/pet-caretaker-dashboard" element={<ProtectedRoute><DashboardDC /></ProtectedRoute>} />
       <Route path="/receptionist-dashboard" element={<ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>} />
+      <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
 
       {/* -------- Registration -------- */}
       <Route path="/register/owner" element={<RegisterOwner user={currentUser} />} />
@@ -130,7 +129,7 @@ function App() {
       <Route path="/admin-dashboard/petRegister" element={<PetRegisterPage />} />
 
       {/* -------- Inventory System -------- */}
-      <Route path="/home" element={<InventoryHome />} />
+
       <Route element={<InventoryLayout />}>
         <Route path="/product" element={<Products />} />
         <Route path="/addproduct" element={<Addproducts />} />
