@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import RefundRequest from "../../Model/finance/refundModel.js";
 import Payment from "../../Model/finance/paymentModel.js";
 import Invoice from "../../Model/finance/invoiceModel.js";
-import register from "../../Model/register.js";
+import register from "../../Model/Register.js";
 import Stripe from "stripe";
 import { sendRefundEmail, sendRefundRejectedEmail } from "../../config/finance/email.js";
 
@@ -34,7 +34,7 @@ export async function resolveOwnerDoc({ invoice, payment }) {
     try {
       const doc = await register.findById(id).select("OwnerName OwnerEmail").lean();
       if (doc) return doc;
-    } catch (_) {}
+    } catch (_) { }
   }
   return null;
 }

@@ -1,5 +1,5 @@
 import Loyalty from "../../Model/finance/loyaltyModel.js";
-import register from "../../Model/register.js";
+import register from "../../Model/Register.js";
 
 export const getAllLoyalty = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ export const addLoyaltyPoints = async (req, res) => {
     let loyalty = await Loyalty.findOne({ userID });
     if (!loyalty) loyalty = new Loyalty({ userID });
 
-    await loyalty.addPoints(amountSpent); 
+    await loyalty.addPoints(amountSpent);
     res.json({ message: "Points added and tier updated automatically", loyalty });
   } catch (err) {
     console.error("addLoyaltyPoints error:", err);
@@ -38,7 +38,7 @@ export const updateLoyaltyTier = async (req, res) => {
     const loyalty = await Loyalty.findById(id);
     if (!loyalty) return res.status(404).json({ message: "Loyalty record not found" });
 
-    await loyalty.updateTier(tier); 
+    await loyalty.updateTier(tier);
     res.json({ message: "Tier updated manually", loyalty });
   } catch (err) {
     console.error("updateLoyaltyTier error:", err);
