@@ -15,16 +15,16 @@ const PetDaycare = () => {
         {/* RIGHT SIDE CONTENT */}
         <div className="daycare-content">
           <h2>Pet Daycare & Training</h2>
-          <p className="subtitle">caring, playful and safe environment for your pets</p>
+          <p className="subtitle">At our Pet Daycare, we create a loving environment where every wag and purr matters.</p>
 
           <h3>Key Features</h3>
           <ul className="feature-list">
-            <li><span className="dot" /> <strong>Behavior care:</strong> Activities to improve social and emotional skills.</li>
+            <li><span className="dot" /> <strong>Behavior care:</strong>Build better social & emotional skills.</li>
             <li><span className="dot" /> <strong>Custom play plans:</strong> Fun routines adapted to your pet’s needs.</li>
             <li><span className="dot" /> <strong>Ongoing support:</strong> Consistent care ensuring happy, healthy pets.</li>
           </ul>
 
-          <button className="glass-btn cta-btn">Get Training</button>
+          <button className="glass-btn cta-btn">Go to DayCare</button>
         </div>
       </div>
     </section>
