@@ -55,6 +55,10 @@ export default function Coupons() {
     }
   };
 
+  // Separate globals vs client coupons
+  const globals = items.filter(c => c.scope === "GLOBAL");
+  const clientCoupons = items.filter(c => c.scope === "ISSUED");
+
   return (
     <div>
       <Toaster position="top-right" />
@@ -63,8 +67,10 @@ export default function Coupons() {
         <button className="btn primary" onClick={openNew}>Add coupon</button>
       </div>
 
+      {/* Global Coupons */}
+      <h3>Global Coupons</h3>
       <div className="coupon-grid">
-        {(items || []).map(c => (
+        {globals.map(c => (
           <Card key={c._id}>
             <div className="coupon-card">
               <div className="coupon-code">{c.code}</div>
@@ -85,6 +91,43 @@ export default function Coupons() {
           </Card>
         ))}
       </div>
+
+      {/* Client/Issued Coupons */}
+      <h3 style={{ marginTop: 20 }}>Client Coupons</h3>
+      <table className="client-coupons-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Owner</th>
+            <th>Status</th>
+            <th>Expiry</th>
+            <th className="right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {clientCoupons.map(c => (
+            <tr key={c._id}>
+              <td className="mono">{c.code}</td>
+              <td>{c.ownerUserID || '-'}</td>
+              <td>
+                <span className={`tag-pill ${c.status === "Used" ? "gray" : c.status === "Expired" ? "red" : "green"}`}>
+                  {c.status}
+                </span>
+              </td>
+              <td>{new Date(c.expiryDate).toLocaleDateString()}</td>
+              <td className="right">
+                <div className="dropdown">
+                  <button className="btn ghost">⋮</button>
+                  <div className="dropdown-menu">
+                    <button onClick={() => openEdit(c)}>View Details</button>
+                    <button className="danger" onClick={() => remove(c._id)}>Delete</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       {open && (
         <CouponModal

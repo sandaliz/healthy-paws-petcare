@@ -3,6 +3,7 @@ import Invoice from "../../Model/finance/invoiceModel.js";
 import register from "../../Model/register.js";
 import Coupon from "../../Model/finance/couponModel.js";
 import Stripe from "stripe";
+import mongoose from "mongoose";
 import { sendPaymentEmail } from "../../config/finance/email.js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -24,14 +25,23 @@ async function resolveCouponForPayment({ couponId, couponCode, userID }) {
     if (!c) throw new Error("Coupon not found");
 
     if (c.scope === "ISSUED") {
-      if (String(c.ownerUserID) !== String(userID)) {
+      if (!mongoose.isValidObjectId(userID)) {
+        throw new Error("Invalid userID format");
+      }
+
+      const ownerObjId = mongoose.Types.ObjectId.createFromHexString(userID.toString());
+
+      if (!c.ownerUserID.equals(ownerObjId)) {
         throw new Error("User coupon does not belong to this user");
       }
+
       if (c.status !== "Available") {
         throw new Error("User coupon is not available");
       }
+
       return c;
     }
+
     if (c.scope === "GLOBAL") return c;
     throw new Error("Invalid coupon scope");
   }

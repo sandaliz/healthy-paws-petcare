@@ -65,10 +65,25 @@ export default function ClientPay() {
       if (!offlineCouponCode.trim()) return toast.error('Enter a coupon code');
       setOfflineApplying(true);
       const total = computeInvoiceTotal(invoice);
-      const resp = await api.post('/coupon/validate', { code: offlineCouponCode.trim(), invoiceTotal: total });
-      setOfflineCouponId(resp.couponId);
-      setOfflineDiscount(Number(resp.discount || 0));
-      toast.success(`Coupon applied: -${fmtLKR(resp.discount || 0)}`);
+
+      try {
+        // Try validating as a GLOBAL coupon
+        const resp = await api.post('/coupon/validate', { code: offlineCouponCode.trim(), invoiceTotal: total });
+        setOfflineCouponId(resp.couponId);
+        setOfflineDiscount(Number(resp.discount || 0));
+        toast.success(`Coupon applied: -${fmtLKR(resp.discount || 0)}`);
+      } catch (err) {
+        // Try validating as a USER-ISSUED coupon
+        const currentUser = invoice.userID?._id || invoice.userID;
+        const res = await api.post('/coupon/validate-user', {
+          code: offlineCouponCode.trim(),
+          userID: currentUser,
+          invoiceTotal: total
+        });
+        setOfflineCouponId(res.couponId);
+        setOfflineDiscount(Number(res.discount || 0));
+        toast.success(`Personal coupon applied: -${fmtLKR(res.discount || 0)}`);
+      }
     } catch (e) {
       setOfflineCouponId(null);
       setOfflineDiscount(0);

@@ -33,17 +33,19 @@ export default function OnlinePay() {
   const [couponId, setCouponId] = useState(null);
   const [discount, setDiscount] = useState(0);
   const [error, setError] = useState('');
-  const [showPromo, setShowPromo] = useState(false);
 
   const [myCoupons, setMyCoupons] = useState([]);
   const [loadingCoupons, setLoadingCoupons] = useState(false);
   const [selectedIssuedId, setSelectedIssuedId] = useState('');
   const [appliedIssuedCode, setAppliedIssuedCode] = useState('');
 
+  // separate toggles
+  const [showCoupons, setShowCoupons] = useState(false);
+  const [showPromoCode, setShowPromoCode] = useState(false);
+
   useEffect(() => {
     if (!invoiceParam) return;
     let cancelled = false;
-
     (async () => {
       try {
         setLoadingInvoice(true);
@@ -59,7 +61,6 @@ export default function OnlinePay() {
         if (!cancelled) setLoadingInvoice(false);
       }
     })();
-
     return () => { cancelled = true; };
   }, [invoiceParam]);
 
@@ -71,7 +72,10 @@ export default function OnlinePay() {
         setLoadingCoupons(true);
         const total = computeInvoiceTotal(invoice);
         const res = await api.get(`/coupon/user-available?userId=${ownerId}&invoiceTotal=${total}`);
-        if (!cancelled) setMyCoupons(res.coupons || []);
+        if (!cancelled) {
+          // filter to available only
+          setMyCoupons((res.coupons || []).filter(c => c.status === "Available"));
+        }
       } catch {
         if (!cancelled) setMyCoupons([]);
       } finally {
@@ -82,7 +86,10 @@ export default function OnlinePay() {
   }, [invoice, ownerId]);
 
   const totalBeforeDiscount = useMemo(() => computeInvoiceTotal(invoice), [invoice]);
-  const amountAfterDiscount = useMemo(() => Math.max(0, totalBeforeDiscount - (discount || 0)), [totalBeforeDiscount, discount]);
+  const amountAfterDiscount = useMemo(
+    () => Math.max(0, totalBeforeDiscount - (discount || 0)),
+    [totalBeforeDiscount, discount]
+  );
 
   const applyCoupon = async () => {
     if (!invoice) return toast.error('Invoice not loaded');
@@ -125,7 +132,7 @@ export default function OnlinePay() {
   };
 
   useEffect(() => {
-    if (couponParam && invoice && !couponId) applyCoupon(); 
+    if (couponParam && invoice && !couponId) applyCoupon();
   }, [invoice]);
 
   const invoiceBlocked = invoice && ["Paid", "Refunded", "Cancelled"].includes(String(invoice.status));
@@ -204,10 +211,10 @@ export default function OnlinePay() {
               <>
                 {myCoupons.length > 0 && (
                   <div className="wallet-coupons-wrap">
-                    <button className="btn full-width" type="button" onClick={() => setShowPromo(p => !p)}>
-                      {showPromo ? 'Hide Coupons' : 'Show My Coupons'}
+                    <button className="btn full-width" type="button" onClick={() => setShowCoupons(p => !p)}>
+                      {showCoupons ? 'Hide Coupons' : 'Show My Coupons'}
                     </button>
-                    {showPromo && (
+                    {showCoupons && (
                       <div className="onpay-coupon-grid">
                         {myCoupons.map(c => {
                           const active = selectedIssuedId === c.couponId;
@@ -220,7 +227,13 @@ export default function OnlinePay() {
                               <div className="coupon-meta">Min: {fmtLKR(c.minInvoiceAmount)} • Expires: {fmtDate(c.expiryDate)}</div>
                               <div className="row end coupon-actions">
                                 {!active ? (
-                                  <button className="btn secondary" onClick={() => applyIssued(c)}>Apply</button>
+                                  <button
+                                    className="btn secondary"
+                                    disabled={c.status !== "Available"}
+                                    onClick={() => applyIssued(c)}
+                                  >
+                                    Apply
+                                  </button>
                                 ) : (
                                   <button className="btn ghost" onClick={() => { setCouponId(null); setDiscount(0); setSelectedIssuedId(''); setAppliedIssuedCode(''); }}>Clear</button>
                                 )}
@@ -234,10 +247,10 @@ export default function OnlinePay() {
                 )}
 
                 <div className="promo-toggle">
-                  <button className="btn full-width" type="button" onClick={() => setShowPromo(p => !p)}>
-                    {showPromo ? 'Hide Promo Code' : 'I have a promo code'}
+                  <button className="btn full-width" type="button" onClick={() => setShowPromoCode(p => !p)}>
+                    {showPromoCode ? 'Hide Promo Code' : 'I have a promo code'}
                   </button>
-                  {showPromo && (
+                  {showPromoCode && (
                     <div className="promo-code-wrap">
                       <div className="row">
                         <input
@@ -334,6 +347,7 @@ function StripePayBox({ invoice, ownerId, couponId, amountToCharge, onSuccess })
     </Elements>
   );
 }
+
 function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -344,6 +358,8 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
   const [cardComplete, setCardComplete] = useState({ number: false, expiry: false, cvc: false });
   const [expiredPast, setExpiredPast] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [showAbortConfirm, setShowAbortConfirm] = useState(false);
 
   useEffect(() => {
     if (!invoice) return;
@@ -352,6 +368,18 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
     if (nm) setName(prev => prev || nm);
     if (em) setEmail(prev => prev || em);
   }, [invoice?._id, invoice?.userID]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (paying) {
+        e.preventDefault();
+        e.returnValue = 'Payment is processing. Are you sure you want to leave?';
+        return e;
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [paying]);
 
   const errors = useMemo(() => {
     const e = {};
@@ -373,6 +401,7 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
     setTouched(t => ({ ...t, name: true, email: true }));
     if (Object.keys(errors).length > 0) { toast.error('Please fix the highlighted fields.'); return; }
     try {
+      setPaying(true);
       const cardNumberEl = elements.getElement(CardNumberElement);
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -384,14 +413,20 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
           },
         },
       });
-      if (result.error) return toast.error(result.error.message || 'Payment failed');
+      if (result.error) { toast.error(result.error.message || 'Payment failed'); setPaying(false); return; }
       const pi = result.paymentIntent;
-      if (pi.status !== 'succeeded') return toast.error(`Payment status: ${pi.status}`);
+      if (pi.status !== 'succeeded') { toast.error(`Payment status: ${pi.status}`); setPaying(false); return; }
       await api.post('/payment/stripe/confirm', { paymentIntentId: pi.id, email: email.trim() });
       onSuccess?.({ paymentIntentId: pi.id, amount, email });
     } catch (e) {
       toast.error(e.message || 'Payment error');
+      setPaying(false);
     }
+  };
+
+  const handleCancelClick = () => {
+    if (paying) setShowAbortConfirm(true);
+    else window.history.back();
   };
 
   const elStyle = { style: { base: { fontSize: '16px', color: '#54413C', '::placeholder': { color: '#8B6A5F' }, fontFamily: 'Roboto, sans-serif' }, invalid: { color: '#b91c1c' } } };
@@ -434,9 +469,25 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
         </div>
       </div>
       <div className="row end pay-actions">
-        <button className="btn ghost" onClick={() => window.history.back()}>Cancel</button>
-        <button className="btn secondary" onClick={pay} disabled={!stripe || !elements}>Pay now</button>
+        <button className="btn ghost" onClick={handleCancelClick}>Cancel</button>
+        <button className="btn secondary" onClick={pay} disabled={!stripe || !elements || paying}>
+          {paying ? 'Processing…' : 'Pay now'}
+        </button>
       </div>
+      {showAbortConfirm && (
+        <div className="modal">
+          <div className="modal-box">
+            <h3>Abort Payment?</h3>
+            <p>A payment is currently processing. Do you want to abort it?</p>
+            <div className="row end">
+              <button className="btn ghost" onClick={() => setShowAbortConfirm(false)}>Keep waiting</button>
+              <button className="btn danger" onClick={() => { setPaying(false); setShowAbortConfirm(false); window.history.back(); }}>
+                Abort Payment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
