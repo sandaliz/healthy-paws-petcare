@@ -6,7 +6,6 @@ import logo from './logo.png';
 import mail_icon from './mail_icon.svg';
 import person_icon from './person_icon.svg';
 import hand_wave from './hand_wave.png';
-import header_img from './header_img.png';
 import signin from './signin.png';
 import login_page from './login_page.png';
 import send_otp from './send_otp.png';
@@ -32,7 +31,6 @@ const assets = {
   mail_icon,
   person_icon,
   hand_wave,
-  header_img,
   signin,
   login_page,
   send_otp,

@@ -6,7 +6,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import StarRating from "../../Components/StarRating";
 import assets from "../../assets/assets";
-import DashboardNavbar from "../../Components/Navbar";
 import "./FeedbackForm.css"; // ✅ Import custom CSS
 
 const FeedbackForm = () => {
@@ -69,7 +68,6 @@ const FeedbackForm = () => {
 
   return (
     <div className="feedback-page">
-      <DashboardNavbar />
       <ToastContainer position="top-center" autoClose={3000} />
 
       <div className="feedback-container">

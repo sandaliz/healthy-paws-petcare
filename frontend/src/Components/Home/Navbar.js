@@ -1,5 +1,6 @@
 import React from "react";
 import "./Navbar.css";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -16,16 +17,17 @@ const Navbar = () => {
             <li><a href="#reservation">Reservation</a></li>
             <li><a href="#petstore">Pet Store</a></li>
             <li><a href="#daycare">Pet Daycare</a></li>
+             <li><a href="#daycare">Vaccine Plan</a></li>
           </ul>
         </li>
-        <li><a href="#feedbacks">Feedbacks</a></li>
+        <li><a href="/feedback">Feedbacks</a></li>
         <li><a href="#contact">Contact Us</a></li>
       </ul>
 
       {/* Right side buttons */}
       <div className="auth-buttons">
-        <button className="btn-outline">Signup</button>
-        <button className="btn-primary">Login</button>
+        <Link to="/signup"><button className="btn-outline">Signup</button></Link>
+        <Link to="/login"> <button className="btn-primary">Login</button></Link>
       </div>
     </nav>
   );
