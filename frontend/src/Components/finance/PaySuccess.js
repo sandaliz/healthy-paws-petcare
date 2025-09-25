@@ -61,10 +61,10 @@ export default function PaySuccess() {
             <span className="kv-label">Receipt Email</span>
             <span className="kv-value">{email || invoice?.userID?.OwnerEmail || '-'}</span>
           </div>
-          {loading && <div className="muted" style={{ marginTop: 8 }}>Loading invoice…</div>}
+          {loading && <div className="muted psucc-loading">Loading invoice…</div>}
         </div>
 
-        <div className="row wrap end" style={{ marginTop: 16 }}>
+        <div className="row wrap end psucc-actions">
           <button className="btn ghost" onClick={() => nav('/pay')}>Back to Payment Options</button>
           <button className="btn primary" onClick={() => window.print()}>Print</button>
           <button className="btn secondary" onClick={() => nav('/')}>Go to Home</button>

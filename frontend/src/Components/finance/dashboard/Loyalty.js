@@ -179,7 +179,7 @@ function AddPointsModal({ open, onClose, onAdd, ownerName }) {
         <label>Amount Spent (LKR)</label>
         <input className="input" type="number" min="0" value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
       </div>
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end loyalty-actions">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn primary" onClick={() => onAdd(amount)}>Add points</button>
       </div>

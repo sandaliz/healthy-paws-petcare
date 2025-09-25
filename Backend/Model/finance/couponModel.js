@@ -17,7 +17,7 @@ const couponSchema = new mongoose.Schema(
 
     // Ownership/issuance in same collection
     scope: { type: String, enum: ["GLOBAL", "ISSUED"], default: "GLOBAL", index: true },
-    ownerUserID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", index: true }, // for ISSUED
+    ownerUserID: { type: mongoose.Schema.Types.ObjectId, ref: "register", index: true }, // for ISSUED
     parentId: { type: mongoose.Schema.Types.ObjectId, ref: "Coupon" }, // ISSUED -> its template
     status: { type: String, enum: ["Available", "Used", "Expired", "Revoked"], default: "Available" }, // for ISSUED
     usedAt: { type: Date }, // for ISSUED

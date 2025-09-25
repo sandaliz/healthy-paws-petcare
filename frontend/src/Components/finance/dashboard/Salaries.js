@@ -212,7 +212,7 @@ function CreateSalaryModal({ open, onClose, onSaved }) {
         <div className="field"><label>Month</label><input className="input" type="number" min="1" max="12" value={form.month} onChange={e => set('month', Number(e.target.value))} /></div>
         <div className="field"><label>Year</label><input className="input" type="number" value={form.year} onChange={e => set('year', Number(e.target.value))} /></div>
       </div>
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end sal-create-actions">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn primary" onClick={save}>Create</button>
       </div>
@@ -251,7 +251,7 @@ function EditSalaryModal({ open, onClose, s, onSaved }) {
           <option>Paid</option>
         </select>
       </div>
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end sal-edit-actions">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn primary" onClick={save}>Save</button>
       </div>

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const salarySchema = new mongoose.Schema(
   {
-    employeeID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", required: true },
+    employeeID: { type: mongoose.Schema.Types.ObjectId, ref: "register", required: true },
     baseSalary: { type: Number, required: true, min: 0 },
     allowances: { type: Number, default: 0, min: 0 },
     deductions: { type: Number, default: 0, min: 0 },

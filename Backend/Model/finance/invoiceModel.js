@@ -10,7 +10,7 @@ const lineItemSchema = new mongoose.Schema({
 const invoiceSchema = new mongoose.Schema(
   {
     invoiceID: { type: String, required: true, unique: true }, // business ID
-    userID: { type: mongoose.Schema.Types.ObjectId, ref: "Register", required: true },
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: "register", required: true },
     lineItems: [lineItemSchema],
     subtotal: { type: Number, required: true },
     tax: { type: Number, required: true },

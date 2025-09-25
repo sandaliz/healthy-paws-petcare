@@ -13,10 +13,8 @@ import {
 import { api } from './financeApi';
 import './css/clientPay.css';
 
-// Initialize Stripe
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '');
 
-// Regex for validating inputs
 const COUPON_REGEX = /^[A-Za-z0-9._-]{3,32}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const POSTAL_REGEX = /^[A-Za-z0-9 -]{3,10}$/;
@@ -42,7 +40,6 @@ export default function OnlinePay() {
   const [selectedIssuedId, setSelectedIssuedId] = useState('');
   const [appliedIssuedCode, setAppliedIssuedCode] = useState('');
 
-  // Fetch invoice from API
   useEffect(() => {
     if (!invoiceParam) return;
     let cancelled = false;
@@ -66,12 +63,9 @@ export default function OnlinePay() {
     return () => { cancelled = true; };
   }, [invoiceParam]);
 
-  // Fetch user's available wallet coupons
   useEffect(() => {
     if (!invoice || !ownerId) return;
-
     let cancelled = false;
-
     (async () => {
       try {
         setLoadingCoupons(true);
@@ -84,23 +78,18 @@ export default function OnlinePay() {
         if (!cancelled) setLoadingCoupons(false);
       }
     })();
-
     return () => { cancelled = true; };
   }, [invoice, ownerId]);
 
-  // Compute totals
   const totalBeforeDiscount = useMemo(() => computeInvoiceTotal(invoice), [invoice]);
   const amountAfterDiscount = useMemo(() => Math.max(0, totalBeforeDiscount - (discount || 0)), [totalBeforeDiscount, discount]);
 
-  // Apply manually entered promo code
   const applyCoupon = async () => {
     if (!invoice) return toast.error('Invoice not loaded');
     if (selectedIssuedId) return toast.error('Clear selected wallet coupon before typing a code');
-
     const code = couponCode.trim();
     if (!code) return toast.error('Enter code');
     if (!COUPON_REGEX.test(code)) return toast.error('Use 3–32 characters: letters, numbers, - _ .');
-
     try {
       const resp = await api.post('/coupon/validate', { code, invoiceTotal: totalBeforeDiscount });
       setCouponId(resp.couponId);
@@ -115,11 +104,9 @@ export default function OnlinePay() {
     }
   };
 
-  // Apply wallet-issued coupon
   const applyIssued = async (coupon) => {
     if (!invoice) return toast.error('Invoice not loaded');
     if (couponCode.trim()) return toast.error('Clear typed code before applying wallet coupon');
-
     try {
       const res = await api.post('/coupon/validate-user', {
         couponId: coupon.couponId,
@@ -137,9 +124,8 @@ export default function OnlinePay() {
     }
   };
 
-  // Pre-apply coupon from URL on first load
   useEffect(() => {
-    if (couponParam && invoice && !couponId) applyCoupon(); // eslint-disable-line
+    if (couponParam && invoice && !couponId) applyCoupon(); 
   }, [invoice]);
 
   const invoiceBlocked = invoice && ["Paid", "Refunded", "Cancelled"].includes(String(invoice.status));
@@ -147,7 +133,6 @@ export default function OnlinePay() {
   return (
     <div className="pay-wrap">
       <Toaster position="top-right" />
-
       <div className="page-header">
         <div>
           <h1>Pay Online</h1>
@@ -158,12 +143,11 @@ export default function OnlinePay() {
 
       <div className="card">
         {!process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY && (
-          <div className="notice error" style={{ marginBottom: 12 }}>
+          <div className="notice error notice-stripe-missing">
             Stripe key missing. Set REACT_APP_STRIPE_PUBLISHABLE_KEY
           </div>
         )}
 
-        {/* Invoice Details */}
         <div className="section">
           <h2 className="section-title">Invoice</h2>
           {!invoiceParam && <div className="muted">No invoice id in URL.</div>}
@@ -202,7 +186,7 @@ export default function OnlinePay() {
                 </div>
 
                 {invoiceBlocked && (
-                  <div className="notice error" style={{ marginTop: 10 }}>
+                  <div className="notice error invoice-blocked">
                     This invoice is {invoice.status} and cannot be paid.
                   </div>
                 )}
@@ -211,84 +195,79 @@ export default function OnlinePay() {
           )}
         </div>
 
-        {/* Payment Section */}
         <div className="section">
           <h2 className="section-title">Card Payment</h2>
 
-          {/* Coupon Codes */}
-          <div className="panel" style={{ padding: 12, marginBottom: 12 }}>
-            <h3 style={{ margin: '0 0 6px', fontSize: 14, color: '#6b7280' }}>Coupons & codes</h3>
-
+          <div className="panel coupon-panel">
+            <h3 className="coupon-panel-title">Coupons & Codes</h3>
             {invoice && ownerId && (
               <>
-                {loadingCoupons ? (
-                  <div className="muted">Loading your coupons…</div>
-                ) : myCoupons.length === 0 ? (
-                  <div className="muted">No available coupons</div>
-                ) : (
-                  <div className="coupon-grid" style={{ gridTemplateColumns: '1fr' }}>
-                    {myCoupons.map(c => {
-                      const active = selectedIssuedId === c.couponId;
-                      return (
-                        <div key={c.couponId} className={`coupon-card${active ? ' active' : ''}`} style={couponCardStyle}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div className="coupon-code" style={{ fontWeight: 700 }}>{c.code}</div>
-                            <div className="coupon-type" style={{ fontSize: 12, opacity: 0.8 }}>{c.discountType} {c.discountValue}</div>
-                          </div>
-                          <div className="coupon-meta" style={{ fontSize: 12, marginTop: 4 }}>
-                            Min: {fmtLKR(c.minInvoiceAmount)} • Expires: {fmtDate(c.expiryDate)}
-                          </div>
-                          <div className="row end" style={{ marginTop: 8 }}>
-                            {!active ? (
-                              <button className="btn secondary" onClick={() => applyIssued(c)}>Apply</button>
-                            ) : (
-                              <button className="btn ghost" onClick={() => { setCouponId(null); setDiscount(0); setSelectedIssuedId(''); setAppliedIssuedCode(''); }}>Clear</button>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </>
-            )}
-
-            <div style={{ marginTop: 12 }}>
-              <button className="btn" type="button" onClick={() => setShowPromo(s => !s)} style={{ width: '100%' }}>
-                I have a promo code
-              </button>
-              {showPromo && (
-                <div style={{ marginTop: 8 }}>
-                  <div className="row">
-                    <input
-                      className="input"
-                      placeholder="Enter code"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      aria-invalid={couponCode.trim() && !COUPON_REGEX.test(couponCode.trim())}
-                    />
-                    <button className="btn secondary" onClick={applyCoupon} disabled={!invoice || invoiceBlocked}>Apply</button>
-                    {(couponId || selectedIssuedId) && (
-                      <button className="btn ghost" onClick={() => { setCouponId(null); setDiscount(0); setCouponCode(''); setSelectedIssuedId(''); setAppliedIssuedCode(''); }}>
-                        Clear
-                      </button>
+                {myCoupons.length > 0 && (
+                  <div className="wallet-coupons-wrap">
+                    <button className="btn full-width" type="button" onClick={() => setShowPromo(p => !p)}>
+                      {showPromo ? 'Hide Coupons' : 'Show My Coupons'}
+                    </button>
+                    {showPromo && (
+                      <div className="onpay-coupon-grid">
+                        {myCoupons.map(c => {
+                          const active = selectedIssuedId === c.couponId;
+                          return (
+                            <div key={c.couponId} className={`coupon-card${active ? ' active' : ''}`}>
+                              <div className="coupon-card-header">
+                                <div className="coupon-code">{c.code}</div>
+                                <div className="coupon-type">{c.discountType} {c.discountValue}</div>
+                              </div>
+                              <div className="coupon-meta">Min: {fmtLKR(c.minInvoiceAmount)} • Expires: {fmtDate(c.expiryDate)}</div>
+                              <div className="row end coupon-actions">
+                                {!active ? (
+                                  <button className="btn secondary" onClick={() => applyIssued(c)}>Apply</button>
+                                ) : (
+                                  <button className="btn ghost" onClick={() => { setCouponId(null); setDiscount(0); setSelectedIssuedId(''); setAppliedIssuedCode(''); }}>Clear</button>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
-                  {couponCode.trim() && !COUPON_REGEX.test(couponCode.trim()) && (
-                    <div className="error" style={{ marginTop: 4 }}>
-                      Use 3–32 characters: letters, numbers, - _ .
+                )}
+
+                <div className="promo-toggle">
+                  <button className="btn full-width" type="button" onClick={() => setShowPromo(p => !p)}>
+                    {showPromo ? 'Hide Promo Code' : 'I have a promo code'}
+                  </button>
+                  {showPromo && (
+                    <div className="promo-code-wrap">
+                      <div className="row">
+                        <input
+                          className="input"
+                          placeholder="Enter code"
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          aria-invalid={couponCode.trim() && !COUPON_REGEX.test(couponCode.trim())}
+                        />
+                        <button className="btn secondary" onClick={applyCoupon} disabled={!invoice || invoiceBlocked}>Apply</button>
+                        {(couponId || selectedIssuedId) && (
+                          <button className="btn ghost" onClick={() => { setCouponId(null); setDiscount(0); setCouponCode(''); setSelectedIssuedId(''); setAppliedIssuedCode(''); }}>Clear</button>
+                        )}
+                      </div>
+                      {couponCode.trim() && !COUPON_REGEX.test(couponCode.trim()) && (
+                        <div className="error promo-error">
+                          Use 3–32 characters: letters, numbers, - _ .
+                        </div>
+                      )}
+                      {appliedIssuedCode && discount > 0 && (
+                        <p className="hint applied-hint">Applied {appliedIssuedCode}: -{fmtLKR(discount)}</p>
+                      )}
                     </div>
                   )}
-                  {appliedIssuedCode && discount > 0 && (
-                    <p className="hint" style={{ marginTop: 6 }}>Applied {appliedIssuedCode}: -{fmtLKR(discount)}</p>
-                  )}
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
 
-          {/* Stripe Card Payment Box */}
-          <div className="panel panel-peach" style={{ marginTop: 8 }}>
+          <div className="panel panel-peach stripe-panel">
             {!invoice && <div className="muted">Load an invoice to continue.</div>}
             {invoice && invoiceBlocked && <div className="notice error">This invoice cannot be paid.</div>}
             {invoice && ownerId && !invoiceBlocked && (
@@ -316,24 +295,14 @@ export default function OnlinePay() {
   );
 }
 
-const couponCardStyle = {
-  border: '2px solid #7A5B00',
-  borderRadius: 12,
-  padding: 12,
-  background: '#FFF9C4'
-};
-
-// Stripe payment initialization
 function StripePayBox({ invoice, ownerId, couponId, amountToCharge, onSuccess }) {
   const [clientSecret, setClientSecret] = useState('');
   const [serverAmount, setServerAmount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   useEffect(() => {
     if (!invoice) return;
     let cancelled = false;
-
     (async () => {
       try {
         setLoading(true);
@@ -349,7 +318,6 @@ function StripePayBox({ invoice, ownerId, couponId, amountToCharge, onSuccess })
         if (!cancelled) setLoading(false);
       }
     })();
-
     return () => { cancelled = true; };
   }, [invoice?._id, ownerId, couponId]);
 
@@ -366,12 +334,9 @@ function StripePayBox({ invoice, ownerId, couponId, amountToCharge, onSuccess })
     </Elements>
   );
 }
-
-// Stripe Card Form
 function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
   const stripe = useStripe();
   const elements = useElements();
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [postal, setPostal] = useState('');
@@ -406,12 +371,7 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
     if (!stripe || !elements) return;
     setSubmitAttempted(true);
     setTouched(t => ({ ...t, name: true, email: true }));
-
-    if (Object.keys(errors).length > 0) {
-      toast.error('Please fix the highlighted fields.');
-      return;
-    }
-
+    if (Object.keys(errors).length > 0) { toast.error('Please fix the highlighted fields.'); return; }
     try {
       const cardNumberEl = elements.getElement(CardNumberElement);
       const result = await stripe.confirmCardPayment(clientSecret, {
@@ -425,10 +385,8 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
         },
       });
       if (result.error) return toast.error(result.error.message || 'Payment failed');
-
       const pi = result.paymentIntent;
       if (pi.status !== 'succeeded') return toast.error(`Payment status: ${pi.status}`);
-
       await api.post('/payment/stripe/confirm', { paymentIntentId: pi.id, email: email.trim() });
       onSuccess?.({ paymentIntentId: pi.id, amount, email });
     } catch (e) {
@@ -436,94 +394,46 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
     }
   };
 
-  const elStyle = {
-    style: {
-      base: {
-        fontSize: '16px',
-        color: '#54413C',
-        '::placeholder': { color: '#8B6A5F' },
-        fontFamily: 'Roboto, sans-serif',
-      },
-      invalid: { color: '#b91c1c' },
-    }
-  };
+  const elStyle = { style: { base: { fontSize: '16px', color: '#54413C', '::placeholder': { color: '#8B6A5F' }, fontFamily: 'Roboto, sans-serif' }, invalid: { color: '#b91c1c' } } };
 
   return (
     <>
       <div className="charge-line charge-pill">You will be charged: <b>{fmtLKR(amount)}</b></div>
-
       <div className="grid-2">
         <div className="field">
           <label>Name on card</label>
-          <input
-            className={`input ${touched.name && errors.name ? 'input-error' : ''}`}
-            value={name}
-            onBlur={() => setTouched(t => ({ ...t, name: true }))}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Jane Doe"
-            aria-invalid={touched.name && !!errors.name}
-          />
+          <input className={`input ${touched.name && errors.name ? 'input-error' : ''}`} value={name} onBlur={() => setTouched(t => ({ ...t, name: true }))} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" aria-invalid={touched.name && !!errors.name}/>
           {touched.name && errors.name && <div className="error">{errors.name}</div>}
         </div>
         <div className="field">
           <label>Email (for receipt)</label>
-          <input
-            className={`input ${(touched.email || email) && errors.email ? 'input-error' : ''}`}
-            value={email}
-            onBlur={() => setTouched(t => ({ ...t, email: true }))}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="jane@example.com"
-            aria-invalid={(touched.email || !!email) && !!errors.email}
-          />
+          <input className={`input ${(touched.email || email) && errors.email ? 'input-error' : ''}`} value={email} onBlur={() => setTouched(t => ({ ...t, email: true }))} onChange={(e) => setEmail(e.target.value)} placeholder="jane@example.com" aria-invalid={(touched.email || !!email) && !!errors.email}/>
           {(touched.email || !!email) && errors.email && <div className="error">{errors.email}</div>}
         </div>
       </div>
-
       <div className="field">
         <label>Card number</label>
-        <div className={`stripe-control ${submitAttempted && errors.number ? 'input-error' : ''}`}>
-          <CardNumberElement options={elStyle} onChange={(e) => setCardComplete(c => ({ ...c, number: e.complete }))} />
-        </div>
+        <div className={`stripe-control ${submitAttempted && errors.number ? 'input-error' : ''}`}><CardNumberElement options={elStyle} onChange={(e) => setCardComplete(c => ({ ...c, number: e.complete }))} /></div>
         {submitAttempted && errors.number && <div className="error">{errors.number}</div>}
       </div>
-
       <div className="stripe-grid-3">
         <div className="field">
           <label>Expiry (MM/YY)</label>
-          <div className={`stripe-control ${errors.expiry ? 'input-error' : ''}`}>
-            <CardExpiryElement
-              options={elStyle}
-              onChange={(e) => {
-                setCardComplete(c => ({ ...c, expiry: e.complete }));
-                const msg = e?.error?.message || '';
-                setExpiredPast(e.complete && /past/i.test(msg));
-              }}
-            />
-          </div>
+          <div className={`stripe-control ${errors.expiry ? 'input-error' : ''}`}><CardExpiryElement options={elStyle} onChange={(e) => { setCardComplete(c => ({ ...c, expiry: e.complete })); const msg = e?.error?.message || ''; setExpiredPast(e.complete && /past/i.test(msg)); }}/></div>
           {errors.expiry && <div className="error">{errors.expiry}</div>}
         </div>
         <div className="field">
           <label>CVC</label>
-          <div className={`stripe-control ${submitAttempted && errors.cvc ? 'input-error' : ''}`}>
-            <CardCvcElement options={elStyle} onChange={(e) => setCardComplete(c => ({ ...c, cvc: e.complete }))} />
-          </div>
+          <div className={`stripe-control ${submitAttempted && errors.cvc ? 'input-error' : ''}`}><CardCvcElement options={elStyle} onChange={(e) => setCardComplete(c => ({ ...c, cvc: e.complete }))} /></div>
           {submitAttempted && errors.cvc && <div className="error">{errors.cvc}</div>}
         </div>
         <div className="field">
           <label>ZIP / Postal</label>
-          <input
-            className={`input ${touched.postal && errors.postal ? 'input-error' : ''}`}
-            placeholder="e.g. 10115"
-            value={postal}
-            onBlur={() => setTouched(t => ({ ...t, postal: true }))}
-            onChange={(e) => setPostal(e.target.value)}
-            aria-invalid={touched.postal && !!errors.postal}
-          />
+          <input className={`input ${touched.postal && errors.postal ? 'input-error' : ''}`} placeholder="e.g. 10115" value={postal} onBlur={() => setTouched(t => ({ ...t, postal: true }))} onChange={(e) => setPostal(e.target.value)} aria-invalid={touched.postal && !!errors.postal}/>
           {touched.postal && errors.postal && <div className="error">{errors.postal}</div>}
         </div>
       </div>
-
-      <div className="row end" style={{ marginTop: 10 }}>
+      <div className="row end pay-actions">
         <button className="btn ghost" onClick={() => window.history.back()}>Cancel</button>
         <button className="btn secondary" onClick={pay} disabled={!stripe || !elements}>Pay now</button>
       </div>
@@ -531,7 +441,6 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
   );
 }
 
-// Utilities
 function computeInvoiceTotal(inv) {
   if (!inv) return 0;
   const t = Number(inv.total);
