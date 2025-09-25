@@ -1,3 +1,9 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 /* Shell */
 .fm-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; background: #FFF6E4; }
 .fm-sidebar { background: #54413C; color: #fff; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
@@ -11,7 +17,7 @@
 .fm-main { display: grid; grid-template-rows: auto 1fr; }
 .fm-topbar { background: #fff; padding: 14px 18px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; }
 .fm-top-link { color: #54413C; text-decoration: none; font-weight: 600; }
-.fm-content { padding: 16px; }
+.fm-content { padding: 0px; }
 
 /* KPIs & charts */
 .overview-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
@@ -198,3 +204,41 @@
 .check-exclude-failed { margin-left: 6px; }
 .pm-modal-actions { margin-top: 10px; }
 .pm-confirm-actions { margin-top: 10px; }
+
+/* Client Coupons Table (isolated styles) */
+.client-coupons-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff; /* clean white background */
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-top: 8px;
+}
+
+.client-coupons-table th,
+.client-coupons-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #F1F1F1;
+  font-size: 14px;
+}
+
+.client-coupons-table thead th {
+  background: #FAFAFA;
+  font-weight: 600;
+  color: #374151;
+}
+
+.client-coupons-table tbody tr:hover {
+  background: #FFFDF7; /* subtle highlight */
+}
+
+.client-coupons-table td.right {
+  text-align: right;
+}
+
+.client-coupons-table .mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+}
