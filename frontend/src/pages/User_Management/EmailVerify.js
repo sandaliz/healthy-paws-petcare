@@ -1,22 +1,18 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import '../../styles/EmailVerify.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../../styles/EmailVerify.css";
 
-const EmailVerify = () => {
-  const location = useLocation();
+const ResetVerifyOtp = () => {
   const navigate = useNavigate();
-  const email = location.state?.email;
+  const searchParams = new URLSearchParams(useLocation().search);
+  const email = searchParams.get("email");
 
-  const [otp, setOtp] = useState(Array(6).fill(''));
+  const [otp, setOtp] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
-
-  if (!email) {
-    navigate('/reset-password');
-  }
 
   const handleChange = (e, index) => {
     const value = e.target.value;
@@ -24,66 +20,47 @@ const EmailVerify = () => {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-
-      // Move to next input
       if (value && index < 5) {
-        document.getElementById(`verify-otp-${index + 1}`).focus();
-      }
-
-      // Auto-submit when 6 digits entered
-      if (newOtp.join('').length === 6) {
-        handleSubmit(newOtp.join(''));
+        document.getElementById(`reset-otp-${index+1}`).focus();
       }
     }
   };
 
-  const handleSubmit = async (otpValue) => {
+  const handleSubmit = async () => {
+    const otpValue = otp.join("");
     if (otpValue.length !== 6) {
-      toast.error('Please enter a 6-digit OTP');
+      toast.error("Please enter a 6‑digit OTP");
       return;
     }
-
     setLoading(true);
-
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/auth/reset-password-verify',
-        { email, otp: otpValue }
-      );
+      // ✅ matches backend route now
+      const res = await axios.post("http://localhost:5000/api/auth/verify-reset-otp", { email, otp: otpValue });
       setLoading(false);
-
       if (res.data.success) {
-        toast.success('✅ OTP Verified! Redirecting...');
+        toast.success("✅ OTP verified!");
         setTimeout(() => {
           navigate(`/new-password?email=${email}&otp=${otpValue}`);
-        }, 2000);
+        }, 1200);
       } else {
-        toast.error(res.data.message || 'Invalid OTP');
+        toast.error(res.data.message || "Invalid OTP");
       }
     } catch (err) {
       setLoading(false);
-      const errorMsg = err.response?.data?.message || 'Verification failed';
-      toast.error(errorMsg);
+      toast.error(err.response?.data?.message || "OTP verification failed");
     }
   };
 
-  const handleResendCode = async () => {
-    if (!email) return;
+  const handleResend = async () => {
     setResending(true);
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/auth/send-reset-otp',
-        { email }
-      );
+      const res = await axios.post("http://localhost:5000/api/auth/send-reset-otp", { email });
       setResending(false);
-      if (res.data.success) {
-        toast.success('📩 A new OTP has been sent to your email');
-      } else {
-        toast.error(res.data.message || 'Failed to resend code');
-      }
+      if (res.data.success) toast.success("📩 New OTP sent");
+      else toast.error(res.data.message || "Error resending");
     } catch (err) {
       setResending(false);
-      toast.error(err.response?.data?.message || 'Error resending code');
+      toast.error(err.response?.data?.message || "Server error while resending");
     }
   };
 
@@ -91,49 +68,35 @@ const EmailVerify = () => {
     <div className="email-verify-page">
       <div className="verify-background-container">
         <div className="verify-content">
-          <h2 className="verify-title">Reset your password</h2>
-          <p className="verify-subtitle">
-            Enter the 6-digit code sent to your email. This code is valid for the next 10 minutes.
-          </p>
-
+          <h2 className="verify-title">Verify OTP</h2>
+          <p className="verify-subtitle">Enter the 6‑digit code sent to <b>{email}</b></p>
           <div className="verify-otp-inputs">
-            {otp.map((value, index) => (
+            {otp.map((value, i) => (
               <input
-                key={index}
-                id={`verify-otp-${index}`}
+                key={i}
+                id={`reset-otp-${i}`}
                 type="text"
                 maxLength="1"
                 value={value}
                 disabled={loading}
-                onChange={(e) => handleChange(e, index)}
+                onChange={(e) => handleChange(e, i)}
                 className="verify-otp-input"
               />
             ))}
           </div>
-
-          <button
-            className="verify-reset-button"
-            disabled={loading}
-            onClick={() => handleSubmit(otp.join(''))}
-          >
-            {loading ? 'Verifying...' : 'Reset password'}
+          <button onClick={handleSubmit} disabled={loading} className="verify-reset-button">
+            {loading ? "Verifying..." : "Verify OTP"}
           </button>
-
-          <p className="verify-resend-text">
-            Didn't get the code?{" "}
-            <span
-              className="verify-resend-link"
-              style={{ cursor: "pointer", color: "blue" }}
-              onClick={handleResendCode}
-            >
+          <p className="verify-resend-text">Didn’t get it?{" "}
+            <span onClick={handleResend} className="verify-resend-link" style={{ cursor:'pointer' }}>
               {resending ? "Resending..." : "Resend code"}
             </span>
           </p>
         </div>
       </div>
-      <ToastContainer position="top-center" autoClose={3000} />
+      <ToastContainer position="top-center" autoClose={3000}/>
     </div>
   );
 };
 
-export default EmailVerify;
+export default ResetVerifyOtp;

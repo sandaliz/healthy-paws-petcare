@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import "../../styles/adminSidebar.css"; // unique css just for sidebar
+import "../../styles/adminSidebar.css";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
@@ -12,14 +12,45 @@ const AdminSidebar = () => {
 
   return (
     <aside className="sidebar-container">
-      <h2 className="sidebar-logo"> Admin</h2>
-      <ul className="sidebar-menu">
-        <li><NavLink to="/admin-dashboard">Dashboard</NavLink></li>
-        <li><NavLink to="/admin-dashboard/feedbacks">Feedback</NavLink></li>
-        <li><NavLink to="/admin-dashboard/petRegister">Pet Registration</NavLink></li>
-        <li><NavLink to="/admin-dashboard/users">Users</NavLink></li>
-      </ul>
-      <button className="sidebar-logout-btn" onClick={handleLogout}>Logout</button>
+      <div className="sidebar-header">
+        <h2 className="sidebar-logo">Admin Panel</h2>
+      </div>
+      
+      <nav className="sidebar-nav">
+        <ul className="sidebar-menu">
+          <li>
+            <NavLink to="/admin-dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              <span className="nav-icon"></span>
+              <span className="nav-text">Dashboard</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/admin-dashboard/feedbacks" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              <span className="nav-icon"></span>
+              <span className="nav-text">Feedback</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/admin-dashboard/petRegister" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              <span className="nav-icon"></span>
+              <span className="nav-text">Pet Registration</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/admin-dashboard/users" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              <span className="nav-icon"></span>
+              <span className="nav-text">Users</span>
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
+
+      <div className="sidebar-footer">
+        <button className="sidebar-logout-btn" onClick={handleLogout}>
+          <span className="logout-icon"></span>
+          <span className="logout-text">Logout</span>
+        </button>
+      </div>
     </aside>
   );
 };

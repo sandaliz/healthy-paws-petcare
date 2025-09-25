@@ -1,22 +1,20 @@
-// src/pages/admin_dashbord/FeedbackPage.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-// ✅ PDF export
+// PDF export
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-// ✅ Styles
-import "../../styles/admindashbord.css";   // shared dashboard layout
-import "../../styles/adminFeedback.css";   // 🔥 renamed: dedicated for admin feedback
+// Styles
+import "../../styles/adminFeedback.css";
 
-// ✅ Sidebar
+// Sidebar
 import AdminSidebar from "./AdminSidebar";
 
-// ✅ Logo for report
+// Logo for report
 import logo from "../../assets/logo.png";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -67,7 +65,7 @@ const FeedbackPage = () => {
   }, []);
 
   const deleteFeedback = async (id) => {
-    if (!window.confirm("Delete this feedback?")) return;
+    if (!window.confirm("Are you sure you want to delete this feedback?")) return;
     try {
       await axios.delete(`http://localhost:5000/api/feedback/${id}`);
       setFeedbacks(feedbacks.filter((f) => f._id !== id));
@@ -99,14 +97,22 @@ const FeedbackPage = () => {
 
   const pieOptions = {
     plugins: {
-      legend: { position: "bottom" },
+      legend: { 
+        position: "bottom",
+        labels: {
+          font: {
+            family: "'Poppins', sans-serif",
+            size: 12
+          }
+        }
+      },
       datalabels: {
         formatter: (value, context) => {
           const total = context.dataset.data.reduce((a, b) => a + b, 0);
           return total ? `${((value / total) * 100).toFixed(0)}%` : "0%";
         },
         color: "#fff",
-        font: { weight: "bold", size: 12 },
+        font: { weight: "bold", size: 12, family: "'Poppins', sans-serif" },
       },
     },
     maintainAspectRatio: false,
@@ -188,73 +194,120 @@ const FeedbackPage = () => {
     doc.save("Feedback_Report.pdf");
   };
 
+  const renderRatingStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <span key={index} className={index < rating ? "star-filled" : "star-empty"}>
+        ★
+      </span>
+    ));
+  };
+
   return (
     <div className="admin-feedback-container">
       <AdminSidebar />
       <main className="admin-feedback-main">
         <div className="feedback-header">
-          <h2>📝 Customer Feedback</h2>
+          <h2>Customer Feedback</h2>
           <p className="feedback-subtitle">Insights into customer experience, satisfaction trends, and service quality</p>
         </div>
 
         {loading ? (
-          <p>Loading feedbacks...</p>
+          <div className="loading-state">Loading feedbacks...</div>
         ) : feedbacks.length === 0 ? (
-          <p>No feedback available.</p>
+          <div className="empty-state">No feedback available.</div>
         ) : (
-          <table className="feedback-table">
-            <thead>
-              <tr>
-                <th>Read</th>
-                <th>Owner</th>
-                <th>Pet</th>
-                <th>Email</th>
-                <th>Message</th>
-                <th>Rating</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {feedbacks.map((fb) => (
-                <tr key={fb._id} className={readFeedbacks[fb._id] ? "read-row" : ""}>
-                  <td><input type="checkbox" checked={!!readFeedbacks[fb._id]} onChange={() => toggleRead(fb._id)} /></td>
-                  <td>{fb.petOwnerName}</td>
-                  <td>{fb.petName}</td>
-                  <td>{fb.email}</td>
-                  <td>{fb.message}</td>
-                  <td>{"⭐".repeat(fb.rating)}</td>
-                  <td><button className="btn-delete" onClick={() => deleteFeedback(fb._id)}>🗑 Delete</button></td>
+          <div className="table-container">
+            <table className="feedback-table">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Owner</th>
+                  <th>Pet</th>
+                  <th>Email</th>
+                  <th>Message</th>
+                  <th>Rating</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {feedbacks.map((fb) => (
+                  <tr key={fb._id} className={readFeedbacks[fb._id] ? "read-row" : ""}>
+                    <td>
+                      <label className="read-checkbox">
+                        <input 
+                          type="checkbox" 
+                          checked={!!readFeedbacks[fb._id]} 
+                          onChange={() => toggleRead(fb._id)} 
+                        />
+                        <span className="checkmark"></span>
+                        {readFeedbacks[fb._id] ? "Read" : "Unread"}
+                      </label>
+                    </td>
+                    <td>{fb.petOwnerName}</td>
+                    <td>{fb.petName}</td>
+                    <td className="email-cell">{fb.email}</td>
+                    <td className="message-cell">{fb.message}</td>
+                    <td>
+                      <div className="rating-stars">
+                        {renderRatingStars(fb.rating)}
+                        <span className="rating-value">({fb.rating}/5)</span>
+                      </div>
+                    </td>
+                    <td>
+                      <button className="btn-delete" onClick={() => deleteFeedback(fb._id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {stats && (
           <div className="feedback-stats">
             <div className="chart-container">
-              <h3>📊 Feedback Ratio</h3>
+              <h3>Feedback Analytics</h3>
               <div className="chart-wrapper">
                 <Pie data={pieData} options={pieOptions} />
               </div>
+              <div className="stats-summary">
+                <div className="stat-item">
+                  <span className="stat-label">Total Feedbacks</span>
+                  <span className="stat-value">{stats.totalRatings}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Positive</span>
+                  <span className="stat-value positive">{stats.goodRatings}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Negative</span>
+                  <span className="stat-value negative">{stats.badRatings}</span>
+                </div>
+              </div>
             </div>
             <div className="tips-container">
-              <h3>💡 How to Improve Feedback</h3>
+              <h3>Improvement Strategies</h3>
               <ul>
-                <li>Respond quickly to concerns ⏱</li>
-                <li>Show gratitude for every feedback 🙏</li>
-                <li>Train staff for empathy and care 💕</li>
-                <li>Turn negatives into opportunities ✨</li>
-                <li>Reward positive and loyal customers 🎁</li>
+                <li>Respond promptly to customer concerns</li>
+                <li>Acknowledge and appreciate all feedback</li>
+                <li>Train staff for empathy and exceptional care</li>
+                <li>Transform negative feedback into improvement opportunities</li>
+                <li>Reward loyal and engaged customers</li>
               </ul>
             </div>
           </div>
         )}
 
         {report && (
-          <div className="feedback-btns">
-            <button className="btn-preview" onClick={previewPDF}>👀 Preview Report</button>
-            <button className="btn-download" onClick={downloadPDF}>📥 Download Report</button>
+          <div className="feedback-actions">
+            <button className="btn-preview" onClick={previewPDF}>
+              Preview Report
+            </button>
+            <button className="btn-download" onClick={downloadPDF}>
+              Download PDF Report
+            </button>
           </div>
         )}
       </main>

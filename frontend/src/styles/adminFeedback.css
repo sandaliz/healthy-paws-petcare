@@ -1,154 +1,417 @@
 /* ================================
-   ADMIN FEEDBACK PAGE CONTAINER
+   ADMIN FEEDBACK PAGE STYLES
+   Filename: AdminFeedback.css
+================================= */
+
+/* ================================
+   ROOT CONTAINER
 ================================= */
 .admin-feedback-container {
   display: flex;
-  height: 100vh;
-  background: linear-gradient(135deg, #ffd58e, #54413c);
-  font-family: "Poppins", sans-serif;
-  color: #333;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  background: #f8f9fa;
+  color: #333333;
 }
 
 /* ================================
-   MAIN CONTENT
+   MAIN CONTENT AREA
 ================================= */
 .admin-feedback-main {
   flex: 1;
-  margin-left: 240px; /* width of sidebar */
+  margin-left: 280px;
   padding: 40px;
-  overflow-y: auto;
+  background: #f8f9fa;
+  min-height: 100vh;
 }
 
 /* ================================
-   HEADER
+   HEADER SECTION
 ================================= */
+.feedback-header {
+  margin-bottom: 30px;
+}
+
 .feedback-header h2 {
-  font-size: 24px;
-  font-weight: bold;
-  color: #54413c;
-  margin-bottom: 5px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #54413C;
+  margin: 0 0 10px 0;
 }
 
 .feedback-subtitle {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  color: #666666;
+  margin: 0;
+  line-height: 1.5;
 }
 
 /* ================================
-   FEEDBACK TABLE
+   LOADING AND EMPTY STATES
 ================================= */
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  color: #666666;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================
+   TABLE CONTAINER
+================================= */
+.table-container {
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
 .feedback-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 30px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
 }
 
 .feedback-table th {
-  background: #54413c;
-  color: white;
-  padding: 12px;
-  font-size: 14px;
+  background: #54413C;
+  color: #FFFFFF;
+  padding: 16px 20px;
   text-align: left;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-bottom: 2px solid #FFD58E;
 }
 
 .feedback-table td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 0.9rem;
 }
 
-.feedback-table tr:hover {
-  background: rgba(0, 0, 0, 0.05);
+.feedback-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.feedback-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.feedback-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .read-row {
-  background-color: rgba(255, 213, 142, 0.25);
+  background-color: rgba(255, 213, 142, 0.1);
 }
-
-/* Delete Button */
-.btn-delete {
-  background: #e74c3c;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
-  font-size: 13px;
-}
-.btn-delete:hover { background: #c0392b; }
 
 /* ================================
-   STATS + TIPS SECTION
+   TABLE CELL STYLES
+================================= */
+.read-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.read-checkbox input {
+  display: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #54413C;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.read-checkbox input:checked + .checkmark {
+  background: #54413C;
+  border-color: #54413C;
+}
+
+.read-checkbox input:checked + .checkmark::after {
+  content: "✓";
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.email-cell {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #666666;
+}
+
+.message-cell {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ================================
+   RATING STYLES
+================================= */
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.star-filled {
+  color: #FFD58E;
+  font-size: 1rem;
+}
+
+.star-empty {
+  color: #e9ecef;
+  font-size: 1rem;
+}
+
+.rating-value {
+  font-size: 0.8rem;
+  color: #666666;
+  margin-left: 8px;
+}
+
+/* ================================
+   DELETE BUTTON
+================================= */
+.btn-delete {
+  background: #e74c3c;
+  color: #FFFFFF;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
+}
+
+/* ================================
+   STATS SECTION
 ================================= */
 .feedback-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
   margin-bottom: 30px;
 }
 
 .chart-container,
 .tips-container {
-  flex: 1 1 45%;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 20px;
+  background: #FFFFFF;
   border-radius: 12px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-  min-width: 300px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .chart-container h3,
 .tips-container h3 {
-  margin-bottom: 15px;
-  color: #54413c;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.chart-wrapper {
-  width: 100%;
-  height: 250px;
-}
-
-.tips-container ul {
-  padding-left: 20px;
-}
-.tips-container li {
-  margin: 8px 0;
-  font-size: 14px;
-  line-height: 1.4;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #54413C;
+  margin: 0 0 20px 0;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #FFD58E;
 }
 
 /* ================================
-   REPORT BUTTONS
+   CHART STYLES
 ================================= */
-.feedback-btns {
+.chart-wrapper {
+  width: 100%;
+  height: 250px;
+  margin-bottom: 20px;
+}
+
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stat-label {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.8rem;
+  color: #666666;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #54413C;
+}
+
+.stat-value.positive {
+  color: #27ae60;
+}
+
+.stat-value.negative {
+  color: #e74c3c;
+}
+
+/* ================================
+   TIPS SECTION
+================================= */
+.tips-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tips-container li {
+  padding: 12px 0;
+  border-bottom: 1px solid #e9ecef;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #54413C;
+}
+
+.tips-container li:last-child {
+  border-bottom: none;
+}
+
+.tips-container li::before {
+  content: "•";
+  color: #FFD58E;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+/* ================================
+   ACTION BUTTONS
+================================= */
+.feedback-actions {
   display: flex;
   gap: 15px;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .btn-preview,
 .btn-download {
-  background: #54413c;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 12px 24px;
   border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 14px;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
-.btn-preview:hover,
+.btn-preview {
+  background: #54413C;
+  color: #FFFFFF;
+}
+
+.btn-preview:hover {
+  background: #3a2d29;
+  transform: translateY(-2px);
+}
+
+.btn-download {
+  background: #FFD58E;
+  color: #54413C;
+}
+
 .btn-download:hover {
-  background: #ffd58e;
-  color: #54413c;
+  background: #e6c07d;
+  transform: translateY(-2px);
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+================================= */
+@media (max-width: 1200px) {
+  .feedback-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-summary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-feedback-main {
+    margin-left: 0;
+    padding: 20px;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .feedback-table {
+    min-width: 800px;
+  }
+  
+  .stats-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .feedback-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-preview,
+  .btn-download {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* ================================
+   UTILITY CLASSES
+================================= */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

@@ -1,169 +1,356 @@
 /* ================================
+   ADMIN DASHBOARD STYLES
+   Filename: AdminDashboard.css
+================================= */
+
+/* ================================
    ROOT CONTAINER
 ================================= */
-.ad-container {
+.admin-dashboard-container {
   display: flex;
-  height: 100vh;
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #54413c, #ffd58e);
-  color: #333;
-  overflow: hidden;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  background: #FFFFFF;
+  color: #333333;
 }
 
 /* ================================
-   MAIN DASHBOARD CONTENT
+   MAIN CONTENT AREA
 ================================= */
-.ad-main {
+.admin-main-content {
   flex: 1;
-  margin-left: 240px; /* fix overlap with sidebar */
-  padding: 40px;
-  background: transparent;
-  overflow-y: auto;
-}
-
-.ad-main .ad-title {
-  margin-bottom: 20px;
-  color: #54413c;
+  margin-left: 280px; /* Matches sidebar width */
+  padding: 0;
+  background: #f8f9fa;
+  min-height: 100vh;
 }
 
 /* ================================
-   HERO BANNER
+   HERO SECTION - ORIGINAL DARKNESS PRESERVED
 ================================= */
-.ad-hero-banner {
+.admin-hero-section {
   width: 100%;
-  height: 220px;
+  height: 280px;
   background-size: cover;
   background-position: center;
-  border-radius: 12px;
-  margin-bottom: 30px;
+  background-repeat: no-repeat;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.ad-hero-overlay {
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
+.admin-hero-overlay {
   position: absolute;
   inset: 0;
+  background: rgba(0, 0, 0, 0.45); /* Original darkness preserved */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 20px 40px;
-  border-radius: 12px;
+  align-items: flex-start;
+  padding: 0 60px;
 }
-.ad-hero-overlay .ad-hero-heading {
+
+.admin-welcome-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0 0 10px 0;
+}
+
+.admin-welcome-subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  color: #FFD58E;
   margin: 0;
-  font-size: 28px;
-  font-weight: bold;
-}
-.ad-hero-overlay .ad-hero-subtext {
-  margin-top: 10px;
-  font-size: 16px;
-  color: #f1f1f1;
+  opacity: 0.9;
 }
 
 /* ================================
-   TOP SECTION (Calendar + Timeline)
+   CONTENT GRID LAYOUT
 ================================= */
-.ad-top-section {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
+.admin-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 30px;
+  padding: 40px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-/* glass cards */
-.ad-calendar-card,
-.ad-timeline-card,
-.ad-task-section {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+.admin-calendar-section {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.admin-timeline-section {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.admin-tasks-section {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+}
+
+/* ================================
+   CARD COMPONENTS
+================================= */
+.admin-card {
+  background: #FFFFFF;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(84, 65, 60, 0.1);
+  height: fit-content;
+}
+
+.admin-card h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #54413C;
+  margin: 0 0 25px 0;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #FFD58E;
 }
 
 /* ================================
-   CALENDAR
+   CALENDAR STYLES
 ================================= */
-.ad-calendar-card { flex: 1; }
-.ad-calendar-card .ad-card-title { margin-bottom: 10px; color: #54413c; }
-
-.ad-selected-date {
-  margin-top: 15px;
-  font-weight: 500;
-  color: #54413c;
-}
-
-.ad-calendar-card .react-calendar {
+.admin-calendar-section .react-calendar {
+  width: 100%;
   border: none;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: inset 0 1px 4px rgba(0,0,0,0.1);
-  padding: 10px;
-}
-.ad-calendar-card .react-calendar__tile--now {
-  background: #ffd58e !important; color: #54413c !important; border-radius: 6px; font-weight: bold;
-}
-.ad-calendar-card .react-calendar__tile--active {
-  background: #54413c !important; color: #fff !important; border-radius: 6px;
-}
-
-/* ================================
-   TIMELINE
-================================= */
-.ad-timeline-card { flex: 1; }
-.ad-timeline-card .ad-card-title { margin-bottom: 15px; color: #54413c; }
-
-.ad-timeline {
-  list-style: none; padding: 0; margin: 0;
-}
-.ad-timeline li {
-  display: flex; align-items: center;
-  margin: 15px 0; padding: 10px;
-  background: rgba(255,255,255,0.6);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  background: #FFFFFF;
+  font-family: 'Roboto', sans-serif;
 }
 
-.ad-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 12px; }
-.ad-dot.red { background: #e74c3c; }
-.ad-dot.green { background: #27ae60; }
-.ad-dot.blue { background: #3498db; }
-.ad-dot.orange { background: #e67e22; }
-
-.ad-timeline-info { flex: 1; }
-.ad-timeline-title { margin: 0; font-weight: 600; color: #333; }
-.ad-timeline-time { font-size: 12px; color: #666; }
-
-.ad-tag {
-  background: #e74c3c; 
-  color: #fff; 
-  font-size: 11px;
-  padding: 3px 6px; 
-  border-radius: 6px; 
-  font-weight: bold;
+.admin-calendar-section .react-calendar__navigation button {
+  color: #54413C;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
-/* ================================
-   TASK LIST
-================================= */
-.ad-task-section .ad-card-title { margin-bottom: 15px; color: #54413c; }
+.admin-calendar-section .react-calendar__tile {
+  padding: 12px 6px;
+  font-family: 'Roboto', sans-serif;
+}
 
-.ad-task-list { list-style: none; padding: 0; margin: 0; }
-.ad-task-list li {
-  padding: 10px; 
-  border-bottom: 1px solid rgba(255,255,255,0.3);
-  color: #333; 
-  cursor: pointer; 
-  transition: background 0.3s ease;
+.admin-calendar-section .react-calendar__tile--now {
+  background: #FFD58E !important;
+  color: #54413C !important;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.admin-calendar-section .react-calendar__tile--active {
+  background: #54413C !important;
+  color: #FFFFFF !important;
   border-radius: 6px;
 }
-.ad-task-list li:hover { background-color: rgba(255, 255, 255, 0.4); }
-.ad-task-list li.completed {
-  text-decoration: line-through; 
-  color: #888; 
-  font-style: italic;
+
+.admin-selected-date {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  color: #54413C;
+  margin-top: 20px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.admin-selected-date strong {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+/* ================================
+   TIMELINE STYLES
+================================= */
+.admin-timeline-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-timeline-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(84, 65, 60, 0.1);
+}
+
+.admin-timeline-item:last-child {
+  border-bottom: none;
+}
+
+.admin-timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.admin-dot-red { background: #e74c3c; }
+.admin-dot-green { background: #27ae60; }
+.admin-dot-blue { background: #3498db; }
+.admin-dot-orange { background: #e67e22; }
+
+.admin-timeline-content {
+  flex: 1;
+}
+
+.admin-timeline-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #54413C;
+  margin: 0 0 4px 0;
+}
+
+.admin-timeline-time {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.85rem;
+  color: #666666;
+  margin: 0;
+}
+
+.admin-timeline-tag {
+  background: #e74c3c;
+  color: #FFFFFF;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+
+/* ================================
+   TASK LIST STYLES
+================================= */
+.admin-task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-task-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  margin: 8px 0;
+  background: #f8f9fa;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.admin-task-item:hover {
+  background: #FFD58E;
+  transform: translateX(5px);
+}
+
+.admin-task-pending {
+  border-left: 4px solid #54413C;
+}
+
+.admin-task-completed {
+  border-left: 4px solid #27ae60;
+  opacity: 0.7;
+}
+
+.admin-task-checkbox {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  margin-right: 15px;
+  width: 20px;
+  text-align: center;
+}
+
+.admin-task-completed .admin-task-checkbox {
+  color: #27ae60;
+}
+
+.admin-task-pending .admin-task-checkbox {
+  color: #54413C;
+}
+
+.admin-task-text {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  color: #54413C;
+}
+
+.admin-task-completed .admin-task-text {
+  text-decoration: line-through;
+  color: #666666;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+================================= */
+@media (max-width: 1200px) {
+  .admin-content-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  
+  .admin-calendar-section {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  .admin-timeline-section {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  
+  .admin-tasks-section {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-main-content {
+    margin-left: 0;
+    padding-top: 80px;
+  }
+  
+  .admin-content-grid {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .admin-hero-overlay {
+    padding: 0 30px;
+  }
+  
+  .admin-welcome-title {
+    font-size: 2rem;
+  }
+  
+  .admin-card {
+    padding: 20px;
+  }
+}
+
+/* ================================
+   UTILITY CLASSES
+================================= */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
