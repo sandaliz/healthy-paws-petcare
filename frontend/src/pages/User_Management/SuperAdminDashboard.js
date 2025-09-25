@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import {
   FaEdit,
   FaTrash,
@@ -9,7 +10,11 @@ import {
   FaSync,
   FaSave,
   FaTimes,
+  FaSignOutAlt,
+  FaPlus,
+  FaUsers,
 } from "react-icons/fa";
+import "../../styles/superAdminDashboard.css";
 
 const SuperAdminDashboard = () => {
   const [staffUsers, setStaffUsers] = useState([]);
@@ -33,7 +38,15 @@ const SuperAdminDashboard = () => {
 
   const allRoles = [...staffRoles, "USER"];
 
-  // ---------- Fetch staff users ----------
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
+
   const fetchStaffUsers = async () => {
     setLoading(true);
     try {
@@ -54,7 +67,6 @@ const SuperAdminDashboard = () => {
     fetchStaffUsers();
   }, []);
 
-  // ---------- Create new staff ----------
   const handleCreateStaff = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -86,7 +98,6 @@ const SuperAdminDashboard = () => {
     }
   };
 
-  // ---------- Editing functions ----------
   const startEditUser = (user) => {
     setEditingUser(user._id);
     setEditForm({
@@ -129,7 +140,6 @@ const SuperAdminDashboard = () => {
     setEditForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  // ---------- Delete staff ----------
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this staff member?")) return;
 
@@ -149,7 +159,6 @@ const SuperAdminDashboard = () => {
     }
   };
 
-  // ---------- Toggle staff active status ----------
   const handleToggleActive = async (id, currentStatus) => {
     try {
       const token = localStorage.getItem("token");
@@ -173,184 +182,181 @@ const SuperAdminDashboard = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Super Admin Dashboard</h2>
-        <button
-          onClick={fetchStaffUsers}
-          disabled={loading}
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-blue-300 transition-colors"
-        >
-          <FaSync className={loading ? "animate-spin mr-2" : "mr-2"} />
-          Refresh
-        </button>
+    <div className="sad-modern-container">
+      {/* Header */}
+      <div className="sad-modern-header">
+        <div className="sad-header-content">
+          <div className="sad-title-section">
+            <FaUsers className="sad-title-icon" />
+            <h1 className="sad-modern-title">Super Admin Dashboard</h1>
+          </div>
+
+          <div className="sad-header-actions-modern">
+            <button
+              onClick={fetchStaffUsers}
+              disabled={loading}
+              className="sad-refresh-btn-modern"
+            >
+              <FaSync className={loading ? "sad-spin-animation" : ""} />
+              <span>Refresh</span>
+            </button>
+
+            <button onClick={handleLogout} className="sad-logout-btn-modern">
+              <FaSignOutAlt />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Create Staff Form */}
-      <form
-        onSubmit={handleCreateStaff}
-        className="bg-white p-6 rounded-lg shadow-md mb-8"
-      >
-        <h3 className="text-lg font-semibold mb-4">Create New Staff Member</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <input
-            name="name"
-            type="text"
-            placeholder="Full Name"
-            className="border border-gray-300 rounded-lg px-4 py-2"
-            required
-            disabled={creating}
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            className="border border-gray-300 rounded-lg px-4 py-2"
-            required
-            disabled={creating}
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            className="border border-gray-300 rounded-lg px-4 py-2"
-            required
-            minLength="6"
-            disabled={creating}
-          />
-          <select
-            name="role"
-            className="border border-gray-300 rounded-lg px-4 py-2"
-            required
-            disabled={creating}
-          >
-            <option value="">Select Role</option>
-            {staffRoles.map((role) => (
-              <option key={role} value={role}>
-                {role.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
+      <div className="sad-card-modern">
+        <div className="sad-card-header">
+          <FaPlus className="sad-card-icon" />
+          <h3 className="sad-card-title">Create New Staff Member</h3>
         </div>
-        <button
-          type="submit"
-          disabled={creating}
-          className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
-        >
-          {creating ? "Creating..." : "Create Staff"}
-        </button>
-      </form>
+        <form onSubmit={handleCreateStaff} className="sad-form-modern">
+          <div className="sad-form-grid-modern">
+            <div className="sad-input-group">
+              <label className="sad-input-label">Full Name</label>
+              <input name="name" type="text" placeholder="Enter full name" className="sad-input-modern" required disabled={creating} />
+            </div>
+            <div className="sad-input-group">
+              <label className="sad-input-label">Email</label>
+              <input name="email" type="email" placeholder="Enter email address" className="sad-input-modern" required disabled={creating} />
+            </div>
+            <div className="sad-input-group">
+              <label className="sad-input-label">Password</label>
+              <input name="password" type="password" placeholder="Enter password" className="sad-input-modern" required minLength="6" disabled={creating} />
+            </div>
+            <div className="sad-input-group">
+              <label className="sad-input-label">Role</label>
+              <select name="role" className="sad-select-modern" required disabled={creating}>
+                <option value="">Select Role</option>
+                {staffRoles.map((role) => (
+                  <option key={role} value={role}>{role.replace(/_/g, " ")}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button type="submit" disabled={creating} className="sad-submit-btn-modern">
+            {creating ? "Creating..." : "Create Staff Member"}
+          </button>
+        </form>
+      </div>
 
       {/* Staff List */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold">Staff Members</h3>
+      <div className="sad-card-modern">
+        <div className="sad-card-header">
+          <FaUsers className="sad-card-icon" />
+          <h3 className="sad-card-title">Staff Members ({staffUsers.length})</h3>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading staff users...</div>
+          <div className="sad-loading-state">
+            <FaSync className="sad-spin-animation" />
+            <p>Loading staff users...</p>
+          </div>
         ) : staffUsers.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">No staff users found</div>
+          <div className="sad-empty-state">
+            <FaUsers className="sad-empty-icon" />
+            <p>No staff users found</p>
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
+          <div className="sad-table-container">
+            <table className="sad-table-modern">
+              <thead>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody>
                 {staffUsers.map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
+                  <tr key={user._id} className="sad-table-row-modern">
+                    <td>
                       {editingUser === user._id ? (
                         <input
                           type="text"
                           value={editForm.name}
                           onChange={(e) => handleEditChange("name", e.target.value)}
-                          className="border rounded px-2 py-1"
+                          className="sad-input-modern"
                         />
                       ) : (
-                        user.name
+                        <span className="sad-user-name">{user.name}</span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
+                    <td>
                       {editingUser === user._id ? (
                         <input
                           type="email"
                           value={editForm.email}
                           onChange={(e) => handleEditChange("email", e.target.value)}
-                          className="border rounded px-2 py-1"
+                          className="sad-input-modern"
                         />
                       ) : (
-                        user.email
+                        <span className="sad-user-email">{user.email}</span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
+                    <td>
                       {editingUser === user._id ? (
                         <select
                           value={editForm.role}
                           onChange={(e) => handleEditChange("role", e.target.value)}
-                          className="border rounded px-2 py-1"
+                          className="sad-select-modern"
                         >
                           {allRoles.map((role) => (
-                            <option key={role} value={role}>
-                              {role.replace(/_/g, " ")}
-                            </option>
+                            <option key={role} value={role}>{role.replace(/_/g, " ")}</option>
                           ))}
                         </select>
                       ) : (
-                        <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                          {user.role}
-                        </span>
+                        <span className="sad-role-badge">{user.role.replace(/_/g, " ")}</span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
+                    <td>
                       {editingUser === user._id ? (
                         <select
                           value={editForm.isActive}
                           onChange={(e) => handleEditChange("isActive", e.target.value === "true")}
-                          className="border rounded px-2 py-1"
+                          className="sad-select-modern"
                         >
                           <option value={true}>Active</option>
                           <option value={false}>Inactive</option>
                         </select>
                       ) : (
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${user.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                        <span className={`sad-status-modern ${user.isActive ? "active" : "inactive"}`}>
                           {user.isActive ? "Active" : "Inactive"}
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex space-x-2">
+                    <td>
+                      <div className="sad-actions-modern">
                         {editingUser === user._id ? (
                           <>
-                            <button onClick={() => saveEditUser(user._id)} className="text-green-600 hover:text-green-900">
-                              <FaSave size={16} />
+                            <button onClick={() => saveEditUser(user._id)} className="sad-action-btn sad-save-btn" title="Save">
+                              <FaSave />
                             </button>
-                            <button onClick={cancelEdit} className="text-red-600 hover:text-red-900">
-                              <FaTimes size={16} />
+                            <button onClick={cancelEdit} className="sad-action-btn sad-cancel-btn" title="Cancel">
+                              <FaTimes />
                             </button>
                           </>
                         ) : (
                           <>
-                            <button onClick={() => startEditUser(user)} className="text-blue-600 hover:text-blue-900">
-                              <FaEdit size={16} />
+                            <button onClick={() => startEditUser(user)} className="sad-action-btn sad-edit-btn" title="Edit">
+                              <FaEdit />
                             </button>
                             <button
                               onClick={() => handleToggleActive(user._id, user.isActive)}
-                              className={`p-1 rounded ${
-                                user.isActive ? "text-green-600 hover:text-green-900" : "text-gray-400 hover:text-gray-600"
-                              }`}
+                              className={`sad-action-btn ${user.isActive ? "sad-toggle-active" : "sad-toggle-inactive"}`}
+                              title={user.isActive ? "Deactivate" : "Activate"}
                             >
-                              {user.isActive ? <FaToggleOn size={18} /> : <FaToggleOff size={18} />}
+                              {user.isActive ? <FaToggleOn /> : <FaToggleOff />}
                             </button>
-                            <button onClick={() => handleDelete(user._id)} className="text-red-600 hover:text-red-900">
-                              <FaTrash size={16} />
+                            <button onClick={() => handleDelete(user._id)} className="sad-action-btn sad-delete-btn" title="Delete">
+                              <FaTrash />
                             </button>
                           </>
                         )}

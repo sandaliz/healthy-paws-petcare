@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../../styles/Pet_RegisterView.css";
 
 const RegisterView = () => {
   const { id } = useParams();
@@ -15,75 +18,166 @@ const RegisterView = () => {
       .then((res) => {
         if (res.data.success) setRegistration(res.data.data);
       })
-      .catch((err) => console.error("Error fetching registration:", err));
+      .catch((err) => {
+        console.error("Error fetching registration:", err);
+        toast.error("Failed to load registration details");
+      });
   }, [id]);
 
   const deleteRegistration = async () => {
-    try {
-      await axios.delete(`${API_BASE}/api/register/${id}`);
-      alert("🐾 Registration deleted successfully!");
-      navigate("/register/list");
-    } catch (err) {
-      alert("❌ Failed to delete registration");
+    if (window.confirm("Are you sure you want to delete this registration? This action cannot be undone.")) {
+      try {
+        await axios.delete(`${API_BASE}/api/register/${id}`);
+        toast.success("Registration deleted successfully!");
+        setTimeout(() => {
+          navigate("/register/list");
+        }, 1000);
+      } catch (err) {
+        toast.error("Failed to delete registration");
+      }
     }
   };
 
   if (!registration) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading registration...</p>
-      </div>
+      <main className="registration-view-page">
+        <img
+          src={require("../../assets/registration_bg.png")}
+          alt="background"
+          className="registration-view-bg"
+        />
+        <div className="registration-view-overlay">
+          <div className="registration-loading">
+            <p>Loading registration details...</p>
+          </div>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-6"
-      style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #FFD58E 100%)" }}
-    >
-      <div className="bg-white shadow-2xl rounded-lg w-full max-w-3xl p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center">Pet Registration Details 🐶🐱</h2>
+    <main className="registration-view-page">
+      <ToastContainer />
+      
+      <img
+        src={require("../../assets/registration_bg.png")}
+        alt="background"
+        className="registration-view-bg"
+      />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="col-span-1 md:col-span-2 font-semibold text-[#54413C]">Owner Information</div>
-          <div><strong>Owner Name:</strong> {registration.OwnerName}</div>
-          <div><strong>Owner Email:</strong> {registration.OwnerEmail}</div>
-          <div><strong>Owner Phone:</strong> {registration.OwnerPhone}</div>
-          <div><strong>Emergency Contact:</strong> {registration.EmergencyContact}</div>
-          <div className="md:col-span-2"><strong>Address:</strong> {registration.OwnerAddress}</div>
+      <div className="registration-view-overlay">
+        <div className="registration-view-header">
+          <h2>Pet Registration Details</h2>
+          <p>
+            View the complete registration information for your pet. You can edit or delete this registration as needed.
+          </p>
+        </div>
 
-          <div className="col-span-1 md:col-span-2 font-semibold text-[#54413C] mt-4">Pet Information</div>
-          <div><strong>Pet Name:</strong> {registration.PetName}</div>
-          <div><strong>Species:</strong> {registration.PetSpecies}</div>
-          <div><strong>Breed:</strong> {registration.PetBreed}</div>
-          <div><strong>Age:</strong> {registration.PetAge}</div>
-          <div><strong>Weight:</strong> {registration.PetWeight} kg</div>
-          <div><strong>Blood Group:</strong> {registration.BloodGroup}</div>
-          <div><strong>Gender:</strong> {registration.PetGender}</div>
-          <div className="md:col-span-2"><strong>Notes:</strong> {registration.SpecialNotes || "—"}</div>
+        <div className="registration-details-wrapper">
+          {/* Owner Information Container */}
+          <div className="registration-info-card">
+            <div className="registration-card-header">
+              <h3>Owner Information</h3>
+            </div>
+            <div className="registration-card-content">
+              <div className="registration-info-grid">
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Owner Name</label>
+                  <div className="registration-field-value">{registration.OwnerName}</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Email Address</label>
+                  <div className="registration-field-value">{registration.OwnerEmail}</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Phone Number</label>
+                  <div className="registration-field-value">{registration.OwnerPhone}</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Emergency Contact</label>
+                  <div className="registration-field-value">{registration.EmergencyContact}</div>
+                </div>
+                
+                <div className="registration-info-field full-width">
+                  <label className="registration-field-label">Address</label>
+                  <div className="registration-field-value">{registration.OwnerAddress}</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <div className="col-span-1 md:col-span-2 text-sm text-gray-500 mt-2">
-            <div>Created: {new Date(registration.createdAt).toLocaleString()}</div>
-            <div>Updated: {new Date(registration.updatedAt).toLocaleString()}</div>
+          {/* Pet Information Container */}
+          <div className="registration-info-card">
+            <div className="registration-card-header">
+              <h3>Pet Information</h3>
+            </div>
+            <div className="registration-card-content">
+              <div className="registration-info-grid">
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Pet Name</label>
+                  <div className="registration-field-value">{registration.PetName}</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Species</label>
+                  <div className="registration-field-value">{registration.PetSpecies}</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Breed</label>
+                  <div className="registration-field-value">{registration.PetBreed}</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Age</label>
+                  <div className="registration-field-value">{registration.PetAge} years</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Weight</label>
+                  <div className="registration-field-value">{registration.PetWeight} kg</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Blood Group</label>
+                  <div className="registration-field-value">{registration.BloodGroup}</div>
+                </div>
+                
+                <div className="registration-info-field">
+                  <label className="registration-field-label">Gender</label>
+                  <div className="registration-field-value">{registration.PetGender}</div>
+                </div>
+                
+                <div className="registration-info-field full-width">
+                  <label className="registration-field-label">Special Notes</label>
+                  <div className="registration-field-value">
+                    {registration.SpecialNotes || "No special notes provided"}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex gap-4 mt-8 justify-center">
+        <div className="registration-actions">
           <button
             onClick={() => navigate(`/register/edit/${id}`)}
-            className="px-6 py-2 bg-[#FFD58E] text-[#54413C] rounded-lg"
+            className="registration-edit-btn"
           >
-            ✏ Edit
+            Edit Registration
           </button>
           <button
             onClick={deleteRegistration}
-            className="px-6 py-2 bg-[#54413C] text-white rounded-lg"
+            className="registration-delete-btn"
           >
-            🗑 Delete
+            Delete Registration
           </button>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

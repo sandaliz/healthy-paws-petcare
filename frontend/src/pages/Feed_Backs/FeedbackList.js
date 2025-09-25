@@ -2,9 +2,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import '../../styles/FeedbackList.css'
 
 const FeedbackList = ({ user }) => {
   const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,56 +16,120 @@ const FeedbackList = ({ user }) => {
         .then((res) => {
           if (res.data.success) setFeedbacks(res.data.data);
         })
-        .catch((err) => console.error("Error fetching feedbacks:", err));
+        .catch((err) => console.error("Error fetching feedbacks:", err))
+        .finally(() => setLoading(false));
     }
   }, [user]);
 
+  const getRatingColor = (rating) => {
+    if (rating >= 4) return "#4CAF50"; // Green for high ratings
+    if (rating >= 3) return "#FF9800"; // Orange for medium ratings
+    return "#F44336"; // Red for low ratings
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="feedback-list-loading">
+        <div className="loading-spinner"></div>
+        <p>Loading your feedbacks...</p>
+      </div>
+    );
+  }
+
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-6"
-      style={{
-        background: "linear-gradient(180deg, #FFFFFF 0%, #FFD58E 100%)",
-        fontFamily: "Roboto, sans-serif",
-      }}
-    >
-      <div className="bg-white shadow-2xl rounded-lg w-full max-w-4xl p-8">
-        <h2
-          className="text-3xl font-bold mb-6 text-center"
-          style={{ fontFamily: "Poppins, sans-serif", color: "#2D2D2D" }}
-        >
-          My Feedbacks 🐾
-        </h2>
+    <div className="feedback-list-container">
+      <div className="feedback-list-content">
+        <div className="feedback-list-header">
+          <h2>My Feedback History</h2>
+          <p>Review your previous feedback submissions</p>
+          <div className="feedback-stats">
+            <div className="stat-item">
+              <span className="stat-number">{feedbacks.length}</span>
+              <span className="stat-label">Total Feedbacks</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">
+                {feedbacks.length > 0 
+                  ? (feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length).toFixed(1)
+                  : '0.0'
+                }
+              </span>
+              <span className="stat-label">Average Rating</span>
+            </div>
+          </div>
+        </div>
 
         {feedbacks.length === 0 ? (
-          <div className="text-center text-gray-600">
-            <p>No feedbacks yet. 📝</p>
+          <div className="empty-state">
+            <div className="empty-icon">📝</div>
+            <h3>No Feedback Yet</h3>
+            <p>You haven't submitted any feedback yet. Share your experience to help us improve!</p>
+            <button 
+              className="primary-btn"
+              onClick={() => navigate('/feedback')}
+            >
+              Submit Your First Feedback
+            </button>
           </div>
         ) : (
-          <ul className="space-y-4">
-            {feedbacks.map((f) => (
-              <li
-                key={f._id}
-                className="p-6 bg-[#FFD58E]/30 rounded-lg shadow hover:shadow-lg hover:bg-[#FFD58E]/60 transition cursor-pointer"
-                onClick={() => navigate(`/feedback/${f._id}`)}
+          <div className="feedbacks-grid">
+            {feedbacks.map((feedback) => (
+              <div 
+                key={feedback._id}
+                className="feedback-card"
+                onClick={() => navigate(`/feedback/${feedback._id}`)}
               >
-                <div className="flex justify-between items-center">
-                  <h3
-                    className="font-semibold text-xl"
-                    style={{ fontFamily: "Poppins, sans-serif", color: "#54413C" }}
+                <div className="feedback-card-header">
+                  <div className="pet-info">
+                    <h3>{feedback.petName}</h3>
+                    <span className="owner-name">by {feedback.petOwnerName}</span>
+                  </div>
+                  <div 
+                    className="rating-badge"
+                    style={{ backgroundColor: getRatingColor(feedback.rating) }}
                   >
-                    {f.petName}
-                  </h3>
-                  <span className="text-yellow-500 font-bold">
-                    {"★".repeat(f.rating)}{"☆".repeat(5 - f.rating)}
-                  </span>
+                    <span className="rating-stars">
+                      {"★".repeat(feedback.rating)}
+                    </span>
+                    <span className="rating-number">{feedback.rating}.0</span>
+                  </div>
                 </div>
-                <p className="text-gray-700 mt-2">{f.message}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Submitted on: {new Date(f.createdAt).toLocaleDateString()}
-                </p>
-              </li>
+
+                <div className="feedback-preview">
+                  <p>{feedback.message.length > 120 
+                    ? `${feedback.message.substring(0, 120)}...` 
+                    : feedback.message
+                  }</p>
+                </div>
+
+                <div className="feedback-meta">
+                  <div className="meta-item">
+                    <span className="meta-label">Submitted:</span>
+                    <span className="meta-value">{formatDate(feedback.createdAt)}</span>
+                  </div>
+                  <div className="meta-item">
+                    <span className="meta-label">Status:</span>
+                    <span className="status-badge">Completed</span>
+                  </div>
+                </div>
+
+                <div className="view-details">
+                  <span>Click to view details →</span>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
