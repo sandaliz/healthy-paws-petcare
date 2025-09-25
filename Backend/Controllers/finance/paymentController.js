@@ -1,6 +1,6 @@
 import Payment from "../../Model/finance/paymentModel.js";
 import Invoice from "../../Model/finance/invoiceModel.js";
-import register from "../../Model/register.js";
+import register from "../../Model/Register.js";
 import Coupon from "../../Model/finance/couponModel.js";
 import Stripe from "stripe";
 import mongoose from "mongoose";
@@ -67,8 +67,8 @@ async function normalizeInvoiceStatus(invoice) {
       p.refundedAmount != null
         ? p.refundedAmount
         : p.status === "Refunded"
-        ? p.amount || 0
-        : 0
+          ? p.amount || 0
+          : 0
     );
     if (p.status === "Completed" || p.status === "Refunded") {
       totalCompleted += paid;
@@ -138,7 +138,7 @@ async function resolveOwnerDoc({ invoice, payment }) {
     try {
       const doc = await register.findById(id).select("OwnerName OwnerEmail").lean();
       if (doc) return doc;
-    } catch (_) {}
+    } catch (_) { }
   }
   return null;
 }
@@ -249,7 +249,7 @@ export const confirmOfflinePayment = async (req, res) => {
             await applied.incrementUsage();
           }
         }
-      } catch (_) {}
+      } catch (_) { }
     }
 
     if (payment.invoiceID) {
@@ -336,7 +336,7 @@ export const createStripePayment = async (req, res) => {
           currency: usedCurrency,
         });
       } catch (e) {
-        try { await stripe.paymentIntents.cancel(payment.stripePaymentIntentId); } catch (_) {}
+        try { await stripe.paymentIntents.cancel(payment.stripePaymentIntentId); } catch (_) { }
         const newPI = await stripe.paymentIntents.create({
           amount: Math.round(finalAmount * 100),
           currency: usedCurrency,
@@ -460,7 +460,7 @@ export const confirmStripePayment = async (req, res) => {
             await applied.incrementUsage();
           }
         }
-      } catch (_) {}
+      } catch (_) { }
     }
 
     if (invoice) {
