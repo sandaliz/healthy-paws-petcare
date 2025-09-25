@@ -4,6 +4,7 @@ import * as CheckInOutController from "../Controllers/CheckInOutControllers.js";
 
 const router = express.Router();
 
+
 router.post("/checkin", CheckInOutController.checkInPet);
 router.put("/checkout/:id", CheckInOutController.checkOutPet);
 router.put("/reject/:id", CheckInOutController.rejectAppointment);
