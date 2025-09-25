@@ -1,9 +1,20 @@
-/* Table wrapper */
+/* ---------- Table Wrapper ---------- */
 .pl-table-wrapper {
   margin-top: 20px;
-  overflow-x: auto;
+  overflow-x: auto;   /* allows horizontal scroll if needed */
+  width: 100%;
+  flex-grow: 1;
+  font-family: 'Poppins', sans-serif; /* 🔥 use consistent font */
 }
 
+.pl-table-wrapper h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #4A2E2B;
+}
+
+/* ---------- Table Layout ---------- */
 .pl-table {
   width: 100%;
   border-collapse: collapse;
@@ -11,77 +22,107 @@
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   overflow: hidden;
+  min-width: 800px; /* ✅ ensures headers + rows align properly */
+  table-layout: fixed; /* ✅ = keeps columns aligned neatly */
 }
 
+/* ---------- Table Header ---------- */
 .pl-table thead {
-  background-color: #54413C;
+  background-color: #4A2E2B;
   color: #FFFFFF;
+  font-family: 'Poppins', sans-serif;
 }
 
 .pl-table th {
   text-align: left;
   padding: 12px;
-  font-family: 'Poppins', sans-serif;
   font-size: 14px;
+  white-space: nowrap; /* prevent header wrapping */
+  font-weight: 600;
 }
 
+/* ---------- Table Body ---------- */
 .pl-table td {
   padding: 12px;
   border-bottom: 1px solid #eee;
   font-size: 14px;
   color: #54413C;
+  vertical-align: top;
+  font-family: 'Poppins', sans-serif;
 }
 
 .pl-table tr:hover {
   background-color: #FFF8F1;
 }
 
-/* Status Badges */
+/* prescription items list inside cell */
+.pl-table td ul {
+  margin: 0;
+  padding-left: 18px;
+  list-style-type: disc;
+}
+
+.pl-table td ul li {
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 4px;
+  color: #4A2E2B;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ---------- Status Badges ---------- */
 .pl-status-badge {
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
+  text-transform: capitalize;
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
 }
+
 .pl-status-paid {
   background-color: #DCFCE7;
   color: #166534;
 }
+
 .pl-status-pending {
   background-color: #FEE2E2;
   color: #991B1B;
 }
 
-/* Action buttons */
+/* ---------- Action Buttons ---------- */
 .pl-action-buttons {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
-.pl-btn-send {
+.pl-action-buttons button {
   padding: 6px 12px;
   border: none;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif; /* ✅ consistent font */
   cursor: pointer;
-  background-color: #54413C;
+  transition: all 0.2s ease;
+}
+
+/* “Send to Customer” button */
+.pl-btn-send {
+  background-color: #4A2E2B;
   color: #fff;
-  transition: 0.2s;
 }
 .pl-btn-send:hover {
   background-color: #FFD58E;
-  color: #54413C;
+  color: #4A2E2B;
 }
 
+/* “Paid” button (disabled style) */
 .pl-btn-paid {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
   background-color: #FFD58E;
-  color: #54413C;
+  color: #4A2E2B;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
