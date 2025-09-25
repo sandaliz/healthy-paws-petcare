@@ -1,0 +1,147 @@
+/* ================================
+   FEEDBACK FORM PAGE
+================================= */
+.feedback-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #ffffff 0%, #ffd58e 100%);
+  font-family: "Roboto", sans-serif;
+}
+
+/* ================================
+   CONTAINER
+================================= */
+.feedback-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  margin-top: 5rem;
+}
+
+.feedback-card {
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.feedback-card-left {
+  flex: 1;
+  background: #ffd58e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.feedback-card-left img {
+  max-width: 22rem;
+  height: auto;
+  object-fit: contain;
+}
+
+.feedback-card-right {
+  flex: 1;
+  padding: 2.5rem;
+}
+
+/* ================================
+   TITLE & DESC
+================================= */
+.feedback-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-family: "Poppins", sans-serif;
+  color: #2d2d2d;
+}
+
+.feedback-subtitle {
+  margin-bottom: 1.5rem;
+  color: #666666;
+  font-size: 1rem;
+}
+
+/* ================================
+   FORM FIELDS
+================================= */
+.feedback-form input,
+.feedback-form textarea {
+  width: 100%;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  font-family: "Roboto", sans-serif;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.feedback-form input:focus,
+.feedback-form textarea:focus {
+  outline: none;
+  border-color: #ffd58e;
+  box-shadow: 0 0 0 3px rgba(255, 213, 142, 0.4);
+}
+
+.feedback-form textarea {
+  resize: none;
+}
+
+/* ================================
+   RATING
+================================= */
+.feedback-rating-label {
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: #2d2d2d;
+}
+
+/* ================================
+   SUBMIT BUTTON
+================================= */
+.feedback-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 10px;
+  background-color: #54413c;
+  color: #ffffff;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: none;
+}
+
+.feedback-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.feedback-btn:hover:not(:disabled) {
+  background-color: #ffd58e;
+  color: #54413c;
+}
+
+/* ================================
+   RESPONSIVE
+================================= */
+@media (max-width: 768px) {
+  .feedback-card {
+    flex-direction: column;
+  }
+
+  .feedback-card-left {
+    padding: 1rem;
+  }
+}

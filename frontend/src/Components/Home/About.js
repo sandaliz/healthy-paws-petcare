@@ -9,10 +9,8 @@ const About = () => {
           <h1>WHAT MAKE US CARE<br />ABOUT PET?</h1>
           <h2>CATS AND DOGS ARE ADOPTION</h2>
           <p>
-            This includes a mix of high quality commercial pet food and
-            occasional treats, supplemented with fresh fruits and vegetables. 
-            Our goal is to ensure every pet is healthy, happy, and 
-            part of a loving family.
+            Because pets bring endless joy, unconditional love, and loyal companionship, we believe they deserve the very best in return. Our care is built on compassion, 
+            safety, and a commitment to keeping every paw happy and healthy.
           </p>
         </div>
       </div>
