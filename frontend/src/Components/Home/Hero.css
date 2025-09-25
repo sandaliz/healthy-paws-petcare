@@ -8,7 +8,7 @@
   color: #2D2D2D;
   
   /* ✅ Background pet image */
-  background: url("D:\petcare\ITP_Project\frontend\public\images\hero.jpg") no-repeat center center/cover;
+  background: url("../../assets/hero.jpg") no-repeat center center/cover;
 }
 
 /* Semi-transparent overlay */
