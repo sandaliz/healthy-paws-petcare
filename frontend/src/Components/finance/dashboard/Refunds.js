@@ -2,25 +2,23 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import { api } from '../financeApi';
 import Modal from './components/Modal';
-import Tag from './components/Tag';
 import Skeleton from './components/Skeleton';
-import { Search, RefreshCcw, CheckCircle2, XCircle, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, RefreshCcw, CheckCircle2, XCircle, Eye, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import '../css/dashboard.css';
 
-const STATUS_OPTIONS = ['All', 'Pending', 'Approved', 'Rejected'];
+const STATUS_OPTIONS = ['All', 'Pending', 'Approved', 'Rejected', 'Refunded'];
 
 export default function Refunds() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('All');
-
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 
   const [view, setView] = useState(null);
   const [rejectModal, setRejectModal] = useState(null);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const load = async () => {
     try {
@@ -66,6 +64,7 @@ export default function Refunds() {
       toast.error(e?.response?.data?.message || 'Approve failed');
     }
   };
+
   const reject = async (id, reasonRejected) => {
     if (!reasonRejected || !reasonRejected.trim()) return toast.error('Reason required');
     try {
@@ -77,37 +76,59 @@ export default function Refunds() {
     }
   };
 
+  const createRefund = async (form) => {
+    try {
+      await api.post('/refund', form);
+      toast.success('Refund request created');
+      setCreateOpen(false);
+      load();
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Create failed');
+    }
+  };
+
   return (
     <div>
       <Toaster position="top-right" />
       <div className="page-head">
         <h2>Refunds</h2>
-        <button className="btn" onClick={load}><RefreshCcw size={16} /> Refresh</button>
+        <div className="row">
+          <button className="btn" onClick={load}><RefreshCcw size={16} /> Refresh</button>
+          <button className="btn primary" onClick={() => setCreateOpen(true)}><Plus size={16} /> New Refund Request</button>
+        </div>
       </div>
 
       <div className="fm-toolbar">
-        <div className="fm-filters">
-          <div className="fm-search">
-            <Search size={16} />
-            <input
-              className="input"
-              placeholder="Search by owner, payment, or invoice"
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            />
-          </div>
-          <select className="input" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
-            {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </div>
-      </div>
+  <div className="fm-filters">
+    <div className="fm-search wide">
+      <Search size={16} />
+      <input
+        className="input"
+        placeholder="Search by owner, payment, or invoice"
+        value={search}
+        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+      />
+    </div>
+    <select
+      className="input"
+      value={status}
+      onChange={(e) => { setStatus(e.target.value); setPage(1); }}
+    >
+      {STATUS_OPTIONS.map(s => (
+        <option key={s} value={s}>
+          {s}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
 
       <div className="card">
         {loading ? (
           <Skeleton rows={8} />
         ) : (
           <>
-            <table className="fm-table">
+            <table className="refunds-table">
               <thead>
                 <tr>
                   <th>Payment</th>
@@ -133,7 +154,9 @@ export default function Refunds() {
                       </div>
                     </td>
                     <td className="mono">{fmtLKR(r.amount)}</td>
-                    <td><Tag status={r.status} /></td>
+                    <td>
+                      <span className={`tag-pill ${r.status?.toLowerCase()}`}>{r.status}</span>
+                    </td>
                     <td className="right">
                       <div className="row end">
                         <button className="btn ghost" onClick={() => setView(r)} title="View"><Eye size={16} /></button>
@@ -171,6 +194,13 @@ export default function Refunds() {
           onReject={(reason) => reject(rejectModal._id, reason)}
         />
       )}
+      {createOpen && (
+        <CreateRefundModal
+          open={createOpen}
+          onClose={() => setCreateOpen(false)}
+          onCreate={createRefund}
+        />
+      )}
     </div>
   );
 }
@@ -184,7 +214,7 @@ function RefundViewModal({ open, onClose, r }) {
         <div className="kv"><span>Owner</span><b>{r.userID?.OwnerName || '-'}</b></div>
         <div className="kv"><span>Email</span><b>{r.userID?.OwnerEmail || '-'}</b></div>
         <div className="kv"><span>Amount</span><b>{fmtLKR(r.amount)}</b></div>
-        <div className="kv"><span>Status</span><b><Tag status={r.status} /></b></div>
+        <div className="kv"><span>Status</span><b><span className={`tag-pill ${r.status?.toLowerCase()}`}>{r.status}</span></b></div>
         <div className="kv"><span>Reason</span><b>{r.reason || '-'}</b></div>
         {r.reasonRejected && <div className="kv"><span>Reason (rejected)</span><b>{r.reasonRejected}</b></div>}
         <div className="kv"><span>Submitted</span><b>{fmtDate(r.createdAt)}</b></div>
@@ -211,6 +241,27 @@ function RejectModal({ open, onClose, onReject }) {
       </div>
     </Modal>
   );
+}
+
+function CreateRefundModal({ open, onClose, onCreate }) {
+  const [form, setForm] = useState({ paymentID: '', reason: '' });
+  const set = (k,v) => setForm(prev=>({...prev,[k]:v}));
+  return (
+    <Modal open={open} onClose={onClose} title="New Refund Request">
+      <div className="field">
+        <label>Payment ID</label>
+        <input className="input" value={form.paymentID} onChange={e=>set('paymentID',e.target.value)} placeholder="Enter Payment ID"/>
+      </div>
+      <div className="field">
+        <label>Reason</label>
+        <textarea className="input" rows={3} value={form.reason} onChange={e=>set('reason',e.target.value)} />
+      </div>
+      <div className="row end rf-create-actions">
+        <button className="btn ghost" onClick={onClose}>Cancel</button>
+        <button className="btn primary" onClick={()=>onCreate(form)}>Submit Request</button>
+      </div>
+    </Modal>
+  )
 }
 
 function fmtLKR(n) {

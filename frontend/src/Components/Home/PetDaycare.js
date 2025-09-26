@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./PetDaycare.css";
 
 const PetDaycare = () => {
@@ -24,7 +25,7 @@ const PetDaycare = () => {
             <li><span className="dot" /> <strong>Ongoing support:</strong> Consistent care ensuring happy, healthy pets.</li>
           </ul>
 
-          <button className="glass-btn cta-btn">Go to DayCare</button>
+          <Link to="/daycare"><button className="glass-btn cta-btn">Go to DayCare</button></Link>
         </div>
       </div>
     </section>

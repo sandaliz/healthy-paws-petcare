@@ -1,0 +1,442 @@
+/* feedback.css - Full Page Styles with Colors */
+.feedback-fullpage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFD58E 100%);
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.feedback-content {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 80px);
+}
+
+/* Left Section - Yellow Background */
+.feedback-left {
+  flex: 1;
+  background: #FFD58E;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.feedback-text-content h1 {
+  font-family: "Poppins", sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #2D2D2D;
+  margin-bottom: 25px;
+  line-height: 1.3;
+}
+
+.feedback-text-content p {
+  font-size: 1.3rem;
+  color: #2D2D2D;
+  margin-bottom: 50px;
+  font-weight: 500;
+}
+
+.feedback-image {
+  margin-top: 40px;
+}
+
+.feedback-image img {
+  max-width: 100%;
+  height: auto;
+  max-height: 350px;
+  object-fit: contain;
+}
+
+/* Right Section - White Background with Accents */
+.feedback-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 40px;
+  background: #FFFFFF;
+  position: relative;
+}
+
+.feedback-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #FFD58E;
+}
+
+.feedback-form-container {
+  width: 100%;
+  max-width: 500px;
+  background: #FFFFFF;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(84, 65, 60, 0.1);
+  border: 1px solid #FFD58E;
+}
+
+.feedback-form-container h2 {
+  font-family: "Poppins", sans-serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #54413C;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.feedback-form-container h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: #FFD58E;
+  border-radius: 2px;
+}
+
+.feedback-form-container > p {
+  color: #666;
+  margin-bottom: 35px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+/* Form Styles with Colors */
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #54413C;
+  margin-bottom: 8px;
+  font-family: "Poppins", sans-serif;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 14px 16px;
+  border: 2px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+  transition: all 0.3s ease;
+  background: #F8F8F8;
+  color: #2D2D2D;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #FFD58E;
+  background: #FFF9F0;
+  box-shadow: 0 0 0 3px rgba(255, 213, 142, 0.2);
+  transform: translateY(-2px);
+}
+
+.form-group input:hover,
+.form-group textarea:hover {
+  border-color: #FFD58E;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Rating Section with Colors */
+.rating-section {
+  margin: 15px 0 25px;
+}
+
+.rating-section label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #54413C;
+  margin-bottom: 12px;
+  display: block;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Submit Button with Colors */
+.submit-btn {
+  background: linear-gradient(135deg, #54413C 0%, #6D5D57 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #FFD58E 0%, #FFE4B5 100%);
+  color: #54413C;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 213, 142, 0.4);
+}
+
+.submit-btn:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Star Rating Component with Colors */
+.star-rating {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.star {
+  font-size: 28px;
+  color: #E0E0E0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.star.filled {
+  color: #FFD58E;
+  text-shadow: 0 2px 8px rgba(255, 213, 142, 0.4);
+}
+
+.star:hover {
+  color: #FFD58E;
+  transform: scale(1.1);
+}
+
+.star:active {
+  transform: scale(0.95);
+}
+
+/* Form Field Icons (Optional) */
+.form-group::after {
+  font-family: 'Material Icons';
+  position: absolute;
+  right: 15px;
+  top: 40px;
+  color: #999;
+  font-size: 20px;
+}
+
+.form-group:nth-child(1)::after {
+  content: 'person';
+}
+
+.form-group:nth-child(2)::after {
+  content: 'pets';
+}
+
+.form-group:nth-child(3)::after {
+  content: 'email';
+}
+
+.form-group:nth-child(4)::after {
+  content: 'chat';
+  top: 50px;
+}
+
+/* Toast Notifications with Custom Colors */
+.Toastify__toast {
+  font-family: "Roboto", sans-serif;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  color: white;
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #F44336 0%, #EF5350 100%);
+  color: white;
+}
+
+.Toastify__toast--warning {
+  background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .feedback-text-content h1 {
+    font-size: 2.4rem;
+  }
+  
+  .feedback-form-container {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .feedback-content {
+    flex-direction: column;
+  }
+  
+  .feedback-left {
+    padding: 40px 20px;
+    min-height: 40vh;
+  }
+  
+  .feedback-right {
+    padding: 40px 20px;
+    min-height: 60vh;
+  }
+  
+  .feedback-text-content h1 {
+    font-size: 2rem;
+  }
+  
+  .feedback-text-content p {
+    font-size: 1.1rem;
+  }
+  
+  .feedback-form-container {
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(84, 65, 60, 0.1);
+  }
+  
+  .feedback-form-container h2 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .feedback-text-content h1 {
+    font-size: 1.8rem;
+  }
+  
+  .feedback-text-content p {
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+  
+  .feedback-form-container {
+    padding: 20px 15px;
+  }
+  
+  .feedback-form-container h2 {
+    font-size: 1.6rem;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 12px 14px;
+  }
+  
+  .star {
+    font-size: 24px;
+  }
+}
+
+/* Loading Animation for Submit Button */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.submit-btn:disabled {
+  animation: pulse 1.5s infinite;
+}
+
+/* Focus States for Accessibility */
+.form-group input:focus-visible,
+.form-group textarea:focus-visible,
+.submit-btn:focus-visible {
+  outline: 2px solid #54413C;
+  outline-offset: 2px;
+}
+
+/* Custom Scrollbar for Textarea */
+.form-group textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-group textarea::-webkit-scrollbar-track {
+  background: #F1F1F1;
+  border-radius: 4px;
+}
+
+.form-group textarea::-webkit-scrollbar-thumb {
+  background: #FFD58E;
+  border-radius: 4px;
+}
+
+.form-group textarea::-webkit-scrollbar-thumb:hover {
+  background: #E0A75E;
+}
+/* Error Message Styling */
+.error-text {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+}
+/* Error text under fields */
+.error-text {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+}

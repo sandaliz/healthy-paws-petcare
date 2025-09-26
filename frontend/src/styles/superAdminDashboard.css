@@ -1,207 +1,465 @@
 /* ================================
-   SUPER ADMIN DASHBOARD MAIN
+   SUPER ADMIN DASHBOARD MODERN STYLES
+   Unique class names with sad-modern prefix
 ================================= */
-.sad-container {
-  max-width: 1200px;
+
+.sad-modern-container {
+  max-width: 1400px;
   margin: 0 auto;
   padding: 30px;
-  font-family: "Poppins", sans-serif;
-  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
 }
 
 /* ================================
-   HEADER
+   MODERN HEADER
 ================================= */
-.sad-header {
+.sad-modern-header {
+  background: linear-gradient(135deg, #54413C 0%, #3a2d29 100%);
+  border-radius: 16px;
+  padding: 25px 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(84, 65, 60, 0.15);
+}
+
+.sad-header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-}
-
-.sad-title {
-  font-size: 26px;
-  font-weight: bold;
-  color: #54413C; /* matches your brown primary */
-}
-
-.sad-refresh-btn {
-  display: flex;
-  align-items: center;
-  background: #54413C; /* dark brown */
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.sad-refresh-btn:hover {
-  background: #FFD58E; /* golden highlight */
-  color: #54413C;
-}
-.sad-refresh-btn:disabled {
-  background: #ddd;
-  cursor: not-allowed;
-}
-.sad-refresh-btn svg {
-  margin-right: 8px;
-}
-
-/* ================================
-   CREATE STAFF FORM
-================================= */
-.sad-form {
-  background: white;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-}
-
-.sad-form h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #54413C;
-}
-
-.sad-form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  flex-wrap: wrap;
   gap: 20px;
 }
 
-.sad-input,
-.sad-select {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 14px;
-  transition: border 0.3s;
-}
-.sad-input:focus,
-.sad-select:focus {
-  border-color: #54413C;
-  outline: none;
+.sad-title-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.sad-submit-btn {
-  margin-top: 20px;
-  background: #2ECC71; /* success green */
+.sad-title-icon {
+  font-size: 32px;
+  color: #FFD58E;
+}
+
+.sad-modern-title {
+  font-size: 32px;
+  font-weight: 700;
   color: white;
-  padding: 10px 18px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
-.sad-submit-btn:hover {
-  background: #27AE60; /* darker green */
-}
-.sad-submit-btn:disabled {
-  background: #B2F2BB;
+
+.sad-header-actions-modern {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 /* ================================
-   STAFF LIST
+   BUTTON STYLES
 ================================= */
-.sad-list-container {
+.sad-refresh-btn-modern {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sad-refresh-btn-modern:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.sad-refresh-btn-modern:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sad-logout-btn-modern {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  transition: all 0.3s ease;
+}
+
+.sad-logout-btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* ================================
+   CARD STYLES
+================================= */
+.sad-card-modern {
   background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
-.sad-list-header {
-  padding: 18px 24px;
-  border-bottom: 1px solid #eee;
-  background: #FFD58E; /* warm gold header */
+
+.sad-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
 }
-.sad-list-header h3 {
-  font-size: 18px;
+
+.sad-card-icon {
+  font-size: 20px;
+  color: #54413C;
+}
+
+.sad-card-title {
+  font-size: 20px;
   font-weight: 600;
   color: #54413C;
+  margin: 0;
+}
+
+/* ================================
+   FORM STYLES
+================================= */
+.sad-form-modern {
+  width: 100%;
+}
+
+.sad-form-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.sad-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sad-input-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #54413C;
+  margin-bottom: 5px;
+}
+
+.sad-input-modern,
+.sad-select-modern {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.sad-input-modern:focus,
+.sad-select-modern:focus {
+  border-color: #54413C;
+  box-shadow: 0 0 0 3px rgba(84, 65, 60, 0.1);
+  outline: none;
+}
+
+.sad-submit-btn-modern {
+  background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+  color: white;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.sad-submit-btn-modern:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+.sad-submit-btn-modern:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* ================================
    TABLE STYLES
 ================================= */
-.sad-table {
+.sad-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.sad-table-modern {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  min-width: 800px;
 }
-.sad-table th {
+
+.sad-table-modern th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 18px 20px;
   text-align: left;
+  font-weight: 600;
+  color: #54413C;
+  border-bottom: 2px solid #e9ecef;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sad-table-modern td {
+  padding: 18px 20px;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.sad-table-row-modern:hover {
+  background: rgba(255, 213, 142, 0.08);
+}
+
+/* ================================
+   STATUS & BADGES
+================================= */
+.sad-status-modern {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
-  color: #54413C;
-  padding: 12px 20px;
-  background: #fdf6ec;
-}
-.sad-table td {
-  padding: 12px 20px;
-  border-bottom: 1px solid #f0f0f0;
+  letter-spacing: 0.5px;
 }
 
-.sad-row:hover {
-  background: rgba(255, 213, 142, 0.15); /* soft golden hover */
-}
-
-/* ================================
-   STATUS
-================================= */
-.sad-status {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
-}
-.sad-status.active {
+.sad-status-modern.active {
   background: #e0f7e9;
   color: #27AE60;
+  border: 1px solid #a3e4b9;
 }
-.sad-status.inactive {
+
+.sad-status-modern.inactive {
   background: #fde2e2;
   color: #C0392B;
+  border: 1px solid #f5b7b1;
+}
+
+.sad-role-badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sad-user-name {
+  font-weight: 600;
+  color: #54413C;
+}
+
+.sad-user-email {
+  color: #666;
+  font-size: 13px;
 }
 
 /* ================================
-   ACTION BUTTON ICONS
+   ACTION BUTTONS
 ================================= */
-.sad-actions {
+.sad-actions-modern {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
-.sad-actions button {
-  background: none;
+
+.sad-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.2s, color 0.3s;
+  transition: all 0.3s ease;
+  font-size: 14px;
 }
-.sad-actions button:hover {
-  transform: scale(1.1);
+
+.sad-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-.sad-actions .edit {
-  color: #54413C; /* brand dark brown */
+
+.sad-edit-btn {
+  background: #fff3e0;
+  color: #f57c00;
 }
-.sad-actions .delete {
-  color: #E74C3C; /* red delete */
+
+.sad-edit-btn:hover {
+  background: #ff9800;
+  color: white;
 }
-.sad-actions .toggle-active {
-  color: #2ECC71; /* success green */
+
+.sad-toggle-active {
+  background: #e8f5e8;
+  color: #4caf50;
 }
-.sad-actions .toggle-inactive {
+
+.sad-toggle-active:hover {
+  background: #4caf50;
+  color: white;
+}
+
+.sad-toggle-inactive {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.sad-toggle-inactive:hover {
+  background: #f44336;
+  color: white;
+}
+
+.sad-delete-btn {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.sad-delete-btn:hover {
+  background: #f44336;
+  color: white;
+}
+
+.sad-save-btn {
+  background: #e8f5e8;
+  color: #4caf50;
+}
+
+.sad-save-btn:hover {
+  background: #4caf50;
+  color: white;
+}
+
+.sad-cancel-btn {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.sad-cancel-btn:hover {
+  background: #f44336;
+  color: white;
+}
+
+/* ================================
+   LOADING & EMPTY STATES
+================================= */
+.sad-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+  gap: 15px;
+}
+
+.sad-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
   color: #999;
+  gap: 15px;
 }
-.sad-actions .save {
-  color: #27AE60;
+
+.sad-empty-icon {
+  font-size: 48px;
+  opacity: 0.5;
 }
-.sad-actions .cancel {
-  color: #C0392B;
+
+/* ================================
+   ANIMATIONS
+================================= */
+.sad-spin-animation {
+  animation: sad-spin 1s linear infinite;
+}
+
+@keyframes sad-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+================================= */
+@media (max-width: 768px) {
+  .sad-modern-container {
+    padding: 15px;
+  }
+  
+  .sad-header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .sad-header-actions-modern {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .sad-form-grid-modern {
+    grid-template-columns: 1fr;
+  }
+  
+  .sad-card-modern {
+    padding: 20px;
+  }
+  
+  .sad-table-container {
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sad-modern-title {
+    font-size: 24px;
+  }
+  
+  .sad-header-actions-modern {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .sad-refresh-btn-modern,
+  .sad-logout-btn-modern {
+    width: 100%;
+    justify-content: center;
+  }
 }

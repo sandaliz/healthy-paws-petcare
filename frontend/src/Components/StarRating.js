@@ -1,6 +1,7 @@
 // src/Components/StarRating.js
+// src/Components/StarRating.js
 import React from "react";
-
+ 
 const StarRating = ({ rating, setRating, disabled }) => {
   return (
     <div className="star-rating">
@@ -17,5 +18,5 @@ const StarRating = ({ rating, setRating, disabled }) => {
     </div>
   );
 };
-
+ 
 export default StarRating;
