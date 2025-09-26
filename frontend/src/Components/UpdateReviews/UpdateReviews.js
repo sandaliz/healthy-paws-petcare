@@ -21,7 +21,7 @@ function UpdateReviews() {
   useEffect(() => {
     const fetchHandler = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/reviews/${id}`);
+        const response = await axios.get(`http://localhost:5001/reviews/${id}`);
         const data = response.data.review || {};
         setInputs(data);
       } catch (error) {
@@ -55,7 +55,7 @@ function UpdateReviews() {
 
   const sendRequest = async () => {
     try {
-      await axios.put(`http://localhost:5000/reviews/${id}`, {
+      await axios.put(`http://localhost:5001/reviews/${id}`, {
         ownerName: String(inputs.ownerName),
         petName: String(inputs.petName),
         species: String(inputs.species),

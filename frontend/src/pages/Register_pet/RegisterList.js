@@ -8,7 +8,7 @@ const RegisterList = ({ user }) => {
   const [registration, setRegistration] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const API_BASE = "http://localhost:5000";
+  const API_BASE = "http://localhost:5001";
 
   useEffect(() => {
     if (user?.email) setEmail(user.email);

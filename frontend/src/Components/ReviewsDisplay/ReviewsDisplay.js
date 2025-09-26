@@ -10,7 +10,7 @@ function ReviewsDisplay(props) {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this review?")) {
       try {
-        await axios.delete(`http://localhost:5000/reviews/${id}`);
+        await axios.delete(`http://localhost:5001/reviews/${id}`);
         if (onDelete) {
           onDelete(id);
         }

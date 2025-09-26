@@ -10,7 +10,7 @@ const FeedbackList = ({ user }) => {
   useEffect(() => {
     if (user?.email) {
       axios
-        .get(`http://localhost:5000/api/feedback/user/${user.email}`)
+        .get(`http://localhost:5001/api/feedback/user/${user.email}`)
         .then((res) => {
           if (res.data.success) setFeedbacks(res.data.data);
         })

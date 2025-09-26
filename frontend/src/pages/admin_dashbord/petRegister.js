@@ -11,7 +11,7 @@ const PetRegisterPage = () => {
   // Fetch pets
   const fetchPets = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/register");
+      const res = await axios.get("http://localhost:5001/api/register");
       setPets(res.data.data);
     } catch (err) {
       console.error("❌ Error fetching pets:", err.message);
@@ -28,7 +28,7 @@ const PetRegisterPage = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this pet? 🐾")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/register/${id}`);
+      await axios.delete(`http://localhost:5001/api/register/${id}`);
       setPets(pets.filter((p) => p._id !== id));
     } catch (err) {
       console.error("❌ Error deleting:", err.message);

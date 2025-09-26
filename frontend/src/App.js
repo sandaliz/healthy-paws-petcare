@@ -1,45 +1,45 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-
+// App.js
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 
 // ---------------- Public pages ----------------
-import Home from './pages/Home';
-import Login from './pages/User_Management/Login';
-import Register from './pages/User_Management/Register'; 
-import EmailVerify from './pages/User_Management/EmailVerify';
-import ResetPassword from './pages/User_Management/ResetPassword';
-import NewPassword from './pages/User_Management/NewPassword';
+import Home from "./pages/Home";
+import Login from "./pages/User_Management/Login";
+import Register from "./pages/User_Management/Register";
+import EmailVerify from "./pages/User_Management/EmailVerify";
+import ResetPassword from "./pages/User_Management/ResetPassword";
+import NewPassword from "./pages/User_Management/NewPassword";
 
 // ---------------- Feedback pages ----------------
-import FeedbackForm from './pages/Feed_Backs/FeedbackForm';
-import FeedbackView from './pages/Feed_Backs/FeedbackView';
-import FeedbackEdit from './pages/Feed_Backs/FeedbackEdit';
-import FeedbackList from './pages/Feed_Backs/FeedbackList';
+import FeedbackForm from "./pages/Feed_Backs/FeedbackForm";
+import FeedbackView from "./pages/Feed_Backs/FeedbackView";
+import FeedbackEdit from "./pages/Feed_Backs/FeedbackEdit";
+import FeedbackList from "./pages/Feed_Backs/FeedbackList";
 
 // ---------------- Dashboards ----------------
-import SuperAdminDashboard from './pages/User_Management/SuperAdminDashboard';
-import AdminDashboard from './pages/admin_dashbord/AdminDashboard';
-import UserDashboard from './pages/User_Management/UserDashboard';
-import FinanceManagerDashboard from './pages/User_Management/FinanceManagerDashbord';
-import InventoryManagerDashboard from './pages/User_Management/InventoryManagerDashboard';
-import PetCaretakerDashboard from './pages/User_Management/PetCaretakerDashbord';
-import ReceptionistDashboard from './pages/User_Management/ReceptionistDashbord';
+import SuperAdminDashboard from "./pages/User_Management/SuperAdminDashboard";
+import AdminDashboard from "./pages/admin_dashbord/AdminDashboard";
+import UserDashboard from "./pages/User_Management/UserDashboard";
+import FinanceManagerDashboard from "./pages/User_Management/FinanceManagerDashbord";
+import InventoryManagerDashboard from "./pages/User_Management/InventoryManagerDashboard";
+import PetCaretakerDashboard from "./pages/User_Management/PetCaretakerDashbord";
+import ReceptionistDashboard from "./pages/User_Management/ReceptionistDashbord";
 
 // ---------------- Registration pages ----------------
-import RegisterOwner from './pages/Register_pet/RegisterOwner';
-import RegisterPet from './pages/Register_pet/RegisterPet';
-import RegisterList from './pages/Register_pet/RegisterList';
-import RegisterView from './pages/Register_pet/RegisterView';
-import RegisterEdit from './pages/Register_pet/RegisterEdit';
+import RegisterOwner from "./pages/Register_pet/RegisterOwner";
+import RegisterPet from "./pages/Register_pet/RegisterPet";
+import RegisterList from "./pages/Register_pet/RegisterList";
+import RegisterView from "./pages/Register_pet/RegisterView";
+import RegisterEdit from "./pages/Register_pet/RegisterEdit";
 
 // ---------------- Chatbot & Profile ----------------
-import Chatbot from './Components/Chatbot';
-import ProfilePage from './pages/User_Management/ProfilePage';
+import Chatbot from "./Components/Chatbot";
+import ProfilePage from "./pages/User_Management/ProfilePage";
 
 // ---------------- Admin Panel ----------------
 import FeedbackPage from "./pages/admin_dashbord/FeedbackPage";
-import UsersPage from './pages/admin_dashbord/Users';
-import PetRegisterPage from './pages/admin_dashbord/petRegister';
+import UsersPage from "./pages/admin_dashbord/Users";
+import PetRegisterPage from "./pages/admin_dashbord/petRegister";
 
 // ---------------- Protected Route ----------------
 import ProtectedRoute from "./Components/ProtectedRoute";
@@ -63,40 +63,58 @@ import Cart from "./Components/petstore/Cart";
 import PrescriptionForm from "./Components/prescription/prescriptionform";
 
 // ---------------- Daycare & Reviews ----------------
-import Daycare from './Components/Daycare/daycare';
-import AppointmentDCs from './Components/AppointmentDCs/AppointmentDCs';
-import AddAppointmentDC from './Components/AddAppointmentDC/AddAppointmentDC';
-import UpdateAppointmentDC from './Components/UpdateAppointmentDC/UpdateAppointmentDC';
-import UpdateApphisDC from './Components/UpdateApphisDC/UpdateApphisDC';
-import Review from './Components/Review/Review';
-import AddReviews from './Components/AddReviews/AddReviews';
-import UpdateReviews from './Components/UpdateReviews/UpdateReviews';
+import Daycare from "./Components/Daycare/daycare";
+import AppointmentDCs from "./Components/AppointmentDCs/AppointmentDCs";
+import AddAppointmentDC from "./Components/AddAppointmentDC/AddAppointmentDC";
+import UpdateAppointmentDC from "./Components/UpdateAppointmentDC/UpdateAppointmentDC";
+import UpdateApphisDC from "./Components/UpdateApphisDC/UpdateApphisDC";
+import Review from "./Components/Review/Review";
+import AddReviews from "./Components/AddReviews/AddReviews";
+import UpdateReviews from "./Components/UpdateReviews/UpdateReviews";
 import StarRating from "./Components/StarRating/StarRating";
-import AppointmentDisplayDC from './Components/AppointmentDisplayDC/AppointmentDisplayDC';
-import DailyLogsPet from './Components/DailyLogsPet/DailyLogsPet';
+import AppointmentDisplayDC from "./Components/AppointmentDisplayDC/AppointmentDisplayDC";
+import DailyLogsPet from "./Components/DailyLogsPet/DailyLogsPet";
 
 // ---------------- Dashboard & nested pages (Daycare) ----------------
-import DashboardDC from './Components/DashboardDC/DashboardDC/DashboardDC';
-import TodaysPets from './Components/DashboardDC/TodaysPets/TodaysPets';
-import PendingAppointments from './Components/DashboardDC/PendingAppointmentsDC/PendingAppointmentsDC';
-import UpcomingAppointmentsDC from './Components/DashboardDC/UpcomingAppointmentsDC/UpcomingAppointmentsDC';
-import AppointmentHistory from './Components/DashboardDC/AppointmentDCHistory/AppointmentDCHistory';
-import DailyLogs from './Components/DashboardDC/DailyLogs/DailyLogs';
-import AppointmentDetailsDC from './Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC';
-import ReviewsDC from './Components/DashboardDC/ReviewsDC/ReviewsDC';
+import DashboardDC from "./Components/DashboardDC/DashboardDC/DashboardDC";
+import TodaysPets from "./Components/DashboardDC/TodaysPets/TodaysPets";
+import PendingAppointments from "./Components/DashboardDC/PendingAppointmentsDC/PendingAppointmentsDC";
+import UpcomingAppointmentsDC from "./Components/DashboardDC/UpcomingAppointmentsDC/UpcomingAppointmentsDC";
+import AppointmentHistory from "./Components/DashboardDC/AppointmentDCHistory/AppointmentDCHistory";
+import DailyLogs from "./Components/DashboardDC/DailyLogs/DailyLogs";
+import AppointmentDetailsDC from "./Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC";
+import ReviewsDC from "./Components/DashboardDC/ReviewsDC/ReviewsDC";
+
+// ---------------- Finance ----------------
+import CouponWall from "./Components/finance/CouponWall";
+import ClientPay from "./Components/finance/ClientPay";
+import OnlinePay from "./Components/finance/OnlinePay";
+import PaySuccess from "./Components/finance/PaySuccess";
+import PaymentSummary from "./Components/finance/PaymentSummary";
+import DashboardApp from "./Components/finance/dashboard/DashboardApp";
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("user")) || {};
 
   return (
     <Routes>
-      {/* -------- Public Routes -------- */}
+      {/* -------- Home -------- */}
       <Route path="/" element={<Home />} />
+
+      {/* -------- Auth -------- */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Register />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/new-password" element={<NewPassword />} />
       <Route path="/email-verify" element={<EmailVerify />} />
+
+      {/* -------- Finance -------- */}
+      <Route path="/pay" element={<ClientPay />} />
+      <Route path="/pay/online" element={<OnlinePay />} />
+      <Route path="/pay/success" element={<PaySuccess />} />
+      <Route path="/pay/summary" element={<PaymentSummary />} />
+      <Route path="/fm/*" element={<DashboardApp />} />
+      <Route path="/coupon-wall" element={<CouponWall />} />
 
       {/* -------- Feedback -------- */}
       <Route path="/feedback" element={<FeedbackForm />} />
@@ -105,13 +123,62 @@ function App() {
       <Route path="/my-feedbacks" element={<FeedbackList user={currentUser} />} />
 
       {/* -------- Dashboards (Protected) -------- */}
-      <Route path="/super-admin-dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
-      <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-      <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
-      <Route path="/finance-dashboard" element={<ProtectedRoute><FinanceManagerDashboard /></ProtectedRoute>} />
-      <Route path="/inventory-dashboard" element={<ProtectedRoute><InventoryManagerDashboard /></ProtectedRoute>} />
-      <Route path="/pet-caretaker-dashboard" element={<ProtectedRoute><PetCaretakerDashboard /></ProtectedRoute>} />
-      <Route path="/receptionist-dashboard" element={<ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>} />
+      <Route
+        path="/super-admin-dashboard"
+        element={
+          <ProtectedRoute>
+            <SuperAdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/user-dashboard"
+        element={
+          <ProtectedRoute>
+            <UserDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/finance-dashboard"
+        element={
+          <ProtectedRoute>
+            <FinanceManagerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/inventory-dashboard"
+        element={
+          <ProtectedRoute>
+            <InventoryManagerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/pet-caretaker-dashboard"
+        element={
+          <ProtectedRoute>
+            <PetCaretakerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/receptionist-dashboard"
+        element={
+          <ProtectedRoute>
+            <ReceptionistDashboard />
+          </ProtectedRoute>
+        }
+      />
 
       {/* -------- Registration -------- */}
       <Route path="/register/owner" element={<RegisterOwner user={currentUser} />} />
@@ -135,7 +202,7 @@ function App() {
         <Route path="/product" element={<Products />} />
         <Route path="/addproduct" element={<Addproducts />} />
         <Route path="/updateproduct/:id" element={<Updateproduct />} />
-        <Route path="/alerts" element={<Alerts />} />   
+        <Route path="/alerts" element={<Alerts />} />
         <Route path="/prescription-list" element={<PrescriptionList />} />
         <Route path="/report" element={<Products />} />
         <Route path="/insights" element={<Insights />} />
@@ -166,7 +233,7 @@ function App() {
 
       {/* -------- Daycare Dashboard (Nested) -------- */}
       <Route path="/dashboardDC/*" element={<DashboardDC />}>
-        <Route path="" element={<div>Welcome to HealthyPaws Daycare Dashboard</div>} />
+        <Route index element={<div>Welcome to HealthyPaws Daycare Dashboard</div>} />
         <Route path="todaysPets" element={<TodaysPets />} />
         <Route path="pendingAppointments" element={<PendingAppointments />} />
         <Route path="upcomingAppointments" element={<UpcomingAppointmentsDC />} />

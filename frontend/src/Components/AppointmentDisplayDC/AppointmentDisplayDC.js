@@ -9,7 +9,7 @@ function AppointmentDisplayDC() {
   const [appointment, setAppointment] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/careCustomers/${id}`)
+    axios.get(`http://localhost:5001/careCustomers/${id}`)
       .then(res => setAppointment(res.data.careCustomer))
       .catch(err => console.error(err));
   }, [id]);

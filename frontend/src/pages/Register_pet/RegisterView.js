@@ -7,7 +7,7 @@ const RegisterView = () => {
   const navigate = useNavigate();
   const [registration, setRegistration] = useState(null);
 
-  const API_BASE = "http://localhost:5000";
+  const API_BASE = "http://localhost:5001";
 
   useEffect(() => {
     axios

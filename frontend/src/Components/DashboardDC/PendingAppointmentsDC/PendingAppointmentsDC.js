@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./PendingAppointmentsDC.css";
 
-const URL = "http://localhost:5000/careCustomers";
+const URL = "http://localhost:5001/careCustomers";
 
 function PendingAppointments({ onReject }) {
   const [pendingAppointments, setPendingAppointments] = useState([]);
@@ -48,7 +48,7 @@ function PendingAppointments({ onReject }) {
   if (!confirm) return;
 
   try {
-    const res = await axios.put(`http://localhost:5000/checkinout/reject/${appt._id}`);
+    const res = await axios.put(`http://localhost:5001/checkinout/reject/${appt._id}`);
     const rejectedAppt = res.data.careCustomer;
 
     const rejectedRecord = {

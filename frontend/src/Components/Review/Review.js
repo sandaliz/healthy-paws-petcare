@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReviewDisplay from '../ReviewsDisplay/ReviewsDisplay';
 
-const URL = "http://localhost:5000/reviews";
+const URL = "http://localhost:5001/reviews";
 
 const fetchHandler = async () => {
   return await axios.get(URL).then((res) => res.data);

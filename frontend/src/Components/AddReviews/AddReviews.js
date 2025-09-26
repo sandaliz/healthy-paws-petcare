@@ -57,7 +57,7 @@ function AddReviews() {
   };
 
   const sendRequest = async () => {
-    await axios.post("http://localhost:5000/reviews", {
+    await axios.post("http://localhost:5001/reviews", {
       ownerName: String(inputs.ownerName),
       petName: String(inputs.petName),
       species: String(inputs.species),

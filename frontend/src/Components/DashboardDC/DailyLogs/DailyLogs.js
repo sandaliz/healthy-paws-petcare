@@ -4,7 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import "./DailyLogs.css";
 
-const DAILY_LOGS_URL = "http://localhost:5000/dailyLogs";
+const DAILY_LOGS_URL = "http://localhost:5001/dailyLogs";
 
 function DailyLogs() {
   const { appointmentId } = useParams(); 

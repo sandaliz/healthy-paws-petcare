@@ -14,7 +14,7 @@ function ReviewsDC() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/reviews');
+        const response = await axios.get('http://localhost:5001/reviews');
         setReviews(response.data.reviews || []);
         setFilteredReviews(response.data.reviews || []);
       } catch (err) {

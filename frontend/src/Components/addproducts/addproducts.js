@@ -42,7 +42,7 @@ function Addproducts() {
       });
       if (file) formData.append("image", file);
 
-      await axios.post("http://localhost:5000/products", formData, {
+      await axios.post("http://localhost:5001/products", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 

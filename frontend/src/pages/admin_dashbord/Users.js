@@ -39,7 +39,7 @@ const UsersPage = () => {
   // Fetch stats data
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/dashboard/admin-dashboard-stats", {
+      .get("http://localhost:5001/api/dashboard/admin-dashboard-stats", {
         withCredentials: true,
       })
       .then((res) => {

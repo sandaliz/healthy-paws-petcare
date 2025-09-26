@@ -8,7 +8,7 @@ function PrescriptionForm() {
   // ✅ Fetch products from backend
   useEffect(() => {
   axios
-    .get("http://localhost:5000/products")
+    .get("http://localhost:5001/products")
     .then((res) => {
       if (Array.isArray(res.data)) {
         setProducts(res.data);
@@ -41,7 +41,7 @@ function PrescriptionForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/prescriptions", { items });
+      await axios.post("http://localhost:5001/prescriptions", { items });
       alert("Prescription saved!");
       setItems([{ productMongoId: "", quantity: 1 }]); // reset form
     } catch (err) {

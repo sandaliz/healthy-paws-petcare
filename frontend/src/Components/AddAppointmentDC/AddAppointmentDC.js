@@ -149,7 +149,7 @@ function AddAppointmentDC() {
 };
 
 const sendRequest = async () => {
-    const res = await axios.post("http://localhost:5000/careCustomers", {
+    const res = await axios.post("http://localhost:5001/careCustomers", {
         ownerName: String(inputs.ownerName),
         contactNumber: String(inputs.contactNumber),
         email: String(inputs.email),

@@ -1,10 +1,15 @@
-// app.js (Backend Root, ESM)
+import "dotenv/config.js";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import "dotenv/config";
+import bcrypt from "bcryptjs";
 
+// Models
+import User from "./Model/userModel.js";
+import Invoice from "./Model/finance/invoiceModel.js";
+
+// Routes
 import authRoutes from "./Routes/authRoutes.js";
 import userRoutes from "./Routes/userRoutes.js";
 import feedbackRoutes from "./Routes/feedback.js";
@@ -25,25 +30,25 @@ import emergencyRoutes from "./Routes/EmergencyRoutes.js";
 import reminderRoutes from "./Routes/ReminderRoutes.js";
 import { scheduleReminder } from "./services/ReminderScheduler.js";
 
-
-import User from "./Model/userModel.js";
-import bcrypt from "bcryptjs";
+// Finance
+import financeRoutes from "./Routes/finance/financeRoutes.js";
 
 const app = express();
-const port = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 // -------------------- Middleware --------------------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Allowed Origins
 const allowedOrigins = (
-  process.env.CORS_ORIGINS ||
-  "http://localhost:3000,http://localhost:5173"
+  process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:5173"
 )
   .split(",")
   .map((s) => s.trim());
 
+// ✅ Updated CORS Middleware
 app.use(
   cors({
     origin: (origin, cb) => {
@@ -51,11 +56,17 @@ app.use(
       return cb(new Error("Not allowed by CORS"));
     },
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "x-role"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
 
 // -------------------- Routes --------------------
-app.get("/", (req, res) => res.send("Welcome to Pet Care Management API"));
+app.get("/", (req, res) =>
+  res.send("Welcome to Pet Care Management & Finance API")
+);
 
 // Core APIs
 app.use("/api/auth", authRoutes);
@@ -72,13 +83,40 @@ app.post("/send-prescription", sendPrescriptionEmail);
 app.use("/checkout", checkoutRoutes);
 
 // Extra APIs
-scheduleReminder(); 
+scheduleReminder();
 app.use("/careCustomers", careRoutes);
 app.use("/reviews", reviewRouter);
 app.use("/dailyLogs", dailyLogsRouter);
 app.use("/checkinout", checkInOutRouter);
 app.use("/api/emergencies", emergencyRoutes);
 app.use("/api/reminders", reminderRoutes);
+
+// Finance API
+app.use("/api/finance", financeRoutes);
+
+// 404 Handler
+app.use((req, res) => res.status(404).json({ message: "Not found" }));
+
+// -------------------- Background Jobs --------------------
+function startOverdueJob() {
+  const markOverdue = async () => {
+    try {
+      const now = new Date();
+      const res = await Invoice.updateMany(
+        { status: "Pending", dueDate: { $lt: now } },
+        { $set: { status: "Overdue" } }
+      );
+      if (res.modifiedCount) {
+        console.log(`Overdue marked: ${res.modifiedCount}`);
+      }
+    } catch (err) {
+      console.error("Overdue job error:", err);
+    }
+  };
+  // Run hourly + once at boot
+  setInterval(markOverdue, 60 * 60 * 1000);
+  markOverdue();
+}
 
 // -------------------- Super Admin Auto-Creation --------------------
 const createSuperAdmin = async () => {
@@ -120,8 +158,12 @@ mongoose
   .then(async () => {
     console.log("✅ Connected to MongoDB (Database: test)");
     await createSuperAdmin();
-    app.listen(port, () =>
-      console.log(`🚀 Server running on http://localhost:${port}`)
-    );
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      startOverdueJob();
+    });
   })
-  .catch((err) => console.error("❌ MongoDB connection error:", err.message));
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err.message);
+    process.exit(1);
+  });
