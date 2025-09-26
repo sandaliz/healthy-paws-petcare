@@ -19,7 +19,7 @@ import FeedbackList from "./pages/Feed_Backs/FeedbackList";
 import SuperAdminDashboard from './pages/User_Management/SuperAdminDashboard';
 import AdminDashboard from './pages/admin_dashbord/AdminDashboard';
 import FinanceManagerDashboard from './pages/User_Management/FinanceManagerDashbord';
-import ReceptionistDashboard from './pages/User_Management/ReceptionistDashbord';
+//import ReceptionistDashboard from './pages/User_Management/ReceptionistDashbord';
 import UserDashboard from './pages/User_Management/UserDashboard';
 
 // ---------------- Registration pages ----------------
