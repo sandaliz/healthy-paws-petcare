@@ -1,5 +1,5 @@
-/* Base styling */
-body {
+/* === Home Page Root === */
+.home-page {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   line-height: 1.5;
@@ -8,14 +8,17 @@ body {
   background: #fdfdfd;
 }
 
-h1, h2, h3 {
+/* Headings restricted to Home */
+.home-page h1,
+.home-page h2,
+.home-page h3 {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   color: #2D2D2D;
 }
 
-/* Glassmorphism (reusable) */
-.glass-effect {
+/* Glassmorphism — scoped reusable */
+.home-page .glass-effect {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -25,8 +28,8 @@ h1, h2, h3 {
   max-width: 100%;
 }
 
-/* Buttons (shared across sections) */
-button {
+/* Buttons (home-specific styles) */
+.home-page button {
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 600;
@@ -37,27 +40,27 @@ button {
   transition: 0.2s ease-in-out;
 }
 
-.btn-highlight {
+.home-page .btn-highlight {
   background-color: #FFD58E;
   color: #2D2D2D;
 }
 
-.btn-dark {
+.home-page .btn-dark {
   background-color: #54413C;
   color: white;
 }
 
-.btn-outline {
+.home-page .btn-outline {
   background: transparent;
   border: 2px solid #54413C;
   color: #54413C;
 }
 
-.btn-primary {
+.home-page .btn-primary {
   background-color: #54413C;
   color: white;
 }
 
-button:hover {
+.home-page button:hover {
   opacity: 0.85;
 }
