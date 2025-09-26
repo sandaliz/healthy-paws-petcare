@@ -67,126 +67,133 @@ const UsersPage = () => {
       {
         data: stats.roleStats.map((r) => r.count),
         backgroundColor: ["#54413C", "#FFD58E", "#7A635C", "#E6C07D", "#6D5954"],
-        borderWidth: 0,
-        hoverBorderWidth: 0,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
+        hoverBorderWidth: 3,
       },
     ],
   };
 
   return (
-
-  <div className="aup-container aup-container-fixed">
-    <AdminSidebar />
-    <main className="aup-content">
-       {/* Header Container */}
+    <div className="aup-container aup-container-fixed">
+      <AdminSidebar />
+      <main className="aup-content">
+        {/* Header Container */}
         <div className="aup-header-container">
           <div className="aup-header">
-            <h1>Staff Overview</h1>
-            <p className="aup-subtitle">
-              A quick look at your management team roles and activity
-            </p>
-          </div>
-        </div>
-
-        {/* Stats Container */}
-        <div className="aup-stats-container">
-          <div className="aup-stats-grid">
-            <div className="aup-stat-item">
-              <div className="aup-stat-content">
-                <h3>TOTAL USERS</h3>
-                <div className="aup-stat-number">{stats.totalUsers}</div>
-              </div>
+            <div className="aup-header-content">
+              <h1>Staff Overview</h1>
+              <p className="aup-subtitle">
+                A comprehensive view of your management team roles and distribution
+              </p>
             </div>
-            <div className="aup-stat-item">
-              <div className="aup-stat-content">
-                <h3>TOTAL ROLES</h3>
-                <div className="aup-stat-number">{stats.totalRoles}</div>
+            <div className="aup-header-stats">
+              <div className="aup-header-stat">
+                <span className="aup-header-stat-label">Total Users</span>
+                <span className="aup-header-stat-value">{stats.totalUsers}</span>
+              </div>
+              <div className="aup-header-stat">
+                <span className="aup-header-stat-label">Total Roles</span>
+                <span className="aup-header-stat-value">{stats.totalRoles}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Main Content Container */}
-        <div className="aup-main-container">
-          {/* Chart Container */}
-          <div className="aup-chart-container">
-            <div className="aup-section-header">
-              <h2>Role Distribution</h2>
-              <p>Visual breakdown of staff roles</p>
-            </div>
-            <div className="aup-pie-wrapper">
-              <Pie
-                data={pieData}
-                options={{
-                  plugins: {
-                    legend: {
-                      position: 'bottom',
-                      labels: {
-                        padding: 20,
-                        usePointStyle: true,
-                        pointStyle: 'circle',
-                        font: {
-                          family: 'Poppins',
-                          size: 12
+        {/* Main Content Grid */}
+        <div className="aup-main-grid">
+          {/* Chart Section */}
+          <div className="aup-chart-section">
+            <div className="aup-card">
+              <div className="aup-card-header">
+                <h2>Role Distribution</h2>
+                <p>Visual breakdown of staff roles across the organization</p>
+              </div>
+              <div className="aup-pie-container">
+                <Pie
+                  data={pieData}
+                  options={{
+                    plugins: {
+                      legend: {
+                        position: 'right',
+                        labels: {
+                          padding: 20,
+                          usePointStyle: true,
+                          pointStyle: 'circle',
+                          font: {
+                            family: 'Poppins',
+                            size: 12,
+                            weight: '600'
+                          }
                         }
+                      },
+                      tooltip: {
+                        backgroundColor: '#54413C',
+                        titleFont: { family: 'Poppins', size: 13 },
+                        bodyFont: { family: 'Roboto', size: 12 },
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: true
                       }
                     },
-                    tooltip: {
-                      backgroundColor: '#54413C',
-                      titleFont: { family: 'Poppins' },
-                      bodyFont: { family: 'Roboto' },
-                      padding: 12,
-                      cornerRadius: 8
-                    }
-                  },
-                  cutout: '60%',
-                  maintainAspectRatio: false,
-                }}
-              />
+                    cutout: '55%',
+                    maintainAspectRatio: false,
+                  }}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Roles Container */}
-          <div className="aup-roles-container">
-            <div className="aup-section-header">
-              <h2>Team Roles</h2>
-              <p>Detailed breakdown of each role and assigned staff</p>
-            </div>
-            <div className="aup-roles-grid">
-              {stats.roleStats.map((r) => (
-                <div key={r.role} className="aup-role-item">
-                  <div 
-                    className="aup-role-header"
-                    style={{ background: roleConfig[r.role]?.gradient }}
-                  >
-                    <h3>{roleConfig[r.role]?.name || r.role.replace('_', ' ')}</h3>
-                    <div className="aup-role-count">{r.count}</div>
-                  </div>
-                  <div className="aup-role-body">
-                    <div className="aup-staff-section">
-                      <h4>ASSIGNED STAFF</h4>
-                      <div className="aup-staff-list">
-                        {r.emails.length > 0 ? (
-                          <>
-                            {r.emails.slice(0, 4).map((email, idx) => (
-                              <div key={idx} className="aup-staff-member">
-                                <span className="aup-staff-email">{email}</span>
-                              </div>
-                            ))}
-                            {r.emails.length > 4 && (
-                              <div className="aup-staff-more">
-                                + {r.emails.length - 4} more staff members
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          <div className="aup-no-staff">No users assigned to this role</div>
-                        )}
+          {/* Roles Grid Section */}
+          <div className="aup-roles-section">
+            <div className="aup-card">
+              <div className="aup-card-header">
+                <h2>Team Roles & Assignments</h2>
+                <p>Detailed breakdown of each role and assigned personnel</p>
+              </div>
+              <div className="aup-roles-grid">
+                {stats.roleStats.map((r) => (
+                  <div key={r.role} className="aup-role-card">
+                    <div 
+                      className="aup-role-card-header"
+                      style={{ background: roleConfig[r.role]?.gradient }}
+                    >
+                      <div className="aup-role-title">
+                        <h3>{roleConfig[r.role]?.name || r.role.replace('_', ' ')}</h3>
+                        <span className="aup-role-count">{r.count} users</span>
+                      </div>
+                    </div>
+                    <div className="aup-role-card-body">
+                      <div className="aup-staff-section">
+                        <h4>ASSIGNED STAFF</h4>
+                        <div className="aup-staff-list">
+                          {r.emails.length > 0 ? (
+                            <>
+                              {r.emails.slice(0, 3).map((email, idx) => (
+                                <div key={idx} className="aup-staff-item">
+                                  <div className="aup-staff-avatar">
+                                    {email.charAt(0).toUpperCase()}
+                                  </div>
+                                  <span className="aup-staff-email">{email}</span>
+                                </div>
+                              ))}
+                              {r.emails.length > 3 && (
+                                <div className="aup-staff-more">
+                                  + {r.emails.length - 3} more users
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <div className="aup-no-staff">
+                              <span>No users assigned to this role</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>

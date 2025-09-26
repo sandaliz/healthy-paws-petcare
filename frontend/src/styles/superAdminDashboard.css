@@ -1,6 +1,6 @@
 /* ================================
    SUPER ADMIN DASHBOARD MODERN STYLES
-   Unique class names with sad-modern prefix
+   Clean text button version
 ================================= */
 
 .sad-modern-container {
@@ -37,11 +37,6 @@
   gap: 15px;
 }
 
-.sad-title-icon {
-  font-size: 32px;
-  color: #FFD58E;
-}
-
 .sad-modern-title {
   font-size: 32px;
   font-weight: 700;
@@ -57,12 +52,9 @@
 }
 
 /* ================================
-   BUTTON STYLES
+   BUTTON STYLES - TEXT ONLY
 ================================= */
 .sad-refresh-btn-modern {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   color: white;
@@ -86,9 +78,6 @@
 }
 
 .sad-logout-btn-modern {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
   color: white;
   padding: 12px 24px;
@@ -107,208 +96,25 @@
 }
 
 /* ================================
-   CARD STYLES
-================================= */
-.sad-card-modern {
-  background: white;
-  border-radius: 16px;
-  padding: 30px;
-  margin-bottom: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.sad-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 25px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #f0f0f0;
-}
-
-.sad-card-icon {
-  font-size: 20px;
-  color: #54413C;
-}
-
-.sad-card-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #54413C;
-  margin: 0;
-}
-
-/* ================================
-   FORM STYLES
-================================= */
-.sad-form-modern {
-  width: 100%;
-}
-
-.sad-form-grid-modern {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-  margin-bottom: 25px;
-}
-
-.sad-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sad-input-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #54413C;
-  margin-bottom: 5px;
-}
-
-.sad-input-modern,
-.sad-select-modern {
-  border: 2px solid #e9ecef;
-  border-radius: 10px;
-  padding: 14px 16px;
-  font-size: 15px;
-  transition: all 0.3s ease;
-  background: white;
-}
-
-.sad-input-modern:focus,
-.sad-select-modern:focus {
-  border-color: #54413C;
-  box-shadow: 0 0 0 3px rgba(84, 65, 60, 0.1);
-  outline: none;
-}
-
-.sad-submit-btn-modern {
-  background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
-  color: white;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-}
-
-.sad-submit-btn-modern:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
-}
-
-.sad-submit-btn-modern:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* ================================
-   TABLE STYLES
-================================= */
-.sad-table-container {
-  overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid #f0f0f0;
-}
-
-.sad-table-modern {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  min-width: 800px;
-}
-
-.sad-table-modern th {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 18px 20px;
-  text-align: left;
-  font-weight: 600;
-  color: #54413C;
-  border-bottom: 2px solid #e9ecef;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.sad-table-modern td {
-  padding: 18px 20px;
-  border-bottom: 1px solid #f8f9fa;
-}
-
-.sad-table-row-modern:hover {
-  background: rgba(255, 213, 142, 0.08);
-}
-
-/* ================================
-   STATUS & BADGES
-================================= */
-.sad-status-modern {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.sad-status-modern.active {
-  background: #e0f7e9;
-  color: #27AE60;
-  border: 1px solid #a3e4b9;
-}
-
-.sad-status-modern.inactive {
-  background: #fde2e2;
-  color: #C0392B;
-  border: 1px solid #f5b7b1;
-}
-
-.sad-role-badge {
-  background: #e3f2fd;
-  color: #1976d2;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.sad-user-name {
-  font-weight: 600;
-  color: #54413C;
-}
-
-.sad-user-email {
-  color: #666;
-  font-size: 13px;
-}
-
-/* ================================
-   ACTION BUTTONS
+   ACTION BUTTONS - TEXT ONLY
 ================================= */
 .sad-actions-modern {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .sad-action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
+  padding: 8px 16px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .sad-action-btn:hover {
@@ -376,10 +182,175 @@
   color: white;
 }
 
-/* ================================
-   LOADING & EMPTY STATES
-================================= */
-.sad-loading-state {
+/* Rest of your existing CSS remains the same */
+.sad-card-modern {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sad-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.sad-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #54413C;
+  margin: 0;
+}
+
+.sad-form-modern {
+  width: 100%;
+}
+
+.sad-form-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.sad-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sad-input-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #54413C;
+  margin-bottom: 5px;
+}
+
+.sad-input-modern,
+.sad-select-modern {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.sad-input-modern:focus,
+.sad-select-modern:focus {
+  border-color: #54413C;
+  box-shadow: 0 0 0 3px rgba(84, 65, 60, 0.1);
+  outline: none;
+}
+
+.sad-submit-btn-modern {
+  background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+  color: white;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.sad-submit-btn-modern:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+.sad-submit-btn-modern:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.sad-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.sad-table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 800px;
+}
+
+.sad-table-modern th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 18px 20px;
+  text-align: left;
+  font-weight: 600;
+  color: #54413C;
+  border-bottom: 2px solid #e9ecef;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sad-table-modern td {
+  padding: 18px 20px;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.sad-table-row-modern:hover {
+  background: rgba(255, 213, 142, 0.08);
+}
+
+.sad-status-modern {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sad-status-modern.active {
+  background: #e0f7e9;
+  color: #27AE60;
+  border: 1px solid #a3e4b9;
+}
+
+.sad-status-modern.inactive {
+  background: #fde2e2;
+  color: #C0392B;
+  border: 1px solid #f5b7b1;
+}
+
+.sad-role-badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sad-user-name {
+  font-weight: 600;
+  color: #54413C;
+}
+
+.sad-user-email {
+  color: #666;
+  font-size: 13px;
+}
+
+.sad-loading-state,
+.sad-empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -389,36 +360,7 @@
   gap: 15px;
 }
 
-.sad-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  color: #999;
-  gap: 15px;
-}
-
-.sad-empty-icon {
-  font-size: 48px;
-  opacity: 0.5;
-}
-
-/* ================================
-   ANIMATIONS
-================================= */
-.sad-spin-animation {
-  animation: sad-spin 1s linear infinite;
-}
-
-@keyframes sad-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* ================================
-   RESPONSIVE DESIGN
-================================= */
+/* Responsive Design */
 @media (max-width: 768px) {
   .sad-modern-container {
     padding: 15px;
@@ -444,6 +386,16 @@
   
   .sad-table-container {
     border-radius: 8px;
+  }
+  
+  .sad-actions-modern {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .sad-action-btn {
+    width: 100%;
+    padding: 10px;
   }
 }
 

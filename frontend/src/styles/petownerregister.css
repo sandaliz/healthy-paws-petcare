@@ -1,11 +1,4 @@
-/* ===== Reset ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* ===== Page Layout ===== */
+/* ===== Pet Owner Registration Styles ===== */
 .register-page {
   min-height: 100vh;
   display: flex;
@@ -14,6 +7,7 @@
   position: relative;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .register-bg-image {
@@ -24,37 +18,43 @@
   height: 100%;
   object-fit: cover;
   z-index: -1;
+  opacity: 0.7;
 }
 
 .register-form-overlay {
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  border-radius: 24px;
+  padding: 40px 35px;
   width: 100%;
-  max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  max-width: 480px;
+  box-shadow: 0 20px 40px rgba(84, 65, 60, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   animation: fadeInUp 0.6s ease-out;
 }
 
-/* ===== Typography ===== */
+/* ===== Header Section ===== */
+.glass-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
 .glass-header h2 {
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #54413C;
   margin-bottom: 12px;
   font-family: 'Poppins', sans-serif;
-  text-align: center;
+  letter-spacing: -0.5px;
 }
 
 .glass-header p {
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
-  color: #444;
-  margin-bottom: 30px;
+  color: #666;
   font-weight: 400;
-  text-align: center;
+  max-width: 90%;
+  margin: 0 auto;
 }
 
 /* ===== Progress Steps ===== */
@@ -62,11 +62,12 @@
   display: flex;
   gap: 8px;
   margin-bottom: 30px;
+  justify-content: center;
 }
 
 .progress-step {
   height: 6px;
-  flex: 1;
+  width: 40px;
   border-radius: 3px;
   background: #e5e7eb;
   transition: all 0.3s ease;
@@ -74,13 +75,18 @@
 
 .progress-step.active {
   background: linear-gradient(135deg, #54413C, #FFD58E);
+  box-shadow: 0 2px 4px rgba(84, 65, 60, 0.2);
 }
 
-/* ===== Form ===== */
+/* ===== Form Sections ===== */
 .register-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.form-section {
+  margin-bottom: 10px;
 }
 
 .form-section-title {
@@ -88,13 +94,28 @@
   font-weight: 600;
   color: #54413C;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-left: 12px;
+}
+
+.form-section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 16px;
+  background: linear-gradient(to bottom, #54413C, #FFD58E);
+  border-radius: 2px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 8px;
+  margin-bottom: 18px;
 }
 
 .form-label {
@@ -102,32 +123,26 @@
   font-weight: 500;
   color: #374151;
   margin-bottom: 8px;
-}
-
-/* ===== Input with Icon ===== */
-.input-with-icon {
-  position: relative;
   display: flex;
   align-items: center;
 }
 
-.input-icon {
-  position: absolute;
-  left: 14px;
-  color: #9ca3af;
-  font-size: 16px;
-  pointer-events: none;
+.required-field {
+  color: #ef4444;
+  margin-left: 4px;
+  font-weight: 600;
 }
 
+/* ===== Input Fields ===== */
 .form-input {
   width: 100%;
-  padding: 12px 16px;
-  padding-left: 42px; /* space for icon */
+  padding: 14px 16px;
   border: 2px solid #e5e7eb;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #fff;
   font-size: 15px;
   transition: all 0.3s ease;
+  font-family: inherit;
 }
 
 .form-input:focus {
@@ -144,27 +159,43 @@
 
 .form-input::placeholder {
   color: #9ca3af;
+  font-weight: 400;
 }
 
 /* ===== Button ===== */
+.form-actions {
+  margin-top: 10px;
+}
+
 .register-btn {
   width: 100%;
-  padding: 14px 20px;
-  background: #54413C; /* solid dark brown */
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #54413C 0%, #3d322e 100%);
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 10px;
+  box-shadow: 0 4px 12px rgba(84, 65, 60, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
 .register-btn:hover {
-  background: #3d322e; /* slightly darker brown for hover */
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(84, 65, 60, 0.3);
+  box-shadow: 0 6px 18px rgba(84, 65, 60, 0.3);
+}
+
+.register-btn:active {
+  transform: translateY(0);
+}
+
+.register-btn::after {
+  content: '→';
+  margin-left: 8px;
+  font-weight: 700;
 }
 
 /* ===== Error Text ===== */
@@ -173,55 +204,64 @@
   font-size: 13px;
   margin-top: 6px;
   font-weight: 500;
+  display: flex;
+  align-items: center;
 }
 
-.required-field {
-  color: #ef4444;
-  margin-left: 2px;
+.error-text::before {
+  content: '⚠';
+  margin-right: 6px;
+  font-size: 12px;
 }
 
-/* ===== Responsive ===== */
+/* ===== Responsive Design ===== */
 @media (max-width: 768px) {
-  .register-form-overlay {
-    padding: 30px 24px;
-    border-radius: 16px;
+  .register-page {
+    padding: 15px;
   }
-
+  
+  .register-form-overlay {
+    padding: 30px 25px;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+  
   .glass-header h2 {
     font-size: 24px;
   }
-
+  
   .glass-header p {
-    font-size: 15px;
+    font-size: 14px;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 480px) {
   .register-form-overlay {
-    padding: 24px 20px;
-    border-radius: 12px;
+    padding: 25px 20px;
+    border-radius: 16px;
   }
-
+  
   .glass-header h2 {
     font-size: 22px;
   }
-
+  
   .glass-header p {
+    font-size: 13px;
+  }
+  
+  .form-input {
+    padding: 12px 14px;
     font-size: 14px;
   }
-
-  .form-input {
-    padding: 10px 14px;
-    padding-left: 40px;
-  }
-
+  
   .register-btn {
-    padding: 12px 18px;
+    padding: 14px 18px;
     font-size: 15px;
   }
 }
 
-/* ===== Animation ===== */
+/* ===== Animations ===== */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -231,4 +271,15 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ===== Toast Container Customization ===== */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  border-radius: 10px;
+  font-weight: 500;
 }
