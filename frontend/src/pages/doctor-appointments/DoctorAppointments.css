@@ -1,0 +1,381 @@
+/* DoctorAppointments.css */
+.doctor-appointments-container {
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+  background-color: #ffffff; /* White - primary */
+  color: #54413c; /* Dark Brown - secondary */
+  min-height: 100vh;
+}
+
+.appointments-header {
+  margin-bottom: 30px;
+  border-bottom: 2px solid #ffd58e; /* Soft Peach/Light Orange - highlight */
+  padding-bottom: 20px;
+}
+
+.appointments-header h1 {
+  color: #54413c; /* Dark Brown - secondary */
+  margin-bottom: 20px;
+  font-size: 2.2rem;
+}
+
+.header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  max-width: 400px;
+  flex: 1;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #54413c; /* Dark Brown - secondary */
+  font-size: 1rem;
+}
+
+.search-input::placeholder {
+  color: #a0a0a0;
+}
+
+.search-button {
+  background-color: #ffd58e; /* Soft Peach/Light Orange - highlight */
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #ffc870; /* Slightly darker peach */
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 10px 15px;
+  border-radius: 5px;
+  min-width: 80px;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #54413c; /* Dark Brown - secondary */
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #7a7a7a;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  border-left: 4px solid #c62828;
+}
+
+.appointments-table {
+  background-color: #ffffff; /* White - primary */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr 1fr 0.8fr 0.8fr 1fr;
+  background-color: #54413c; /* Dark Brown - secondary */
+  color: #ffffff; /* White - primary */
+  padding: 15px 20px;
+  font-weight: bold;
+}
+
+.header-cell {
+  padding: 5px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr 1fr 0.8fr 0.8fr 1fr;
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+}
+
+.table-row:hover {
+  background-color: #f9f9f9;
+}
+
+.cell {
+  padding: 5px;
+}
+
+.appointment-id-value {
+  font-weight: bold;
+  color: #54413c; /* Dark Brown - secondary */
+}
+
+.pet-name {
+  font-weight: bold;
+  color: #54413c; /* Dark Brown - secondary */
+}
+
+.pet-type {
+  font-size: 0.9rem;
+  color: #7a7a7a;
+  margin-top: 5px;
+}
+
+.owner-name {
+  font-weight: bold;
+  color: #54413c; /* Dark Brown - secondary */
+}
+
+.owner-contact,
+.owner-email {
+  font-size: 0.9rem;
+  color: #7a7a7a;
+  margin-top: 3px;
+}
+
+.appointment-date {
+  font-weight: bold;
+  color: #54413c; /* Dark Brown - secondary */
+}
+
+.appointment-time {
+  font-size: 0.9rem;
+  color: #7a7a7a;
+  margin-top: 5px;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.category-badge.regular {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.category-badge.emergency {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.category-badge.vaccination {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.category-badge.surgery {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  min-width: 100px;
+}
+
+.status-dropdown {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  background-color: #ffffff; /* White - primary */
+  color: #54413c; /* Dark Brown - secondary */
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+  max-width: 150px;
+}
+
+.status-dropdown:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.updating-spinner {
+  font-size: 0.8rem;
+  color: #7a7a7a;
+  margin-top: 5px;
+}
+
+.no-appointments {
+  text-align: center;
+  padding: 40px 20px;
+  color: #7a7a7a;
+}
+
+.no-appointments h3 {
+  margin-bottom: 10px;
+  color: #54413c; /* Dark Brown - secondary */
+}
+
+.clear-search-button {
+  background-color: #ffd58e; /* Soft Peach/Light Orange - highlight */
+  color: #54413c; /* Dark Brown - secondary */
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s;
+}
+
+.clear-search-button:hover {
+  background-color: #ffc870; /* Slightly darker peach */
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #54413c; /* Dark Brown - secondary */
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .header-cell:nth-child(n + 4),
+  .cell:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-container {
+    max-width: 100%;
+  }
+
+  .stats {
+    justify-content: space-around;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .header-cell,
+  .cell {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 8px 0;
+  }
+
+  .header-cell:before,
+  .cell:before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #54413c; /* Dark Brown - secondary */
+  }
+
+  .table-header {
+    display: none;
+  }
+}
+
+/* Add these styles to the existing CSS file */
+
+.table-header,
+.table-row {
+  grid-template-columns: 1fr 1fr 1.2fr 1fr 0.8fr 0.8fr 1fr 1fr;
+}
+
+.prescription-button {
+  background-color: #ffd58e; /* Soft Peach/Light Orange - highlight */
+  color: #54413c; /* Dark Brown - secondary */
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+  width: 100%;
+  max-width: 150px;
+}
+
+.prescription-button:hover {
+  background-color: #ffc870; /* Slightly darker peach */
+}
+
+.generate-pdf-button {
+  background-color: #54413c; /* Dark Brown - secondary */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.generate-pdf-button:hover {
+  background-color: #6a534b; /* Slightly lighter brown */
+}
+
+/* Update responsive styles */
+@media (max-width: 1200px) {
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .header-cell:nth-child(n + 5),
+  .cell:nth-child(n + 5) {
+    display: none;
+  }
+}

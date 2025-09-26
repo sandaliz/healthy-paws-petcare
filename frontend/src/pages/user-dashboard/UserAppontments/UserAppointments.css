@@ -1,0 +1,315 @@
+.appointments-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.appointments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.appointments-header h2 {
+  margin: 0;
+  color: #54413c; /* Dark brown instead of #333 */
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-edit,
+.btn-delete {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600; /* Slightly bolder */
+  transition: all 0.3s ease;
+  color: #54413c; /* Dark brown text */
+}
+
+.btn-primary {
+  background-color: #ffd58e; /* Soft peach */
+}
+
+.btn-primary:hover {
+  background-color: #ffe0a8; /* Lighter peach */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(196, 160, 19, 0.2);
+}
+
+.btn-secondary {
+  background-color: #f0e6d2; /* Warm light beige */
+}
+
+.btn-secondary:hover {
+  background-color: #e6d8b8; /* Slightly darker beige */
+}
+
+.btn-edit {
+  background-color: #d4edda; /* Light green (kept for semantic meaning) */
+  color: #388e3c; /* Green text */
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+.btn-edit:hover {
+  background-color: #c3e6cb;
+}
+
+.btn-delete {
+  background-color: #f8d7da; /* Light red (kept for semantic meaning) */
+  color: #721c24; /* Red text */
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+.btn-delete:hover {
+  background-color: #f1b0b7;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  font-size: 18px;
+  color: #54413c; /* Dark brown instead of #666 */
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.appointment-card {
+  background: #fff;
+  border: 1px solid #f0e6d2; /* Warm light border */
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(84, 65, 60, 0.08); /* Warmer shadow */
+}
+
+.appointment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.appointment-header h3 {
+  margin: 0;
+  color: #54413c; /* Dark brown instead of #333 */
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status.pending {
+  background-color: #fff9e6; /* Warm light yellow */
+  color: #c4a013; /* Golden brown */
+}
+
+.status.confirmed {
+  background-color: #e8f5e8; /* Light green (kept for semantic meaning) */
+  color: #388e3c;
+}
+
+.status.cancelled {
+  background-color: #f8d7da; /* Light red (kept for semantic meaning) */
+  color: #721c24;
+}
+
+.status.completed {
+  background-color: #e6f2ff; /* Light blue (kept for semantic meaning) */
+  color: #004085;
+}
+
+.appointment-details p {
+  margin: 8px 0;
+  color: #8a756c; /* Warm gray-brown instead of #666 */
+}
+
+.appointment-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(84, 65, 60, 0.6); /* Dark brown overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid #f0e6d2; /* Warm border */
+  box-shadow: 0 10px 30px rgba(84, 65, 60, 0.2); /* Warmer shadow */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 0;
+  border-bottom: 1px solid #f0e6d2; /* Warm border */
+  padding-bottom: 15px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #54413c; /* Dark brown instead of #333 */
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #8a756c; /* Warm gray-brown */
+}
+
+.modal-close:hover {
+  color: #54413c; /* Dark brown on hover */
+}
+
+.appointment-form {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600; /* Slightly bolder */
+  color: #54413c; /* Dark brown instead of #333 */
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  color: #54413c; /* Dark brown text */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #c4a013; /* Golden brown focus */
+  box-shadow: 0 0 0 2px rgba(196, 160, 19, 0.25); /* Golden brown glow */
+}
+
+.form-group input.error,
+.form-group select.error {
+  border-color: #dc3545;
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #f0e6d2; /* Warm border */
+}
+
+@media (max-width: 768px) {
+  .appointments-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .appointments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .appointment-actions {
+    flex-direction: column;
+  }
+
+  .modal {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}
+/* Search input styling */
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+  margin-right: 10px;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+}
+
+/* To keep header actions aligned nicely */
+.appointments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
