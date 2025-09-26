@@ -31,7 +31,7 @@ const registerSchema = new mongoose.Schema(
     PetAge: { type: Number, required: true },
     PetWeight: { type: Number, required: true },
 
-    // ✅ Updated with all 8 blood groups
+    
     BloodGroup: {
       type: String,
       enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],

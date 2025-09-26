@@ -109,95 +109,97 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="doodle-panel">
-        <div className="login-content">
+    <div className="login-page-wrapper" style={{ background: '#FFD58E', minHeight: '100vh', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="login-page">
+        <div className="doodle-panel">
+          <div className="login-content">
 
-          {/* Dog image circle */}
-          <div className="image-circle">
-            <img src={assets.dog_img} alt="Dog" />
-          </div>
+            {/* Dog image circle */}
+            <div className="image-circle">
+              <img src={assets.dog_img} alt="Dog" />
+            </div>
 
-          {/* Login card */}
-          <div className="login-card">
-            <h2 className="login-title">Login to Your Account</h2>
-            <p className="login-subtitle">
-              Welcome back! Please enter your details to continue.
-            </p>
+            {/* Login card */}
+            <div className="login-card">
+              <h2 className="login-title">Login to Your Account</h2>
+              <p className="login-subtitle">
+                Welcome back! Please enter your details to continue.
+              </p>
 
-            {error && (
-              <div className="error-box">
-                <ExclamationCircleIcon className="error-icon" />
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleLogin} className="form">
-              
-              {/* Email */}
-              <div className="form-field">
-                <div className="input-wrapper login-input-wrapper">
-                  <EnvelopeIcon className="input-icon login-left-icon" />
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    placeholder="Email"
-                    className={`input login-input ${emailError ? 'input-error' : ''}`}
-                  />
+              {error && (
+                <div className="error-box">
+                  <ExclamationCircleIcon className="error-icon" />
+                  {error}
                 </div>
-                {emailError && <p className="error-text">{emailError}</p>}
-              </div>
+              )}
 
-              {/* Password */}
-              <div className="form-field">
-                <div className="input-wrapper login-input-wrapper">
-                  <LockClosedIcon className="input-icon login-left-icon" />
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={handlePasswordChange}
-                    placeholder="Password"
-                    className={`input login-input ${passwordError ? 'input-error' : ''}`}
-                  />
-                  <span
-                    className="input-icon login-right-icon login-eye-toggle"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
-                  </span>
+              <form onSubmit={handleLogin} className="form">
+                
+                {/* Email */}
+                <div className="form-field">
+                  <div className="input-wrapper login-input-wrapper">
+                    <EnvelopeIcon className="input-icon login-left-icon" />
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={email}
+                      onChange={handleEmailChange}
+                      placeholder="Email"
+                      className={`input login-input ${emailError ? 'input-error' : ''}`}
+                    />
+                  </div>
+                  {emailError && <p className="error-text">{emailError}</p>}
                 </div>
-                {passwordError && <p className="error-text">{passwordError}</p>}
-              </div>
 
-              {/* Forgot Password */}
-              <div className="form-links">
-                <Link to="/reset-password" className="link">
-                  Forgot Password?
+                {/* Password */}
+                <div className="form-field">
+                  <div className="input-wrapper login-input-wrapper">
+                    <LockClosedIcon className="input-icon login-left-icon" />
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={handlePasswordChange}
+                      placeholder="Password"
+                      className={`input login-input ${passwordError ? 'input-error' : ''}`}
+                    />
+                    <span
+                      className="input-icon login-right-icon login-eye-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
+                    </span>
+                  </div>
+                  {passwordError && <p className="error-text">{passwordError}</p>}
+                </div>
+
+                {/* Forgot Password */}
+                <div className="form-links">
+                  <Link to="/reset-password" className="link">
+                    Forgot Password?
+                  </Link>
+                </div>
+
+                {/* Login Button */}
+                <button
+                  type="submit"
+                  className="login-btn"
+                  disabled={loading || emailError || passwordError}
+                >
+                  {loading ? 'Logging in...' : 'Login'}
+                </button>
+              </form>
+
+              {/* Signup */}
+              <p className="signup-text">
+                Don't have an account?{" "}
+                <Link to="/signup" className="signup-link">
+                  Create Account
                 </Link>
-              </div>
-
-              {/* Login Button */}
-              <button
-                type="submit"
-                className="login-btn"
-                disabled={loading || emailError || passwordError}
-              >
-                {loading ? 'Logging in...' : 'Login'}
-              </button>
-            </form>
-
-            {/* Signup */}
-            <p className="signup-text">
-              Don't have an account?{" "}
-              <Link to="/signup" className="signup-link">
-                Create Account
-              </Link>
-            </p>
+              </p>
+            </div>
           </div>
         </div>
       </div>

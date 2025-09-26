@@ -4,6 +4,9 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/petownerregister.css";
 
+// ✅ Import background image via ES6
+import bgImage from "../../assets/registration_bg.png";
+
 const RegisterOwner = ({ user }) => {
   const navigate = useNavigate();
 
@@ -57,16 +60,15 @@ const RegisterOwner = ({ user }) => {
 
   return (
     <main className="register-page">
-      <ToastContainer />
+      {/* ✅ Scoped Toast */}
+      <div className="register-toast-wrapper">
+        <ToastContainer />
+      </div>
 
-      {/* ✅ background image */}
-      <img
-        src={require("../../assets/registration_bg.png")}
-        alt="background"
-        className="register-bg-image"
-      />
+      {/* ✅ Background image */}
+      <img src={bgImage} alt="background" className="register-bg-image" />
 
-      {/* ✅ overlay container */}
+      {/* ✅ Overlay container */}
       <div className="register-form-overlay">
         <div className="glass-header">
           <h2>Owner Information</h2>
@@ -76,15 +78,18 @@ const RegisterOwner = ({ user }) => {
           </p>
         </div>
 
+        {/* Progress bar */}
         <div className="registration-progress">
           <div className="progress-step active"></div>
           <div className="progress-step"></div>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleNext} className="register-form">
           <div className="form-section">
             <div className="form-section-title">Contact Details</div>
 
+            {/* Name */}
             <div className="form-group">
               <label className="form-label" htmlFor="OwnerName">
                 Owner Name<span className="required-field">*</span>
@@ -102,6 +107,7 @@ const RegisterOwner = ({ user }) => {
               )}
             </div>
 
+            {/* Email */}
             <div className="form-group">
               <label className="form-label" htmlFor="OwnerEmail">
                 Email<span className="required-field">*</span>
@@ -120,6 +126,7 @@ const RegisterOwner = ({ user }) => {
               )}
             </div>
 
+            {/* Phone */}
             <div className="form-group">
               <label className="form-label" htmlFor="OwnerPhone">
                 Phone<span className="required-field">*</span>
@@ -137,6 +144,7 @@ const RegisterOwner = ({ user }) => {
               )}
             </div>
 
+            {/* Emergency Contact */}
             <div className="form-group">
               <label className="form-label" htmlFor="EmergencyContact">
                 Emergency Contact<span className="required-field">*</span>
@@ -154,6 +162,7 @@ const RegisterOwner = ({ user }) => {
               )}
             </div>
 
+            {/* Address */}
             <div className="form-group">
               <label className="form-label" htmlFor="OwnerAddress">
                 Address<span className="required-field">*</span>
@@ -172,6 +181,7 @@ const RegisterOwner = ({ user }) => {
             </div>
           </div>
 
+          {/* Actions */}
           <div className="form-actions">
             <button type="submit" className="register-btn">
               Next: Pet Info →

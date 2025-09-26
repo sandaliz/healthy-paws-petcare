@@ -1,13 +1,38 @@
-/* === Global === */
-body {
-  margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #FFD58E 0%, #54413C 100%);
+/* Login page specific wrapper */
+.login-page-wrapper {
+  background: #FFD58E !important; /* Soft Peach background only for login */
   min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+/* Rest of your existing CSS remains exactly the same below this line */
+/* Titles */
+h1, h2, h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #2D2D2D;
+}
+
+/* Doodle panel */
+.doodle-panel {
+  border-radius: 24px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 2000px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  background-image: url('../assets/LOG_page.png');
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+/* ... rest of your existing CSS remains unchanged ... */
 
 /* Titles */
 h1, h2, h3 {
