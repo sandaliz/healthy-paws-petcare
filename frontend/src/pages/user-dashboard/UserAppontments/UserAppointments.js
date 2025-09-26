@@ -5,7 +5,6 @@ import {
   updateAppointment,
   deleteAppointment,
 } from "../../../apis/appointmentApi";
-import Navbar from "../UserHome/components/Nabar";
 import jsPDF from "jspdf";
 import { autoTable } from "jspdf-autotable";
 import "./UserAppointments.css";
@@ -177,7 +176,6 @@ const UserAppointments = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="appointments-container">
         {error && <div className="error-message">{error}</div>}
         <div className="appointments-header">

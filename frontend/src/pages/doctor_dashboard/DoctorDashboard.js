@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./DoctorDashboard.css";
-import DoctorBlogs from "../doctor-blogs/DoctorBlogs";
 import DoctorEvents from "../doctor-events/DoctorEvents";
 import DoctorAppontments from "../doctor-appointments/DoctorAppontments";
 import DoctorQuesions from "../doctor_quesions/DoctorQuesions";
@@ -35,7 +34,6 @@ const DoctorDashboard = () => {
       </div>
       <div className="main-content">
         <div className="content-area">
-          {activeKey === "blog-management" && <DoctorBlogs />}
           {activeKey === "event-management" && <DoctorEvents />}
           {activeKey === "appointment-management" && <DoctorAppontments />}
           {activeKey === "quesion-management" && <DoctorQuesions />}

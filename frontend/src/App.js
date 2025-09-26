@@ -86,8 +86,8 @@ import DoctorDashboard from "./pages/doctor_dashboard/DoctorDashboard";
 import UserHome from "./pages/user-dashboard/UserHome/UserHome";
 import UserAppointments from "./pages/user-dashboard/UserAppontments/UserAppointments";
 import UserEvents from "./pages/user-dashboard/UserEvents/UserEvents";
-import UserBlogs from "./pages/user-dashboard/UserBlogs/UserBlogs";
 import UserQuesions from "./pages/user-dashboard/UserQuesions/UserQuesions";
+
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("user")) || {};
@@ -118,7 +118,7 @@ function App() {
       <Route path="/finance-dashboard" element={<ProtectedRoute><FinanceManagerDashboard /></ProtectedRoute>} />
       <Route path="/inventory-dashboard" element={<ProtectedRoute><InventoryLayout /></ProtectedRoute>} />
       <Route path="/pet-caretaker-dashboard" element={<ProtectedRoute><DashboardDC /></ProtectedRoute>} />
-      <Route path="/receptionist-dashboard" element={<ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>} />
+      <Route path="/receptionist-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
       <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
 
       {/* -------- Registration -------- */}
@@ -217,7 +217,7 @@ function App() {
           currentUser && currentUser.role === "USER" ? (
             <Navigate to="/user-home" replace />
           ) : (
-            <Home />
+            <InventoryHome />
           )
         }
       />
@@ -225,7 +225,6 @@ function App() {
       <Route path="/user-home" element={<UserHome />} />
       <Route path="/appointments" element={<UserAppointments />} />
       <Route path="/events" element={<UserEvents />} />
-      <Route path="/blogs" element={<UserBlogs />} />
       <Route path="/ask-quesions" element={<UserQuesions />} />
     </Routes>
   );

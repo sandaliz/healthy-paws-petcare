@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from "react";
-import Navbar from "../UserHome/components/Nabar";
 import "./UserQuesions.css";
 import Modal from "react-modal";
 import { getQuestions, createQuestion, updateQuestion, deleteQuestion } from "../../../apis/quesionApi";
@@ -144,7 +143,6 @@ const UserQuesions = () => {
   
   return (
     <div>
-      <Navbar />
       <div className="questions-container">
         <div className="questions-header">
           <h2>Questions & Answers</h2>
