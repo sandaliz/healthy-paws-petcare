@@ -1,5 +1,5 @@
 const API_KEY = "536664227351389";
-const SECRET_KEY = "xS4KcExhPYwUPpGu_Rn6zWFmDXA";
+//const SECRET_KEY = "xS4KcExhPYwUPpGu_Rn6zWFmDXA";
 const CLOUD_NAME = "dansyarsa";
 const PRESET = "fqasgarp";
 
