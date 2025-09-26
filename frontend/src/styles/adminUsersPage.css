@@ -5,8 +5,20 @@
   display: flex;
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
-  background: #FFFFFF;
+  font-size: 16px;
+  line-height: 1.5;
   color: #333;
+  background: #FFFFFF;
+}
+
+.aup-container-fixed {
+  background: #FFFFFF;
+}
+
+.aup-container-fixed .aup-content {
+  margin-left: 280px;
+  width: calc(100% - 280px);
+  background: #FFFFFF;
 }
 
 /* ================================
@@ -14,11 +26,11 @@
 ================================= */
 .aup-content {
   flex: 1;
-  margin-left: 240px;
+  margin-left: 280px;
   padding: 0;
   background: #FFFFFF;
   min-height: 100vh;
-  width: calc(100% - 240px);
+  width: calc(100% - 280px);
 }
 
 /* ================================
@@ -26,21 +38,19 @@
 ================================= */
 .aup-header-container {
   background: #FFFFFF;
-  padding: 40px 40px 20px;
+  padding: 40px 40px 30px;
   border-bottom: 1px solid #f0f0f0;
 }
-.aup-container-fixed {
-  background: #ffffff; /* ensures full-page white */
+
+.aup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.aup-container-fixed .aup-content {
-  margin-left: 400px; /* match sidebar width (280px from your AdminSidebar) */
-  width: calc(100% - 280px); /* avoid overlap */
-  background: #ffffff; /* force white background */
-  border-left: 1px solid #ffffff; /* hides brown border */
-}
-
-.aup-header h1 {
+.aup-header-content h1 {
   font-family: 'Poppins', sans-serif;
   font-size: 32px;
   font-weight: 600;
@@ -54,76 +64,67 @@
   margin: 0;
   font-weight: 400;
   line-height: 1.6;
+  max-width: 500px;
 }
 
-/* ================================
-   STATS CONTAINER
-================================= */
-.aup-stats-container {
-  background: #FFFFFF;
-  padding: 30px 40px;
-}
-
-.aup-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+.aup-header-stats {
+  display: flex;
   gap: 30px;
-  max-width: 600px;
 }
 
-.aup-stat-item {
-  background: #f8f9fa;
-  padding: 30px;
-  border-radius: 12px;
-  text-align: center;
-  border: 1px solid #e9ecef;
+.aup-header-stat {
+  text-align: right;
 }
 
-.aup-stat-content h3 {
+.aup-header-stat-label {
+  display: block;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #666;
+  margin-bottom: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0 0 12px 0;
 }
 
-.aup-stat-number {
+.aup-header-stat-value {
+  display: block;
   font-family: 'Poppins', sans-serif;
-  font-size: 42px;
-  font-weight: 700;
-  color: #2D2D2D;
-  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+  color: #54413C;
 }
 
 /* ================================
-   MAIN CONTAINER
+   MAIN GRID LAYOUT
 ================================= */
-.aup-main-container {
-  background: #FFFFFF;
-  padding: 0 40px 40px;
+.aup-main-grid {
+  padding: 30px 40px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 400px 1fr;
   gap: 30px;
-  min-height: 60vh;
+  align-items: start;
 }
 
 /* ================================
-   CHART CONTAINER
+   CARD STYLES
 ================================= */
-.aup-chart-container {
+.aup-card {
   background: #FFFFFF;
-  padding: 30px;
   border-radius: 12px;
-  border: 1px solid #e9ecef;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(84, 65, 60, 0.1);
+  border: 1px solid #f0f0f0;
+  height: fit-content;
 }
 
-.aup-section-header {
+.aup-card-header {
   margin-bottom: 30px;
 }
 
-.aup-section-header h2 {
+.aup-card-header h2 {
   font-family: 'Poppins', sans-serif;
   font-size: 20px;
   font-weight: 600;
@@ -131,73 +132,80 @@
   margin: 0 0 8px 0;
 }
 
-.aup-section-header p {
+.aup-card-header p {
   color: #666;
   margin: 0;
   font-size: 14px;
   line-height: 1.5;
 }
 
-.aup-pie-wrapper {
+/* ================================
+   CHART SECTION
+================================= */
+.aup-chart-section {
+  position: sticky;
+  top: 30px;
+}
+
+.aup-pie-container {
+  height: 300px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 300px;
+  justify-content: center;
 }
 
 /* ================================
-   ROLES CONTAINER
+   ROLES GRID SECTION
 ================================= */
-.aup-roles-container {
-  background: #FFFFFF;
-  padding: 30px;
-  border-radius: 12px;
-  border: 1px solid #e9ecef;
+.aup-roles-section {
+  min-height: 600px;
 }
 
 .aup-roles-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 20px;
 }
 
 /* ================================
-   ROLE ITEMS
+   ROLE CARD STYLES
 ================================= */
-.aup-role-item {
+.aup-role-card {
   background: #FFFFFF;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #e9ecef;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
 }
 
-.aup-role-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
+.aup-role-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(84, 65, 60, 0.15);
+}
+
+.aup-role-card-header {
+  padding: 24px;
   color: #FFFFFF;
-  background: #2D2D2D;
+  position: relative;
+  overflow: hidden;
 }
 
-.aup-role-header h3 {
+.aup-role-title h3 {
   font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
-  margin: 0;
+  margin: 0 0 4px 0;
   color: #FFFFFF;
 }
 
 .aup-role-count {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: #FFFFFF;
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 500;
+  font-family: 'Roboto', sans-serif;
 }
 
-.aup-role-body {
+.aup-role-card-body {
   padding: 24px;
 }
 
@@ -217,20 +225,45 @@
 .aup-staff-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-.aup-staff-member {
+.aup-staff-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 12px;
-  background: #f8f9fa;
+  background: #f8f8f8;
   border-radius: 6px;
-  border-left: 4px solid #2D2D2D;
+  transition: all 0.2s ease;
+  border-left: 4px solid #54413C;
+}
+
+.aup-staff-item:hover {
+  background: #f0f0f0;
+  transform: translateX(4px);
+}
+
+.aup-staff-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #54413C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 .aup-staff-email {
   font-size: 14px;
-  color: #2D2D2D;
+  color: #333;
   font-family: 'Roboto', sans-serif;
+  font-weight: 400;
 }
 
 .aup-staff-more {
@@ -238,18 +271,26 @@
   color: #666;
   text-align: center;
   padding: 12px;
-  background: #f8f9fa;
+  background: #f8f8f8;
   border-radius: 6px;
   font-style: italic;
+  border: 1px dashed #ccc;
 }
 
 .aup-no-staff {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 6px;
+  border: 1px dashed #ccc;
+}
+
+.aup-no-staff span {
   font-size: 14px;
   color: #666;
   text-align: center;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 6px;
   font-style: italic;
 }
 
@@ -262,9 +303,9 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  margin-left: 240px;
+  margin-left: 280px;
   background: #FFFFFF;
-  width: calc(100% - 240px);
+  width: calc(100% - 280px);
 }
 
 .aup-loading,
@@ -279,27 +320,41 @@
 
 .aup-loading {
   color: #2D2D2D;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background: #f8f8f8;
+  border: 1px solid #f0f0f0;
 }
 
 .aup-error {
   color: #FFFFFF;
-  background: #2D2D2D;
+  background: #54413C;
+  border: 1px solid #7A635C;
 }
 
 /* ================================
    RESPONSIVE DESIGN
 ================================= */
 @media (max-width: 1200px) {
-  .aup-main-container {
+  .aup-main-grid {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+  
+  .aup-chart-section {
+    position: static;
+  }
+  
+  .aup-roles-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }
 
 @media (max-width: 1024px) {
   .aup-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .aup-container-fixed .aup-content {
     margin-left: 0;
     width: 100%;
   }
@@ -311,73 +366,68 @@
   }
   
   .aup-header-container,
-  .aup-stats-container,
-  .aup-main-container {
+  .aup-main-grid {
     padding-left: 30px;
     padding-right: 30px;
   }
 }
 
 @media (max-width: 768px) {
-  .aup-stats-grid {
+  .aup-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .aup-header-stats {
+    align-self: flex-start;
+  }
+  
+  .aup-main-grid {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .aup-card {
+    padding: 24px;
+  }
+  
+  .aup-roles-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
-    max-width: 100%;
-  }
-  
-  .aup-stat-item {
-    padding: 25px;
-  }
-  
-  .aup-main-container {
-    padding: 0 30px 30px;
-    gap: 20px;
-  }
-  
-  .aup-chart-container,
-  .aup-roles-container {
-    padding: 25px;
   }
   
   .aup-header-container {
     padding: 30px 30px 20px;
   }
   
-  .aup-stats-container {
-    padding: 20px 30px;
-  }
-  
-  .aup-header h1 {
+  .aup-header-content h1 {
     font-size: 28px;
   }
 }
 
 @media (max-width: 480px) {
   .aup-header-container,
-  .aup-stats-container,
-  .aup-main-container {
+  .aup-main-grid {
     padding-left: 20px;
     padding-right: 20px;
   }
   
-  .aup-chart-container,
-  .aup-roles-container {
+  .aup-card {
     padding: 20px;
   }
   
-  .aup-role-header {
-    padding: 16px 20px;
-  }
-  
-  .aup-role-body {
+  .aup-role-card-header {
     padding: 20px;
   }
   
-  .aup-stat-number {
-    font-size: 36px;
+  .aup-role-card-body {
+    padding: 20px;
   }
   
-  .aup-header h1 {
+  .aup-header-content h1 {
     font-size: 24px;
+  }
+  
+  .aup-header-stat-value {
+    font-size: 28px;
   }
 }
