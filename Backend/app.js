@@ -22,11 +22,15 @@ import reviewRouter from "./Routes/ReviewsRoutes.js";
 import dailyLogsRouter from "./Routes/DailyLogsRoutes.js";
 import checkInOutRouter from "./Routes/CheckInOutRoutes.js";
 
+import appoitnemntRoutes from "./Routes/appointmentRoutes.js";
+import eventRoutes from "./Routes/eventRoutes.js";
+import blogRoutes from "./Routes/blogRoutes.js";
 import User from "./Model/userModel.js";
 import bcrypt from "bcryptjs";
+import questionRoutes from "./Routes/quesionRoutes.js";
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 // -------------------- Middleware --------------------
 app.use(express.json());
@@ -34,8 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const allowedOrigins = (
-  process.env.CORS_ORIGINS ||
-  "http://localhost:3000,http://localhost:5173"
+  process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:5173"
 )
   .split(",")
   .map((s) => s.trim());
@@ -73,6 +76,11 @@ app.use("/reviews", reviewRouter);
 app.use("/dailyLogs", dailyLogsRouter);
 app.use("/checkinout", checkInOutRouter);
 
+//appointment APIs
+app.use("/api/appointments", appoitnemntRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/questions", questionRoutes);
 // -------------------- Super Admin Auto-Creation --------------------
 const createSuperAdmin = async () => {
   try {
@@ -106,10 +114,9 @@ const createSuperAdmin = async () => {
 
 // -------------------- DB Connection --------------------
 mongoose
-  .connect(
-    process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project",
-    { dbName: "test" }
-  )
+  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project", {
+    dbName: "test",
+  })
   .then(async () => {
     console.log("✅ Connected to MongoDB (Database: test)");
     await createSuperAdmin();
