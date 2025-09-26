@@ -93,8 +93,8 @@ export default function Payments() {
       </div>
 
       <div className="fm-toolbar">
-        <div className="fm-filters">
-          <div className="fm-search">
+        <div className="filters-top">
+          <div className="fm-search half">
             <Search size={16} />
             <input
               className="input"
@@ -103,15 +103,28 @@ export default function Payments() {
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
           </div>
-          <select className="input" value={method} onChange={(e) => { setMethod(e.target.value); setPage(1); }}>
-            {METHOD_OPTIONS.map(m => <option key={m} value={m}>{m}</option>)}
-          </select>
-          <select className="input" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
-            {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
-          <label className="check check-exclude-failed">
-            <input type="checkbox" checked={excludeFailed} onChange={(e) => { setExcludeFailed(e.target.checked); setPage(1); }} />
+          <div className="exclude-toggle">
             <span>Exclude failed</span>
+            <div
+              className={`toggle-radio ${excludeFailed ? 'on' : 'off'}`}
+              onClick={() => { setExcludeFailed(!excludeFailed); setPage(1); }}
+            >
+              <div className="circle"></div>
+            </div>
+          </div>
+        </div>
+        <div className="filters-bottom">
+          <label>
+            Method:
+            <select className="input" value={method} onChange={(e) => { setMethod(e.target.value); setPage(1); }}>
+              {METHOD_OPTIONS.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </label>
+          <label>
+            Status:
+            <select className="input" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
+              {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
           </label>
         </div>
       </div>

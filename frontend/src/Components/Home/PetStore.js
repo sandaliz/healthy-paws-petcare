@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./PetStore.css";
 
 const PetStore = () => {
@@ -17,10 +18,11 @@ const PetStore = () => {
           <span className="highlight-text">Trusted Companion</span>
         </h2>
         <p>
-          We believe every pet deserves love, comfort, and the very best products to keep them happy and healthy. From nutritious food to cozy beds and playful toys, we’re here to make caring for your furry and feathered! friends simple and joyful.
+          We believe every pet deserves love, comfort, and the very best products to keep them happy and healthy. From nutritious food to cozy beds and playful toys,
+           we’re here to make caring for your furry and feathered! friends simple and joyful.
         </p>
         <div className="petstore-buttons">
-          <button className="glass-btn highlight">Shop Now</button>
+          <Link to="/store"><button className="glass-btn highlight">Shop Now</button></Link>
           <button className="glass-btn">View Product →</button>
         </div>
       </div>

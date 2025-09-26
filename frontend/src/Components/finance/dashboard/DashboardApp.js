@@ -18,7 +18,7 @@ export default function DashboardApp() {
         <header className="fm-topbar">
           <h1>Finance Manager</h1>
           <div className="fm-top-actions">
-            <NavLink to="/fm" end className="fm-top-link">Overview</NavLink>
+            <NavLink to="/fm" end className="fm-top-link">Dashboard</NavLink>
           </div>
         </header>
         <div className="fm-content">

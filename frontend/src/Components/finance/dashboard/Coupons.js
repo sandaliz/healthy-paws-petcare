@@ -10,6 +10,7 @@ export default function Coupons() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const load = async () => {
     try {
@@ -44,18 +45,22 @@ export default function Coupons() {
     }
   };
 
-  const remove = async (id) => {
-    if (!window.confirm('Delete coupon?')) return;
+  const askDelete = (coupon) => {
+    setConfirmDelete(coupon);
+  };
+
+  const doDelete = async () => {
+    if (!confirmDelete) return;
     try {
-      await api.delete(`/coupon/${id}`);
+      await api.delete(`/coupon/${confirmDelete._id}`);
       toast.success('Deleted');
+      setConfirmDelete(null);
       load();
     } catch {
       toast.error('Failed to delete');
     }
   };
 
-  // Separate globals vs client coupons
   const globals = items.filter(c => c.scope === "GLOBAL");
   const clientCoupons = items.filter(c => c.scope === "ISSUED");
 
@@ -67,7 +72,6 @@ export default function Coupons() {
         <button className="btn primary" onClick={openNew}>Add coupon</button>
       </div>
 
-      {/* Global Coupons */}
       <h3>Global Coupons</h3>
       <div className="coupon-grid">
         {globals.map(c => (
@@ -85,49 +89,50 @@ export default function Coupons() {
               </div>
               <div className="coupon-actions">
                 <button className="btn secondary" onClick={() => openEdit(c)}>Edit</button>
-                <button className="btn ghost" onClick={() => remove(c._id)}>Delete</button>
+                <button className="btn ghost" onClick={() => askDelete(c)}>Delete</button>
               </div>
             </div>
           </Card>
         ))}
       </div>
 
-      {/* Client/Issued Coupons */}
       <h3 style={{ marginTop: 20 }}>Client Coupons</h3>
-      <table className="client-coupons-table">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Owner</th>
-            <th>Status</th>
-            <th>Expiry</th>
-            <th className="right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clientCoupons.map(c => (
-            <tr key={c._id}>
-              <td className="mono">{c.code}</td>
-              <td>{c.ownerUserID || '-'}</td>
-              <td>
-                <span className={`tag-pill ${c.status === "Used" ? "gray" : c.status === "Expired" ? "red" : "green"}`}>
-                  {c.status}
-                </span>
-              </td>
-              <td>{new Date(c.expiryDate).toLocaleDateString()}</td>
-              <td className="right">
-                <div className="dropdown">
-                  <button className="btn ghost">⋮</button>
-                  <div className="dropdown-menu">
-                    <button onClick={() => openEdit(c)}>View Details</button>
-                    <button className="danger" onClick={() => remove(c._id)}>Delete</button>
-                  </div>
-                </div>
-              </td>
+      <div className="card">
+        <table className="client-coupons-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Owner</th>
+              <th>Status</th>
+              <th>Expiry</th>
+              <th className="right">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {clientCoupons.map(c => (
+              <tr key={c._id}>
+                <td className="mono">{c.code}</td>
+                <td>{c.ownerUserID || '-'}</td>
+                <td>
+                  <span className={`tag-pill ${c.status === "Used" ? "gray" : c.status === "Expired" ? "red" : "green"}`}>
+                    {c.status}
+                  </span>
+                </td>
+                <td>{new Date(c.expiryDate).toLocaleDateString()}</td>
+                <td className="right">
+                  <div className="dropdown">
+                    <button className="btn ghost">⋮</button>
+                    <div className="dropdown-menu">
+                      <button onClick={() => openEdit(c)}>View Details</button>
+                      <button className="danger" onClick={() => askDelete(c)}>Delete</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {open && (
         <CouponModal
@@ -135,6 +140,15 @@ export default function Coupons() {
           onClose={() => setOpen(false)}
           onSave={save}
           defaultValue={edit}
+        />
+      )}
+
+      {confirmDelete && (
+        <DeleteCouponModal
+          coupon={confirmDelete}
+          onClose={() => setConfirmDelete(null)}
+          onDelete={doDelete}
+          onEdit={() => { setEdit(confirmDelete); setConfirmDelete(null); setOpen(true); }}
         />
       )}
     </div>
@@ -214,6 +228,21 @@ function CouponModal({ open, onClose, onSave, defaultValue }) {
       <div className="row end">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn primary" onClick={() => onSave(form)}>{defaultValue ? 'Update' : 'Create'}</button>
+      </div>
+    </Modal>
+  );
+}
+
+function DeleteCouponModal({ coupon, onClose, onDelete, onEdit }) {
+  return (
+    <Modal open={!!coupon} onClose={onClose} title="Delete Coupon">
+      <p style={{ marginBottom: '16px' }}>
+        Are you sure you want to delete coupon <b>{coupon?.code}</b>?
+      </p>
+      <div className="row end fm-delete-coupon-actions">
+        <button className="fm-btn ghost" onClick={onClose}>Cancel</button>
+        {onEdit && <button className="btn secondary" onClick={onEdit}>Edit Instead</button>}
+        <button className="fm-btn danger" onClick={onDelete}>Delete</button>
       </div>
     </Modal>
   );

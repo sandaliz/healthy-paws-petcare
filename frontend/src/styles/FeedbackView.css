@@ -1,0 +1,325 @@
+.feedback-view-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFD58E 100%);
+  font-family: 'Roboto', sans-serif;
+  padding: 3rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback-view-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFD58E 100%);
+}
+
+.feedback-view-loading-text {
+  font-size: 1.5rem;
+  color: #2D2D2D;
+}
+
+.feedback-view-card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 42rem;
+  padding: 2rem;
+  border: 1px solid #F3F4F6;
+  transition: all 0.3s ease;
+}
+
+.feedback-view-card:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.feedback-view-success-message {
+  background-color: #D1FAE5;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  color: #065F46;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #A7F3D0;
+}
+
+.feedback-view-title {
+  font-size: 2.25rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  color: #2D2D2D;
+}
+
+.feedback-view-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.feedback-view-detail {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+}
+
+.feedback-view-label {
+  font-weight: 600;
+  color: #54413C;
+  min-width: 80px;
+  margin-right: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.feedback-view-value {
+  color: #374151;
+  flex: 1;
+}
+
+.feedback-view-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.feedback-view-message {
+  color: #6B7280;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+  padding: 1rem;
+  background-color: #F9FAFB;
+  border-radius: 0.5rem;
+  border-left: 4px solid #FFD58E;
+}
+
+.feedback-view-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.feedback-view-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.feedback-view-edit-button {
+  background-color: #FFD58E;
+  color: #54413C;
+}
+
+.feedback-view-edit-button:hover {
+  background-color: #FBC975;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 201, 117, 0.3);
+}
+
+.feedback-view-delete-button {
+  background-color: #54413C;
+  color: #FFFFFF;
+}
+
+.feedback-view-delete-button:hover {
+  background-color: #FFD58E;
+  color: #54413C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(84, 65, 60, 0.3);
+}
+
+/* Statistics Section */
+.feedback-view-stats-section {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #F3F4F6;
+}
+
+.feedback-view-stats-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  font-family: 'Poppins', sans-serif;
+  color: #2D2D2D;
+  text-align: center;
+}
+
+.feedback-view-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.feedback-view-stat-item {
+  background: linear-gradient(135deg, #FFD58E 0%, #FBC975 100%);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  text-align: center;
+  color: #54413C;
+}
+
+.feedback-view-stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.feedback-view-stat-label {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+/* Meta Information */
+.feedback-view-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #E5E7EB;
+  font-size: 0.875rem;
+  color: #6B7280;
+}
+
+.feedback-view-id {
+  background-color: #F3F4F6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+}
+
+/* Rating Colors */
+.feedback-view-rating-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.875rem;
+  margin-left: 0.5rem;
+}
+
+.feedback-view-rating-excellent {
+  background-color: #10B981;
+}
+
+.feedback-view-rating-good {
+  background-color: #F59E0B;
+}
+
+.feedback-view-rating-average {
+  background-color: #EF4444;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .feedback-view-container {
+    padding: 2rem 1rem;
+  }
+  
+  .feedback-view-card {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .feedback-view-title {
+    font-size: 1.875rem;
+  }
+  
+  .feedback-view-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .feedback-view-button {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .feedback-view-detail {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .feedback-view-label {
+    min-width: auto;
+  }
+  
+  .feedback-view-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .feedback-view-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .feedback-view-card {
+    padding: 1.25rem;
+    border-radius: 1rem;
+  }
+  
+  .feedback-view-title {
+    font-size: 1.5rem;
+  }
+  
+  .feedback-view-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feedback-view-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Loading Spinner */
+.feedback-view-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #54413C;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

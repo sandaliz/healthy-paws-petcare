@@ -3,7 +3,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 // ---------------- Public pages ----------------
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import Login from "./pages/User_Management/Login";
 import Register from "./pages/User_Management/Register";
 import EmailVerify from "./pages/User_Management/EmailVerify";
@@ -19,11 +19,11 @@ import FeedbackList from "./pages/Feed_Backs/FeedbackList";
 // ---------------- Dashboards ----------------
 import SuperAdminDashboard from "./pages/User_Management/SuperAdminDashboard";
 import AdminDashboard from "./pages/admin_dashbord/AdminDashboard";
-import UserDashboard from "./pages/User_Management/UserDashboard";
 import FinanceManagerDashboard from "./pages/User_Management/FinanceManagerDashbord";
+import ReceptionistDashboard from "./pages/User_Management/ReceptionistDashbord";
+import UserDashboard from "./pages/User_Management/UserDashboard";
 import InventoryManagerDashboard from "./pages/User_Management/InventoryManagerDashboard";
 import PetCaretakerDashboard from "./pages/User_Management/PetCaretakerDashbord";
-import ReceptionistDashboard from "./pages/User_Management/ReceptionistDashbord";
 
 // ---------------- Registration pages ----------------
 import RegisterOwner from "./pages/Register_pet/RegisterOwner";
@@ -75,7 +75,7 @@ import StarRating from "./Components/StarRating/StarRating";
 import AppointmentDisplayDC from "./Components/AppointmentDisplayDC/AppointmentDisplayDC";
 import DailyLogsPet from "./Components/DailyLogsPet/DailyLogsPet";
 
-// ---------------- Dashboard & nested pages (Daycare) ----------------
+// ---------------- Daycare Dashboard (Nested) ----------------
 import DashboardDC from "./Components/DashboardDC/DashboardDC/DashboardDC";
 import TodaysPets from "./Components/DashboardDC/TodaysPets/TodaysPets";
 import PendingAppointments from "./Components/DashboardDC/PendingAppointmentsDC/PendingAppointmentsDC";
@@ -99,7 +99,8 @@ function App() {
   return (
     <Routes>
       {/* -------- Home -------- */}
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<InventoryHome />} />
+      <Route path="/home" element={<InventoryHome />} />
 
       {/* -------- Auth -------- */}
       <Route path="/login" element={<Login />} />
@@ -123,62 +124,13 @@ function App() {
       <Route path="/my-feedbacks" element={<FeedbackList user={currentUser} />} />
 
       {/* -------- Dashboards (Protected) -------- */}
-      <Route
-        path="/super-admin-dashboard"
-        element={
-          <ProtectedRoute>
-            <SuperAdminDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin-dashboard"
-        element={
-          <ProtectedRoute>
-            <AdminDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user-dashboard"
-        element={
-          <ProtectedRoute>
-            <UserDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/finance-dashboard"
-        element={
-          <ProtectedRoute>
-            <FinanceManagerDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/inventory-dashboard"
-        element={
-          <ProtectedRoute>
-            <InventoryManagerDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pet-caretaker-dashboard"
-        element={
-          <ProtectedRoute>
-            <PetCaretakerDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/receptionist-dashboard"
-        element={
-          <ProtectedRoute>
-            <ReceptionistDashboard />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/super-admin-dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
+      <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+      <Route path="/finance-dashboard" element={<ProtectedRoute><FinanceManagerDashboard /></ProtectedRoute>} />
+      <Route path="/inventory-dashboard" element={<ProtectedRoute><InventoryManagerDashboard /></ProtectedRoute>} />
+      <Route path="/pet-caretaker-dashboard" element={<ProtectedRoute><PetCaretakerDashboard /></ProtectedRoute>} />
+      <Route path="/receptionist-dashboard" element={<ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>} />
+      <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
 
       {/* -------- Registration -------- */}
       <Route path="/register/owner" element={<RegisterOwner user={currentUser} />} />
@@ -197,7 +149,6 @@ function App() {
       <Route path="/admin-dashboard/petRegister" element={<PetRegisterPage />} />
 
       {/* -------- Inventory System -------- */}
-      <Route path="/home" element={<InventoryHome />} />
       <Route element={<InventoryLayout />}>
         <Route path="/product" element={<Products />} />
         <Route path="/addproduct" element={<Addproducts />} />

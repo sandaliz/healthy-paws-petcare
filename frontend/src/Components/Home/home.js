@@ -12,7 +12,7 @@ import "./home.css";
 
 const Home = () => {
   return (
-    <div>
+    <div className="home-page">
       <Navbar />
       <Hero />
       <PetStore />
@@ -20,8 +20,6 @@ const Home = () => {
       <Awareness />
       <About />
       <Footer />
-
-      {/* ✅ Fixed chatbot button, always visible at bottom-right */}
       <ChatbotButton />
     </div>
   );
