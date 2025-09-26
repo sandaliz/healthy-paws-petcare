@@ -1,5 +1,6 @@
 import React from "react";
 import "./Awareness.css";
+import { Link } from "react-router-dom";
 import awarenessImg from "../../assets/awareness.jpg"; // ✅ update with correct image name
 
 export default function Awareness() {
@@ -17,7 +18,7 @@ export default function Awareness() {
           </p>
 
           {/* SINGLE BUTTON */}
-          <button className="glass-btn">Blog & Events</button>
+          <Link to="/events"><button className="glass-btn">Blog & Events</button></Link>
         </div>
 
         {/* RIGHT IMAGE */}

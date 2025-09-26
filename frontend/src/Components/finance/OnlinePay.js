@@ -363,8 +363,8 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
 
   useEffect(() => {
     if (!invoice) return;
-    const nm = invoice?.userID?.OwnerName || invoice?.user?.OwnerName || '';
-    const em = invoice?.userID?.OwnerEmail || invoice?.user?.OwnerEmail || '';
+    const nm = invoice?.userID?.name || invoice?.user?.name || '';
+    const em = invoice?.userID?.email || invoice?.user?.email || '';
     if (nm) setName(prev => prev || nm);
     if (em) setEmail(prev => prev || em);
   }, [invoice?._id, invoice?.userID]);

@@ -230,8 +230,8 @@ export default function PaymentSummary() {
               <div className="kv"><span>Invoice</span><b className="mono">{invoice.invoiceID || invoice._id}</b></div>
               <div className="kv"><span>Status</span><b><StatusPill status={invoice.status} /></b></div>
               <div className="kv"><span>Due</span><b>{fmtDate(invoice.dueDate)}</b></div>
-              <div className="kv"><span>Owner</span><b>{invoice.userID?.OwnerName || '-'}</b></div>
-              <div className="kv"><span>Email</span><b>{invoice.userID?.OwnerEmail || '-'}</b></div>
+              <div className="kv"><span>Owner</span><b>{invoice.userID?.name || '-'}</b></div>
+              <div className="kv"><span>Email</span><b>{invoice.userID?.email || '-'}</b></div>
             </div>
             <div className="items-wrap psum-invoice-items">
               <div className="items-header">

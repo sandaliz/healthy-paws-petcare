@@ -62,7 +62,7 @@ export const createInvoice = async (req, res) => {
 export const getInvoiceList = async (req, res) => {
   try {
     const invoices = await Invoice.find()
-      .populate("userID", "OwnerName OwnerEmail")
+      .populate("userID", "name email")
       .sort({ createdAt: -1 });
     res.json({ invoices });
   } catch (err) {
@@ -73,7 +73,7 @@ export const getInvoiceList = async (req, res) => {
 
 export const getInvoiceById = async (req, res) => {
   try {
-    const invoice = await Invoice.findById(req.params.id).populate("userID", "OwnerName OwnerEmail");
+    const invoice = await Invoice.findById(req.params.id).populate("userID", "name email");
     if (!invoice) return res.status(404).json({ message: "Invoice not found" });
     res.json(invoice);
   } catch (err) {
@@ -84,7 +84,7 @@ export const getInvoiceById = async (req, res) => {
 
 export const getInvoiceByBusinessId = async (req, res) => {
   try {
-    const invoice = await Invoice.findOne({ invoiceID: req.params.no }).populate("userID", "OwnerName OwnerEmail");
+    const invoice = await Invoice.findOne({ invoiceID: req.params.no }).populate("userID", "name email");
     if (!invoice) return res.status(404).json({ message: "Invoice not found" });
     res.json(invoice);
   } catch (err) {

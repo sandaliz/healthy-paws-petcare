@@ -36,8 +36,8 @@ export default function Loyalty() {
     if (search.trim()) {
       const q = search.toLowerCase();
       arr = arr.filter(l => {
-        const name = (l.userID?.OwnerName || '').toLowerCase();
-        const email = (l.userID?.OwnerEmail || '').toLowerCase();
+        const name = (l.userID?.name || '').toLowerCase();
+        const email = (l.userID?.email || '').toLowerCase();
         return name.includes(q) || email.includes(q);
       });
     }
@@ -125,8 +125,8 @@ export default function Loyalty() {
                   <tr key={l._id}>
                     <td>
                       <div className="owner">
-                        <div className="name">{l.userID?.OwnerName || '-'}</div>
-                        <div className="email">{l.userID?.OwnerEmail || '-'}</div>
+                        <div className="name">{l.userID?.name || '-'}</div>
+                        <div className="email">{l.userID?.email || '-'}</div>
                       </div>
                     </td>
                     <td className="mono">{Number(l.points || 0)}</td>
@@ -164,7 +164,7 @@ export default function Loyalty() {
           open={!!addModal}
           onClose={() => setAddModal(null)}
           onAdd={(amt) => addPoints(addModal.userID?._id, amt)}
-          ownerName={addModal.userID?.OwnerName}
+          ownerName={addModal.userID?.name}
         />
       )}
     </div>

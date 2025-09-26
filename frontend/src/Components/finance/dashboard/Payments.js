@@ -50,8 +50,8 @@ export default function Payments() {
       arr = arr.filter(p => {
         const pid = (p.paymentID || '').toLowerCase();
         const inv = (p.invoiceID?.invoiceID || '').toLowerCase();
-        const owner = (p.userID?.OwnerName || p.invoiceID?.userID?.OwnerName || '').toLowerCase();
-        const email = (p.userID?.OwnerEmail || p.invoiceID?.userID?.OwnerEmail || '').toLowerCase();
+        const owner = (p.userID?.name || p.invoiceID?.userID?.name || '').toLowerCase();
+        const email = (p.userID?.email || p.invoiceID?.userID?.email || '').toLowerCase();
         return pid.includes(q) || inv.includes(q) || owner.includes(q) || email.includes(q);
       });
     }
@@ -156,8 +156,8 @@ export default function Payments() {
                     <td className="mono">{p.invoiceID?.invoiceID || '-'}</td>
                     <td>
                       <div className="owner">
-                        <div className="name">{p.userID?.OwnerName || p.invoiceID?.userID?.OwnerName || '-'}</div>
-                        <div className="email">{p.userID?.OwnerEmail || p.invoiceID?.userID?.OwnerEmail || '-'}</div>
+                        <div className="name">{p.userID?.name || p.invoiceID?.userID?.name || '-'}</div>
+                        <div className="email">{p.userID?.email || p.invoiceID?.userID?.email || '-'}</div>
                       </div>
                     </td>
                     <td><MethodPill method={p.method} /></td>
@@ -211,8 +211,8 @@ function PaymentModal({ open, onClose, p }) {
   return (
     <Modal open={open} onClose={onClose} title={`Payment ${p.paymentID}`}>
       <div className="summary vlist">
-        <div className="kv"><span>Owner</span><b>{p.userID?.OwnerName || p.invoiceID?.userID?.OwnerName || '-'}</b></div>
-        <div className="kv"><span>Email</span><b>{p.userID?.OwnerEmail || p.invoiceID?.userID?.OwnerEmail || '-'}</b></div>
+        <div className="kv"><span>Owner</span><b>{p.userID?.name || p.invoiceID?.userID?.name || '-'}</b></div>
+        <div className="kv"><span>Email</span><b>{p.userID?.email || p.invoiceID?.userID?.email || '-'}</b></div>
         <div className="kv"><span>Method</span><b><MethodPill method={p.method} /></b></div>
         <div className="kv"><span>Status</span><b><Tag status={p.status} /></b></div>
         <div className="kv"><span>Amount</span><b>{fmtLKR(p.amount)}</b></div>

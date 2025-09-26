@@ -1,15 +1,10 @@
-import "dotenv/config.js";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import "dotenv/config";
 import bcrypt from "bcryptjs";
 
-// Models
-import User from "./Model/userModel.js";
-import Invoice from "./Model/finance/invoiceModel.js";
-
-// Routes
 import authRoutes from "./Routes/authRoutes.js";
 import userRoutes from "./Routes/userRoutes.js";
 import feedbackRoutes from "./Routes/feedback.js";
@@ -31,25 +26,30 @@ import emergencyRoutes from "./Routes/EmergencyRoutes.js";
 import reminderRoutes from "./Routes/ReminderRoutes.js";
 import { scheduleReminder } from "./services/ReminderScheduler.js";
 
-// Finance
+import appointmentRoutes from "./Routes/appointmentRoutes.js";
+import eventRoutes from "./Routes/eventRoutes.js";
+import questionRoutes from "./Routes/quesionRoutes.js";
+
+// Finance & Billing Imports
 import financeRoutes from "./Routes/finance/financeRoutes.js";
+import Invoice from "./Model/finance/invoiceModel.js";
+
+// User Model (for Super Admin)
+import User from "./Model/userModel.js";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
-// -------------------- Middleware --------------------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Allowed Origins
 const allowedOrigins = (
   process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:5173"
 )
   .split(",")
   .map((s) => s.trim());
 
-// ✅ Updated CORS Middleware
 app.use(
   cors({
     origin: (origin, cb) => {
@@ -57,19 +57,11 @@ app.use(
       return cb(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "x-role"],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
   })
 );
 
-// -------------------- Routes --------------------
-app.get("/", (req, res) =>
-  res.send("Welcome to Pet Care Management & Finance API")
-);
+app.get("/", (req, res) => res.send("Welcome to Pet Care Management API"));
 
-// Core APIs
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/feedback", feedbackRoutes);
@@ -77,14 +69,12 @@ app.use("/api/register", registerRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-// Products / Checkout
 app.use("/products", productRoutes);
 app.use("/prescriptions", prescriptionRoutes);
 app.post("/send-prescription", sendPrescriptionEmail);
 app.use("/checkout", checkoutRoutes);
 app.use("/shipping", shippingRoutes);
 
-// Extra APIs
 scheduleReminder();
 app.use("/careCustomers", careRoutes);
 app.use("/reviews", reviewRouter);
@@ -93,13 +83,17 @@ app.use("/checkinout", checkInOutRouter);
 app.use("/api/emergencies", emergencyRoutes);
 app.use("/api/reminders", reminderRoutes);
 
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/questions", questionRoutes);
+
 // Finance API
 app.use("/api/finance", financeRoutes);
 
 // 404 Handler
 app.use((req, res) => res.status(404).json({ message: "Not found" }));
 
-// -------------------- Background Jobs --------------------
+// -------------------- Background Jobs (Finance/Billing) --------------------
 function startOverdueJob() {
   const markOverdue = async () => {
     try {
@@ -115,7 +109,6 @@ function startOverdueJob() {
       console.error("Overdue job error:", err);
     }
   };
-  // Run hourly + once at boot
   setInterval(markOverdue, 60 * 60 * 1000);
   markOverdue();
 }
@@ -153,19 +146,15 @@ const createSuperAdmin = async () => {
 
 // -------------------- DB Connection --------------------
 mongoose
-  .connect(
-    process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project",
-    { dbName: "test" }
-  )
+  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project", {
+    dbName: "test",
+  })
   .then(async () => {
     console.log("✅ Connected to MongoDB (Database: test)");
     await createSuperAdmin();
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-      startOverdueJob();
+    app.listen(port, () => {
+      console.log(`🚀 Server running on http://localhost:${port}`);
+      startOverdueJob(); // Start finance background job
     });
   })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err.message);
-    process.exit(1);
-  });
+  .catch((err) => console.error("❌ MongoDB connection error:", err.message));

@@ -1,9 +1,9 @@
 import Loyalty from "../../Model/finance/loyaltyModel.js";
-import register from "../../Model/Register.js";
+import User from "../../Model/userModel.js";
 
 export const getAllLoyalty = async (req, res) => {
   try {
-    const loyalties = await Loyalty.find().populate("userID", "OwnerName OwnerEmail");
+    const loyalties = await Loyalty.find().populate("userID", "name email");
     res.json({ loyalties });
   } catch (err) {
     console.error("getAllLoyalty error:", err);

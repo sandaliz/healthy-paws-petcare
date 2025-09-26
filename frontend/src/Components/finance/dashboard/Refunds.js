@@ -39,7 +39,7 @@ export default function Refunds() {
     if (search.trim()) {
       const q = search.toLowerCase();
       arr = arr.filter(r => {
-        const owner = (r.userID?.OwnerName || '').toLowerCase();
+        const owner = (r.userID?.name || '').toLowerCase();
         const pid = (r.paymentID?.paymentID || '').toLowerCase();
         const inv = (r.paymentID?.invoiceID?.invoiceID || '').toLowerCase();
         return owner.includes(q) || pid.includes(q) || inv.includes(q);
@@ -149,8 +149,8 @@ export default function Refunds() {
                     <td className="mono">{r.paymentID?.invoiceID?.invoiceID || '-'}</td>
                     <td>
                       <div className="owner">
-                        <div className="name">{r.userID?.OwnerName || '-'}</div>
-                        <div className="email">{r.userID?.OwnerEmail || '-'}</div>
+                        <div className="name">{r.userID?.name || '-'}</div>
+                        <div className="email">{r.userID?.email || '-'}</div>
                       </div>
                     </td>
                     <td className="mono">{fmtLKR(r.amount)}</td>
@@ -211,8 +211,8 @@ function RefundViewModal({ open, onClose, r }) {
       <div className="summary vlist">
         <div className="kv"><span>Payment</span><b className="mono">{r.paymentID?.paymentID || '-'}</b></div>
         <div className="kv"><span>Invoice</span><b className="mono">{r.paymentID?.invoiceID?.invoiceID || '-'}</b></div>
-        <div className="kv"><span>Owner</span><b>{r.userID?.OwnerName || '-'}</b></div>
-        <div className="kv"><span>Email</span><b>{r.userID?.OwnerEmail || '-'}</b></div>
+        <div className="kv"><span>Owner</span><b>{r.userID?.name || '-'}</b></div>
+        <div className="kv"><span>Email</span><b>{r.userID?.email || '-'}</b></div>
         <div className="kv"><span>Amount</span><b>{fmtLKR(r.amount)}</b></div>
         <div className="kv"><span>Status</span><b><span className={`tag-pill ${r.status?.toLowerCase()}`}>{r.status}</span></b></div>
         <div className="kv"><span>Reason</span><b>{r.reason || '-'}</b></div>
