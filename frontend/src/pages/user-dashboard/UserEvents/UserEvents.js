@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../UserHome/components/Nabar";
 import { getEvents } from "../../../apis/eventApi";
 import "./UserEvents.css";
 
@@ -62,7 +61,6 @@ const UserEvents = () => {
   if (loading) {
     return (
       <div>
-        <Navbar />
         <div className="loading">Loading events...</div>
       </div>
     );
@@ -70,7 +68,6 @@ const UserEvents = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="events-container">
         <div className="events-header">
           <h1>Upcoming Events</h1>

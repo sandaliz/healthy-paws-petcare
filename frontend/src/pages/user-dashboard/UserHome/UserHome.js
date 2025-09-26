@@ -1,11 +1,9 @@
 import "./UserHome.css";
-import Navbar from "./components/Nabar";
 import { Link } from "react-router-dom";
 
 const UserHome = () => {
   return (
     <div className="user-home">
-      <Navbar />
 
       {/* Hero Section */}
       <section className="hero-section">

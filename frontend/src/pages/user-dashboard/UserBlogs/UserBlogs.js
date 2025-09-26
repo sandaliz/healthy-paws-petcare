@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../UserHome/components/Nabar";
 import { getBlogs } from "../../../apis/blogApi";
 import "./UserBlogs.css";
 
@@ -52,7 +51,7 @@ const UserBlogs = () => {
   if (loading) {
     return (
       <div>
-        <Navbar />
+
         <div className="loading">Loading blogs...</div>
       </div>
     );
@@ -60,7 +59,7 @@ const UserBlogs = () => {
 
   return (
     <div>
-      <Navbar />
+
       <div className="blogs-container">
         <div className="blogs-header">
           <h1>Latest Blogs</h1>
