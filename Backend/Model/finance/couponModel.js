@@ -99,7 +99,7 @@ const couponSchema = new mongoose.Schema(
     usageLimit: { type: Number, default: 0 },
     usedCount: { type: Number, default: 0 },
     scope: { type: String, enum: ["GLOBAL", "ISSUED"], default: "GLOBAL", index: true },
-    ownerUserID: { type: mongoose.Schema.Types.ObjectId, ref: "register", index: true },
+    ownerUserID: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
     parentId: { type: mongoose.Schema.Types.ObjectId, ref: "Coupon" },
     status: { type: String, enum: ["Available", "Used", "Expired", "Revoked"], default: "Available" },
     usedAt: { type: Date },

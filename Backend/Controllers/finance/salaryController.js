@@ -24,7 +24,7 @@ export const createSalary = async (req, res) => {
 // ----- Get all salaries -----
 export const getSalaries = async (req, res) => {
   try {
-    const salaries = await Salary.find().populate("employeeID", "OwnerName OwnerEmail");
+    const salaries = await Salary.find().populate("employeeID", "name email");
     res.json({ salaries });
   } catch (err) {
     console.error("getSalaries error:", err);

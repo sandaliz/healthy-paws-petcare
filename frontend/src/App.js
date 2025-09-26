@@ -1,14 +1,12 @@
-// App.js
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // ---------------- Public pages ----------------
-// import Home from "./pages/Home";
-import Login from "./pages/User_Management/Login";
-import Register from "./pages/User_Management/Register";
-import EmailVerify from "./pages/User_Management/EmailVerify";
-import ResetPassword from "./pages/User_Management/ResetPassword";
-import NewPassword from "./pages/User_Management/NewPassword";
+import Login from './pages/User_Management/Login';
+import Register from './pages/User_Management/Register'; 
+import EmailVerify from './pages/User_Management/EmailVerify';
+import ResetPassword from './pages/User_Management/ResetPassword';
+import NewPassword from './pages/User_Management/NewPassword';
 
 // ---------------- Feedback pages ----------------
 import FeedbackForm from "./pages/Feed_Backs/FeedbackForm";
@@ -17,13 +15,11 @@ import FeedbackEdit from "./pages/Feed_Backs/FeedbackEdit";
 import FeedbackList from "./pages/Feed_Backs/FeedbackList";
 
 // ---------------- Dashboards ----------------
-import SuperAdminDashboard from "./pages/User_Management/SuperAdminDashboard";
-import AdminDashboard from "./pages/admin_dashbord/AdminDashboard";
-import FinanceManagerDashboard from "./pages/User_Management/FinanceManagerDashbord";
-import ReceptionistDashboard from "./pages/User_Management/ReceptionistDashbord";
-import UserDashboard from "./pages/User_Management/UserDashboard";
-import InventoryManagerDashboard from "./pages/User_Management/InventoryManagerDashboard";
-import PetCaretakerDashboard from "./pages/User_Management/PetCaretakerDashbord";
+import SuperAdminDashboard from './pages/User_Management/SuperAdminDashboard';
+import AdminDashboard from './pages/admin_dashbord/AdminDashboard';
+import FinanceManagerDashboard from './pages/User_Management/FinanceManagerDashbord';
+import ReceptionistDashboard from './pages/User_Management/ReceptionistDashbord';
+import UserDashboard from './pages/User_Management/UserDashboard';
 
 // ---------------- Registration pages ----------------
 import RegisterOwner from "./pages/Register_pet/RegisterOwner";
@@ -51,6 +47,7 @@ import Updateproduct from "./Components/updateproducts/updateproduct";
 import Alerts from "./Components/notifications&alerts/alerts";
 import PrescriptionList from "./Components/prescription/PrescriptionList";
 import Insights from "./Components/insights/insights";
+import ShippingLogs from "./Components/ShippingLogs/ShippingLogs";
 import InventoryHome from "./Components/Home/home";
 
 // Layouts
@@ -75,7 +72,7 @@ import StarRating from "./Components/StarRating/StarRating";
 import AppointmentDisplayDC from "./Components/AppointmentDisplayDC/AppointmentDisplayDC";
 import DailyLogsPet from "./Components/DailyLogsPet/DailyLogsPet";
 
-// ---------------- Daycare Dashboard (Nested) ----------------
+// ---------------- Dashboard & nested pages (Daycare) ----------------
 import DashboardDC from "./Components/DashboardDC/DashboardDC/DashboardDC";
 import TodaysPets from "./Components/DashboardDC/TodaysPets/TodaysPets";
 import PendingAppointments from "./Components/DashboardDC/PendingAppointmentsDC/PendingAppointmentsDC";
@@ -84,6 +81,11 @@ import AppointmentHistory from "./Components/DashboardDC/AppointmentDCHistory/Ap
 import DailyLogs from "./Components/DashboardDC/DailyLogs/DailyLogs";
 import AppointmentDetailsDC from "./Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC";
 import ReviewsDC from "./Components/DashboardDC/ReviewsDC/ReviewsDC";
+import DoctorDashboard from "./pages/doctor_dashboard/DoctorDashboard";
+import UserHome from "./pages/user-dashboard/UserHome/UserHome";
+import UserAppointments from "./pages/user-dashboard/UserAppontments/UserAppointments";
+import UserEvents from "./pages/user-dashboard/UserEvents/UserEvents";
+import UserQuesions from "./pages/user-dashboard/UserQuesions/UserQuesions";
 
 // ---------------- Finance ----------------
 import CouponWall from "./Components/finance/CouponWall";
@@ -98,44 +100,43 @@ function App() {
 
   return (
     <Routes>
-      {/* -------- Home -------- */}
+      {/* -------- Public Routes -------- */}
       <Route path="/" element={<InventoryHome />} />
       <Route path="/home" element={<InventoryHome />} />
-
-      {/* -------- Auth -------- */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Register />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/new-password" element={<NewPassword />} />
       <Route path="/email-verify" element={<EmailVerify />} />
 
-      {/* -------- Finance -------- */}
-      <Route path="/pay" element={<ClientPay />} />
-      <Route path="/pay/online" element={<OnlinePay />} />
-      <Route path="/pay/success" element={<PaySuccess />} />
-      <Route path="/pay/summary" element={<PaymentSummary />} />
-      <Route path="/fm/*" element={<DashboardApp />} />
-      <Route path="/coupon-wall" element={<CouponWall />} />
-
       {/* -------- Feedback -------- */}
       <Route path="/feedback" element={<FeedbackForm />} />
       <Route path="/feedback/:id" element={<FeedbackView />} />
       <Route path="/feedback/edit/:id" element={<FeedbackEdit />} />
-      <Route path="/my-feedbacks" element={<FeedbackList user={currentUser} />} />
+      <Route
+        path="/my-feedbacks"
+        element={<FeedbackList user={currentUser} />}
+      />
 
       {/* -------- Dashboards (Protected) -------- */}
       <Route path="/super-admin-dashboard" element={<ProtectedRoute><SuperAdminDashboard /></ProtectedRoute>} />
       <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
       <Route path="/finance-dashboard" element={<ProtectedRoute><FinanceManagerDashboard /></ProtectedRoute>} />
-      <Route path="/inventory-dashboard" element={<ProtectedRoute><InventoryManagerDashboard /></ProtectedRoute>} />
-      <Route path="/pet-caretaker-dashboard" element={<ProtectedRoute><PetCaretakerDashboard /></ProtectedRoute>} />
-      <Route path="/receptionist-dashboard" element={<ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>} />
+      <Route path="/inventory-dashboard" element={<ProtectedRoute><InventoryLayout /></ProtectedRoute>} />
+      <Route path="/pet-caretaker-dashboard" element={<ProtectedRoute><DashboardDC /></ProtectedRoute>} />
+      <Route path="/receptionist-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
       <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
 
       {/* -------- Registration -------- */}
-      <Route path="/register/owner" element={<RegisterOwner user={currentUser} />} />
+      <Route
+        path="/register/owner"
+        element={<RegisterOwner user={currentUser} />}
+      />
       <Route path="/register/pet" element={<RegisterPet />} />
-      <Route path="/register/list" element={<RegisterList user={currentUser} />} />
+      <Route
+        path="/register/list"
+        element={<RegisterList user={currentUser} />}
+      />
       <Route path="/register/view/:id" element={<RegisterView />} />
       <Route path="/register/edit/:id" element={<RegisterEdit />} />
 
@@ -146,7 +147,10 @@ function App() {
       {/* -------- Admin Panel -------- */}
       <Route path="/admin-dashboard/feedbacks" element={<FeedbackPage />} />
       <Route path="/admin-dashboard/users" element={<UsersPage />} />
-      <Route path="/admin-dashboard/petRegister" element={<PetRegisterPage />} />
+      <Route
+        path="/admin-dashboard/petRegister"
+        element={<PetRegisterPage />}
+      />
 
       {/* -------- Inventory System -------- */}
       <Route element={<InventoryLayout />}>
@@ -156,6 +160,7 @@ function App() {
         <Route path="/alerts" element={<Alerts />} />
         <Route path="/prescription-list" element={<PrescriptionList />} />
         <Route path="/report" element={<Products />} />
+        <Route path="/shipping-logs" element={<ShippingLogs />} />
         <Route path="/insights" element={<Insights />} />
       </Route>
 
@@ -173,26 +178,67 @@ function App() {
       <Route path="/daycare" element={<Daycare />} />
       <Route path="/appointmentDC" element={<AppointmentDCs />} />
       <Route path="/addappointmentDC" element={<AddAppointmentDC />} />
-      <Route path="/updateAppointmentDC/:id" element={<UpdateAppointmentDC />} />
+      <Route
+        path="/updateAppointmentDC/:id"
+        element={<UpdateAppointmentDC />}
+      />
       <Route path="/updateApphisDC/:id" element={<UpdateApphisDC />} />
       <Route path="/reviews" element={<Review />} />
       <Route path="/addreviews" element={<AddReviews />} />
       <Route path="/updatereview/:id" element={<UpdateReviews />} />
       <Route path="/StarRating" element={<StarRating />} />
-      <Route path="/appointmentDisplayDC/:id" element={<AppointmentDisplayDC />} />
+      <Route
+        path="/appointmentDisplayDC/:id"
+        element={<AppointmentDisplayDC />}
+      />
       <Route path="/daycareLogs/:appointmentId" element={<DailyLogsPet />} />
 
       {/* -------- Daycare Dashboard (Nested) -------- */}
       <Route path="/dashboardDC/*" element={<DashboardDC />}>
-        <Route index element={<div>Welcome to HealthyPaws Daycare Dashboard</div>} />
+        <Route
+          path=""
+          element={<div>Welcome to HealthyPaws Daycare Dashboard</div>}
+        />
         <Route path="todaysPets" element={<TodaysPets />} />
         <Route path="pendingAppointments" element={<PendingAppointments />} />
-        <Route path="upcomingAppointments" element={<UpcomingAppointmentsDC />} />
+        <Route
+          path="upcomingAppointments"
+          element={<UpcomingAppointmentsDC />}
+        />
         <Route path="appointmentHistory" element={<AppointmentHistory />} />
         <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
-        <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
+        <Route
+          path="appointmentDetailsDC/:id"
+          element={<AppointmentDetailsDC />}
+        />
         <Route path="reviews" element={<ReviewsDC />} />
       </Route>
+      {/* DOCTOR ROUTES */}
+      <Route path="/doctor-login" element={<DoctorDashboard />} />
+      <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+      <Route
+        path="/"
+        element={
+          currentUser && currentUser.role === "USER" ? (
+            <Navigate to="/user-home" replace />
+          ) : (
+            <InventoryHome />
+          )
+        }
+      />
+
+      <Route path="/user-home" element={<UserHome />} />
+      <Route path="/appointments" element={<UserAppointments />} />
+      <Route path="/events" element={<UserEvents />} />
+      <Route path="/ask-quesions" element={<UserQuesions />} />
+
+      {/* -------- Finance -------- */}
+      <Route path="/pay" element={<ClientPay />} />
+      <Route path="/pay/online" element={<OnlinePay />} />
+      <Route path="/pay/success" element={<PaySuccess />} />
+      <Route path="/pay/summary" element={<PaymentSummary />} />
+      <Route path="/fm/*" element={<DashboardApp />} />
+      <Route path="/coupon-wall" element={<CouponWall />} />
     </Routes>
   );
 }

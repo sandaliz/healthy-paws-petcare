@@ -11,7 +11,7 @@ const shippingSchema = new mongoose.Schema({
   // user reference
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
     required: true,
   },
 

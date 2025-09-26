@@ -5,11 +5,11 @@ import Loyalty from "../../Model/finance/loyaltyModel.js";
 export const getFinancialManagerDashboard = async (req, res) => {
   try {
     const payments = await Payment.find({ status: "Completed" })
-      .populate("userID", "OwnerName OwnerEmail");
+      .populate("userID", "name email");
     const invoices = await Invoice.find()
-      .populate("userID", "OwnerName OwnerEmail");
+      .populate("userID", "name email");
     const loyalties = await Loyalty.find()
-      .populate("userID", "OwnerName OwnerEmail");
+      .populate("userID", "name email");
 
     const totalRevenue = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
 

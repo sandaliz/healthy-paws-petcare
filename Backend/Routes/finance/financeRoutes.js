@@ -53,6 +53,11 @@ import {
   rejectRefund
 } from "../../Controllers/finance/refundController.js";
 
+import {
+  createInvoiceFromCart,
+  createInvoiceFromAppointment,
+} from "../../Controllers/finance/financeLinkController.js";
+
 import requireRole from "../../middleware/finance/auth.js";
 import validate from "../../middleware/finance/validate.js";
 import { body } from "express-validator";
@@ -167,6 +172,12 @@ router.post(
 router.get("/refunds", requireRole("Billing", "Admin", "Receptionist", "Owner"), getAllRefundRequests);
 router.put("/refund/approve/:id", requireRole("Billing", "Admin"), approveRefund);
 router.put("/refund/reject/:id", requireRole("Billing", "Admin"), rejectRefund);
+
+// POST → from Cart checkout
+router.post("/invoice/cart", createInvoiceFromCart);
+
+// POST → from Appointment booking
+router.post("/invoice/appointment", createInvoiceFromAppointment);
 
 // ----- Dashboard -----
 router.get("/financial-dashboard", requireRole("Billing", "Admin"), getFinancialManagerDashboard);

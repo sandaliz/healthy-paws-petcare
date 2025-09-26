@@ -1,6 +1,6 @@
 import Payment from "../../Model/finance/paymentModel.js";
 import Invoice from "../../Model/finance/invoiceModel.js";
-import register from "../../Model/Register.js";
+import User from "../../Model/userModel.js";
 import Coupon from "../../Model/finance/couponModel.js";
 import Stripe from "stripe";
 import mongoose from "mongoose";
@@ -28,17 +28,13 @@ async function resolveCouponForPayment({ couponId, couponCode, userID }) {
       if (!mongoose.isValidObjectId(userID)) {
         throw new Error("Invalid userID format");
       }
-
-      const ownerObjId = mongoose.Types.ObjectId.createFromHexString(userID.toString());
-
+      const ownerObjId = new mongoose.Types.ObjectId(userID);
       if (!c.ownerUserID.equals(ownerObjId)) {
         throw new Error("User coupon does not belong to this user");
       }
-
       if (c.status !== "Available") {
         throw new Error("User coupon is not available");
       }
-
       return c;
     }
 
@@ -51,7 +47,6 @@ async function resolveCouponForPayment({ couponId, couponCode, userID }) {
     if (!c) throw new Error("Invalid coupon code");
     return c;
   }
-
   return null;
 }
 
@@ -67,8 +62,8 @@ async function normalizeInvoiceStatus(invoice) {
       p.refundedAmount != null
         ? p.refundedAmount
         : p.status === "Refunded"
-          ? p.amount || 0
-          : 0
+        ? p.amount || 0
+        : 0
     );
     if (p.status === "Completed" || p.status === "Refunded") {
       totalCompleted += paid;
@@ -112,7 +107,7 @@ async function cancelOtherPendingPayments(invoiceId, keepPaymentId) {
       try {
         await stripe.paymentIntents.cancel(p.stripePaymentIntentId);
       } catch (e) {
-        console.warn("Stripe PI cancel failed (already canceled?):", e?.message);
+        console.warn("Stripe PI cancel failed:", e?.message);
       }
     }
   }
@@ -123,11 +118,14 @@ async function cancelOtherPendingPayments(invoiceId, keepPaymentId) {
   });
 }
 
+/**
+ * ✅ Updated resolveOwnerDoc to use User model and "name/email"
+ */
 async function resolveOwnerDoc({ invoice, payment }) {
-  if (invoice?.userID && typeof invoice.userID === "object" && (invoice.userID.OwnerName || invoice.userID.OwnerEmail)) {
+  if (invoice?.userID && typeof invoice.userID === "object" && (invoice.userID.name || invoice.userID.email)) {
     return invoice.userID;
   }
-  if (payment?.userID && typeof payment.userID === "object" && (payment.userID.OwnerName || payment.userID.OwnerEmail)) {
+  if (payment?.userID && typeof payment.userID === "object" && (payment.userID.name || payment.userID.email)) {
     return payment.userID;
   }
   const id =
@@ -136,9 +134,9 @@ async function resolveOwnerDoc({ invoice, payment }) {
     null;
   if (id) {
     try {
-      const doc = await register.findById(id).select("OwnerName OwnerEmail").lean();
+      const doc = await User.findById(id).select("name email").lean();
       if (doc) return doc;
-    } catch (_) { }
+    } catch (_) {}
   }
   return null;
 }
@@ -199,7 +197,7 @@ export const confirmOfflinePayment = async (req, res) => {
     const payment = await Payment.findById(req.params.id)
       .populate("invoiceID")
       .populate("couponId")
-      .populate("userID", "OwnerName OwnerEmail");
+      .populate("userID", "name email");
 
     if (!payment) return res.status(404).json({ message: "Payment not found" });
 
@@ -207,7 +205,7 @@ export const confirmOfflinePayment = async (req, res) => {
     if (payment.status === "Completed") {
       if (!payment.receiptEmailSentAt && payment.invoiceID) {
         const invoice = await Invoice.findById(payment.invoiceID._id)
-          .populate("userID", "OwnerName OwnerEmail");
+          .populate("userID", "name email");
 
         // resolve owner robustly for display name and email
         const owner = await resolveOwnerDoc({ invoice, payment });
@@ -254,7 +252,7 @@ export const confirmOfflinePayment = async (req, res) => {
 
     if (payment.invoiceID) {
       const invoice = await Invoice.findById(payment.invoiceID._id)
-        .populate("userID", "OwnerName OwnerEmail");
+        .populate("userID", "name email");
       if (invoice) {
         invoice.status = "Paid";
         await invoice.save();
@@ -415,7 +413,7 @@ export const confirmStripePayment = async (req, res) => {
     if (!payment) return res.status(404).json({ message: "Local payment record not found" });
 
     const invoice = await Invoice.findById(payment.invoiceID)
-      .populate("userID", "OwnerName OwnerEmail");
+      .populate("userID", "name email");
 
     // Idempotent confirm + email
     if (payment.status === "Completed") {
@@ -502,7 +500,7 @@ export const getAllPayments = async (req, res) => {
     if (req.query.userId) filter.userID = req.query.userId;
 
     const payments = await Payment.find(filter)
-      .populate("userID", "OwnerName OwnerEmail")
+      .populate("userID", "name email")
       .populate({
         path: "invoiceID",
         select: "invoiceID status total userID",

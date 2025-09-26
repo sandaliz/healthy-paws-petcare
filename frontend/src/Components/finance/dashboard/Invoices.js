@@ -48,8 +48,8 @@ export default function Invoices() {
       const q = search.toLowerCase();
       arr = arr.filter(i => {
         const inv = (i.invoiceID || '').toLowerCase();
-        const name = (i.userID?.OwnerName || '').toLowerCase();
-        const email = (i.userID?.OwnerEmail || '').toLowerCase();
+        const name = (i.userID?.name || '').toLowerCase();
+        const email = (i.userID?.email || '').toLowerCase();
         return inv.includes(q) || name.includes(q) || email.includes(q);
       });
     }
@@ -155,8 +155,8 @@ export default function Invoices() {
                     <td className="mono">{inv.invoiceID || inv._id}</td>
                     <td>
                       <div className="owner">
-                        <div className="name">{inv.userID?.OwnerName || '-'}</div>
-                        <div className="email">{inv.userID?.OwnerEmail || '-'}</div>
+                        <div className="name">{inv.userID?.name || '-'}</div>
+                        <div className="email">{inv.userID?.email || '-'}</div>
                       </div>
                     </td>
                     <td className="mono">{fmtLKR(inv.total)}</td>
@@ -323,8 +323,8 @@ function ViewInvoiceModal({ open, onClose, invoice }) {
   return (
     <Modal open={open} onClose={onClose} title={`Invoice ${invoice.invoiceID || invoice._id}`}>
       <div className="summary vlist">
-        <div className="kv"><span>Owner</span><b>{invoice.userID?.OwnerName || '-'}</b></div>
-        <div className="kv"><span>Email</span><b>{invoice.userID?.OwnerEmail || '-'}</b></div>
+        <div className="kv"><span>Owner</span><b>{invoice.userID?.name || '-'}</b></div>
+        <div className="kv"><span>Email</span><b>{invoice.userID?.email || '-'}</b></div>
         <div className="kv"><span>Status</span><b><Tag status={invoice.status} /></b></div>
         <div className="kv"><span>Due</span><b>{fmtDate(invoice.dueDate)}</b></div>
       </div>

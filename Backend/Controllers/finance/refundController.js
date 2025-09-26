@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import RefundRequest from "../../Model/finance/refundModel.js";
 import Payment from "../../Model/finance/paymentModel.js";
 import Invoice from "../../Model/finance/invoiceModel.js";
-import register from "../../Model/Register.js";
+import User from "../../Model/userModel.js";
 import Stripe from "stripe";
 import { sendRefundEmail, sendRefundRejectedEmail } from "../../config/finance/email.js";
 
@@ -19,10 +19,10 @@ export const findPaymentByFlexibleId = async (id) => {
 };
 
 export async function resolveOwnerDoc({ invoice, payment }) {
-  if (invoice?.userID && typeof invoice.userID === "object" && (invoice.userID.OwnerName || invoice.userID.OwnerEmail)) {
+  if (invoice?.userID && typeof invoice.userID === "object" && (invoice.userID.OwnerName || invoice.userID.email)) {
     return invoice.userID;
   }
-  if (payment?.userID && typeof payment.userID === "object" && (payment.userID.OwnerName || payment.userID.OwnerEmail)) {
+  if (payment?.userID && typeof payment.userID === "object" && (payment.userID.OwnerName || payment.userID.email)) {
     return payment.userID;
   }
   const id =
@@ -32,7 +32,7 @@ export async function resolveOwnerDoc({ invoice, payment }) {
 
   if (id) {
     try {
-      const doc = await register.findById(id).select("OwnerName OwnerEmail").lean();
+      const doc = await User.findById(id).select("name email").lean();
       if (doc) return doc;
     } catch (_) { }
   }
@@ -87,11 +87,11 @@ export const getAllRefundRequests = async (req, res) => {
       .populate({
         path: "paymentID",
         populate: [
-          { path: "userID", select: "OwnerName OwnerEmail" },
-          { path: "invoiceID", select: "invoiceID userID", populate: { path: "userID", select: "OwnerName OwnerEmail" } },
+          { path: "userID", select: "name email" },
+          { path: "invoiceID", select: "invoiceID userID", populate: { path: "userID", select: "name email" } },
         ],
       })
-      .populate("userID", "OwnerName OwnerEmail");
+      .populate("userID", "name email");
 
     res.json({ requests });
   } catch (err) {
@@ -158,9 +158,9 @@ export const approveRefund = async (req, res) => {
     await refundRequest.save();
 
     if (!refundRequest.approvalEmailSentAt) {
-      const invoice = await Invoice.findById(payment.invoiceID).populate("userID", "OwnerName OwnerEmail");
+      const invoice = await Invoice.findById(payment.invoiceID).populate("userID", "name email");
       const owner = await resolveOwnerDoc({ invoice, payment });
-      const toEmail = owner?.OwnerEmail ?? null;
+      const toEmail = owner?.email ?? null;
 
       if (toEmail) {
         await sendRefundEmail({ to: toEmail, invoice, payment, refundAmount, stripeRefundId, mode: payment.method === "Stripe" ? "online" : "offline", ownerName: owner?.OwnerName, ownerEmail: owner?.OwnerEmail });
@@ -194,12 +194,12 @@ export const rejectRefund = async (req, res) => {
     if (!refundRequest.rejectionEmailSentAt) {
       const payment = await Payment.findById(refundRequest.paymentID._id).populate("invoiceID");
       const invoice = payment?.invoiceID?._id
-        ? await Invoice.findById(payment.invoiceID._id).populate("userID", "OwnerName OwnerEmail")
+        ? await Invoice.findById(payment.invoiceID._id).populate("userID", "name email")
         : null;
 
       if (invoice) {
         const owner = await resolveOwnerDoc({ invoice, payment });
-        const toEmail = owner?.OwnerEmail ?? null;
+        const toEmail = owner?.email ?? null;
 
         if (toEmail) {
           await sendRefundRejectedEmail({ to: toEmail, invoice, payment, refundAmount: refundRequest.amount, reasonProvided: refundRequest.reason, reasonRejected, ownerName: owner?.OwnerName, ownerEmail: owner?.OwnerEmail });
