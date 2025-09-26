@@ -49,6 +49,7 @@ import Updateproduct from "./Components/updateproducts/updateproduct";
 import Alerts from "./Components/notifications&alerts/alerts";
 import PrescriptionList from "./Components/prescription/PrescriptionList";
 import Insights from "./Components/insights/insights";
+import ShippingLogs from "./Components/ShippingLogs/ShippingLogs";
 import InventoryHome from "./Components/Home/home";
 
 // Layouts
@@ -137,6 +138,7 @@ function App() {
         <Route path="/alerts" element={<Alerts />} />   
         <Route path="/prescription-list" element={<PrescriptionList />} />
         <Route path="/report" element={<Products />} />
+        <Route path="/shipping-logs" element={<ShippingLogs />} />
         <Route path="/insights" element={<Insights />} />
       </Route>
 
