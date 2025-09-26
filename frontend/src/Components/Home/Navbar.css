@@ -7,7 +7,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  height: 60px; /* was 20px → now enough space for icons/buttons */
+  height: 10px; /* was 20px → now enough space for icons/buttons */
   padding: 0 20px; /* extra breathing room */
 }
 
