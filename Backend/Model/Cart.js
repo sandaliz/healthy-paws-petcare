@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 
 const cartSchema = new mongoose.Schema({
   userId: {
-    type: String, // 🔹 Temporary — later can be ObjectId when User model exists
-    default: "guest", // Placeholder until real user IDs come in
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user", // assuming model is called "User"
+    required: true,
   },
   items: [
     {

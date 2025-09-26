@@ -16,6 +16,7 @@ import productRoutes from "./Routes/productRoutes.js";
 import prescriptionRoutes from "./Routes/prescriptionRoutes.js";
 import { sendPrescriptionEmail } from "./Controllers/emailController.js";
 import checkoutRoutes from "./Routes/checkoutRoutes.js";
+import shippingRoutes from "./Routes/shipping.js";
 
 import careRoutes from "./Routes/CareRoutes.js";
 import reviewRouter from "./Routes/ReviewsRoutes.js";
@@ -70,6 +71,7 @@ app.use("/products", productRoutes);
 app.use("/prescriptions", prescriptionRoutes);
 app.post("/send-prescription", sendPrescriptionEmail);
 app.use("/checkout", checkoutRoutes);
+app.use("/shipping", shippingRoutes);
 
 // Extra APIs
 scheduleReminder(); 
