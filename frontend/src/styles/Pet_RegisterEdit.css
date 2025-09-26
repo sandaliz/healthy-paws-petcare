@@ -1,5 +1,5 @@
-/* ===== Reset ===== */
-* {
+/* ===== Reset for Registration Edit Component Only ===== */
+.registration-edit-page * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -208,6 +208,10 @@
 
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
+  .registration-edit-page {
+    padding: 15px;
+  }
+  
   .registration-edit-overlay {
     padding: 30px 24px;
     border-radius: 16px;
@@ -237,6 +241,10 @@
 }
 
 @media (max-width: 480px) {
+  .registration-edit-page {
+    padding: 10px;
+  }
+  
   .registration-edit-overlay {
     padding: 24px 20px;
     border-radius: 12px;

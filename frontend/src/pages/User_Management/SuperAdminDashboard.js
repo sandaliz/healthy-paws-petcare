@@ -2,18 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import {
-  FaEdit,
-  FaTrash,
-  FaToggleOn,
-  FaToggleOff,
-  FaSync,
-  FaSave,
-  FaTimes,
-  FaSignOutAlt,
-  FaPlus,
-  FaUsers,
-} from "react-icons/fa";
 import "../../styles/superAdminDashboard.css";
 
 const SuperAdminDashboard = () => {
@@ -187,7 +175,6 @@ const SuperAdminDashboard = () => {
       <div className="sad-modern-header">
         <div className="sad-header-content">
           <div className="sad-title-section">
-            <FaUsers className="sad-title-icon" />
             <h1 className="sad-modern-title">Super Admin Dashboard</h1>
           </div>
 
@@ -197,13 +184,11 @@ const SuperAdminDashboard = () => {
               disabled={loading}
               className="sad-refresh-btn-modern"
             >
-              <FaSync className={loading ? "sad-spin-animation" : ""} />
-              <span>Refresh</span>
+              {loading ? "Refreshing..." : "Refresh Data"}
             </button>
 
             <button onClick={handleLogout} className="sad-logout-btn-modern">
-              <FaSignOutAlt />
-              <span>Logout</span>
+              Logout
             </button>
           </div>
         </div>
@@ -212,7 +197,6 @@ const SuperAdminDashboard = () => {
       {/* Create Staff Form */}
       <div className="sad-card-modern">
         <div className="sad-card-header">
-          <FaPlus className="sad-card-icon" />
           <h3 className="sad-card-title">Create New Staff Member</h3>
         </div>
         <form onSubmit={handleCreateStaff} className="sad-form-modern">
@@ -248,18 +232,15 @@ const SuperAdminDashboard = () => {
       {/* Staff List */}
       <div className="sad-card-modern">
         <div className="sad-card-header">
-          <FaUsers className="sad-card-icon" />
           <h3 className="sad-card-title">Staff Members ({staffUsers.length})</h3>
         </div>
 
         {loading ? (
           <div className="sad-loading-state">
-            <FaSync className="sad-spin-animation" />
             <p>Loading staff users...</p>
           </div>
         ) : staffUsers.length === 0 ? (
           <div className="sad-empty-state">
-            <FaUsers className="sad-empty-icon" />
             <p>No staff users found</p>
           </div>
         ) : (
@@ -336,27 +317,26 @@ const SuperAdminDashboard = () => {
                       <div className="sad-actions-modern">
                         {editingUser === user._id ? (
                           <>
-                            <button onClick={() => saveEditUser(user._id)} className="sad-action-btn sad-save-btn" title="Save">
-                              <FaSave />
+                            <button onClick={() => saveEditUser(user._id)} className="sad-action-btn sad-save-btn">
+                              Save
                             </button>
-                            <button onClick={cancelEdit} className="sad-action-btn sad-cancel-btn" title="Cancel">
-                              <FaTimes />
+                            <button onClick={cancelEdit} className="sad-action-btn sad-cancel-btn">
+                              Cancel
                             </button>
                           </>
                         ) : (
                           <>
-                            <button onClick={() => startEditUser(user)} className="sad-action-btn sad-edit-btn" title="Edit">
-                              <FaEdit />
+                            <button onClick={() => startEditUser(user)} className="sad-action-btn sad-edit-btn">
+                              Edit
                             </button>
                             <button
                               onClick={() => handleToggleActive(user._id, user.isActive)}
                               className={`sad-action-btn ${user.isActive ? "sad-toggle-active" : "sad-toggle-inactive"}`}
-                              title={user.isActive ? "Deactivate" : "Activate"}
                             >
-                              {user.isActive ? <FaToggleOn /> : <FaToggleOff />}
+                              {user.isActive ? "Deactivate" : "Activate"}
                             </button>
-                            <button onClick={() => handleDelete(user._id)} className="sad-action-btn sad-delete-btn" title="Delete">
-                              <FaTrash />
+                            <button onClick={() => handleDelete(user._id)} className="sad-action-btn sad-delete-btn">
+                              Delete
                             </button>
                           </>
                         )}
