@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AppointmentDC from '../AppointmentDC/appointmentDC';
 
-const URL = "http://localhost:5000/careCustomers";
+const URL = "http://localhost:5001/careCustomers";
 
 const fetchHandler = async () => {
   return await axios.get(URL).then((res) => res.data);

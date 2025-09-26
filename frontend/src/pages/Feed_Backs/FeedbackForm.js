@@ -40,7 +40,7 @@ const FeedbackForm = () => {
         rating: Number(formData.rating),
       };
 
-      const res = await axios.post("http://localhost:5000/api/feedback", payload);
+      const res = await axios.post("http://localhost:5001/api/feedback", payload);
 
       if (res.data.success) {
         toast.success("🎉 Feedback submitted successfully! Check your email for confirmation.");

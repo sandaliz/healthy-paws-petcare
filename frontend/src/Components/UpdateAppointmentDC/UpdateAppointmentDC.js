@@ -30,7 +30,7 @@ function UpdateAppointmentDC() {
     useEffect(() => {
     const fetchHandler = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/careCustomers/${id}`);
+            const response = await axios.get(`http://localhost:5001/careCustomers/${id}`);
             console.log('API Response:', response.data);
             
             
@@ -55,7 +55,7 @@ function UpdateAppointmentDC() {
 
     const sendRequest = async () => {
         try {
-            await axios.put(`http://localhost:5000/careCustomers/${id}`, {
+            await axios.put(`http://localhost:5001/careCustomers/${id}`, {
                 ownerName: String(inputs.ownerName),
                 contactNumber: String(inputs.contactNumber),
                 email: String(inputs.email),

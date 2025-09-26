@@ -5,9 +5,9 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "./AppointmentDCHistory.css";
 
-const HISTORY_URL = "http://localhost:5000/checkinout/history";
-const REJECTED_URL = "http://localhost:5000/careCustomers/status/Rejected";
-const CANCELLED_URL = "http://localhost:5000/careCustomers/status/Cancelled";
+const HISTORY_URL = "http://localhost:5001/checkinout/history";
+const REJECTED_URL = "http://localhost:5001/careCustomers/status/Rejected";
+const CANCELLED_URL = "http://localhost:5001/careCustomers/status/Cancelled";
 
 function formatDateTime(dateTimeStr) {
   if (!dateTimeStr) return "-";

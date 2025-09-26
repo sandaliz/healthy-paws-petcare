@@ -13,7 +13,7 @@ function Cart() {
   useEffect(() => {
     if (id) {
       axios
-        .get(`http://localhost:5000/prescriptions/${id}`)
+        .get(`http://localhost:5001/prescriptions/${id}`)
         .then((res) => setPrescription(res.data))
         .catch((err) => console.error("Error fetching prescription:", err));
     }
@@ -45,12 +45,12 @@ function Cart() {
       setLoading(true);
 
       if (prescription) {
-        await axios.put(`http://localhost:5000/prescriptions/${prescription._id}`, {
+        await axios.put(`http://localhost:5001/prescriptions/${prescription._id}`, {
           status: "paid",
         });
         alert("✅ Prescription Order Completed!");
       } else {
-        const response = await axios.post("http://localhost:5000/checkout", {
+        const response = await axios.post("http://localhost:5001/checkout", {
           items: cart.map((item) => ({
             productMongoId: item._id, // MUST be actual product _id
             productName: item.name,

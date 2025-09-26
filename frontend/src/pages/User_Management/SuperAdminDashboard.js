@@ -39,7 +39,7 @@ const SuperAdminDashboard = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/api/users/staff", {
+      const response = await axios.get("http://localhost:5001/api/users/staff", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStaffUsers(response.data);
@@ -70,7 +70,7 @@ const SuperAdminDashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:5000/api/users/staff",
+        "http://localhost:5001/api/users/staff",
         { name, email, password, role },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -107,7 +107,7 @@ const SuperAdminDashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:5000/api/users/${userId}`,
+        `http://localhost:5001/api/users/${userId}`,
         editForm,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -137,7 +137,7 @@ const SuperAdminDashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `http://localhost:5000/api/users/staff/${id}`,
+        `http://localhost:5001/api/users/staff/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -155,7 +155,7 @@ const SuperAdminDashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:5000/api/users/staff/${id}/toggle`,
+        `http://localhost:5001/api/users/staff/${id}/toggle`,
         { isActive: !currentStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );

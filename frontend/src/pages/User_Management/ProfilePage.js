@@ -4,7 +4,7 @@ import axios from "axios";
 import assets from "../../assets/assets";
 import "../../styles/ProfilePage.css"
 
-const BASE_URL = "http://localhost:5000"; // hardcoded backend
+const BASE_URL = "http://localhost:5001"; // hardcoded backend
 
 const ProfilePage = () => {
   const navigate = useNavigate();

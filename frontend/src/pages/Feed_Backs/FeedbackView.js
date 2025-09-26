@@ -16,7 +16,7 @@ const FeedbackView = () => {
     const fetchFeedback = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/feedback/${id}`
+          `http://localhost:5001/api/feedback/${id}`
         );
         if (res.data.success) setFeedback(res.data.data);
       } catch (err) {
@@ -28,7 +28,7 @@ const FeedbackView = () => {
 
   const deleteFeedback = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/feedback/${id}`, {
+      await axios.delete(`http://localhost:5001/api/feedback/${id}`, {
         data: { email: feedback.email },
       });
       alert("Feedback deleted successfully!");

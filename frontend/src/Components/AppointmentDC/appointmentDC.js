@@ -48,7 +48,7 @@ function AppointmentDC({ careCustomer, onStatusChange }) {
   const handleCancel = async () => {
     if (window.confirm('Are you sure you want to cancel this appointment?')) {
       try {
-        const res = await axios.put(`http://localhost:5000/careCustomers/${_id}/status`, {
+        const res = await axios.put(`http://localhost:5001/careCustomers/${_id}/status`, {
           status: 'Cancelled'
         });
 

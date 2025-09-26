@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./alerts.css";
 
-const URL = "http://localhost:5000/products";
+const URL = "http://localhost:5001/products";
 
 function Alerts() {
   const [notifications, setNotifications] = useState([]);

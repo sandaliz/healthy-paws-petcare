@@ -47,7 +47,7 @@ const EmailVerify = () => {
 
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/auth/reset-password-verify',
+        'http://localhost:5001/api/auth/reset-password-verify',
         { email, otp: otpValue }
       );
       setLoading(false);
@@ -72,7 +72,7 @@ const EmailVerify = () => {
     setResending(true);
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/auth/send-reset-otp',
+        'http://localhost:5001/api/auth/send-reset-otp',
         { email }
       );
       setResending(false);

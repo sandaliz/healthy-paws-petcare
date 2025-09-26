@@ -40,19 +40,19 @@ function Insights() {
     const fetchInsights = async () => {
       try {
         // Daily Sales
-        const salesRes = await axios.get("http://localhost:5000/prescriptions/insights/daily-sales");
+        const salesRes = await axios.get("http://localhost:5001/prescriptions/insights/daily-sales");
         setDailySales(salesRes.data);
 
         // Sales by Category (array of {_id, totalSold})
-        const categoryRes = await axios.get("http://localhost:5000/products/insights/sales");
+        const categoryRes = await axios.get("http://localhost:5001/products/insights/sales");
         setSalesByCategory(categoryRes.data);
 
         // Fastest Moving Items
-        const fastRes = await axios.get("http://localhost:5000/products/insights/fast-moving");
+        const fastRes = await axios.get("http://localhost:5001/products/insights/fast-moving");
         setFastMovingItems(fastRes.data);
 
         // Top Foods
-        const foodRes = await axios.get("http://localhost:5000/products/insights/top-foods");
+        const foodRes = await axios.get("http://localhost:5001/products/insights/top-foods");
         setTopFoods(foodRes.data);
       } catch (err) {
         console.error("Error fetching insights", err);
@@ -66,7 +66,7 @@ function Insights() {
 
   const generatePDFReport = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/products/insights/stock-report");
+      const res = await axios.get("http://localhost:5001/products/insights/stock-report");
       const report = res.data;
 
       if (!Array.isArray(report) || report.length === 0) {

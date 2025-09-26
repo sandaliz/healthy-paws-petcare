@@ -14,7 +14,7 @@ function PrescriptionList() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/prescriptions")
+      .get("http://localhost:5001/prescriptions")
       .then((res) => setPrescriptions(res.data))
       .catch((err) => console.error("Error fetching prescriptions:", err));
   }, []);
@@ -32,7 +32,7 @@ function PrescriptionList() {
 
   const sendEmail = async () => {
     try {
-      await axios.post("http://localhost:5000/send-prescription", {
+      await axios.post("http://localhost:5001/send-prescription", {
         email,
         prescriptionId: selectedPrescription._id,
       });

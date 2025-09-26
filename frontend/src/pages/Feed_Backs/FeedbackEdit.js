@@ -20,7 +20,7 @@ const FeedbackEdit = () => {
     const fetchFeedback = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/feedback/${id}`
+          `http://localhost:5001/api/feedback/${id}`
         );
         if (res.data.success) setFormData(res.data.data);
       } catch (err) {
@@ -37,7 +37,7 @@ const FeedbackEdit = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/api/feedback/${id}`,
+        `http://localhost:5001/api/feedback/${id}`,
         formData
       );
       navigate(`/feedback/${id}`, {

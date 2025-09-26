@@ -31,7 +31,7 @@ const FeedbackPage = () => {
   // Fetch feedbacks
   const fetchFeedbacks = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/feedback");
+      const res = await axios.get("http://localhost:5001/api/feedback");
       if (res.data.success) setFeedbacks(res.data.data);
     } catch (error) {
       console.error("Error fetching feedbacks:", error);
@@ -43,7 +43,7 @@ const FeedbackPage = () => {
   // Fetch stats
   const fetchStats = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/feedback/stats/average-rating");
+      const res = await axios.get("http://localhost:5001/api/feedback/stats/average-rating");
       if (res.data.success) setStats(res.data.data);
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -53,7 +53,7 @@ const FeedbackPage = () => {
   // Fetch report
   const fetchReport = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/feedback/report");
+      const res = await axios.get("http://localhost:5001/api/feedback/report");
       if (res.data.success) setReport(res.data);
     } catch (err) {
       console.error("Report fetch error:", err);
@@ -69,7 +69,7 @@ const FeedbackPage = () => {
   const deleteFeedback = async (id) => {
     if (!window.confirm("Delete this feedback?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/feedback/${id}`);
+      await axios.delete(`http://localhost:5001/api/feedback/${id}`);
       setFeedbacks(feedbacks.filter((f) => f._id !== id));
       fetchStats();
       fetchReport();

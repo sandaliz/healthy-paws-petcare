@@ -33,7 +33,7 @@ const ResetPassword = () => {
     }
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/send-reset-otp', { email });
+      const res = await axios.post('http://localhost:5001/api/auth/send-reset-otp', { email });
       setLoading(false);
       if (res.data.success) {
         toast.success(res.data.message);

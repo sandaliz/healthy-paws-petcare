@@ -4,7 +4,7 @@ import './product.css';
 import DisplayProducts from '../productDetails/displayproducts';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const URL = "http://localhost:5000/products";
+const URL = "http://localhost:5001/products";
 
 function Products() {
   const [products, setProducts] = useState([]);

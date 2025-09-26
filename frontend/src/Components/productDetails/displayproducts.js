@@ -10,7 +10,7 @@ function DisplayProducts({ product }) {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete(`http://localhost:5000/products/${_id}`);
+        await axios.delete(`http://localhost:5001/products/${_id}`);
         window.location.reload();
       } catch (err) {
         console.error("Error deleting product:", err);
