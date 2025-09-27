@@ -23,11 +23,17 @@ import dailyLogsRouter from "./Routes/DailyLogsRoutes.js";
 import checkInOutRouter from "./Routes/CheckInOutRoutes.js";
 import emergencyRoutes from "./Routes/EmergencyRoutes.js";
 import reminderRoutes from "./Routes/ReminderRoutes.js";
-import { scheduleReminder } from "./services/ReminderScheduler.js";
+import { scheduleReminderEmails } from "./services/ReminderScheduler.js";
 
 
 import User from "./Model/userModel.js";
 import bcrypt from "bcryptjs";
+
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -72,14 +78,17 @@ app.post("/send-prescription", sendPrescriptionEmail);
 app.use("/checkout", checkoutRoutes);
 
 // Extra APIs
-scheduleReminder(); 
+app.use(
+  "/uploads/dailylogs",
+  express.static(path.join(__dirname, "uploads/dailylogs"))
+);
 app.use("/careCustomers", careRoutes);
 app.use("/reviews", reviewRouter);
 app.use("/dailyLogs", dailyLogsRouter);
 app.use("/checkinout", checkInOutRouter);
 app.use("/api/emergencies", emergencyRoutes);
 app.use("/api/reminders", reminderRoutes);
-
+scheduleReminderEmails();
 // -------------------- Super Admin Auto-Creation --------------------
 const createSuperAdmin = async () => {
   try {

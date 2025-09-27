@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+//import axios from 'axios';
+import api from "../../utils/api";
 import './AppointmentDisplayDC.css';
 
 function AppointmentDisplayDC() {
@@ -9,10 +10,14 @@ function AppointmentDisplayDC() {
   const [appointment, setAppointment] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/careCustomers/${id}`)
-      .then(res => setAppointment(res.data.careCustomer))
-      .catch(err => console.error(err));
-  }, [id]);
+    api
+      .get(`/careCustomers/${id}`)
+      .then((res) => setAppointment(res.data.careCustomer))
+      .catch((err) => {
+        console.error("Error fetching appointment:", err);
+        if (err.response?.status === 401) navigate("/login");
+      });
+  }, [id, navigate]);
 
   if (!appointment) return <p>Loading...</p>;
 
@@ -28,6 +33,8 @@ function AppointmentDisplayDC() {
       <div className="ad-disp-detail-card"><b>Drop Off Date:</b> {new Date(appointment.dateStay).toLocaleDateString()}</div>
       <div className="ad-disp-detail-card"><b>Pick Up Date:</b> {new Date(appointment.pickUpDate).toLocaleDateString()}</div>
       <div className="ad-disp-detail-card"><b>Nights Stay:</b> {appointment.nightsStay}</div>
+      <div className="ad-disp-detail-card"><b>Drop Off Time:</b> {appointment.dropOffTime}</div>
+      <div className="ad-disp-detail-card"><b>Pick Up Time:</b> {appointment.pickUpTime}</div>
       <div className="ad-disp-detail-card"><b>Food Type:</b> {appointment.foodType}</div>
       <div className="ad-disp-detail-card"><b>Feeding Times:</b> {appointment.feedingTimes}</div>
       <div className="ad-disp-detail-card"><b>Grooming:</b> {appointment.grooming ? 'Yes' : 'No'}</div>

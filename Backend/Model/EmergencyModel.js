@@ -15,7 +15,11 @@ const emergencySchema = new mongoose.Schema(
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Owner user record
+      ref: "CareCustomer", // Owner user record
+      required: true,
+    },
+    actionTaken: {
+      type: String, // "contact-owner" | "authorize-treatment"
       required: true,
     },
     type: {
@@ -36,9 +40,14 @@ const emergencySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    resolved: {
-      type: Boolean,
-      default: false,
+    emailStatus: {
+      type: String,
+      enum: ["sent", "failed"],
+      default: "sent",
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now,
     },
   },
   { timestamps: true }

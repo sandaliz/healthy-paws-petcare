@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
+import api from '../../utils/api';
 import AppointmentDC from '../AppointmentDC/appointmentDC';
 
-const URL = "http://localhost:5000/careCustomers";
 
-const fetchHandler = async () => {
-  return await axios.get(URL).then((res) => res.data);
-}
 
 function AppointmentDCs() {
   const [careCustomers, setCareCustomers] = useState([]);
+
+  const fetchHandler = async () => {
+    try {
+      const res = await api.get('/careCustomers');
+      return res.data;
+    } catch (err) {
+      console.error('Error fetching appointments:', err);
+      return null;
+    }
+  };
 
   useEffect(() => {
     fetchHandler().then((data) => {
