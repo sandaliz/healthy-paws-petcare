@@ -94,7 +94,7 @@ function Daycare() {
         <h2>Daycare Rules & Policies</h2>
         <ul>
           <li>Pets must be fully vaccinated.</li>
-          <li>Owners must provide feeding & medical instructions.</li>
+          <li>Owners must provide medical instructions.</li>
           <li>Emergency vet care will be authorized if needed.</li>
         </ul>
       </section>
