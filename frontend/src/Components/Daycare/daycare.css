@@ -1,4 +1,6 @@
-/* Daycare specific container */
+/* =================== Daycare Styles =================== */
+
+/* Main Container */
 .dc-container {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
@@ -7,7 +9,7 @@
   background-color: #FFFFFF;
 }
 
-/* Headings scoped */
+/* Headings */
 .dc-container h1,
 .dc-container h2,
 .dc-container h3 {
@@ -16,76 +18,73 @@
   color: #2D2D2D;
 }
 
-/* Hero Section */
+/* -------------------- Hero Section -------------------- */
 .dc-hero {
-  background: linear-gradient(135deg, #FFD58E, #FFF5E1);
-  text-align: center;
-  padding: 60px 20px;
+  position: relative;
   border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 30px;
 }
 
-.dc-hero h1 {
-  font-size: 2.5rem;
+.dc-hero-image {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+
+.dc-hero-overlay {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  text-align: left;
+  color: #fff;
+  max-width: 700px;
+  padding: 0 20px;
+}
+
+.dc-hero-overlay h1 {
+  font-size: 52px;
   margin-bottom: 10px;
-  color: #54413C;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
 }
 
-.dc-hero p {
-  font-size: 1.2rem;
+.dc-hero-overlay p {
+  font-size: 22px;
   margin-bottom: 20px;
-  color: #333;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
 }
 
-/* Buttons */
+/* -------------------- Buttons -------------------- */
 .dc-btn {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 13px 22px;
   margin: 8px;
-  border-radius: 8px;
+  border-radius: 25px;
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: .3s ease-in-out;
-  border: none;
-}
-
-.dc-btn-appointment {
-  background: #FFD58E;
+  border: 1px solid rgba(255, 213, 142, 1);
+  background: rgba(255, 213, 142, 0.8);
   color: #54413C;
-}
-.dc-btn-appointment:hover {
-  background: #E6B96F;
-}
-
-.dc-btn-secondary {
-  background: #54413C;
-  color: #FFF;
-}
-.dc-btn-secondary:hover {
-  background: #3d302c;
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease-in-out;
 }
 
-.dc-btn-review {
-  background: #54413C;
-  color: #FFF;
-}
-.dc-btn-review:hover {
-  background: #3d302c;
+.dc-btn:hover {
+  background: rgba(255, 213, 142, 0.8);
+  transform: translateY(-2px);
 }
 
 .dc-btn-small {
-  background: #FFD58E;
-  color: #54413C;
   padding: 6px 14px;
   font-size: 0.9rem;
 }
-.dc-btn-small:hover {
-  background: #E6B96F;
-}
 
-/* Why Choose Us */
+/* -------------------- Why Choose -------------------- */
 .dc-why {
   padding: 50px 20px;
   text-align: center;
@@ -109,7 +108,7 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Services */
+/* -------------------- Services -------------------- */
 .dc-services {
   padding: 50px 20px;
   background: #FFF;
@@ -124,19 +123,35 @@
 }
 
 .dc-service-card {
-  background: #fff;
-  padding: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px;
   border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  transition: transform .2s;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
 }
+
 .dc-service-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
 }
+
+.dc-service-img {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  object-fit: cover;
+}
+
 .dc-service-card.dc-no-booking {
   opacity: 0.8;
   background: #fafafa;
 }
+
 .dc-service-card h3 {
   margin-bottom: 10px;
   color: #54413C;
@@ -147,7 +162,7 @@
   color: #888;
 }
 
-/* Booking CTA */
+/* -------------------- Booking CTA -------------------- */
 .dc-booking-cta {
   padding: 60px 20px;
   background: #FFD58E;
@@ -156,7 +171,17 @@
   color: #54413C;
 }
 
-/* Testimonials */
+.dc-booking-cta h2 {
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.dc-booking-cta p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* -------------------- Testimonials -------------------- */
 .dc-testimonials {
   padding: 50px 20px;
   background: #f9f9f9;
@@ -178,7 +203,7 @@
   color: #333;
 }
 
-/* Rules */
+/* -------------------- Rules -------------------- */
 .dc-rules {
   padding: 50px 20px;
 }
@@ -191,7 +216,7 @@
   color: #54413C;
 }
 
-/* Contact */
+/* -------------------- Contact -------------------- */
 .dc-contact {
   padding: 50px 20px;
   background: #f1f1f1;

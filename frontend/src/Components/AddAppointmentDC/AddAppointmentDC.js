@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+
 import './AddAppointmentDC.css';
+import api from "../../utils/api";
 
 function AddAppointmentDC() {
     const history = useNavigate();
@@ -149,7 +150,7 @@ function AddAppointmentDC() {
 };
 
 const sendRequest = async () => {
-    const res = await axios.post("http://localhost:5000/careCustomers", {
+    const res = await api.post("/careCustomers", {
         ownerName: String(inputs.ownerName),
         contactNumber: String(inputs.contactNumber),
         email: String(inputs.email),
@@ -173,6 +174,8 @@ const sendRequest = async () => {
 };
 
     return (
+        <div className="dc-back">
+            
         <div className="appointment-container">
             <form onSubmit={handleSubmit} className="appointment-form">
                 <h2 className="form-title">Pet Care Booking Form</h2>
@@ -332,6 +335,7 @@ const sendRequest = async () => {
 
                 <button type="submit" className="submit-btn">Submit Booking</button>
             </form>
+        </div>
         </div>
     )
 }
