@@ -158,8 +158,8 @@ Thank you for choosing Healthy Paws 🐾.
 
 const sendPaymentEmail = async ({ to, invoice, payment, ownerName: ownerNameOverride, ownerEmail: ownerEmailOverride }) => {
   try {
-    const ownerName = ownerNameOverride || invoice?.userID?.OwnerName || "Customer";
-    const ownerEmail = ownerEmailOverride || invoice?.userID?.OwnerEmail || to;
+    const ownerName = ownerNameOverride || invoice?.userID?.name || "Customer";
+    const ownerEmail = ownerEmailOverride || invoice?.userID?.email || to;
     if (!ownerEmail) return;
 
     const html = buildPaymentHtml({ ownerName, ownerEmail, invoice, payment });
@@ -180,8 +180,8 @@ const sendPaymentEmail = async ({ to, invoice, payment, ownerName: ownerNameOver
 
 const sendRefundEmail = async ({ to, invoice, payment, refundAmount, stripeRefundId, mode, ownerName: ownerNameOverride, ownerEmail: ownerEmailOverride }) => {
   try {
-    const ownerName = ownerNameOverride || invoice?.userID?.OwnerName || "Customer";
-    const ownerEmail = ownerEmailOverride || invoice?.userID?.OwnerEmail || to;
+    const ownerName = ownerNameOverride || invoice?.userID?.name || "Customer";
+    const ownerEmail = ownerEmailOverride || invoice?.userID?.email || to;
     if (!ownerEmail) return;
 
     const html = buildRefundHtml({ ownerName, ownerEmail, invoice, payment, refundAmount, stripeRefundId, mode });
@@ -202,8 +202,8 @@ const sendRefundEmail = async ({ to, invoice, payment, refundAmount, stripeRefun
 
 const sendRefundRejectedEmail = async ({ to, invoice, payment, refundAmount, reasonProvided, reasonRejected, ownerName: ownerNameOverride, ownerEmail: ownerEmailOverride }) => {
   try {
-    const ownerName = ownerNameOverride || invoice?.userID?.OwnerName || "Customer";
-    const ownerEmail = ownerEmailOverride || invoice?.userID?.OwnerEmail || to;
+    const ownerName = ownerNameOverride || invoice?.userID?.name || "Customer";
+    const ownerEmail = ownerEmailOverride || invoice?.userID?.email || to;
     if (!ownerEmail) return;
 
     const html = buildRefundRejectedHtml({ ownerName, ownerEmail, invoice, payment, refundAmount, reasonProvided, reasonRejected });

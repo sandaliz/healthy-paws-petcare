@@ -1,16 +1,24 @@
+// InvoiceModal.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom"; // ✅ add navigate hook
 import "./css/InvoiceModal.css";
 
-export default function InvoiceModal({ invoice, onClose }) {
+export default function InvoiceModal({ invoice }) {
+  const navigate = useNavigate();
+
   if (!invoice) return null;
 
   return (
     <div className="invmodal-overlay">
       <div className="invmodal-box">
         <div className="invmodal-hero">
-          <div className="invmodal-badge">✅</div>
+          <div className="invmodal-badge">✔️</div>
           <h2 className="invmodal-title">Order Placed!</h2>
-          <p className="invmodal-subtitle">Here are your invoice details.</p>
+          {/* 🔑 updated subtitle here */}
+          <p className="invmodal-subtitle">
+            Here are your invoice details.<br />
+            <strong>⚠️ Payment will be collected on delivery.</strong>
+          </p>
         </div>
 
         <div className="invmodal-details">
@@ -72,8 +80,19 @@ export default function InvoiceModal({ invoice, onClose }) {
         </div>
 
         <div className="invmodal-footer">
-          <button className="invmodal-btn primary">Pay on Delivery</button>
-          <button className="invmodal-btn ghost" onClick={onClose}>
+          {/* 🔑 Primary button now redirects to /profile */}
+          <button
+            className="invmodal-btn primary"
+            onClick={() => navigate("/profile")}
+          >
+            Go to Dashboard
+          </button>
+
+          {/* 🔑 Close redirects back to /store */}
+          <button
+            className="invmodal-btn ghost"
+            onClick={() => navigate("/store")}
+          >
             Close
           </button>
         </div>

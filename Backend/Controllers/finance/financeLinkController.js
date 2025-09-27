@@ -19,7 +19,7 @@ export const createInvoiceFromCart = async (req, res) => {
     if (!cartId || !userId)
       return res.status(400).json({ message: "cartId and userId are required" });
 
-    const cart = await Cart.findById(cartId).populate("userID", "name email");
+    const cart = await Cart.findById(cartId).populate("userId", "name email");
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
     const lineItems = cart.items.map((i) => ({

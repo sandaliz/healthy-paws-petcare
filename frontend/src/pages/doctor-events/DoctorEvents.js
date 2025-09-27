@@ -25,7 +25,7 @@ const DoctorEvents = () => {
     imageUrl: "",
   });
   const [errors, setErrors] = useState({});
-  const [imageFile, setImageFile] = useState(null);
+  //const [imageFile, setImageFile] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
 
   useEffect(() => {
@@ -110,7 +110,7 @@ const DoctorEvents = () => {
       return;
     }
 
-    setImageFile(file);
+    //setImageFile(file);
     setImageUploading(true);
     setErrors((prev) => ({ ...prev, imageUrl: "" }));
 
@@ -138,7 +138,7 @@ const DoctorEvents = () => {
       imageUrl: "",
     });
     setErrors({});
-    setImageFile(null);
+    //setImageFile(null);
     setCurrentEvent(null);
   };
 

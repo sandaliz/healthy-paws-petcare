@@ -278,6 +278,16 @@ export const confirmOfflinePayment = async (req, res) => {
       }
     }
 
+    if (invoice && invoice.userID) {
+  try {
+    let loyalty = await Loyalty.findOne({ userID: invoice.userID });
+    if (!loyalty) loyalty = new Loyalty({ userID: invoice.userID, points: 0 });
+    await loyalty.addPoints(payment.amount); // award based on spend
+  } catch (e) {
+    console.error("Loyalty add error", e);
+  }
+}
+
     res.json({ message: "Offline payment confirmed and invoice marked as Paid", payment });
   } catch (err) {
     console.error("confirmOfflinePayment error:", err);
@@ -437,6 +447,16 @@ export const confirmStripePayment = async (req, res) => {
           await payment.save();
         }
       }
+
+      if (invoice && invoice.userID) {
+  try {
+    let loyalty = await Loyalty.findOne({ userID: invoice.userID });
+    if (!loyalty) loyalty = new Loyalty({ userID: invoice.userID, points: 0 });
+    await loyalty.addPoints(payment.amount); // award based on spend
+  } catch (e) {
+    console.error("Loyalty add error", e);
+  }
+}
       return res.json({ message: "Payment already confirmed", payment });
     }
 

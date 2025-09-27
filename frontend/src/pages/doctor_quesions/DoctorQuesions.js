@@ -38,7 +38,6 @@ const DoctorQuesions = () => {
   
   // Validate answer
   const validateAnswer = (answer) => {
-    // Answer must be at least 10 characters and not more than 1000
     const answerRegex = /^.{10,1000}$/;
     if (!answerRegex.test(answer)) {
       setFormError("Answer must be between 10 and 1000 characters");
@@ -106,6 +105,7 @@ const DoctorQuesions = () => {
     <div className="doctor-questions-container">
       <div className="questions-header">
         <h2>Patient Questions</h2>
+        <p>Logged in as: <span>{user?.name || "Doctor"}</span></p>
       </div>
       
       {error && <div className="error-message">{error}</div>}

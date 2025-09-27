@@ -19,10 +19,10 @@ export const findPaymentByFlexibleId = async (id) => {
 };
 
 export async function resolveOwnerDoc({ invoice, payment }) {
-  if (invoice?.userID && typeof invoice.userID === "object" && (invoice.userID.OwnerName || invoice.userID.email)) {
+  if (invoice?.userID && typeof invoice.userID === "object" && (invoice.userID.name || invoice.userID.email)) {
     return invoice.userID;
   }
-  if (payment?.userID && typeof payment.userID === "object" && (payment.userID.OwnerName || payment.userID.email)) {
+  if (payment?.userID && typeof payment.userID === "object" && (payment.userID.name || payment.userID.email)) {
     return payment.userID;
   }
   const id =

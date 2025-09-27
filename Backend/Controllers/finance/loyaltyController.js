@@ -58,3 +58,24 @@ export const deleteLoyalty = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Get or create loyalty for a specific user (pet owner)
+export const getUserLoyalty = async (req, res) => {
+  try {
+    const { userID } = req.params;
+    if (!userID) {
+      return res.status(400).json({ message: "userID required" });
+    }
+
+    let loyalty = await Loyalty.findOne({ userID });
+    // if user never had loyalty record, create baseline
+    if (!loyalty) {
+      loyalty = await Loyalty.create({ userID, points: 0, tier: "Bronze" });
+    }
+
+    res.json({ loyalty });
+  } catch (err) {
+    console.error("getUserLoyalty error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

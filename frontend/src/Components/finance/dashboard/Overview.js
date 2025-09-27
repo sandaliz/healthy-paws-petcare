@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { api } from '../financeApi';
+import { api } from '../../finance/services/financeApi';
 import Card from './components/Card';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,

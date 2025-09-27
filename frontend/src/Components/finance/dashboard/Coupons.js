@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { api } from '../financeApi';
+import { api } from '../../finance/services/financeApi';
 import Modal from './components/Modal';
 import Card from './components/Card';
 import '../css/dashboard.css';

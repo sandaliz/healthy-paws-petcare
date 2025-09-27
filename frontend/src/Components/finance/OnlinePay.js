@@ -10,7 +10,8 @@ import {
   CardExpiryElement,
   CardCvcElement
 } from '@stripe/react-stripe-js';
-import { api } from './financeApi';
+import { api } from './services/financeApi';
+import useAuthUser from "./hooks/useAuthUser";
 import './css/clientPay.css';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '');
@@ -25,7 +26,9 @@ export default function OnlinePay() {
   const invoiceParam = params.get('invoice') || '';
   const couponParam = params.get('coupon') || '';
 
-  const [ownerId] = useState(localStorage.getItem('hp_ownerId') || '');
+  const { user: authUser, loading: authLoading, error: authError } = useAuthUser();
+  const ownerId = authUser?._id || '';
+
   const [invoice, setInvoice] = useState(null);
   const [loadingInvoice, setLoadingInvoice] = useState(false);
 
@@ -39,7 +42,6 @@ export default function OnlinePay() {
   const [selectedIssuedId, setSelectedIssuedId] = useState('');
   const [appliedIssuedCode, setAppliedIssuedCode] = useState('');
 
-  // separate toggles
   const [showCoupons, setShowCoupons] = useState(false);
   const [showPromoCode, setShowPromoCode] = useState(false);
 
@@ -73,10 +75,9 @@ export default function OnlinePay() {
         const total = computeInvoiceTotal(invoice);
         const res = await api.get(`/coupon/user-available?userId=${ownerId}&invoiceTotal=${total}`);
         if (!cancelled) {
-          // filter to available only
-          setMyCoupons((res.coupons || []).filter(c => c.status === "Available"));
+          setMyCoupons(Array.isArray(res.coupons) ? res.coupons.filter(c => c.status === "Available") : []);
         }
-      } catch {
+      } catch (err) {
         if (!cancelled) setMyCoupons([]);
       } finally {
         if (!cancelled) setLoadingCoupons(false);
@@ -93,16 +94,20 @@ export default function OnlinePay() {
 
   const applyCoupon = async () => {
     if (!invoice) return toast.error('Invoice not loaded');
-    if (selectedIssuedId) return toast.error('Clear selected wallet coupon before typing a code');
+    if (selectedIssuedId) return toast.error('Clear selected wallet coupon first');
     const code = couponCode.trim();
     if (!code) return toast.error('Enter code');
     if (!COUPON_REGEX.test(code)) return toast.error('Use 3–32 characters: letters, numbers, - _ .');
     try {
-      const resp = await api.post('/coupon/validate', { code, invoiceTotal: totalBeforeDiscount });
+      const resp = await api.post('/coupon/validate', {
+        code,
+        invoiceTotal: totalBeforeDiscount,
+        userID: invoice.userID
+      });
       setCouponId(resp.couponId);
       setDiscount(Number(resp.discount || 0));
       setSelectedIssuedId('');
-      setAppliedIssuedCode('');
+      setAppliedIssuedCode(code.toUpperCase());
       toast.success(`Coupon applied: -${fmtLKR(resp.discount || 0)}`);
     } catch (e) {
       setCouponId(null);
@@ -117,8 +122,8 @@ export default function OnlinePay() {
     try {
       const res = await api.post('/coupon/validate-user', {
         couponId: coupon.couponId,
-        userID: ownerId,
-        invoiceTotal: totalBeforeDiscount
+        userID: invoice.userID,
+        invoiceTotal: totalBeforeDiscount,
       });
       setCouponId(res.couponId);
       setDiscount(Number(res.discount || 0));
@@ -145,7 +150,7 @@ export default function OnlinePay() {
           <h1>Pay Online</h1>
           <p className="muted">Review your invoice and complete a secure card payment.</p>
         </div>
-        <button className="btn ghost" onClick={() => navigate('/pay')}>Back to Payment Options</button>
+        <button className="btn ghost" onClick={() => navigate(-1)}>Back to Payment Options</button>
       </div>
 
       <div className="card">
@@ -205,15 +210,24 @@ export default function OnlinePay() {
         <div className="section">
           <h2 className="section-title">Card Payment</h2>
 
+          {authLoading && <div className="muted">Checking authentication…</div>}
+          {authError && <div className="error">{authError}</div>}
+          {!authLoading && !ownerId && <div className="notice">Please log in to continue.</div>}
+
           <div className="panel coupon-panel">
             <h3 className="coupon-panel-title">Coupons & Codes</h3>
             {invoice && ownerId && (
               <>
                 {myCoupons.length > 0 && (
                   <div className="wallet-coupons-wrap">
-                    <button className="btn full-width" type="button" onClick={() => setShowCoupons(p => !p)}>
+                    <button
+                      className="btn big-coupon-toggle"
+                      type="button"
+                      onClick={() => setShowCoupons(p => !p)}
+                    >
                       {showCoupons ? 'Hide Coupons' : 'Show My Coupons'}
                     </button>
+
                     {showCoupons && (
                       <div className="onpay-coupon-grid">
                         {myCoupons.map(c => {
@@ -226,16 +240,18 @@ export default function OnlinePay() {
                               </div>
                               <div className="coupon-meta">Min: {fmtLKR(c.minInvoiceAmount)} • Expires: {fmtDate(c.expiryDate)}</div>
                               <div className="row end coupon-actions">
-                                {!active ? (
-                                  <button
-                                    className="btn secondary"
-                                    disabled={c.status !== "Available"}
-                                    onClick={() => applyIssued(c)}
-                                  >
-                                    Apply
-                                  </button>
+                                {active ? (
+                                  <>
+                                    <span className="applied-label"> Applied</span>
+                                    <button className="btn ghost" onClick={() => {
+                                      setCouponId(null); setDiscount(0);
+                                      setSelectedIssuedId(''); setAppliedIssuedCode('');
+                                    }}>
+                                      Clear
+                                    </button>
+                                  </>
                                 ) : (
-                                  <button className="btn ghost" onClick={() => { setCouponId(null); setDiscount(0); setSelectedIssuedId(''); setAppliedIssuedCode(''); }}>Clear</button>
+                                  <button className="btn secondary" onClick={() => applyIssued(c)}>Apply</button>
                                 )}
                               </div>
                             </div>
@@ -247,8 +263,12 @@ export default function OnlinePay() {
                 )}
 
                 <div className="promo-toggle">
-                  <button className="btn full-width" type="button" onClick={() => setShowPromoCode(p => !p)}>
-                    {showPromoCode ? 'Hide Promo Code' : 'I have a promo code'}
+                  <button
+                    className="btn big-promo-toggle"
+                    type="button"
+                    onClick={() => setShowPromoCode(p => !p)}
+                  >
+                    {showPromoCode ? 'Hide Promo Code' : 'Have a promo code?'}
                   </button>
                   {showPromoCode && (
                     <div className="promo-code-wrap">
@@ -300,7 +320,6 @@ export default function OnlinePay() {
                 }}
               />
             )}
-            {!ownerId && <div className="notice">Please go back and save your Account ID first.</div>}
           </div>
         </div>
       </div>
@@ -437,12 +456,12 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
       <div className="grid-2">
         <div className="field">
           <label>Name on card</label>
-          <input className={`input ${touched.name && errors.name ? 'input-error' : ''}`} value={name} onBlur={() => setTouched(t => ({ ...t, name: true }))} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" aria-invalid={touched.name && !!errors.name}/>
+          <input className={`input ${touched.name && errors.name ? 'input-error' : ''}`} value={name} onBlur={() => setTouched(t => ({ ...t, name: true }))} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" aria-invalid={touched.name && !!errors.name} />
           {touched.name && errors.name && <div className="error">{errors.name}</div>}
         </div>
         <div className="field">
           <label>Email (for receipt)</label>
-          <input className={`input ${(touched.email || email) && errors.email ? 'input-error' : ''}`} value={email} onBlur={() => setTouched(t => ({ ...t, email: true }))} onChange={(e) => setEmail(e.target.value)} placeholder="jane@example.com" aria-invalid={(touched.email || !!email) && !!errors.email}/>
+          <input className={`input ${(touched.email || email) && errors.email ? 'input-error' : ''}`} value={email} onBlur={() => setTouched(t => ({ ...t, email: true }))} onChange={(e) => setEmail(e.target.value)} placeholder="jane@example.com" aria-invalid={(touched.email || !!email) && !!errors.email} />
           {(touched.email || !!email) && errors.email && <div className="error">{errors.email}</div>}
         </div>
       </div>
@@ -454,7 +473,7 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
       <div className="stripe-grid-3">
         <div className="field">
           <label>Expiry (MM/YY)</label>
-          <div className={`stripe-control ${errors.expiry ? 'input-error' : ''}`}><CardExpiryElement options={elStyle} onChange={(e) => { setCardComplete(c => ({ ...c, expiry: e.complete })); const msg = e?.error?.message || ''; setExpiredPast(e.complete && /past/i.test(msg)); }}/></div>
+          <div className={`stripe-control ${errors.expiry ? 'input-error' : ''}`}><CardExpiryElement options={elStyle} onChange={(e) => { setCardComplete(c => ({ ...c, expiry: e.complete })); const msg = e?.error?.message || ''; setExpiredPast(e.complete && /past/i.test(msg)); }} /></div>
           {errors.expiry && <div className="error">{errors.expiry}</div>}
         </div>
         <div className="field">
@@ -464,7 +483,7 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess }) {
         </div>
         <div className="field">
           <label>ZIP / Postal</label>
-          <input className={`input ${touched.postal && errors.postal ? 'input-error' : ''}`} placeholder="e.g. 10115" value={postal} onBlur={() => setTouched(t => ({ ...t, postal: true }))} onChange={(e) => setPostal(e.target.value)} aria-invalid={touched.postal && !!errors.postal}/>
+          <input className={`input ${touched.postal && errors.postal ? 'input-error' : ''}`} placeholder="e.g. 10115" value={postal} onBlur={() => setTouched(t => ({ ...t, postal: true }))} onChange={(e) => setPostal(e.target.value)} aria-invalid={touched.postal && !!errors.postal} />
           {touched.postal && errors.postal && <div className="error">{errors.postal}</div>}
         </div>
       </div>
@@ -505,5 +524,5 @@ function computeInvoiceTotal(inv) {
 }
 function toNum(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
 function fmtLKR(n) { try { return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR', maximumFractionDigits: 2 }).format(Number(n) || 0); } catch { return `LKR ${Number(n || 0).toFixed(2)}`; } }
-function fmtDate(d) { if (!d) return '-'; try { return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); } catch { return String(d); } }
+function fmtDate(d) { if (!d) return '-'; try { return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); } catch { return String(d); } }
 function statusColor(s) { if (!s) return 'neutral'; const x = String(s).toLowerCase(); if (x.includes('paid')) return 'paid'; if (x.includes('overdue')) return 'overdue'; if (x.includes('pending')) return 'pending'; if (x.includes('refunded')) return 'refunded'; if (x.includes('cancel')) return 'cancelled'; return 'neutral'; }

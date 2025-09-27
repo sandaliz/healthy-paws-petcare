@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import assets from "../../assets/assets";
 import "../../styles/ProfilePage.css";
+import PromotionTab from "../../Components/finance/PromotionTab"
+import PaymentSummary from "../../Components/finance/PaymentSummary";
 
 const BASE_URL = "http://localhost:5001"; // hardcoded backend
 
@@ -59,7 +61,7 @@ const ProfilePage = () => {
     } catch (err) {
       alert(
         "Profile update failed: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
     }
   };
@@ -77,7 +79,7 @@ const ProfilePage = () => {
     } catch (err) {
       alert(
         "Logout failed: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
     }
   };
@@ -95,7 +97,7 @@ const ProfilePage = () => {
     } catch (err) {
       alert(
         "Sign out failed: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
     }
   };
@@ -114,19 +116,28 @@ const ProfilePage = () => {
               <p className="user-role">User</p>
             </div>
           </div>
-          
+
           <div className="user-sidebar-menu">
-            <div 
+            <div
               className={`user-menu-item ${activeTab === "profile" ? "user-menu-active" : ""}`}
               onClick={() => setActiveTab("profile")}
             >
               <span>Profile Information</span>
             </div>
-            <div 
+            <div
+              className={`user-menu-item ${
+                activeTab === "ledger" ? "user-menu-active" : ""
+              }`}
+              onClick={() => setActiveTab("ledger")}
+            >
+              <span>PayLog</span>
+            </div>
+
+            <div
               className={`user-menu-item ${activeTab === "promotion" ? "user-menu-active" : ""}`}
               onClick={() => setActiveTab("promotion")}
             >
-              <span>Promotion</span>
+              <span>PawPerks</span>
             </div>
           </div>
         </div>
@@ -143,7 +154,7 @@ const ProfilePage = () => {
                 <div className="user-section-header">
                   <h3 className="user-section-title">Personal Information</h3>
                   {!editMode ? (
-                    <button 
+                    <button
                       onClick={() => setEditMode(true)}
                       className="user-edit-btn"
                     >
@@ -154,7 +165,7 @@ const ProfilePage = () => {
                       <button onClick={handleSave} className="user-save-btn">
                         Save Changes
                       </button>
-                      <button 
+                      <button
                         onClick={() => setEditMode(false)}
                         className="user-cancel-btn"
                       >
@@ -289,9 +300,15 @@ const ProfilePage = () => {
             </div>
           )}
 
+          {activeTab === "ledger" && (
+            <div className="user-tab-content">
+              <PaymentSummary />   
+            </div>
+          )}
+
           {activeTab === "promotion" && (
             <div className="user-tab-content">
-              {/* Promotion tab shows nothing - completely empty */}
+              <PromotionTab userId={user._id} />
             </div>
           )}
         </div>
