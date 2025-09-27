@@ -14,7 +14,7 @@ function TodaysPets() {
 
   const fetchCheckedInPets = async () => {
     try {
-      const res = await api.get("/checkInOut/current");
+      const res = await api.get("/checkinout/current"); // check your backend route
       if (res.data && res.data.checkedInPets) {
         setCheckedInPets(res.data.checkedInPets);
       }
@@ -28,7 +28,7 @@ function TodaysPets() {
     if (!window.confirm("Check out this pet?")) return;
 
     try {
-      const res = await api.put(`/checkInOut/checkout/${checkInOutId}`);
+      const res = await api.put(`/checkinout/checkout/${checkInOutId}`);
       if (res.status === 200) {
         alert("Pet checked out successfully!");
         setCheckedInPets((prev) =>
@@ -57,11 +57,13 @@ function TodaysPets() {
     navigate("/dashboardDC/emergency", { state: { appointment } });
   };
 
-  // Sri Lanka timezone formatting
   const formatDateTimeSL = (dateTimeStr) => {
     if (!dateTimeStr) return "-";
     const dt = new Date(dateTimeStr);
-    return dt.toLocaleString("en-GB", { timeZone: "Asia/Colombo", hour12: false });
+    return dt.toLocaleString("en-GB", {
+      timeZone: "Asia/Colombo",
+      hour12: false,
+    });
   };
 
   return (
