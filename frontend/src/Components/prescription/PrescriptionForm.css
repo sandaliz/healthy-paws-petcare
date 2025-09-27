@@ -1,0 +1,119 @@
+/* ---------- Wrapper ---------- */
+.pf-container {
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ---------- Title ---------- */
+.pf-container h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4A2E2B;
+  margin-bottom: 16px;
+}
+
+/* ---------- Context Info ---------- */
+.pf-context-info {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #54413C;
+}
+.pf-context-info strong {
+  color: #4A2E2B;
+}
+
+/* ---------- Messages ---------- */
+.pf-message {
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.pf-message.success {
+  color: #166534;
+}
+.pf-message.error {
+  color: #991B1B;
+}
+
+/* ---------- Form Row ---------- */
+.pf-form-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pf-form select,
+.pf-form input[type="number"] {
+  font-family: 'Poppins', sans-serif;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  flex: 1;
+}
+
+.pf-add-btn {
+  background-color: green;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+.pf-add-btn:hover {
+  background-color: #166534;
+}
+
+.pf-save-btn {
+  margin-top: 10px;
+  background-color: #4A2E2B;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pf-save-btn:hover {
+  background-color: #FFD58E;
+  color: #4A2E2B;
+}
+
+/* ---------- Existing Prescriptions (Plain List Style) ---------- */
+.pf-existing {
+  margin-top: 30px;
+}
+
+.pf-existing h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4A2E2B;
+  margin-bottom: 12px;
+}
+
+.pf-prescription {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed #ccc; /* just a simple separator */
+}
+
+.pf-prescription strong {
+  color: #4A2E2B;
+}
+
+.pf-prescription ul {
+  margin: 4px 0 8px 18px;
+  padding: 0;
+  list-style: disc;
+}
+
+.pf-prescription ul li {
+  font-size: 13px;
+  margin-bottom: 2px;
+  color: #54413C;
+}

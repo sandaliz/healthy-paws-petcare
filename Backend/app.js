@@ -17,6 +17,7 @@ import productRoutes from "./Routes/productRoutes.js";
 import prescriptionRoutes from "./Routes/prescriptionRoutes.js";
 import { sendPrescriptionEmail } from "./Controllers/emailController.js";
 import checkoutRoutes from "./Routes/checkoutRoutes.js";
+import shippingRoutes from "./Routes/shipping.js";
 
 import careRoutes from "./Routes/CareRoutes.js";
 import reviewRouter from "./Routes/ReviewsRoutes.js";
@@ -27,8 +28,11 @@ import reminderRoutes from "./Routes/ReminderRoutes.js";
 import { scheduleReminder } from "./services/ReminderScheduler.js";
 
 
+import appoitnemntRoutes from "./Routes/appointmentRoutes.js";
+import eventRoutes from "./Routes/eventRoutes.js";
 import User from "./Model/userModel.js";
 import bcrypt from "bcryptjs";
+import questionRoutes from "./Routes/quesionRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -39,8 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const allowedOrigins = (
-  process.env.CORS_ORIGINS ||
-  "http://localhost:3000,http://localhost:5173"
+  process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:5173"
 )
   .split(",")
   .map((s) => s.trim());
@@ -72,6 +75,7 @@ app.use("/products", productRoutes);
 app.use("/prescriptions", prescriptionRoutes);
 app.post("/send-prescription", sendPrescriptionEmail);
 app.use("/checkout", checkoutRoutes);
+app.use("/shipping", shippingRoutes);
 
 // Extra APIs
 scheduleReminder(); 
@@ -82,6 +86,10 @@ app.use("/checkinout", checkInOutRouter);
 app.use("/api/emergencies", emergencyRoutes);
 app.use("/api/reminders", reminderRoutes);
 
+//appointment APIs
+app.use("/api/appointments", appoitnemntRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/questions", questionRoutes);
 // -------------------- Super Admin Auto-Creation --------------------
 const createSuperAdmin = async () => {
   try {
@@ -115,10 +123,9 @@ const createSuperAdmin = async () => {
 
 // -------------------- DB Connection --------------------
 mongoose
-  .connect(
-    process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project",
-    { dbName: "test" }
-  )
+  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project", {
+    dbName: "test",
+  })
   .then(async () => {
     console.log("✅ Connected to MongoDB (Database: test)");
     await createSuperAdmin();

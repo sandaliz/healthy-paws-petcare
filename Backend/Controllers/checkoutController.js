@@ -2,11 +2,23 @@
 import Product from "../Model/productModel.js";
 import Prescription from "../Model/Prescription.js";
 import Cart from "../Model/Cart.js";
+import User from "../Model/userModel.js"; 
 
 export const checkout = async (req, res) => {
   try {
     const { items, source = "petstore", userId } = req.body;
 
+    if (!userId) {
+      return res.status(400).json({ error: "UserId is required" });
+    }
+
+    // 🔍 Ensure user exists (prevent fake IDs)
+    const userExists = await User.findById(userId);
+    if (!userExists) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check items
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "No items provided" });
     }
@@ -33,6 +45,7 @@ export const checkout = async (req, res) => {
         return res.status(400).json({ error: `Not enough stock for ${product.name}` });
       }
 
+      // Decrement stock / increment sold
       await Product.findByIdAndUpdate(item.productMongoId, {
         $inc: { currantStock: -item.quantity, totalSold: item.quantity },
       });
@@ -40,13 +53,13 @@ export const checkout = async (req, res) => {
       subtotal += item.quantity * item.cost;
     }
 
-    // Save Prescription (existing reporting flow)
+    // ✅ Optional: if prescriptions are meant to track all orders
     const prescription = new Prescription({ items, status: "paid" });
     await prescription.save();
 
-    // Save Cart Record
+    // ✅ Save Cart Record with real userId
     const cartRecord = new Cart({
-      userId: userId || "guest",
+      userId, // must be ObjectId of user
       items: items.map((i) => ({
         productName: i.productName,
         quantity: i.quantity,

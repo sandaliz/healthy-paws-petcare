@@ -67,7 +67,14 @@ function Addproducts() {
         <input type="text" name="name" value={inputs.name} onChange={handleChange} required />
 
         <label>Expiration Date</label>
-        <input type="date" name="expirationDate" value={inputs.expirationDate} onChange={handleChange} required />
+        <input
+        type="date"
+        name="expirationDate"
+        value={inputs.expirationDate}
+        onChange={handleChange}
+        required
+        min={new Date().toISOString().split("T")[0]}  // ✅ Prevent selecting past dates
+      />
 
         <label>Cost</label>
         <input type="number" name="cost" value={inputs.cost} onChange={handleChange} required />
@@ -103,12 +110,13 @@ function Addproducts() {
         </button>
       </form>
 
-      {loading && (
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>Saving your product... hang tight ⏳</p>
-        </div>
-      )}
+      {/* Inline loader instead of popup */}
+{loading && (
+  <div className="inline-loader">
+    <div className="spinner"></div>
+    <span>Saving your product... hang tight ⏳</span>
+  </div>
+)}
     </div>
   );
 }
