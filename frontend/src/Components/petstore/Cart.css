@@ -181,3 +181,60 @@
   width: 50px;
   height: auto;
 }
+
+/* ---------- Shipping Form (Pay Online Section) ---------- */
+.shipping-form {
+  margin-top: 20px;
+  background: #FFF8F1; /* subtle background highlight */
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.shipping-form h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #54413C;
+}
+
+/* Grid layout for inputs */
+.shipping-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  color: #54413C;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.shipping-form input:focus {
+  outline: none;
+  border-color: #FFD58E;
+  box-shadow: 0px 0px 3px rgba(255, 213, 142, 0.8);
+}
+
+/* Two-column layout for first/last name and address/email */
+.shipping-form input:nth-child(2),
+.shipping-form input:nth-child(3) {
+  display: inline-block;
+  width: calc(50% - 6px);
+}
+
+.shipping-form input:nth-child(2) {
+  margin-right: 10px;
+}
+.shipping-form input:nth-child(4) {
+  display: inline-block;
+  width: calc(50% - 6px);
+  margin-right: 10px;
+}
+.shipping-form input:nth-child(5) {
+  display: inline-block;
+  width: calc(50% - 6px);
+}
