@@ -3,7 +3,7 @@ import Calendar from "react-calendar";
 import "../../styles/admindashbord.css";
 import "react-calendar/dist/Calendar.css";
 import heroImage from "../../assets/welcome_image.png"; 
-import AdminSidebar from "./AdminSidebar"; // ✅ new import
+import AdminSidebar from "./AdminSidebar";
 
 const AdminDashboard = () => {
   const [date, setDate] = useState(new Date());
@@ -29,57 +29,64 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="ad-container">
-      {/* Sidebar (Now imported) */}
+    <div className="admin-dashboard-container">
       <AdminSidebar />
 
-      {/* Main Content */}
-      <main className="ad-main">
-        <section className="ad-hero-banner" style={{ backgroundImage: `url(${heroImage})` }}>
-          <div className="ad-hero-overlay">
-            <h1 className="ad-welcome-title">Welcome Back, Admin 👋</h1>
-            <p>Here’s an overview of today’s schedule and activities</p>
+      <main className="admin-main-content">
+        <section className="admin-hero-section" style={{ backgroundImage: `url(${heroImage})` }}>
+          <div className="admin-hero-overlay">
+            <h1 className="admin-welcome-title">Welcome Back, Admin</h1>
+            <p className="admin-welcome-subtitle">Here's an overview of today's schedule and activities</p>
           </div>
         </section>
 
-        <div className="ad-top-section">
-          <section className="ad-calendar-card">
-            <h2>📅 Calendar</h2>
-            <Calendar onChange={setDate} value={date} />
-            <p className="ad-selected-date">Selected: <b>{date.toDateString()}</b></p>
+        <div className="admin-content-grid">
+          <section className="admin-calendar-section">
+            <div className="admin-card">
+              <h2>Calendar</h2>
+              <Calendar onChange={setDate} value={date} />
+              <p className="admin-selected-date">Selected: <strong>{date.toDateString()}</strong></p>
+            </div>
           </section>
 
-          <section className="ad-timeline-card">
-            <h2>🕒 Today's Timeline</h2>
-            <ul className="ad-timeline">
-              {events.map((event) => (
-                <li key={event.id}>
-                  <span className={`ad-dot ${event.color}`}></span>
-                  <div className="ad-timeline-info">
-                    <p className="ad-timeline-title">{event.title}</p>
-                    <p className="ad-timeline-time">{event.time}</p>
-                  </div>
-                  {event.tag && <span className="ad-tag">{event.tag}</span>}
-                </li>
-              ))}
-            </ul>
+          <section className="admin-timeline-section">
+            <div className="admin-card">
+              <h2>Today's Timeline</h2>
+              <ul className="admin-timeline-list">
+                {events.map((event) => (
+                  <li key={event.id} className="admin-timeline-item">
+                    <span className={`admin-timeline-dot admin-dot-${event.color}`}></span>
+                    <div className="admin-timeline-content">
+                      <p className="admin-timeline-title">{event.title}</p>
+                      <p className="admin-timeline-time">{event.time}</p>
+                    </div>
+                    {event.tag && <span className="admin-timeline-tag">{event.tag}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
+          <section className="admin-tasks-section">
+            <div className="admin-card">
+              <h2>Today's Tasks</h2>
+              <ul className="admin-task-list">
+                {tasks.map((task) => (
+                  <li
+                    key={task.id}
+                    className={`admin-task-item ${task.completed ? 'admin-task-completed' : 'admin-task-pending'}`}
+                    onClick={() => toggleTask(task.id)}
+                  >
+                    <span className="admin-task-checkbox">
+                      {task.completed ? "✓" : "○"}
+                    </span>
+                    <span className="admin-task-text">{task.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </section>
         </div>
-
-        <section className="ad-task-section">
-          <h2>Today's Tasks</h2>
-          <ul className="ad-task-list">
-            {tasks.map((task) => (
-              <li
-                key={task.id}
-                className={task.completed ? "completed-task" : "pending-task"}
-                onClick={() => toggleTask(task.id)}
-              >
-                {task.completed ? "✔ " : "⬜ "} {task.text}
-              </li>
-            ))}
-          </ul>
-        </section>
       </main>
     </div>
   );

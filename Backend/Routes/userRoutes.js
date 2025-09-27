@@ -1,20 +1,23 @@
 import express from "express";
-import {
-  getProfile,
-  assignRole,
-  editUser,
-  createStaff,
-  getStaffUsers,
-  deleteStaffUser,
-  toggleStaffStatus,
-} from "../Controllers/authcontroller.js";   // ✅ Use authController instead of userController
-
+import { 
+  getProfile, 
+  updateProfile, 
+  assignRole 
+} from "../Controllers/userController.js";   
+import { 
+  editUser, 
+  createStaff, 
+  getStaffUsers, 
+  deleteStaffUser, 
+  toggleStaffStatus 
+} from "../controllers/authController.js";  
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // ---------- Profile ----------
 router.get("/me", protect, getProfile);
+router.put("/me", protect, updateProfile);
 
 // ---------- Role management ----------
 router.post("/assign-role", protect, authorizeRoles("SUPER_ADMIN"), assignRole);

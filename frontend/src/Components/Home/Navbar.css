@@ -7,7 +7,8 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  height: 20px;
+  height: 10px; /* was 20px → now enough space for icons/buttons */
+  padding: 0 20px; /* extra breathing room */
 }
 
 .logo {
@@ -51,5 +52,22 @@
 
 .auth-buttons {
   display: flex;
-  gap: 10px;
+  align-items: center; /* ✅ vertically centers icon, text, button */
+  gap: 12px;
+}
+
+/* New wrapper for profile */
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #54413C;
+  font-weight: 600;
+}
+
+.profile-section svg {
+  width: 28px;
+  height: 28px;
+  color: #54413C;
+  flex-shrink: 0;
 }

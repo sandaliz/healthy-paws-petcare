@@ -1,89 +1,115 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import '../../styles/EmailVerify.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../../styles/EmailVerify.css";
 
-const EmailVerify = () => {
-  const location = useLocation();
+const ResetVerifyOtp = () => {
   const navigate = useNavigate();
-  const email = location.state?.email;
+  const searchParams = new URLSearchParams(useLocation().search);
+  const email = searchParams.get("email");
 
-  const [otp, setOtp] = useState(Array(6).fill(''));
+  const [otp, setOtp] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
+  const [showAutoScan, setShowAutoScan] = useState(true);
+  const [countdown, setCountdown] = useState(5);
 
-  if (!email) {
-    navigate('/reset-password');
-  }
+  // Auto-scan countdown
+  useEffect(() => {
+    if (showAutoScan && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0) {
+      setShowAutoScan(false);
+    }
+  }, [showAutoScan, countdown]);
+
+  // Auto-submit when OTP is fully filled
+  useEffect(() => {
+    const otpValue = otp.join("");
+    if (otpValue.length === 6 && otp.every((digit) => digit !== "")) {
+      handleSubmit(true); // auto trigger
+    }
+    // eslint-disable-next-line
+  }, [otp]);
 
   const handleChange = (e, index) => {
     const value = e.target.value;
-    if (/^\d*$/.test(value)) {
+    if (/^\d?$/.test(value)) {  // ✅ only digits allowed, 1 char max
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Move to next input
+      // move focus forward
       if (value && index < 5) {
-        document.getElementById(`verify-otp-${index + 1}`).focus();
+        document.getElementById(`reset-otp-${index + 1}`).focus();
       }
-
-      // Auto-submit when 6 digits entered
-      if (newOtp.join('').length === 6) {
-        handleSubmit(newOtp.join(''));
+      // move focus back on delete
+      if (!value && index > 0) {
+        document.getElementById(`reset-otp-${index - 1}`).focus();
       }
     }
   };
 
-  const handleSubmit = async (otpValue) => {
+  const handleSubmit = async (autoTriggered = false) => {
+    const otpValue = otp.join("");
     if (otpValue.length !== 6) {
-      toast.error('Please enter a 6-digit OTP');
+      if (!autoTriggered) toast.error("Please enter all 6 digits");
       return;
     }
-
     setLoading(true);
-
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/auth/reset-password-verify',
-        { email, otp: otpValue }
-      );
+      const res = await axios.post("http://localhost:5000/api/auth/verify-reset-otp", { email, otp: otpValue });
       setLoading(false);
-
       if (res.data.success) {
-        toast.success('✅ OTP Verified! Redirecting...');
+        // Add success animation to inputs
+        const inputs = document.querySelectorAll('.verify-otp-input');
+        inputs.forEach(input => {
+          input.classList.add('success');
+        });
+        
+        toast.success("✅ OTP verified!");
         setTimeout(() => {
           navigate(`/new-password?email=${email}&otp=${otpValue}`);
-        }, 2000);
+        }, 1000);
       } else {
-        toast.error(res.data.message || 'Invalid OTP');
+        toast.error(res.data.message || "Invalid OTP");
+        // Add error animation to inputs
+        const inputs = document.querySelectorAll('.verify-otp-input');
+        inputs.forEach(input => {
+          input.classList.add('error');
+          setTimeout(() => {
+            input.classList.remove('error');
+          }, 400);
+        });
+        setOtp(Array(6).fill("")); // reset input
       }
     } catch (err) {
       setLoading(false);
-      const errorMsg = err.response?.data?.message || 'Verification failed';
-      toast.error(errorMsg);
+      toast.error(err.response?.data?.message || "OTP verification failed");
     }
   };
 
-  const handleResendCode = async () => {
-    if (!email) return;
+  const handleResend = async () => {
     setResending(true);
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/auth/send-reset-otp',
-        { email }
-      );
+      const res = await axios.post("http://localhost:5000/api/auth/send-reset-otp", { email });
       setResending(false);
       if (res.data.success) {
-        toast.success('📩 A new OTP has been sent to your email');
+        toast.success("📩 New OTP sent");
+        // Reset auto-scan notification
+        setShowAutoScan(true);
+        setCountdown(5);
       } else {
-        toast.error(res.data.message || 'Failed to resend code');
+        toast.error(res.data.message || "Error resending");
       }
     } catch (err) {
       setResending(false);
-      toast.error(err.response?.data?.message || 'Error resending code');
+      toast.error(err.response?.data?.message || "Server error while resending");
     }
   };
 
@@ -91,40 +117,55 @@ const EmailVerify = () => {
     <div className="email-verify-page">
       <div className="verify-background-container">
         <div className="verify-content">
-          <h2 className="verify-title">Reset your password</h2>
+          <div className="verify-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M4.5 3.75a3 3 0 0 0-3 3v.75h21v-.75a3 3 0 0 0-3-3h-15Z" />
+              <path fillRule="evenodd" d="M22.5 9.75h-21v7.5a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3v-7.5Zm-18 3.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <h2 className="verify-title">OTP Verification</h2>
           <p className="verify-subtitle">
-            Enter the 6-digit code sent to your email. This code is valid for the next 10 minutes.
+            Enter the 6‑digit code sent to <b>{email}</b>
           </p>
-
+          
+          {showAutoScan && (
+            <div className="auto-scan-notification">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="auto-scan-text">
+                Auto-scanning for OTP in <span className="auto-scan-countdown">{countdown}s</span>
+              </span>
+            </div>
+          )}
+          
           <div className="verify-otp-inputs">
-            {otp.map((value, index) => (
+            {otp.map((value, i) => (
               <input
-                key={index}
-                id={`verify-otp-${index}`}
+                key={i}
+                id={`reset-otp-${i}`}
                 type="text"
                 maxLength="1"
                 value={value}
                 disabled={loading}
-                onChange={(e) => handleChange(e, index)}
-                className="verify-otp-input"
+                onChange={(e) => handleChange(e, i)}
+                className={`verify-otp-input ${value ? "filled" : ""}`}
               />
             ))}
           </div>
-
           <button
-            className="verify-reset-button"
+            onClick={() => handleSubmit(false)}
             disabled={loading}
-            onClick={() => handleSubmit(otp.join(''))}
+            className="verify-reset-button"
           >
-            {loading ? 'Verifying...' : 'Reset password'}
+            {loading ? <span className="verifying-loader"></span> : "Verify OTP"}
           </button>
-
           <p className="verify-resend-text">
-            Didn't get the code?{" "}
+            Didn't get it?{" "}
             <span
+              onClick={handleResend}
               className="verify-resend-link"
-              style={{ cursor: "pointer", color: "blue" }}
-              onClick={handleResendCode}
+              style={{ cursor: resending ? "default" : "pointer" }}
             >
               {resending ? "Resending..." : "Resend code"}
             </span>
@@ -136,4 +177,4 @@ const EmailVerify = () => {
   );
 };
 
-export default EmailVerify;
+export default ResetVerifyOtp;

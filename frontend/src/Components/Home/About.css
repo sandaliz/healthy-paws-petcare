@@ -1,6 +1,6 @@
 .about-section {
   position: relative;
-  width: 100%;
+  max-width: 100%;
   min-height: 80vh;
   display: flex;
   align-items: center;
@@ -23,7 +23,7 @@
 
 /* TEXT CONTENT */
 .about-content {
-  max-width: 700px;
+  max-width: 100%;
   color: #54413C; /* Dark Brown text */
 }
 
