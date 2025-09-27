@@ -13,5 +13,6 @@ router.get("/:id", prescriptionController.getPrescriptionById);
 router.post("/", prescriptionController.createPrescription);
 router.put("/:id", prescriptionController.updatePrescriptionStatus);
 router.delete("/:id", prescriptionController.deletePrescription);
+router.get("/appointment/:appointmentId", prescriptionController.getPrescriptionsByAppointment);
 
 export default router;  // ✅ replaces module.exports

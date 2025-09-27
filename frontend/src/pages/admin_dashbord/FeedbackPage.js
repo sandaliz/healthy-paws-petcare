@@ -1,22 +1,20 @@
-// src/pages/admin_dashbord/FeedbackPage.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-// ✅ PDF export
+// PDF export
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-// ✅ Styles
-import "../../styles/admindashbord.css";   // shared dashboard layout
-import "../../styles/adminFeedback.css";   // 🔥 renamed: dedicated for admin feedback
+// Styles
+import "../../styles/adminFeedback.css";
 
-// ✅ Sidebar
+// Sidebar
 import AdminSidebar from "./AdminSidebar";
 
-// ✅ Logo for report
+// Logo for report
 import logo from "../../assets/logo.png";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -27,6 +25,7 @@ const FeedbackPage = () => {
   const [stats, setStats] = useState(null);
   const [report, setReport] = useState(null);
   const [readFeedbacks, setReadFeedbacks] = useState({});
+  const [reportType, setReportType] = useState("all"); // <-- added for report options
 
   // Fetch feedbacks
   const fetchFeedbacks = async () => {
@@ -67,7 +66,7 @@ const FeedbackPage = () => {
   }, []);
 
   const deleteFeedback = async (id) => {
-    if (!window.confirm("Delete this feedback?")) return;
+    if (!window.confirm("Are you sure you want to delete this feedback?")) return;
     try {
       await axios.delete(`http://localhost:5000/api/feedback/${id}`);
       setFeedbacks(feedbacks.filter((f) => f._id !== id));
@@ -99,22 +98,32 @@ const FeedbackPage = () => {
 
   const pieOptions = {
     plugins: {
-      legend: { position: "bottom" },
+      legend: { 
+        position: "bottom",
+        labels: {
+          font: {
+            family: "'Poppins', sans-serif",
+            size: 12
+          }
+        }
+      },
       datalabels: {
         formatter: (value, context) => {
           const total = context.dataset.data.reduce((a, b) => a + b, 0);
           return total ? `${((value / total) * 100).toFixed(0)}%` : "0%";
         },
         color: "#fff",
-        font: { weight: "bold", size: 12 },
+        font: { weight: "bold", size: 12, family: "'Poppins', sans-serif" },
       },
     },
-    maintainAspectRatio: false,
+    maintainAspectRatio: true, // important for keeping circular
   };
 
   // PDF Builder
-  const buildPDF = () => {
+  const buildPDF = (type = "all") => {
     const doc = new jsPDF("p", "mm", "a4");
+
+    // --- Header ---
     doc.setFillColor(84, 65, 60);
     doc.rect(0, 0, 210, 40, "F");
     doc.addImage(logo, "PNG", 15, 5, 25, 25);
@@ -131,61 +140,79 @@ const FeedbackPage = () => {
     let y = 50;
     doc.setFontSize(12);
     doc.setTextColor(20);
-    doc.text(`Total Feedbacks: ${report.counts.total}`, 15, y);
-    y += 8;
-    doc.text(`Good Feedbacks: ${report.counts.good}`, 15, y);
-    y += 8;
-    doc.text(`Bad Feedbacks: ${report.counts.bad}`, 15, y);
-    y += 10;
 
-    const chartCanvas = document.querySelector("canvas");
-    if (chartCanvas) {
-      const chartImg = chartCanvas.toDataURL("image/png", 1.0);
-      doc.addImage(chartImg, "PNG", 55, y, 100, 100);
-      y += 110;
+    // Totals + Chart only for ALL
+    if (type === "all") {
+      doc.text(`Total Feedbacks: ${report.counts.total}`, 15, y);
+      y += 8;
+      doc.text(`Good Feedbacks: ${report.counts.good}`, 15, y);
+      y += 8;
+      doc.text(`Bad Feedbacks: ${report.counts.bad}`, 15, y);
+      y += 10;
+
+      const chartCanvas = document.querySelector("canvas");
+      if (chartCanvas) {
+        const chartImg = chartCanvas.toDataURL("image/png", 1.0);
+        doc.addImage(chartImg, "PNG", 55, y, 120, 120); // ⭕ square size = perfect circle
+        y += 130;
+      }
     }
 
-    doc.setTextColor(0, 100, 0);
-    doc.text("Good Feedbacks", 15, y);
-    const goodRows = report.feedbacks.good.map(fb => [
-      fb.petOwnerName, fb.petName, `${fb.rating}/5`, fb.message,
-    ]);
-    autoTable(doc, {
-      startY: y + 5,
-      head: [["Owner", "Pet", "Rating", "Message"]],
-      body: goodRows,
-      theme: "grid",
-      styles: { fontSize: 10, cellPadding: 3 },
-      headStyles: { fillColor: [84, 65, 60], textColor: 255 },
-    });
+    // Good feedbacks
+    if (type === "all" || type === "good") {
+      doc.setTextColor(0, 100, 0);
+      doc.text("Good Feedbacks", 15, y);
+      const goodRows = report.feedbacks.good.map(fb => [
+        fb.petOwnerName, fb.petName, `${fb.rating}/5`, fb.message,
+      ]);
+      autoTable(doc, {
+        startY: y + 5,
+        head: [["Owner", "Pet", "Rating", "Message"]],
+        body: goodRows,
+        theme: "grid",
+        styles: { fontSize: 10, cellPadding: 3 },
+        headStyles: { fillColor: [84, 65, 60], textColor: 255 },
+      });
+      y = doc.lastAutoTable.finalY + 10;
+    }
 
-    y = doc.lastAutoTable.finalY + 10;
-    doc.setTextColor(150, 0, 0);
-    doc.text("Bad Feedbacks", 15, y);
-    const badRows = report.feedbacks.bad.map(fb => [
-      fb.petOwnerName, fb.petName, `${fb.rating}/5`, fb.message,
-    ]);
-    autoTable(doc, {
-      startY: y + 5,
-      head: [["Owner", "Pet", "Rating", "Message"]],
-      body: badRows,
-      theme: "grid",
-      styles: { fontSize: 10, cellPadding: 3 },
-      headStyles: { fillColor: [200, 50, 50], textColor: 255 },
-    });
+    // Bad feedbacks
+    if (type === "all" || type === "bad") {
+      doc.setTextColor(150, 0, 0);
+      doc.text("Bad Feedbacks", 15, y);
+      const badRows = report.feedbacks.bad.map(fb => [
+        fb.petOwnerName, fb.petName, `${fb.rating}/5`, fb.message,
+      ]);
+      autoTable(doc, {
+        startY: y + 5,
+        head: [["Owner", "Pet", "Rating", "Message"]],
+        body: badRows,
+        theme: "grid",
+        styles: { fontSize: 10, cellPadding: 3 },
+        headStyles: { fillColor: [200, 50, 50], textColor: 255 },
+      });
+    }
 
     return doc;
   };
 
   const previewPDF = () => {
-    const doc = buildPDF();
+    const doc = buildPDF(reportType);
     const pdfUrl = doc.output("bloburl");
     window.open(pdfUrl, "_blank");
   };
 
   const downloadPDF = () => {
-    const doc = buildPDF();
-    doc.save("Feedback_Report.pdf");
+    const doc = buildPDF(reportType);
+    doc.save(`Feedback_Report_${reportType}.pdf`);
+  };
+
+  const renderRatingStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <span key={index} className={index < rating ? "star-filled" : "star-empty"}>
+        ★
+      </span>
+    ));
   };
 
   return (
@@ -193,68 +220,119 @@ const FeedbackPage = () => {
       <AdminSidebar />
       <main className="admin-feedback-main">
         <div className="feedback-header">
-          <h2>📝 Customer Feedback</h2>
+          <h2>Customer Feedback</h2>
           <p className="feedback-subtitle">Insights into customer experience, satisfaction trends, and service quality</p>
         </div>
 
         {loading ? (
-          <p>Loading feedbacks...</p>
+          <div className="loading-state">Loading feedbacks...</div>
         ) : feedbacks.length === 0 ? (
-          <p>No feedback available.</p>
+          <div className="empty-state">No feedback available.</div>
         ) : (
-          <table className="feedback-table">
-            <thead>
-              <tr>
-                <th>Read</th>
-                <th>Owner</th>
-                <th>Pet</th>
-                <th>Email</th>
-                <th>Message</th>
-                <th>Rating</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {feedbacks.map((fb) => (
-                <tr key={fb._id} className={readFeedbacks[fb._id] ? "read-row" : ""}>
-                  <td><input type="checkbox" checked={!!readFeedbacks[fb._id]} onChange={() => toggleRead(fb._id)} /></td>
-                  <td>{fb.petOwnerName}</td>
-                  <td>{fb.petName}</td>
-                  <td>{fb.email}</td>
-                  <td>{fb.message}</td>
-                  <td>{"⭐".repeat(fb.rating)}</td>
-                  <td><button className="btn-delete" onClick={() => deleteFeedback(fb._id)}>🗑 Delete</button></td>
+          <div className="table-container">
+            <table className="feedback-table">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Owner</th>
+                  <th>Pet</th>
+                  <th>Email</th>
+                  <th>Message</th>
+                  <th>Rating</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {feedbacks.map((fb) => (
+                  <tr key={fb._id} className={readFeedbacks[fb._id] ? "read-row" : ""}>
+                    <td>
+                      <label className="read-checkbox">
+                        <input 
+                          type="checkbox" 
+                          checked={!!readFeedbacks[fb._id]} 
+                          onChange={() => toggleRead(fb._id)} 
+                        />
+                        <span className="checkmark"></span>
+                        {readFeedbacks[fb._id] ? "Read" : "Unread"}
+                      </label>
+                    </td>
+                    <td>{fb.petOwnerName}</td>
+                    <td>{fb.petName}</td>
+                    <td className="email-cell">{fb.email}</td>
+                    <td className="message-cell">{fb.message}</td>
+                    <td>
+                      <div className="rating-stars">
+                        {renderRatingStars(fb.rating)}
+                        <span className="rating-value">({fb.rating}/5)</span>
+                      </div>
+                    </td>
+                    <td>
+                      <button className="btn-delete" onClick={() => deleteFeedback(fb._id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {stats && (
           <div className="feedback-stats">
             <div className="chart-container">
-              <h3>📊 Feedback Ratio</h3>
-              <div className="chart-wrapper">
+              <h3>Feedback Analytics</h3>
+              <div className="feedback-pie-container">
                 <Pie data={pieData} options={pieOptions} />
+              </div>
+              <div className="stats-summary">
+                <div className="stat-item">
+                  <span className="stat-label">Total Feedbacks</span>
+                  <span className="stat-value">{stats.totalRatings}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Positive</span>
+                  <span className="stat-value positive">{stats.goodRatings}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Negative</span>
+                  <span className="stat-value negative">{stats.badRatings}</span>
+                </div>
               </div>
             </div>
             <div className="tips-container">
-              <h3>💡 How to Improve Feedback</h3>
+              <h3>Improvement Strategies</h3>
               <ul>
-                <li>Respond quickly to concerns ⏱</li>
-                <li>Show gratitude for every feedback 🙏</li>
-                <li>Train staff for empathy and care 💕</li>
-                <li>Turn negatives into opportunities ✨</li>
-                <li>Reward positive and loyal customers 🎁</li>
+                <li>Respond promptly to customer concerns</li>
+                <li>Acknowledge and appreciate all feedback</li>
+                <li>Train staff for empathy and exceptional care</li>
+                <li>Transform negative feedback into improvement opportunities</li>
+                <li>Reward loyal and engaged customers</li>
               </ul>
             </div>
           </div>
         )}
 
         {report && (
-          <div className="feedback-btns">
-            <button className="btn-preview" onClick={previewPDF}>👀 Preview Report</button>
-            <button className="btn-download" onClick={downloadPDF}>📥 Download Report</button>
+          <div className="feedback-actions">
+            <div className="report-options">
+              <label htmlFor="reportType">Choose Report Type: </label>
+              <select
+                id="reportType"
+                value={reportType}
+                onChange={(e) => setReportType(e.target.value)}
+              >
+                <option value="all">All Feedback</option>
+                <option value="good">Good Only</option>
+                <option value="bad">Bad Only</option>
+              </select>
+            </div>
+            <button className="btn-preview" onClick={previewPDF}>
+              Preview Report
+            </button>
+            <button className="btn-download" onClick={downloadPDF}>
+              Download PDF Report
+            </button>
           </div>
         )}
       </main>

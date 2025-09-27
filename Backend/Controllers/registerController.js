@@ -1,216 +1,264 @@
-// Controllers/registerController.js
+import mongoose from "mongoose";
 import Register from "../Model/Register.js";
-import nodemailer from "nodemailer";
-import validator from "validator";
+import nodemailer from "nodemailer"; // ✅ use nodemailer directly
 
-// Nodemailer Transporter
+/**
+ * Helper: handle Mongoose validation + duplicate errors
+ */
+const handleMongooseError = (err, res) => {
+  console.error("❌ Register Controller Error:", err.message);
+
+  if (err.name === "ValidationError") {
+    let errors = {};
+    Object.keys(err.errors).forEach((field) => {
+      errors[field] = err.errors[field].message;
+    });
+    return res.status(422).json({
+      success: false,
+      message: "Validation failed",
+      errors,
+    });
+  }
+
+  if (err.code === 11000) {
+    return res.status(400).json({
+      success: false,
+      message: "Duplicate value error",
+      field: Object.keys(err.keyValue)[0],
+    });
+  }
+
+  return res
+    .status(500)
+    .json({ success: false, message: "Server error", error: err.message });
+};
+
+// ✅ Setup nodemailer transporter once
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
+  secure: false,
   auth: {
-    user: process.env.SMTP_USER,
+    user: process.env.SMTP_USER, // from your .env
     pass: process.env.SMTP_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false,
   },
 });
 
-const sendEmail = async (mailOptions) => {
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log("📧 Email sent:", mailOptions.to);
-  } catch (err) {
-    console.error("❌ Email sending failed:", err.message);
-  }
-};
-
-// Email normalization helpers
-const normalizeStrict = (email) =>
-  validator.normalizeEmail(email, {
-    all_lowercase: true,
-    gmail_remove_dots: false,
-    gmail_remove_subaddress: false,
-    gmail_convert_googlemaildotcom: false,
-    outlookdotcom_remove_subaddress: false,
-    yahoo_remove_subaddress: false,
-    icloud_remove_subaddress: false,
-  }) || String(email || "").toLowerCase();
-
-const normalizeLegacy = (email) =>
-  validator.normalizeEmail(email, {
-    all_lowercase: true,
-    gmail_remove_dots: true,
-    gmail_remove_subaddress: true,
-    gmail_convert_googlemaildotcom: true,
-    outlookdotcom_remove_subaddress: true,
-    yahoo_remove_subaddress: true,
-    icloud_remove_subaddress: true,
-  });
-
-// @desc Create new registration
-// @route POST /api/register
-// @access PROTECTED (should ideally require login)
+/**
+ * Create a new register (Pet + Owner) and send email
+ */
 export const createRegister = async (req, res) => {
   try {
-    // ✅ Ensure userId is set
-    const register = await Register.create({
-      ...req.body,
-      userId: req.user ? req.user._id : req.body.userId, // If using auth, req.user._id is set
+    const newRegister = new Register(req.body);
+    const saved = await newRegister.save();
+
+    // 📧 Send email after saving
+    try {
+      // Send confirmation to pet owner
+      await transporter.sendMail({
+        from: process.env.SENDER_EMAIL,       // must match verified sender in Brevo
+        to: saved.OwnerEmail,                 // pet owner's email
+        subject: "🐾 Pet Registered Successfully!",
+        text: `Hello ${saved.OwnerName}, your pet ${saved.PetName} has been registered successfully.`,
+        html: `
+          <h2>🐾 Pet Registration Confirmation</h2>
+          <p>Dear ${saved.OwnerName || "Pet Owner"},</p>
+          <p>Your pet <b>${saved.PetName}</b> has been successfully registered with Pet Care Management.</p>
+          <ul>
+            <li>📛 Pet Name: ${saved.PetName}</li>
+            <li>👤 Owner: ${saved.OwnerName}</li>
+            <li>📧 Email: ${saved.OwnerEmail}</li>
+            <li>📅 Registered on: ${new Date(saved.createdAt).toLocaleString()}</li>
+          </ul>
+          <p>Thank you for trusting us 🐶🐱</p>
+        `,
+      });
+
+      // Optionally send notification to admin
+      if (process.env.SUPER_ADMIN_EMAIL) {
+        await transporter.sendMail({
+          from: process.env.SENDER_EMAIL,
+          to: process.env.SUPER_ADMIN_EMAIL,
+          subject: `📢 New Pet Registered - ${saved.PetName}`,
+          html: `
+            <h3>A new pet has been registered!</h3>
+            <p><b>Pet Name:</b> ${saved.PetName}</p>
+            <p><b>Owner:</b> ${saved.OwnerName} (${saved.OwnerEmail})</p>
+            <p><b>Date:</b> ${new Date(saved.createdAt).toLocaleString()}</p>
+          `,
+        });
+      }
+
+      console.log(`📧 Email sent to owner: ${saved.OwnerEmail}`);
+    } catch (mailErr) {
+      console.error("❌ Failed to send registration email:", mailErr.message);
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Register created successfully & email sent",
+      data: saved,
     });
-
-    // 📧 Confirmation email
-    const mailOptions = {
-      from: process.env.SENDER_EMAIL,
-      to: register.OwnerEmail,
-      subject: `🐾 Pet Registration Confirmed for ${register.PetName}`,
-      html: `
-        <h2>Hello ${register.OwnerName},</h2>
-        <p>Your pet <strong>${register.PetName}</strong> (${register.PetSpecies}) has been registered successfully. 🐶🐱</p>
-        <p><strong>Breed:</strong> ${register.PetBreed}</p>
-        <p><strong>Age:</strong> ${register.PetAge} years</p>
-        <p><strong>Weight:</strong> ${register.PetWeight} kg</p>
-        <p><strong>Blood Group:</strong> ${register.BloodGroup}</p>
-        <p><strong>Special Notes:</strong> ${register.SpecialNotes || "None"}</p>
-        <br>
-        <p>We’ll ensure ${register.PetName} receives the best care possible at our hospital ❤️</p>
-      `,
-    };
-    sendEmail(mailOptions);
-
-    res.status(201).json({ success: true, data: register });
-  } catch (error) {
-    console.error("Server error in createRegister:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+  } catch (err) {
+    return handleMongooseError(err, res);
   }
 };
 
-// @desc Get all registrations
-// @route GET /api/register
+/**
+ * Get all registers (optional pagination)
+ */
 export const getRegisters = async (req, res) => {
   try {
-    // ✅ populate userId
-    const registers = await Register.find().populate("userId").sort({ createdAt: -1 });
-    res.status(200).json({ success: true, count: registers.length, data: registers });
-  } catch (error) {
-    console.error("Server error in getRegisters:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const registers = await Register.find()
+      .populate("userId", "name email role")
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Register.countDocuments();
+
+    return res.status(200).json({
+      success: true,
+      message: "Registers fetched successfully",
+      count: registers.length,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      data: registers,
+    });
+  } catch (err) {
+    return handleMongooseError(err, res);
   }
 };
 
-// @desc Get single registration
-// @route GET /api/register/:id
+/**
+ * Get a single register by ID
+ */
 export const getRegister = async (req, res) => {
   try {
-    // ✅ populate userId
-    const register = await Register.findById(req.params.id).populate("userId");
-    if (!register) {
-      return res.status(404).json({ success: false, message: "Registration not found" });
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid ID format" });
     }
-    res.status(200).json({ success: true, data: register });
-  } catch (error) {
-    console.error("Server error in getRegister:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+
+    const register = await Register.findById(id).populate("userId", "name email role");
+    if (!register)
+      return res.status(404).json({ success: false, message: "Register not found" });
+
+    return res.status(200).json({
+      success: true,
+      message: "Register fetched successfully",
+      data: register,
+    });
+  } catch (err) {
+    return handleMongooseError(err, res);
   }
 };
 
-// @desc Get registrations by email (all history)
+/**
+ * Get all registers by OwnerEmail
+ */
 export const getRegistersByEmail = async (req, res) => {
   try {
-    const raw = req.params.email;
-    const strict = normalizeStrict(raw);
-    const legacy = normalizeLegacy(raw);
+    const { email } = req.params;
+    const registers = await Register.find({ OwnerEmail: email.toLowerCase() })
+      .populate("userId", "name email");
 
-    const candidates = [...new Set([strict, legacy].filter(Boolean))];
-    const query =
-      candidates.length > 1
-        ? { OwnerEmail: { $in: candidates } }
-        : { OwnerEmail: strict };
+    if (!registers.length) {
+      return res.status(404).json({ success: false, message: "No registers found for this email" });
+    }
 
-    const registers = await Register.find(query).populate("userId").sort({ createdAt: -1 });
-    res.status(200).json({ success: true, count: registers.length, data: registers });
-  } catch (error) {
-    console.error("Server error in getRegistersByEmail:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    return res.status(200).json({
+      success: true,
+      message: "Registers by email fetched successfully",
+      count: registers.length,
+      data: registers,
+    });
+  } catch (err) {
+    return handleMongooseError(err, res);
   }
 };
 
-// @desc Get latest registration by email
+/**
+ * Get the latest register by OwnerEmail
+ */
 export const getLatestRegisterByEmail = async (req, res) => {
   try {
-    const raw = req.params.email;
-    const strict = normalizeStrict(raw);
-    const legacy = normalizeLegacy(raw);
-    const candidates = [...new Set([strict, legacy].filter(Boolean))];
+    const { email } = req.params;
+    const register = await Register.findOne({ OwnerEmail: email.toLowerCase() })
+      .sort({ createdAt: -1 })
+      .populate("userId", "name email");
 
-    let register;
-    if (candidates.length > 1) {
-      register = await Register.findOne({ OwnerEmail: { $in: candidates } })
-        .populate("userId")
-        .sort({ createdAt: -1 });
-    } else {
-      register = await Register.findOne({ OwnerEmail: strict })
-        .populate("userId")
-        .sort({ createdAt: -1 });
+    if (!register) {
+      return res.status(404).json({ success: false, message: "No register found for this email" });
     }
 
-    res.status(200).json({ success: true, data: register || null });
-  } catch (error) {
-    console.error("Server error in getLatestRegisterByEmail:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    return res.status(200).json({
+      success: true,
+      message: "Latest register fetched successfully",
+      data: register,
+    });
+  } catch (err) {
+    return handleMongooseError(err, res);
   }
 };
 
-// @desc Update registration
+/**
+ * Update a register by ID
+ */
 export const updateRegister = async (req, res) => {
   try {
-    const register = await Register.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    }).populate("userId");
-
-    if (!register) {
-      return res.status(404).json({ success: false, message: "Registration not found" });
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid ID format" });
     }
 
-    const mailOptions = {
-      from: process.env.SENDER_EMAIL,
-      to: register.OwnerEmail,
-      subject: `🔄 Pet Registration Updated for ${register.PetName}`,
-      html: `<h2>Hello ${register.OwnerName},</h2>
-        <p>Your registration for <strong>${register.PetName}</strong> has been updated.</p>
-        <p>Please review your updated details in the system.</p>`,
-    };
-    sendEmail(mailOptions);
+    const updated = await Register.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    }).populate("userId", "name email");
 
-    res.status(200).json({ success: true, data: register });
-  } catch (error) {
-    console.error("Server error in updateRegister:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "Register not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Register updated successfully",
+      data: updated,
+    });
+  } catch (err) {
+    return handleMongooseError(err, res);
   }
 };
 
-// @desc Delete registration
+/**
+ * Delete a register by ID
+ */
 export const deleteRegister = async (req, res) => {
   try {
-    const register = await Register.findByIdAndDelete(req.params.id).populate("userId");
-
-    if (!register) {
-      return res.status(404).json({ success: false, message: "Registration not found" });
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid ID format" });
     }
 
-    const mailOptions = {
-      from: process.env.SENDER_EMAIL,
-      to: register.OwnerEmail,
-      subject: `❌ Pet Registration Deleted for ${register.PetName}`,
-      html: `
-        <h2>Hello ${register.OwnerName},</h2>
-        <p>The registration for your pet <strong>${register.PetName}</strong> has been removed.</p>
-        <p>If this was a mistake, please contact the hospital immediately.</p>
-      `,
-    };
-    sendEmail(mailOptions);
+    const deleted = await Register.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Register not found" });
+    }
 
-    res.status(200).json({ success: true, message: "Registration deleted successfully" });
-  } catch (error) {
-    console.error("Server error in deleteRegister:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    return res.status(200).json({
+      success: true,
+      message: "Register deleted successfully",
+      data: deleted,
+    });
+  } catch (err) {
+    return handleMongooseError(err, res);
   }
 };

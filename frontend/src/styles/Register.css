@@ -1,255 +1,274 @@
+/* === Page Setup === */
 .register-page {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
-  overflow: hidden;
   background: linear-gradient(180deg, #ffffff 0%, #ffd58e 100%);
   font-family: 'Roboto', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: auto;
 }
 
-.register-bg-image {
+.register-page .register-bg-image {
   position: absolute;
   left: 0;
   top: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
   object-fit: cover;
   filter: brightness(0.85);
   z-index: 0;
 }
 
-.register-form-overlay {
+/* === Glass Overlay Card === */
+.register-page .register-form-overlay {
   position: relative;
   z-index: 10;
   width: 45%;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 30px;
-  padding: 3rem 3rem;
+  padding: 3rem;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 450px;
-  margin: 0;
 }
 
-.register-title {
-  color: #54413c;
+/* === Titles === */
+.register-page .register-title {
+  color: #54413C; /* Dark Brown */
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 2.25rem;
-  text-align: left;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
-.register-description {
-  color: black;
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.9rem;
-  text-align: left;
+.register-page .register-description {
+  color: #1a1a1a;
+  font-size: 0.95rem;
   margin-bottom: 2rem;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
-.register-form {
+/* === Form === */
+.register-page .register-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.input-group {
-  width: 100%;
-}
-
-/* === Register Specific Icon Styling === */
-.register-input-wrapper {
+.register-page .register-input-wrapper {
   position: relative;
+  width: 100%;
   display: flex;
   align-items: center;
-  width: 100%;
 }
 
-.register-left-icon {
-  width: 20px;
-  height: 20px;
-  color: #9ca3af;
+/* === Inputs === */
+.register-page .register-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 1rem;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 1rem;
+  color: #333;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-page .register-input::placeholder {
+  color: #888;
+}
+
+.register-page .register-input:focus {
+  border-color: #FFD58E;
+  box-shadow: 0 0 0 3px rgba(255, 213, 142, 0.6); /* soft peach glow */
+  outline: none;
+}
+
+/* === Inputs with password toggle only === */
+.register-page .register-input-wrapper.with-toggle .register-input {
+  padding-right: 2.8rem; /* eye icon space */
+}
+
+.register-page .register-password-toggle {
   position: absolute;
-  left: 1rem;
+  right: 0.8rem;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 1;
-  pointer-events: none;
+  cursor: pointer;
+  color: #54413C; /* dark brown */
+  transition: color 0.2s ease;
 }
 
-.register-input {
-  width: 100%;
-  padding: 0.625rem 1rem 0.625rem 2.75rem;
-  padding-right: 2.75rem;
-  border: 1.5px solid #d1d5db;
-  border-radius: 1rem;
-  font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-  background-color: white;
-  box-sizing: border-box;
-  outline: none;
-  transition: border-color 0.3s ease;
+.register-page .register-password-toggle:hover {
+  color: #FFD58E; /* highlight on hover */
 }
 
-.register-input:focus {
-  border-color: #ffd58e;
-  box-shadow: 0 0 6px #ffd58e;
+.register-page .register-password-toggle svg {
+  width: 22px;
+  height: 22px;
 }
 
-.input-error {
+/* === Error Styling === */
+.register-page .input-error {
   border-color: #ef4444 !important;
 }
 
-.input-error-message {
+.register-page .input-error-message {
   color: #ef4444;
   font-size: 0.875rem;
   margin-top: 0.25rem;
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-family: 'Roboto', sans-serif;
 }
 
-.error-icon {
+.register-page .error-icon {
   width: 16px;
   height: 16px;
 }
 
-.register-password-toggle {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  cursor: pointer;
-  transform: translateY(-50%);
-  user-select: none;
-  z-index: 2;
+/* === Password Requirements List === */
+.password-requirements-list {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1rem;
+  list-style: none;
+  font-size: 0.9rem;
+  color: #555;
 }
 
-.toggle-icon {
-  width: 20px;
-  height: 20px;
-  color: #9ca3af;
+.password-requirements-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.3rem;
 }
 
-.input-info-text {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 0.25rem;
-  font-family: 'Roboto', sans-serif;
+.requirement-icon {
+  width: 16px;
+  height: 16px;
 }
 
-.submit-btn {
+.requirement-met {
+  color: #10b981;
+}
+
+.requirement-unmet {
+  color: #ef4444;
+}
+
+/* === Checkbox === */
+.checkbox-group {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === Professional Submit Button === */
+.register-page .submit-btn {
   margin-top: 1rem;
-  padding: 0.75rem 2.5rem;
+  padding: 0.9rem 2rem;
   border: none;
-  border-radius: 9999px;
-  background-color: #54413c;
-  color: white;
+  border-radius: 12px;
+  background-color: #54413C; /* Dark Brown */
+  color: #fff; /* White text */
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 10px rgba(84, 65, 60, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(84, 65, 60, 0.35);
+  text-align: center;
 }
 
-.submit-btn:hover:not(:disabled) {
-  background-color: #43332b;
-  box-shadow: 0 6px 15px rgba(67, 51, 43, 0.4);
+.register-page .submit-btn:hover:not(:disabled) {
+  background-color: #FFD58E; /* Highlight */
+  color: #54413C; /* Dark text on highlight */
+  box-shadow: 0 6px 16px rgba(255, 213, 142, 0.6);
+  transform: translateY(-2px);
 }
 
-.submit-btn:disabled {
-  opacity: 0.7;
+.register-page .submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(84, 65, 60, 0.25);
+}
+
+.register-page .submit-btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
+  background-color: #b6b6b6;
+  box-shadow: none;
 }
 
-.loading-spinner {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.spinner-icon {
-  width: 20px;
-  height: 20px;
-  color: white;
-  animation: spin 1s linear infinite;
-}
-
-.login-text {
-  margin-top: 1.75rem;
-  font-family: 'Roboto', sans-serif;
+/* === Login Section === */
+.register-page .login-text {
+  margin-top: 1.5rem;
   text-align: center;
   font-size: 0.9rem;
   color: #4b5563;
 }
 
-.login-link {
-  color: #54413c;
+.register-page .login-link {
+  color: #54413C;
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.login-link:hover {
-  color: #43332b;
+.register-page .login-link:hover {
+  color: #FFD58E;
 }
 
+/* === Responsive === */
 @media (max-width: 1024px) {
-  .register-form-overlay {
+  .register-page .register-form-overlay {
     width: 60%;
-    min-height: 580px;
     padding: 2.5rem 2rem;
   }
 }
 
 @media (max-width: 768px) {
-  .register-page {
-    justify-content: center;
-  }
-
-  .register-bg-image {
+  .register-page .register-bg-image {
     position: relative;
     width: 100%;
     height: 300px;
     filter: brightness(0.8);
   }
 
-  .register-form-overlay {
+  .register-page .register-form-overlay {
     width: 90%;
     padding: 2rem 1.5rem;
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: none;
-    background: white;
     border-radius: 20px;
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    min-height: auto;
-    margin: 0 auto;
-    position: relative;
   }
 
-  .register-title {
+  .register-page .register-title {
     font-size: 1.75rem;
   }
 }
 
-/* Spinner animation */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@media (max-width: 480px) {
+  .register-page .register-form-overlay {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  .register-page .register-title {
+    font-size: 1.5rem;
   }
 }
