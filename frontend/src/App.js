@@ -167,7 +167,7 @@ function App() {
       </Route>
 
       {/* -------- Prescription -------- */}
-      <Route path="/prescription" element={<PrescriptionForm />} />
+      <Route path="/prescription/:appointmentId" element={<PrescriptionForm />} />
 
       {/* -------- Daycare & Reviews -------- */}
       <Route path="/daycare" element={<Daycare />} />

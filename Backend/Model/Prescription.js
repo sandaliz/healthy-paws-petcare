@@ -4,13 +4,24 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const prescriptionSchema = new Schema({
+  appointmentId: { 
+    type: Schema.Types.ObjectId, 
+    ref: "Appointment"
+  },
+  ownerEmail: {
+    type: String
+  },
   createdAt: { 
     type: Date, 
     default: Date.now 
   },
   items: [
     {
-      productMongoId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+      productMongoId: { 
+        type: Schema.Types.ObjectId, 
+        ref: "Product", 
+        required: true 
+      },
       productName: { type: String, required: true },
       quantity: { type: Number, required: true },
       cost: { type: Number, required: true }
@@ -25,4 +36,4 @@ const prescriptionSchema = new Schema({
 
 const Prescription = mongoose.model("Prescription", prescriptionSchema);
 
-export default Prescription;  // ✅ replaces module.exports
+export default Prescription;
