@@ -57,74 +57,76 @@ export default function CouponWall({ showHeader = true }) {
   const cards = useMemo(() => (templates || []), [templates]);
 
   return (
-    <div className="cwall-root">
-      <Toaster position="top-right" />
-      {showHeader && (
-        <div className="cwall-header">
-          <h2 className="cwall-title">Hot Deals 🔥</h2>
-          <span className="muted" style={{ fontSize: 13 }}>
-            Save them to your wallet and use at checkout
-          </span>
-        </div>
-      )}
-
-      {authLoading && <div className="muted">Loading account…</div>}
-      {authError && <div className="error">{authError}</div>}
-      {!authLoading && !ownerId && (
-        <div className="notice">Log in to collect and save coupons.</div>
-      )}
-
-      <div className="cwall-cards-grid">
-        {loading ? (
-          <div className="muted" style={{ gridColumn: '1/-1' }}>Loading offers…</div>
-        ) : cards.length === 0 ? (
-          <div className="muted" style={{ gridColumn: '1/-1' }}>
-            No active coupons right now. Check back soon ✨
+    <div className="finance-scope">
+      <div className="cwall-root">
+        <Toaster position="top-right" />
+        {showHeader && (
+          <div className="cwall-header">
+            <h2 className="cwall-title">Hot Deals 🔥</h2>
+            <span className="muted" style={{ fontSize: 13 }}>
+              Save them to your wallet and use at checkout
+            </span>
           </div>
-        ) : (
-          cards.map((c) => {
-            const isPercentage = c.discountType === 'Percentage';
-            const badgeText = isPercentage
-              ? `${c.discountValue}% OFF`
-              : `LKR ${Number(c.discountValue).toFixed(0)} OFF`;
-            const exhausted = c.usageLimit > 0 && Number(c.usedCount || 0) >= c.usageLimit;
-            const left = c.usageLimit > 0 ? Math.max(0, c.usageLimit - (c.usedCount || 0)) : null;
-
-            return (
-              <div key={c._id} className="cwall-card">
-                <div className="cwall-card-accent" />
-                <div className="cwall-card-head">
-                  <div className="cwall-card-code">{c.code}</div>
-                  <div className="cwall-card-badge">{badgeText}</div>
-                </div>
-
-                <div className="cwall-card-desc">{c.description || 'Limited time offer'}</div>
-
-                <div className="cwall-card-meta">
-                  <div>Min spend: <b>{fmtLKR(c.minInvoiceAmount || 0)}</b></div>
-                  <div>Expires: <b>{fmtDate(c.expiryDate)}</b></div>
-                  {c.usageLimit > 0 && (
-                    <div className="cwall-card-supply">Supply: {left} left</div>
-                  )}
-                </div>
-
-                <div className="cwall-card-actions">
-                  <button
-                    className="btn primary cwall-card-btn"
-                    onClick={() => handleCollect(c)}
-                    disabled={exhausted || collecting === c._id || !ownerId}
-                  >
-                    {!ownerId
-                      ? 'Log in required'
-                      : exhausted
-                        ? 'Sold out'
-                        : (collecting === c._id ? 'Collecting…' : 'Collect')}
-                  </button>
-                </div>
-              </div>
-            );
-          })
         )}
+
+        {authLoading && <div className="muted">Loading account…</div>}
+        {authError && <div className="error">{authError}</div>}
+        {!authLoading && !ownerId && (
+          <div className="notice">Log in to collect and save coupons.</div>
+        )}
+
+        <div className="cwall-cards-grid">
+          {loading ? (
+            <div className="muted" style={{ gridColumn: '1/-1' }}>Loading offers…</div>
+          ) : cards.length === 0 ? (
+            <div className="muted" style={{ gridColumn: '1/-1' }}>
+              No active coupons right now. Check back soon ✨
+            </div>
+          ) : (
+            cards.map((c) => {
+              const isPercentage = c.discountType === 'Percentage';
+              const badgeText = isPercentage
+                ? `${c.discountValue}% OFF`
+                : `LKR ${Number(c.discountValue).toFixed(0)} OFF`;
+              const exhausted = c.usageLimit > 0 && Number(c.usedCount || 0) >= c.usageLimit;
+              const left = c.usageLimit > 0 ? Math.max(0, c.usageLimit - (c.usedCount || 0)) : null;
+
+              return (
+                <div key={c._id} className="cwall-card">
+                  <div className="cwall-card-accent" />
+                  <div className="cwall-card-head">
+                    <div className="cwall-card-code">{c.code}</div>
+                    <div className="cwall-card-badge">{badgeText}</div>
+                  </div>
+
+                  <div className="cwall-card-desc">{c.description || 'Limited time offer'}</div>
+
+                  <div className="cwall-card-meta">
+                    <div>Min spend: <b>{fmtLKR(c.minInvoiceAmount || 0)}</b></div>
+                    <div>Expires: <b>{fmtDate(c.expiryDate)}</b></div>
+                    {c.usageLimit > 0 && (
+                      <div className="cwall-card-supply">Supply: {left} left</div>
+                    )}
+                  </div>
+
+                  <div className="cwall-card-actions">
+                    <button
+                      className="btn primary cwall-card-btn"
+                      onClick={() => handleCollect(c)}
+                      disabled={exhausted || collecting === c._id || !ownerId}
+                    >
+                      {!ownerId
+                        ? 'Log in required'
+                        : exhausted
+                          ? 'Sold out'
+                          : (collecting === c._id ? 'Collecting…' : 'Collect')}
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );

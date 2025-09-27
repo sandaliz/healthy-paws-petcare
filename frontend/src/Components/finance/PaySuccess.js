@@ -1,4 +1,3 @@
-// src/Components/finance/PaySuccess.js
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api } from './services/financeApi';  // adjust relative import if needed
@@ -52,6 +51,7 @@ export default function PaySuccess() {
   };
 
   return (
+    <div className="finance-scope">
     <div className="pay-wrap">
       <div className="card">
         <div className="success-hero">
@@ -173,6 +173,7 @@ export default function PaySuccess() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
