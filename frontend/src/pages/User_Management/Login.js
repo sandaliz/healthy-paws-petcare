@@ -8,11 +8,11 @@ import {
   EyeIcon,
   EyeSlashIcon,
   ExclamationCircleIcon,
-} from '@heroicons/react/24/outline'; 
+} from '@heroicons/react/24/outline';
 
-import '../../styles/Login.css'; 
+import '../../styles/Login.css';
 
-const BASE_URL = "http://localhost:5000"; 
+const BASE_URL = "http://localhost:5000";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -21,7 +21,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);  
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -32,8 +32,8 @@ const Login = () => {
     const value = e.target.value;
     setEmail(value);
     setEmailError(
-      value && !validateEmail(value) 
-        ? 'Please enter a valid email address' 
+      value && !validateEmail(value)
+        ? 'Please enter a valid email address'
         : ''
     );
   };
@@ -42,8 +42,8 @@ const Login = () => {
     const value = e.target.value;
     setPassword(value);
     setPasswordError(
-      value && !validatePassword(value) 
-        ? 'Password must be at least 8 characters long' 
+      value && !validatePassword(value)
+        ? 'Password must be at least 8 characters long'
         : ''
     );
   };
@@ -109,7 +109,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page-wrapper" style={{ background: '#FFD58E', minHeight: '100vh', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="login-page-wrapper">
       <div className="login-page">
         <div className="doodle-panel">
           <div className="login-content">
@@ -121,8 +121,8 @@ const Login = () => {
 
             {/* Login card */}
             <div className="login-card">
-              <h2 className="login-title">Login to Your Account</h2>
-              <p className="login-subtitle">
+              <h2 className="login-card__title">Login to Your Account</h2>
+              <p className="login-card__subtitle">
                 Welcome back! Please enter your details to continue.
               </p>
 
@@ -134,7 +134,7 @@ const Login = () => {
               )}
 
               <form onSubmit={handleLogin} className="form">
-                
+
                 {/* Email */}
                 <div className="form-field">
                   <div className="input-wrapper login-input-wrapper">
