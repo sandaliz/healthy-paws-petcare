@@ -1,12 +1,14 @@
 /* ---------- Table Wrapper ---------- */
+/* Assuming sidebar is fixed at 240px wide */
 .pl-table-wrapper {
+  margin-left: 240px;  /* 👈 push content right */
+  padding: 20px;
   margin-top: 20px;
-  overflow-x: auto;   /* allows horizontal scroll if needed */
-  width: 100%;
+  overflow-x: auto;
+  width: calc(100% - 240px); /* 👈 prevents horizontal overlap */
   flex-grow: 1;
-  font-family: 'Poppins', sans-serif; /* 🔥 use consistent font */
+  font-family: 'Poppins', sans-serif;
 }
-
 .pl-table-wrapper h2 {
   margin-bottom: 16px;
   font-size: 20px;
