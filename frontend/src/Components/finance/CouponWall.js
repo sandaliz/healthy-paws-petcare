@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { api } from './financeApi';
+import { api } from './services/financeApi';
+import useAuthUser from './hooks/useAuthUser'; 
 import './css/clientPay.css';
 
 export default function CouponWall({ showHeader = true }) {
+  const { user: authUser, loading: authLoading, error: authError } = useAuthUser();
+  const ownerId = authUser?._id;
+
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [userIdInput, setUserIdInput] = useState(localStorage.getItem('hp_ownerId') || '');
   const [collecting, setCollecting] = useState(null);
 
   async function loadCoupons() {
@@ -27,14 +30,18 @@ export default function CouponWall({ showHeader = true }) {
   useEffect(() => { loadCoupons(); }, []);
 
   const handleCollect = async (tpl) => {
-    const uid = (userIdInput || '').trim();
-    if (!uid) return toast.error('Please enter your Account _id to collect');
-    localStorage.setItem('hp_ownerId', uid);
+    if (!ownerId) {
+      toast.error('Please log in to collect coupons');
+      return;
+    }
     try {
       setCollecting(tpl._id);
-      const res = await api.post('/coupon/claim', { userID: uid, templateId: tpl._id });
-      if (res?.alreadyClaimed) toast('You already claimed this coupon. It’s in your wallet! 💼');
-      else toast.success('Coupon collected! You can apply it at checkout.');
+      const res = await api.post('/coupon/claim', { userID: ownerId, templateId: tpl._id });
+      if (res?.alreadyClaimed) {
+        toast('Already in your wallet 💼');
+      } else {
+        toast.success('Coupon collected! 🎉');
+      }
     } catch (e) {
       const msg = (e?.message || '').toLowerCase();
       if (msg.includes('expired') || msg.includes('exhausted')) {
@@ -55,34 +62,25 @@ export default function CouponWall({ showHeader = true }) {
       {showHeader && (
         <div className="cwall-header">
           <h2 className="cwall-title">Hot Deals 🔥</h2>
-          <span className="muted" style={{ fontSize: 13 }}>Save them to your wallet and use at checkout</span>
+          <span className="muted" style={{ fontSize: 13 }}>
+            Save them to your wallet and use at checkout
+          </span>
         </div>
       )}
 
-      <div className="cwall-account-bar">
-        <span className="cwall-account-label">Your Account _id</span>
-        <input
-          className="input cwall-account-input"
-          placeholder="e.g. 66f…"
-          value={userIdInput}
-          onChange={(e) => setUserIdInput(e.target.value)}
-        />
-        <button
-          className="btn"
-          onClick={() => {
-            localStorage.setItem('hp_ownerId', (userIdInput || '').trim());
-            toast.success('Saved');
-          }}
-        >
-          Save
-        </button>
-      </div>
+      {authLoading && <div className="muted">Loading account…</div>}
+      {authError && <div className="error">{authError}</div>}
+      {!authLoading && !ownerId && (
+        <div className="notice">Log in to collect and save coupons.</div>
+      )}
 
       <div className="cwall-cards-grid">
         {loading ? (
           <div className="muted" style={{ gridColumn: '1/-1' }}>Loading offers…</div>
         ) : cards.length === 0 ? (
-          <div className="muted" style={{ gridColumn: '1/-1' }}>No active coupons right now. Check back soon ✨</div>
+          <div className="muted" style={{ gridColumn: '1/-1' }}>
+            No active coupons right now. Check back soon ✨
+          </div>
         ) : (
           cards.map((c) => {
             const isPercentage = c.discountType === 'Percentage';
@@ -100,9 +98,7 @@ export default function CouponWall({ showHeader = true }) {
                   <div className="cwall-card-badge">{badgeText}</div>
                 </div>
 
-                <div className="cwall-card-desc">
-                  {c.description || 'Limited time offer'}
-                </div>
+                <div className="cwall-card-desc">{c.description || 'Limited time offer'}</div>
 
                 <div className="cwall-card-meta">
                   <div>Min spend: <b>{fmtLKR(c.minInvoiceAmount || 0)}</b></div>
@@ -116,9 +112,13 @@ export default function CouponWall({ showHeader = true }) {
                   <button
                     className="btn primary cwall-card-btn"
                     onClick={() => handleCollect(c)}
-                    disabled={exhausted || collecting === c._id}
+                    disabled={exhausted || collecting === c._id || !ownerId}
                   >
-                    {exhausted ? 'Sold out' : (collecting === c._id ? 'Collecting…' : 'Collect')}
+                    {!ownerId
+                      ? 'Log in required'
+                      : exhausted
+                        ? 'Sold out'
+                        : (collecting === c._id ? 'Collecting…' : 'Collect')}
                   </button>
                 </div>
               </div>
@@ -141,7 +141,6 @@ function fmtLKR(n) {
     return `LKR ${Number(n || 0).toFixed(0)}`;
   }
 }
-
 function fmtDate(d) {
   if (!d) return '-';
   try {

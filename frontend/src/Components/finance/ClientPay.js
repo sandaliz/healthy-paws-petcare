@@ -1,11 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
-import { api } from './financeApi.js';
+import { api } from './services/financeApi';   
+import useAuthUser from './hooks/useAuthUser'; 
 import './css/clientPay.css';
 
 export default function ClientPay() {
   const nav = useNavigate();
+  const { user: authUser, loading: authLoading, error: authError } = useAuthUser();
+  const ownerId = authUser?._id;
 
   useEffect(() => {
     const id = 'hp-fonts';
@@ -67,17 +70,16 @@ export default function ClientPay() {
       const total = computeInvoiceTotal(invoice);
 
       try {
-        // Try validating as a GLOBAL coupon
         const resp = await api.post('/coupon/validate', { code: offlineCouponCode.trim(), invoiceTotal: total });
         setOfflineCouponId(resp.couponId);
         setOfflineDiscount(Number(resp.discount || 0));
         toast.success(`Coupon applied: -${fmtLKR(resp.discount || 0)}`);
-      } catch (err) {
-        // Try validating as a USER-ISSUED coupon
-        const currentUser = invoice.userID?._id || invoice.userID;
+      } catch {
+        // user‑specific coupon
+        if (!ownerId) throw new Error('Please login first');
         const res = await api.post('/coupon/validate-user', {
           code: offlineCouponCode.trim(),
-          userID: currentUser,
+          userID: ownerId,
           invoiceTotal: total
         });
         setOfflineCouponId(res.couponId);
@@ -102,11 +104,12 @@ export default function ClientPay() {
   const confirmOffline = async () => {
     try {
       if (!invoice) return toast.error('Invoice required');
+      if (!ownerId) return toast.error('Login required');
       setBusy(true);
 
       const newPayment = await api.post('/payment/offline', {
         invoiceID: invoice._id,
-        userID: invoice.userID?._id || invoice.userID,
+        userID: ownerId,
         method: 'Cash',
         couponId: offlineCouponId || undefined,
       });
@@ -115,7 +118,7 @@ export default function ClientPay() {
       setShowOfflineModal(false);
 
       setTimeout(() => {
-        nav(`/pay/summary?user=${invoice.userID?._id || invoice.userID}&new=${newPayment.payment._id}`);
+        nav(`/pay/summary?user=${ownerId}&new=${newPayment.payment._id}`);
       }, 900);
     } catch (e) {
       toast.error(e.message || 'Failed to record offline payment');
@@ -148,6 +151,10 @@ export default function ClientPay() {
           <p className="muted">Enter your invoice ID to review it, then select how you’d like to pay.</p>
         </div>
       </div>
+
+      {authLoading && <div className="muted">Checking account…</div>}
+      {authError && <div className="error">{authError}</div>}
+      {!authLoading && !ownerId && <div className="notice">Please log in to create a payment.</div>}
 
       <div className="card">
         <div className="section">

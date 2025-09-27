@@ -1,0 +1,374 @@
+/* PawPerks main shell with flat background color */
+.pawperks-shell {
+  position: relative;
+  min-height: 100%;
+  padding: 30px;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  background: #FED58E; /* soft light neutral bg */
+}
+
+/* ---------- Header ---------- */
+.pawperks-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.pawperks-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #5a3e2b;
+}
+
+/* ---------- Loyalty Card (darker standout) ---------- */
+.pawperks-loyalty-card {
+  background: linear-gradient(145deg, #2d2d2d, #3f3f3f);
+  color: #fff;
+  border-radius: 22px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  padding: 1.8rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.pawperks-loyalty-card::after {
+  content: "🐾";
+  position: absolute;
+  font-size: 120px;            
+  right: -5px;              
+  bottom: -1px;
+
+  color: rgba(255,255,255,0.25);      
+  text-shadow: 
+    0 0 12px rgba(255,255,255,0.25),  
+    0 0 24px rgba(255,255,255,0.15);  
+  
+  opacity: 0.9;               
+  pointer-events: none; 
+}
+.pawpoints {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #facc15;/* PawPerks main shell with flat background color */
+.pawperks-shell {
+  position: relative;
+  min-height: 100%;
+  padding: 30px;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  background: #FED58E; /* soft light neutral bg */
+}
+
+/* ---------- Header ---------- */
+.pawperks-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.pawperks-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #5a3e2b;
+}
+
+/* ---------- Loyalty Card (darker standout) ---------- */
+.pawperks-loyalty-card {
+  background: linear-gradient(145deg, #2d2d2d, #3f3f3f);
+  color: #fff;
+  border-radius: 22px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  padding: 1.8rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.pawperks-loyalty-card::after {
+  content: "🐾";
+  position: absolute;
+  font-size: 100px;
+  opacity: 0.12;
+  right: -20px;
+  bottom: -20px;
+}
+.pawpoints {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #facc15;
+  text-shadow: 0 0 10px rgba(250,204,21,0.7);
+}
+.loyalty-bar {
+  width: 100%;
+  background: rgba(255,255,255,0.15);
+  border-radius: 999px;
+  height: 15px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+/* Make loyalty header/title stand out lighter */
+.pawperks-loyalty-card h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fef3c7;            /* light golden cream */
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5); /* subtle glow to stay readable */
+  margin-bottom: 1rem;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fde047, #f97316);
+  box-shadow: 0 0 8px rgba(249,115,22,0.6);
+}
+.tier-label {
+  font-weight: 600;
+  margin-top: 8px;
+  color: #f3f4f6;
+}
+.next-tier {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: #fef3c7;
+}
+
+/* ---------- Sections ---------- */
+.pawperks-section {
+  margin-bottom: 2.2rem;
+}
+.pawperks-section h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+/* ---------- Coupon Grid ---------- */
+.coupon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ---------- Coupon Ticket Style (glassy light) ---------- */
+.coupon-card {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  border: 2px dashed #d1d5db;
+  border-radius: 18px;
+  position: relative;
+  text-align: center;
+  padding: 1.4rem;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.coupon-card::before,
+.coupon-card::after {
+  content: "";
+  width: 26px;
+  height: 26px;
+  background: #fafaf5;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.coupon-card::before { left: -14px; }
+.coupon-card::after { right: -14px; }
+.coupon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+.coupon-card .code {
+  font-family: monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+.coupon-card .discount {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+}
+.coupon-card .meta {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* States */
+.coupon-card.active {
+  border-color: #22c55e;
+  background: rgba(240,253,244,0.8);
+}
+.coupon-card.claimed {
+  border-color: #9ca3af;
+  background: rgba(243,244,246,0.8);
+  filter: grayscale(60%);
+}
+.coupon-card.expired {
+  border-color: #ef4444;
+  background: rgba(254,226,226,0.8);
+  filter: grayscale(60%);
+}
+
+/* ---------- Buttons ---------- */
+.coupon-card .btn {
+  margin-top: 14px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f7c368;
+  color: #fff;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.coupon-card .btn:hover:not(:disabled) {
+  background: #f7c368;
+  transform: translateY(-2px);
+}
+.coupon-card .btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+  text-shadow: 0 0 10px rgba(250,204,21,0.7);
+}
+.loyalty-bar {
+  width: 100%;
+  background: rgba(255,255,255,0.15);
+  border-radius: 999px;
+  height: 15px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+/* Make loyalty header/title stand out lighter */
+.pawperks-loyalty-card h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fef3c7;            /* light golden cream */
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5); /* subtle glow to stay readable */
+  margin-bottom: 1rem;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fde047, #f97316);
+  box-shadow: 0 0 8px rgba(249,115,22,0.6);
+}
+.tier-label {
+  font-weight: 600;
+  margin-top: 8px;
+  color: #f3f4f6;
+}
+.next-tier {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: #fef3c7;
+}
+
+/* ---------- Sections ---------- */
+.pawperks-section {
+  margin-bottom: 2.2rem;
+}
+.pawperks-section h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+/* ---------- Coupon Grid ---------- */
+.coupon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ---------- Coupon Ticket Style (glassy light) ---------- */
+.coupon-card {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  border: 2px dashed #d1d5db;
+  border-radius: 18px;
+  position: relative;
+  text-align: center;
+  padding: 1.4rem;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.coupon-card::before,
+.coupon-card::after {
+  content: "";
+  width: 26px;
+  height: 26px;
+  background: #fafaf5;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.coupon-card::before { left: -14px; }
+.coupon-card::after { right: -14px; }
+.coupon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+.coupon-card .code {
+  font-family: monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+.coupon-card .discount {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+}
+.coupon-card .meta {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* States */
+.coupon-card.active {
+  border-color: #22c55e;
+  background: rgba(240,253,244,0.8);
+}
+.coupon-card.claimed {
+  border-color: #9ca3af;
+  background: rgba(243,244,246,0.8);
+  filter: grayscale(60%);
+}
+.coupon-card.expired {
+  border-color: #ef4444;
+  background: rgba(254,226,226,0.8);
+  filter: grayscale(60%);
+}
+
+/* ---------- Buttons ---------- */
+.coupon-card .btn {
+  margin-top: 14px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f7c368;
+  color: #fff;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.coupon-card .btn:hover:not(:disabled) {
+  background: #f7c368;
+  transform: translateY(-2px);
+}
+.coupon-card .btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

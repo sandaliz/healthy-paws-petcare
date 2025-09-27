@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { api } from '../financeApi';
+import { api } from '../../finance/services/financeApi';
 import Modal from './components/Modal';
 import Skeleton from './components/Skeleton';
 import { Search, RefreshCcw, Plus, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';

@@ -1,4 +1,3 @@
-/* Hero Section with Background Image */
 .hero-section {
   position: relative;
   height: 90vh;
@@ -6,20 +5,23 @@
   align-items: center;
   justify-content: center;
   color: #2D2D2D;
-  
-  /* ✅ Background pet image */
   background: url("../../assets/hero.jpg") no-repeat center center/cover;
+  overflow: hidden; /* ensure no gaps */
 }
 
-/* Semi-transparent overlay */
+/* ✅ fix overlay to cover EXACTLY the hero bounds */
 .hero-overlay {
+  position: absolute;   /* cover hero-section fully */
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.5); /* Light frosted overlay */
+  background: rgba(255, 255, 255, 0.5);
   display: flex;
   align-items: center;
   justify-content: flex-start;
   padding-left: 8%;
+  box-sizing: border-box;
 }
 
 .hero-content {
