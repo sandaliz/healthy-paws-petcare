@@ -8,32 +8,6 @@
   justify-content: center;
 }
 
-/* Rest of your existing CSS remains exactly the same below this line */
-/* Titles */
-h1, h2, h3 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  color: #2D2D2D;
-}
-
-/* Doodle panel */
-.doodle-panel {
-  border-radius: 24px;
-  padding: 3rem;
-  width: 100%;
-  max-width: 2000px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-  background-image: url('../assets/LOG_page.png');
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-}
-
-/* ... rest of your existing CSS remains unchanged ... */
-
 /* Titles */
 h1, h2, h3 {
   font-family: 'Poppins', sans-serif;
@@ -150,9 +124,22 @@ h1, h2, h3 {
 .error-text { font-size: 0.8rem; color: red; margin-top: 0.3rem; }
 
 /* Links + button */
-.form-links { text-align: right; }
-.link { font-size: 0.85rem; color: #54413C; text-decoration: none; }
-.link:hover { color: #333; }
+.form-links { 
+  text-align: right; 
+  margin-bottom: 0.5rem;
+}
+.link { 
+  font-size: 0.9rem; 
+  font-weight: 500;
+  color: #54413C; 
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  transition: color 0.2s ease;
+}
+.link:hover { 
+  color: #2D2D2D; 
+  text-decoration: underline;
+}
 
 .login-btn {
   margin-top: 0.5rem;
@@ -164,18 +151,41 @@ h1, h2, h3 {
   border: none;
   border-radius: 30px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
 }
 .login-btn:hover { background: #333; }
+.login-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
 
-.signup-text { text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #333; }
-.signup-link { font-weight: 600; color: #54413C; text-decoration: none; }
-.signup-link:hover { color: #333; }
+.signup-text { 
+  text-align: center; 
+  margin-top: 1.5rem; 
+  font-size: 0.95rem; 
+  color: #54413C;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
+.signup-link { 
+  font-weight: 600; 
+  color: #54413C; 
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  transition: color 0.2s ease;
+}
+.signup-link:hover { 
+  color: #2D2D2D; 
+  text-decoration: underline;
+}
 
 /* Responsive */
 @media (max-width: 900px) {
   .login-content { flex-direction: column; text-align: center; gap: 2rem; }
   .image-circle { width: 220px; height: 220px; }
   .doodle-panel { width: 95%; padding: 2rem; }
+  .form-links { text-align: center; }
 }
 
 /* === Login Specific Icon Styling === */
@@ -213,6 +223,11 @@ h1, h2, h3 {
 
 .login-eye-toggle {
   cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.login-eye-toggle:hover {
+  color: #54413C;
 }
 
 .login-eye-toggle svg {
@@ -227,4 +242,11 @@ h1, h2, h3 {
   text-align: center;
   color: #555;
   margin-bottom: 1.5rem;
+}
+
+/* Button styles */
+button, .cta {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
 }
