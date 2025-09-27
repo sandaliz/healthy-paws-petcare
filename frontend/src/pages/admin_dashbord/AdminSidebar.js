@@ -16,7 +16,7 @@ const AdminSidebar = () => {
         <h2 className="sidebar-logo">Admin Panel</h2>
       </div>
       
-      <nav className="sidebar-nav">
+      <nav className="Asidebar-nav">
         <ul className="sidebar-menu">
           <li>
             <NavLink 

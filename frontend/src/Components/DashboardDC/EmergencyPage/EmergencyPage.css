@@ -1,0 +1,21 @@
+/* EmergencyPage.css */
+.emergency-page {
+  padding: 20px;
+}
+
+.emergency-page h2 {
+  margin-bottom: 15px;
+}
+
+.emergency-page button {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+.emergency-page textarea {
+  display: block;
+  width: 100%;
+  height: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

@@ -80,6 +80,7 @@ import PendingAppointments from "./Components/DashboardDC/PendingAppointmentsDC/
 import UpcomingAppointmentsDC from "./Components/DashboardDC/UpcomingAppointmentsDC/UpcomingAppointmentsDC";
 import AppointmentHistory from "./Components/DashboardDC/AppointmentDCHistory/AppointmentDCHistory";
 import DailyLogs from "./Components/DashboardDC/DailyLogs/DailyLogs";
+import EmergencyPage from "./Components/DashboardDC/EmergencyPage/EmergencyPage";
 import AppointmentDetailsDC from "./Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC";
 import ReviewsDC from "./Components/DashboardDC/ReviewsDC/ReviewsDC";
 import DoctorDashboard from "./pages/doctor_dashboard/DoctorDashboard";
@@ -202,6 +203,7 @@ function App() {
         />
         <Route path="appointmentHistory" element={<AppointmentHistory />} />
         <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
+        <Route path="emergency" element={<EmergencyPage />} />
         <Route
           path="appointmentDetailsDC/:id"
           element={<AppointmentDetailsDC />}
