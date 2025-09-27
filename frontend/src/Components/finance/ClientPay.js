@@ -143,6 +143,7 @@ export default function ClientPay() {
   };
 
   return (
+    <div className="finance-scope">
     <div className="pay-wrap">
       <Toaster position="top-right" />
       <div className="page-header">
@@ -293,6 +294,7 @@ export default function ClientPay() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

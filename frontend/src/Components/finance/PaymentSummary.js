@@ -239,6 +239,7 @@ export default function PaymentSummary() {
   };
 
   return (
+    <div className="finance-scope">
     <div className="pawledger-shell">
       <Toaster position="top-right" />
       <div className="page-header">
@@ -386,6 +387,7 @@ export default function PaymentSummary() {
           </AreaChart>
         </div>
       </div>
+    </div>
     </div>
   );
 }

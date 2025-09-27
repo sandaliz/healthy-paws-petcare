@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 // ---------------- Public pages ----------------
 import Login from './pages/User_Management/Login';
-import Register from './pages/User_Management/Register'; 
+import Register from './pages/User_Management/Register';
 import EmailVerify from './pages/User_Management/EmailVerify';
 import ResetPassword from './pages/User_Management/ResetPassword';
 import NewPassword from './pages/User_Management/NewPassword';
@@ -30,7 +30,7 @@ import RegisterEdit from "./pages/Register_pet/RegisterEdit";
 
 // ---------------- Chatbot & Profile ----------------
 import Chatbot from "./Components/Chatbot";
-import ProfilePage from "./pages/User_Management/ProfilePage";
+import ProfilePage from "./Components/finance/ProfilePage";
 
 // ---------------- Admin Panel ----------------
 import FeedbackPage from "./pages/admin_dashbord/FeedbackPage";

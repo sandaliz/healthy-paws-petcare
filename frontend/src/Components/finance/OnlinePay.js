@@ -143,6 +143,7 @@ export default function OnlinePay() {
   const invoiceBlocked = invoice && ["Paid", "Refunded", "Cancelled"].includes(String(invoice.status));
 
   return (
+    <div className="finance-scope">
     <div className="pay-wrap">
       <Toaster position="top-right" />
       <div className="page-header">
@@ -323,6 +324,7 @@ export default function OnlinePay() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

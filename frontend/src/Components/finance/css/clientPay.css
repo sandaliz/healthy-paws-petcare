@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --brown:#54413C;
   --peach:#FFD58E;
   --white:#FFFFFF;
@@ -12,9 +12,9 @@
   --space-4:24px;
   --space-5:32px;
   --peach-soft:#FFF6E4;
-}
+} */
 
-body {
+/* body {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   line-height: 1.5;
@@ -29,271 +29,216 @@ button, .cta {
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 600;
+} */
+
+.finance-scope {
+  --brown:#54413C;
+  --peach:#FFD58E;
+  --white:#FFFFFF;
+  --ink:#2D2D2D;
+  --muted:#6B7280;
+  --line:#E5E7EB;
+  --radius:14px;
+  --space-1:8px;
+  --space-2:12px;
+  --space-3:16px;
+  --space-4:24px;
+  --space-5:32px;
+  --peach-soft:#FFF6E4;
+
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
 }
 
-.pay-wrap {
+/* Scoped Typography */
+.finance-scope h1,
+.finance-scope h2,
+.finance-scope h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: var(--ink);
+}
+.finance-scope button,
+.finance-scope .cta {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Layout & Cards */
+.finance-scope .pay-wrap {
   max-width: 960px;
   margin: 0 auto;
   padding: var(--space-4) var(--space-3);
-  color: #333;
+  color:#333;
 }
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.finance-scope .page-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
   gap: var(--space-3);
   margin-bottom: var(--space-3);
 }
-
-.card {
+.finance-scope .card {
   background: var(--white);
-  border: 1px solid #eee;
+  border:1px solid #eee;
   border-radius: var(--radius);
   padding: var(--space-4);
-  box-shadow: 0 2px 10px rgba(0,0,0,.04);
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
 }
-.section { margin: 0 0 var(--space-5); }
-.section:last-child { margin-bottom: 0; }
-.section-title { margin: 0 0 var(--space-2); }
 
-.field { margin: var(--space-2) 0; }
-.field label {
-  display: block;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  margin-bottom: 6px;
+/* Sections */
+.finance-scope .section { margin-bottom: var(--space-5); }
+.finance-scope .section:last-child { margin-bottom:0; }
+.finance-scope .section-title { margin-bottom: var(--space-2); }
+
+/* Fields & Inputs */
+.finance-scope .field { margin: var(--space-2) 0; }
+.finance-scope .field label {
+  display:block;
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  margin-bottom:6px;
   color: var(--ink);
 }
-.input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #cfd3d8;
-  border-radius: 10px;
-  font-size: 16px;
-  background: #fff;
-  box-sizing: border-box;
-}
-.row { display: flex; gap: 10px; align-items: center; }
-.row.wrap { flex-wrap: wrap; }
-.row.end { justify-content: flex-end; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
-
-.btn {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: 1px solid #cfd3d8;
-  background: #fff;
-  cursor: pointer;
-  transition: all .15s ease;
-  color: #333;
-}
-.btn:hover { background: #f7f7f7; }
-.btn.primary { background: var(--peach); border-color: var(--peach); color: var(--brown); }
-.btn.primary:hover { filter: brightness(0.97); }
-.btn.secondary { background: var(--brown); border-color: var(--brown); color: #fff; }
-.btn.dark { background: #222; border-color: #222; color: #fff; }
-.btn.ghost { background: #fff; border-color: #d8dbe0; color: #333; }
-.btn:disabled { opacity: .6; cursor: not-allowed; }
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-  padding: var(--space-3);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: #fff;
-  margin-bottom: var(--space-3);
-}
-@media (max-width: 720px) { .summary-grid { grid-template-columns: 1fr; } }
-.summary-item .label { display:block; color: var(--muted); font-size: 13px; }
-.summary-item .value { font-weight: 600; }
-.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
-
-.status-pill {
-  display: inline-block;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 13px;
-  background: #F3F4F6;
-  color: #111827;
-  border: 1px solid #E5E7EB;
-}
-.status-pill.paid { background: #DCFCE7; color: #065F46; border-color: #BBF7D0; }
-.status-pill.pending { background: #FEF9C3; color: #713F12; border-color: #FDE68A; }
-.status-pill.overdue { background: #FEE2E2; color: #7F1D1D; border-color: #FCA5A5; }
-.status-pill.refunded { background: #E0E7FF; color: #3730A3; border-color: #C7D2FE; }
-.status-pill.cancelled { background: #F3F4F6; color: #374151; border-color: #E5E7EB; }
-.status-pill.approved { background: #DCFCE7; color: #065F46; border-color: #BBF7D0; }
-.status-pill.rejected { background: #FEE2E2; color: #7F1D1D; border-color: #FCA5A5; }
-
-.items-wrap { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.items-header, .items-row {
-  display: grid;
-  grid-template-columns: 1fr 80px 140px 160px;
-  gap: var(--space-2);
-  padding: 12px 14px;
-}
-.items-header {
-  background: #FAFAFA;
-  font-weight: 600;
-  color: #374151;
-  border-bottom: 1px solid var(--line);
-}
-.items-row { border-bottom: 1px dashed var(--line); align-items: center; }
-.items-row:last-child { border-bottom: none; }
-.items-row .desc { color: #111827; }
-.right { text-align: right; }
-.bold { font-weight: 700; }
-
-.totals {
-  padding: 12px 14px;
-  border-top: 1px solid var(--line);
-  background: #fff;
-}
-.totals-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-}
-.totals-row.grand {
-  border-top: 1px solid var(--line);
-  margin-top: 6px;
-  padding-top: 10px;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.panel {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: var(--space-3);
-  background: #fff;
-}
-.panel-peach {
-  background: var(--peach-soft);
-  border-color: var(--peach);
-}
-
-.coupon-toggle { margin: 18px 0 10px; }
-.coupon-block {
-  margin: 12px 0 16px;
-  padding: 12px;
-  border: 1px dashed var(--peach);
-  background: #FFF8EA;
-  border-radius: 12px;
-}
-.coupon-block .row { gap: 12px; }
-
-.charge-line { margin-bottom: 8px; }
-.charge-pill {
-  display: inline-block;
-  padding: 8px 12px;
-  background: #FFF0D4;
-  border: 1px solid var(--peach);
-  border-radius: 999px;
-  color: #54413C;
-  font-weight: 700;
-}
-.stripe-control {
-  padding: 12px;
-  border: 1px solid #cfd3d8;
-  border-radius: 10px;
-  background: #fff;
-  min-height: 48px;
-  box-sizing: border-box;
-}
-
-.input.input-error,
-.stripe-control.input-error {
-  border-color: #ef4444 !important;
-  background: #fef2f2 !important;
-}
-
-.stripe-grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-}
-@media (max-width: 720px) { .stripe-grid-3 { grid-template-columns: 1fr; } }
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  display: grid;
-  place-items: center;
-  padding: 12px;
-  z-index: 50;
-}
-.modal-box {
-  width: 520px;
-  max-width: 95vw;
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px;
-  border: 1px solid #eee;
-}
-
-.success-hero { text-align: center; margin-bottom: var(--space-3); }
-.success-badge {
-  width: 72px;
-  height: 72px;
-  background: #E8F5E9;
-  color: #15803D;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 36px;
-  font-weight: 800;
-  margin: 0 auto var(--space-2);
-  border: 1px solid #CDE7D1;
-}
-.success-details {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: var(--space-3);
-  background: #fff;
-}
-.kv-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px dashed var(--line);
-}
-.kv-row:last-child { border-bottom: none; }
-.kv-label { color: var(--muted); }
-.kv-value { font-weight: 600; }
-
-.muted { color: var(--muted); }
-.error { color: #b91c1c; }
-.notice {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: #FAFAFA;
-  color: #374151;
-}
-.notice.error { background: #FEF2F2; border-color: #FECACA; color: #7F1D1D; }
-
-.cwall-root { margin-top: 24px; }
-.cwall-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
-.cwall-title { margin:0; }
-.cwall-account-bar {
-  display:flex;
-  gap:8px;
-  align-items:center;
-  margin-bottom:12px;
-  background:#FFFAF1;
-  border:1px dashed #FED58E;
-  padding:8px 12px;
+.finance-scope .input {
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #cfd3d8;
   border-radius:10px;
+  font-size:16px;
+  background:#fff;
+  box-sizing:border-box;
 }
-.cwall-card {
+.finance-scope .input.input-error,
+.finance-scope .stripe-control.input-error {
+  border-color:#ef4444 !important;
+  background:#fef2f2 !important;
+}
+
+/* Utility Layout */
+.finance-scope .row { display:flex; gap:10px; align-items:center; }
+.finance-scope .row.wrap { flex-wrap:wrap; }
+.finance-scope .row.end { justify-content:flex-end; }
+.finance-scope .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media (max-width:720px){ .finance-scope .grid-2{ grid-template-columns:1fr; } }
+
+/* Buttons */
+.finance-scope .btn {
+  padding:10px 16px;
+  border-radius:10px;
+  border:1px solid #cfd3d8;
+  background:#fff;
+  cursor:pointer;
+  transition:all .15s ease;
+  color:#333;
+}
+.finance-scope .btn:hover { background:#f7f7f7; }
+.finance-scope .btn.primary { background:var(--peach); border-color:var(--peach); color:var(--brown);}
+.finance-scope .btn.primary:hover { filter:brightness(0.97);}
+.finance-scope .btn.secondary { background:var(--brown); border-color:var(--brown); color:#fff;}
+.finance-scope .btn.dark { background:#222; border-color:#222; color:#fff;}
+.finance-scope .btn.ghost { background:#fff; border-color:#d8dbe0; color:#333;}
+.finance-scope .btn:disabled { opacity:.6; cursor:not-allowed; }
+
+/* Special Coupon/Promo Buttons */
+.finance-scope .btn.big-coupon-toggle,
+.finance-scope .btn.big-promo-toggle {
+  display:block; width:100%;
+  padding:14px 20px; margin:10px 0;
+  border:none !important;
+  border-radius:999px;
+  font-size:17px; font-weight:600;
+  color:#fff !important;
+  background:linear-gradient(90deg,#6F4E37 0%,#8B5E3C 50%,#A47148 100%) !important;
+  box-shadow:0 4px 10px rgba(84,65,60,.25);
+  transition:all .3s ease;
+}
+.finance-scope .btn.big-coupon-toggle:hover,
+.finance-scope .btn.big-promo-toggle:hover { filter:brightness(1.08); transform:translateY(-1px);}
+.finance-scope .btn.big-coupon-toggle:active,
+.finance-scope .btn.big-promo-toggle:active { transform:translateY(0); box-shadow:0 2px 6px rgba(84,65,60,.2); }
+
+/* Summary Grid */
+.finance-scope .summary-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:var(--space-3);
+  padding:var(--space-3);
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  margin-bottom:var(--space-3);
+}
+@media (max-width:720px){ .finance-scope .summary-grid{ grid-template-columns:1fr; } }
+.finance-scope .summary-item .label { display:block; color:var(--muted); font-size:13px; }
+.finance-scope .summary-item .value { font-weight:600; }
+.finance-scope .mono { font-family:ui-monospace,SFMono-Regular, Menlo, Consolas, monospace; }
+
+/* Status Pills */
+.finance-scope .status-pill {
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:13px;
+  background:#F3F4F6;
+  color:#111827;
+  border:1px solid #E5E7EB;
+}
+.finance-scope .status-pill.paid     { background:#DCFCE7; color:#065F46; border-color:#BBF7D0;}
+.finance-scope .status-pill.pending  { background:#FEF9C3; color:#713F12; border-color:#FDE68A;}
+.finance-scope .status-pill.overdue  { background:#FEE2E2; color:#7F1D1D; border-color:#FCA5A5;}
+.finance-scope .status-pill.refunded { background:#E0E7FF; color:#3730A3; border-color:#C7D2FE;}
+.finance-scope .status-pill.cancelled{ background:#F3F4F6; color:#374151; border-color:#E5E7EB;}
+.finance-scope .status-pill.rejected { background:#fee2e2; color:#991b1b;}
+.finance-scope .status-pill.approved { background:#DCFCE7; color:#065F46; }
+
+/* Items Table */
+.finance-scope .items-wrap{ border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+.finance-scope .items-header,
+.finance-scope .items-row {
+  display:grid;
+  grid-template-columns:1fr 80px 140px 160px;
+  gap:var(--space-2);
+  padding:12px 14px;
+}
+.finance-scope .items-header {
+  background:#FAFAFA;
+  font-weight:600;
+  color:#374151;
+  border-bottom:1px solid var(--line);
+}
+.finance-scope .items-row {
+  border-bottom:1px dashed var(--line);
+  align-items:center;
+}
+.finance-scope .items-row:last-child{ border-bottom:none;}
+.finance-scope .items-row .desc{ color:#111827;}
+.finance-scope .right{ text-align:right;}
+.finance-scope .bold{ font-weight:700; }
+
+/* Totals */
+.finance-scope .totals{ padding:12px 14px; border-top:1px solid var(--line); background:#fff;}
+.finance-scope .totals-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 0;}
+.finance-scope .totals-row.grand{ border-top:1px solid var(--line); margin-top:6px; padding-top:10px; font-size:18px; font-weight:700; }
+
+/* Panels */
+.finance-scope .panel {
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:var(--space-3);
+  background:#fff;
+}
+.finance-scope .panel-peach { background:var(--peach-soft); border-color:var(--peach); }
+
+/* Coupon Wall */
+.finance-scope .cwall-root { margin-top:24px; }
+.finance-scope .cwall-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;}
+.finance-scope .cwall-title { margin:0; }
+.finance-scope .cwall-card {
   position:relative;
   border:1px solid #f3f4f6;
   border-radius:14px;
@@ -301,125 +246,67 @@ button, .cta {
   padding:12px;
   box-shadow:0 8px 20px rgba(84,65,60,0.07);
 }
-.cwall-card-accent {
-  position:absolute;
-  top:0;left:0;right:0;
-  height:6px;
-  border-top-left-radius:14px;
-  border-top-right-radius:14px;
-  background:linear-gradient(90deg,#FFB86C,#FFD58E,#FFB86C);
-}
-.cwall-card-head { display:flex; justify-content:space-between; align-items:baseline; }
-.onpay-coupon-grid {
-  display:grid;
-  grid-template-columns:1fr;
-  margin-top:10px;
-  gap:10px;
-}
-.psum-highlight-card { border-left:4px solid #f59e0b; }
-.psucc-actions { margin-top:16px; }
+.finance-scope .cwall-card-accent{ position:absolute; top:0; left:0; right:0; height:6px; border-top-left-radius:14px; border-top-right-radius:14px; background:linear-gradient(90deg,#FFB86C,#FFD58E,#FFB86C);}
+.finance-scope .cwall-card-head{ display:flex; justify-content:space-between; align-items:baseline;}
+.finance-scope .cwall-card-code{ font-weight:700; color:var(--brown);}
+.finance-scope .cwall-card-badge{ font-weight:600; color:#fff; background:var(--brown); padding:2px 8px; border-radius:999px; font-size:0.85rem;}
+.finance-scope .cwall-card-desc{ margin:8px 0; color:var(--ink);}
+.finance-scope .cwall-card-meta{ font-size:0.85rem; color:var(--muted); margin-bottom:8px;}
+.finance-scope .cwall-card-supply{ font-weight:600; color:#92400e;}
+.finance-scope .cwall-card-actions{ text-align:right; margin-top:8px;}
+.finance-scope .cwall-cards-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
 
-.psucc-loading {
-  margin-top: 8px;
-}
-.psucc-actions {
-  margin-top: 16px;
+/* Stripe Controls */
+.finance-scope .stripe-control{ padding:12px; border:1px solid #cfd3d8; border-radius:10px; background:#fff; min-height:48px; box-sizing:border-box;}
+.finance-scope .stripe-grid-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+@media (max-width:720px){ .finance-scope .stripe-grid-3{ grid-template-columns:1fr; } }
+
+/* Modals */
+.finance-scope .modal{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:grid; place-items:center; padding:12px; z-index:50;}
+.finance-scope .modal-box{ width:520px; max-width:95vw; background:#fff; border-radius:16px; padding:16px; border:1px solid #eee;}
+
+/* Success Page */
+.finance-scope .success-hero{ text-align:center; margin-bottom:var(--space-3);}
+.finance-scope .success-badge{ width:72px; height:72px; background:#E8F5E9; color:#15803D; border-radius:50%; display:grid; place-items:center; font-size:36px; font-weight:800; margin:0 auto var(--space-2); border:1px solid #CDE7D1;}
+.finance-scope .success-details{ border:1px solid var(--line); border-radius:12px; padding:var(--space-3); background:#fff;}
+.finance-scope .kv-row{ display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed var(--line);}
+.finance-scope .kv-row:last-child{ border-bottom:none;}
+.finance-scope .kv-label{ color:var(--muted);}
+.finance-scope .kv-value{ font-weight:600; }
+.finance-scope .psucc-loading{ margin-top:8px;}
+.finance-scope .psucc-actions{ margin-top:16px; }
+
+/* Pawledger Table */
+.finance-scope .pawledger-shell{ padding:2rem; background:#fdfcf9;}
+.finance-scope .pawledger-table{ width:100%; border-collapse:collapse;}
+.finance-scope .pawledger-table th,
+.finance-scope .pawledger-table td{ border-bottom:1px solid #e5e7eb; padding:0.75rem;}
+.finance-scope .pawledger-table th{ background:#f9fafb; text-align:left; font-weight:600;}
+.finance-scope .highlight-refund-row{ background:#fff6e5 !important;}
+.finance-scope .invoice-box{ background:#fff; border-radius:12px; padding:1rem; border:1px solid var(--line);}
+
+/* Notices & Text */
+.finance-scope .muted{ color:var(--muted); font-size:0.9rem;}
+.finance-scope .error{ color:#b91c1c;}
+.finance-scope .notice{ padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#FAFAFA; color:#374151;}
+.finance-scope .notice.error{ background:#FEF2F2; border-color:#FECACA; color:#7F1D1D;}
+
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
 }
 
-/* === Coupon & Promo Buttons (brown gradient style) === */
-.btn.big-coupon-toggle,
-.btn.big-promo-toggle {
-  display: block;
-  width: 100%;
-  padding: 14px 20px;
-  margin: 10px 0;
-  border: none !important;
-  border-radius: 999px;
-  font-size: 17px;
+h1, h2, h3 {
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  color: #fff !important;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  /* Coffee/Mocha gradient */
-  background: linear-gradient(90deg, #6F4E37 0%, #8B5E3C 50%, #A47148 100%) !important;
-
-  box-shadow: 0 4px 10px rgba(84, 65, 60, 0.25);
-  text-align: center;
-  letter-spacing: 0.5px;
+  color: #2D2D2D;
 }
 
-.btn.big-coupon-toggle:hover,
-.btn.big-promo-toggle:hover {
-  filter: brightness(1.08);
-  transform: translateY(-1px);
-}
-
-.btn.big-coupon-toggle:active,
-.btn.big-promo-toggle:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(84,65,60,0.2);
-}
-
-.pawledger-shell {
-  padding: 2rem;
-  background: #fdfcf9;
-}
-
-.page-header h1 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  margin-bottom: .4rem;
-}
-
-.highlight-card {
-  background: #fffbea;
-  border: 1px solid #fde68a;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.pawledger-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.pawledger-table th,
-.pawledger-table td {
-  border-bottom: 1px solid #e5e7eb;
-  padding: 0.75rem;
-}
-
-.pawledger-table th {
-  background: #f9fafb;
-  text-align: left;
-}
-
-.status-pill {
-  display:inline-block;
-  padding:2px 8px;
-  border-radius:999px;
-  font-size:.8rem;
-  font-weight:600;
-}
-.status-pill.pending { background:#fef3c7; color:#92400e; }
-.status-pill.paid { background:#dcfce7; color:#166534; }
-.status-pill.refunded { background:#e0f2fe; color:#075985; }
-.status-pill.refused { background:#fee2e2; color:#991b1b; }
-
-.invoice-box {
-  background:#fff;
-  border-radius:12px;
-  padding:1rem;
-}
-
-/* Highlight pending refund row nicely */
-.highlight-refund-row {
-  background-color: #fff6e5 !important; /* soft orange */
-}
-
-.legend {
-  margin-top: 8px;
-  font-size: 0.8rem;
+button, .cta {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
 }

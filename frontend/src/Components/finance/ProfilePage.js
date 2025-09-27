@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import assets from "../../assets/assets";
 import "../../styles/ProfilePage.css";
-import PromotionTab from "../../Components/finance/PromotionTab"
-import PaymentSummary from "../../Components/finance/PaymentSummary";
+import PromotionTab from "./PromotionTab"
+import PaymentSummary from "./PaymentSummary";
 
-const BASE_URL = "http://localhost:5001"; // hardcoded backend
+const BASE_URL = "http://localhost:5001";
 
 const ProfilePage = () => {
   const navigate = useNavigate();

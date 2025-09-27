@@ -1,4 +1,3 @@
-// src/components/profile/PromotionTab.jsx
 import React, { useEffect, useState } from "react";
 import { api } from "./services/financeApi";  
 import { Toaster, toast } from "react-hot-toast";
