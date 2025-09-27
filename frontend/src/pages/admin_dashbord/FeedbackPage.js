@@ -25,6 +25,7 @@ const FeedbackPage = () => {
   const [stats, setStats] = useState(null);
   const [report, setReport] = useState(null);
   const [readFeedbacks, setReadFeedbacks] = useState({});
+  const [reportType, setReportType] = useState("all"); // <-- added for report options
 
   // Fetch feedbacks
   const fetchFeedbacks = async () => {
@@ -115,12 +116,14 @@ const FeedbackPage = () => {
         font: { weight: "bold", size: 12, family: "'Poppins', sans-serif" },
       },
     },
-    maintainAspectRatio: false,
+    maintainAspectRatio: true, // important for keeping circular
   };
 
   // PDF Builder
-  const buildPDF = () => {
+  const buildPDF = (type = "all") => {
     const doc = new jsPDF("p", "mm", "a4");
+
+    // --- Header ---
     doc.setFillColor(84, 65, 60);
     doc.rect(0, 0, 210, 40, "F");
     doc.addImage(logo, "PNG", 15, 5, 25, 25);
@@ -137,61 +140,71 @@ const FeedbackPage = () => {
     let y = 50;
     doc.setFontSize(12);
     doc.setTextColor(20);
-    doc.text(`Total Feedbacks: ${report.counts.total}`, 15, y);
-    y += 8;
-    doc.text(`Good Feedbacks: ${report.counts.good}`, 15, y);
-    y += 8;
-    doc.text(`Bad Feedbacks: ${report.counts.bad}`, 15, y);
-    y += 10;
 
-    const chartCanvas = document.querySelector("canvas");
-    if (chartCanvas) {
-      const chartImg = chartCanvas.toDataURL("image/png", 1.0);
-      doc.addImage(chartImg, "PNG", 55, y, 100, 100);
-      y += 110;
+    // Totals + Chart only for ALL
+    if (type === "all") {
+      doc.text(`Total Feedbacks: ${report.counts.total}`, 15, y);
+      y += 8;
+      doc.text(`Good Feedbacks: ${report.counts.good}`, 15, y);
+      y += 8;
+      doc.text(`Bad Feedbacks: ${report.counts.bad}`, 15, y);
+      y += 10;
+
+      const chartCanvas = document.querySelector("canvas");
+      if (chartCanvas) {
+        const chartImg = chartCanvas.toDataURL("image/png", 1.0);
+        doc.addImage(chartImg, "PNG", 55, y, 120, 120); // ⭕ square size = perfect circle
+        y += 130;
+      }
     }
 
-    doc.setTextColor(0, 100, 0);
-    doc.text("Good Feedbacks", 15, y);
-    const goodRows = report.feedbacks.good.map(fb => [
-      fb.petOwnerName, fb.petName, `${fb.rating}/5`, fb.message,
-    ]);
-    autoTable(doc, {
-      startY: y + 5,
-      head: [["Owner", "Pet", "Rating", "Message"]],
-      body: goodRows,
-      theme: "grid",
-      styles: { fontSize: 10, cellPadding: 3 },
-      headStyles: { fillColor: [84, 65, 60], textColor: 255 },
-    });
+    // Good feedbacks
+    if (type === "all" || type === "good") {
+      doc.setTextColor(0, 100, 0);
+      doc.text("Good Feedbacks", 15, y);
+      const goodRows = report.feedbacks.good.map(fb => [
+        fb.petOwnerName, fb.petName, `${fb.rating}/5`, fb.message,
+      ]);
+      autoTable(doc, {
+        startY: y + 5,
+        head: [["Owner", "Pet", "Rating", "Message"]],
+        body: goodRows,
+        theme: "grid",
+        styles: { fontSize: 10, cellPadding: 3 },
+        headStyles: { fillColor: [84, 65, 60], textColor: 255 },
+      });
+      y = doc.lastAutoTable.finalY + 10;
+    }
 
-    y = doc.lastAutoTable.finalY + 10;
-    doc.setTextColor(150, 0, 0);
-    doc.text("Bad Feedbacks", 15, y);
-    const badRows = report.feedbacks.bad.map(fb => [
-      fb.petOwnerName, fb.petName, `${fb.rating}/5`, fb.message,
-    ]);
-    autoTable(doc, {
-      startY: y + 5,
-      head: [["Owner", "Pet", "Rating", "Message"]],
-      body: badRows,
-      theme: "grid",
-      styles: { fontSize: 10, cellPadding: 3 },
-      headStyles: { fillColor: [200, 50, 50], textColor: 255 },
-    });
+    // Bad feedbacks
+    if (type === "all" || type === "bad") {
+      doc.setTextColor(150, 0, 0);
+      doc.text("Bad Feedbacks", 15, y);
+      const badRows = report.feedbacks.bad.map(fb => [
+        fb.petOwnerName, fb.petName, `${fb.rating}/5`, fb.message,
+      ]);
+      autoTable(doc, {
+        startY: y + 5,
+        head: [["Owner", "Pet", "Rating", "Message"]],
+        body: badRows,
+        theme: "grid",
+        styles: { fontSize: 10, cellPadding: 3 },
+        headStyles: { fillColor: [200, 50, 50], textColor: 255 },
+      });
+    }
 
     return doc;
   };
 
   const previewPDF = () => {
-    const doc = buildPDF();
+    const doc = buildPDF(reportType);
     const pdfUrl = doc.output("bloburl");
     window.open(pdfUrl, "_blank");
   };
 
   const downloadPDF = () => {
-    const doc = buildPDF();
-    doc.save("Feedback_Report.pdf");
+    const doc = buildPDF(reportType);
+    doc.save(`Feedback_Report_${reportType}.pdf`);
   };
 
   const renderRatingStars = (rating) => {
@@ -269,7 +282,7 @@ const FeedbackPage = () => {
           <div className="feedback-stats">
             <div className="chart-container">
               <h3>Feedback Analytics</h3>
-              <div className="chart-wrapper">
+              <div className="feedback-pie-container">
                 <Pie data={pieData} options={pieOptions} />
               </div>
               <div className="stats-summary">
@@ -302,6 +315,18 @@ const FeedbackPage = () => {
 
         {report && (
           <div className="feedback-actions">
+            <div className="report-options">
+              <label htmlFor="reportType">Choose Report Type: </label>
+              <select
+                id="reportType"
+                value={reportType}
+                onChange={(e) => setReportType(e.target.value)}
+              >
+                <option value="all">All Feedback</option>
+                <option value="good">Good Only</option>
+                <option value="bad">Bad Only</option>
+              </select>
+            </div>
             <button className="btn-preview" onClick={previewPDF}>
               Preview Report
             </button>

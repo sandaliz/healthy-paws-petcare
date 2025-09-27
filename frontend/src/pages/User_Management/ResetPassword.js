@@ -13,36 +13,55 @@ const ResetPassword = () => {
   const [emailError, setEmailError] = useState('');
   const navigate = useNavigate();
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // ✅ Better email regex (allows subdomains, "+" etc.)
+  const validateEmail = (email) => {
+    return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
+  };
 
   const handleEmailChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.trim();
     setEmail(value);
-    setEmailError(value && !validateEmail(value) ? 'Please enter a valid email address' : '');
+
+    // Revalidate immediately
+    if (!value) {
+      setEmailError('Email is required');
+    } else if (!validateEmail(value)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
   };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
+
+    // Final validation before submit
+    if (!email) {
+      setEmailError('Email is required');
+      return;
+    }
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       return;
     }
+
     setLoading(true);
     try {
       const res = await axios.post('http://localhost:5000/api/auth/send-reset-otp', { email });
       setLoading(false);
+
       if (res.data.success) {
         toast.success(res.data.message);
         setTimeout(() => {
-          // ✅ use query param style
-          navigate(`/email-verify?email=${email}`);
+          // Navigate to email verify page with email in query param
+          navigate(`/email-verify?email=${encodeURIComponent(email)}`);
         }, 1200);
       } else {
         toast.error(res.data.message || 'Something went wrong');
       }
     } catch (err) {
       setLoading(false);
-      toast.error(err.response?.data?.message || 'Failed to send OTP');
+      toast.error(err.response?.data?.message || 'Failed to send reset email');
     }
   };
 
@@ -56,12 +75,14 @@ const ResetPassword = () => {
           <div className="reset-form-container">
             <h1 className="reset-title">Reset Password</h1>
             <p className="reset-subtitle">
-              Enter your email address and we’ll send you an OTP to reset your password.
+              Enter your email address and we’ll send you a link to reset your password.
             </p>
+
             <form onSubmit={handleSendOtp} className="reset-form">
               <div className="reset-input-group">
                 <EnvelopeIcon className="reset-email-icon" />
                 <input
+                  id="reset-email-input"
                   type="email"
                   placeholder="Email address"
                   value={email}
@@ -76,11 +97,19 @@ const ResetPassword = () => {
                   {emailError}
                 </p>
               )}
-              <button type="submit" disabled={loading || emailError} className="reset-button">
-                {loading ? 'Sending OTP…' : 'Reset password'}
+
+              <button
+                type="submit"
+                disabled={loading || !!emailError || !email}
+                className="reset-button"
+              >
+                {loading ? 'Sending email…' : 'Reset password'}
               </button>
             </form>
-            <a href="/login" className="reset-remember-link">Wait, I remember my password</a>
+
+            <a href="/login" className="reset-remember-link">
+              Wait, I remember my password
+            </a>
           </div>
         </div>
       </div>

@@ -19,25 +19,40 @@ const AdminSidebar = () => {
       <nav className="sidebar-nav">
         <ul className="sidebar-menu">
           <li>
-            <NavLink to="/admin-dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+            <NavLink 
+              to="/admin-dashboard" 
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
               <span className="nav-icon"></span>
               <span className="nav-text">Dashboard</span>
             </NavLink>
           </li>
+          
           <li>
-            <NavLink to="/admin-dashboard/feedbacks" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+            <NavLink 
+              to="/admin-dashboard/feedbacks" 
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
               <span className="nav-icon"></span>
               <span className="nav-text">Feedback</span>
             </NavLink>
           </li>
+          
           <li>
-            <NavLink to="/admin-dashboard/petRegister" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+            <NavLink 
+              to="/admin-dashboard/petRegister" 
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
               <span className="nav-icon"></span>
               <span className="nav-text">Pet Registration</span>
             </NavLink>
           </li>
+          
           <li>
-            <NavLink to="/admin-dashboard/users" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+            <NavLink 
+              to="/admin-dashboard/users"   // ✅ matches App.js exactly
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
               <span className="nav-icon"></span>
               <span className="nav-text">Users</span>
             </NavLink>

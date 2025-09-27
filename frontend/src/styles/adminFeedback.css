@@ -248,6 +248,23 @@
   margin-bottom: 20px;
 }
 
+/* 🔥 Ensure Pie Chart is perfectly circular */
+.feedback-pie-container {
+  width: 350px;
+  height: 350px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.feedback-pie-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 350px;
+  max-height: 350px;
+}
+
 .stats-summary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -359,6 +376,45 @@
 }
 
 /* ================================
+   REPORT TYPE SELECT (NEW ⬇)
+================================= */
+.report-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.report-options label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #54413c;
+  font-family: 'Poppins', sans-serif;
+}
+
+.report-options select {
+  padding: 8px 12px;
+  border: 2px solid #54413c;
+  border-radius: 6px;
+  background-color: #fdfdfd;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.report-options select:hover {
+  background-color: #f4f1f0;
+}
+
+.report-options select:focus {
+  outline: none;
+  border-color: #d1a45f;
+  box-shadow: 0 0 5px rgba(209, 164, 95, 0.7);
+}
+
+/* ================================
    RESPONSIVE DESIGN
 ================================= */
 @media (max-width: 1200px) {
@@ -396,6 +452,16 @@
   
   .btn-preview,
   .btn-download {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .report-options {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .report-options select {
     width: 100%;
     max-width: 300px;
   }

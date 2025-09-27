@@ -12,6 +12,7 @@ import registerRoutes from "./Routes/register.js";
 import chatRoutes from "./Routes/chatRoutes.js";
 import dashboardRoutes from "./Routes/dashboardRoutes.js";
 
+
 import productRoutes from "./Routes/productRoutes.js";
 import prescriptionRoutes from "./Routes/prescriptionRoutes.js";
 import { sendPrescriptionEmail } from "./Controllers/emailController.js";
@@ -64,6 +65,7 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/register", registerRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+
 
 // Products / Checkout
 app.use("/products", productRoutes);
