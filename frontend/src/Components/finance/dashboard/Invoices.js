@@ -27,6 +27,8 @@ export default function Invoices() {
   const [statusEdit, setStatusEdit] = useState(null);
   const [createOpen, setCreateOpen] = useState(false);
 
+  const [openMenu, setOpenMenu] = useState(null);
+
   const load = async () => {
     try {
       setLoading(true);
@@ -63,7 +65,12 @@ export default function Invoices() {
   }, [filtered, page]);
 
   const onDelete = async (id) => {
-    if (!window.confirm('Delete this invoice?')) return;
+    const inv = invoices.find(i => i._id === id);
+    if (!inv) return toast.error("Invoice not found");
+    if (['Paid', 'Refunded'].includes(inv.status)) {
+      return toast.error(`Cannot delete invoice because it is ${inv.status}.`);
+    }
+    if (!window.confirm('Are you sure you want to delete this invoice?')) return;
     try {
       await api.delete(`/invoice/${id}`);
       toast.success('Invoice deleted');
@@ -86,7 +93,7 @@ export default function Invoices() {
   const onUpdateStatus = async (id, next) => {
     try {
       if (!ALLOWED_STATUS_UPDATE.includes(next)) {
-        return toast.error(`Not allowed here: ${next}`);
+        return toast.error(`Status "${next}" is not manually settable. Use payments/refunds flow for that.`);
       }
       await api.put(`/invoice/${id}`, { status: next });
       toast.success('Status updated');
@@ -103,33 +110,37 @@ export default function Invoices() {
       <div className="page-head">
         <h2>Invoices</h2>
         <div className="row">
-          <button className="btn" onClick={load}><Filter size={16} /> Refresh</button>
-          <button className="btn primary" onClick={() => setCreateOpen(true)}><Plus size={16} /> New Invoice</button>
+          <button className="fm-btn" onClick={load}><Filter size={16} /> Refresh</button>
+          <button className="fm-btn fm-btn-primary" onClick={() => setCreateOpen(true)}><Plus size={16} /> New Invoice</button>
         </div>
       </div>
 
       <div className="fm-toolbar">
         <div className="fm-filters">
-          <div className="fm-search">
+          <div className="fm-i-search">
             <Search size={16} />
             <input
-              className="input"
+              className="fm-i-search-input"
               placeholder="Search by invoice ID, owner or email"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
           </div>
-          <select
-            className="input fm-status-filter"
-            value={status}
-            onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-          >
-            {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
+          <div className="fm-i-status-filter">
+            <label htmlFor="invoiceStatus" className="fm-i-status-label">Status:</label>
+            <select
+              id="invoiceStatus"
+              className="fm-i-status-select"
+              value={status}
+              onChange={(e) => { setStatus(e.target.value); setPage(1); }}
+            >
+              {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
         </div>
       </div>
 
-      <div className="card">
+      <div className="fm-card">
         {loading ? (
           <Skeleton rows={8} />
         ) : (
@@ -165,16 +176,61 @@ export default function Invoices() {
                     <td>{fmtDate(inv.createdAt)}</td>
                     <td className="right">
                       <div className="row end">
-                        <button className="btn ghost" title="View" onClick={() => setView(inv)}><Eye size={16} /></button>
-                        <button className="btn ghost" title="Edit" onClick={() => setEdit(inv)} disabled={['Paid','Refunded'].includes(inv.status)}><Pencil size={16} /></button>
-                        <div className="dropdown">
-                          <button className="btn ghost"><MoreVertical size={16} /></button>
-                          <div className="dropdown-menu">
-                            <button onClick={() => setStatusEdit(inv)}><ExternalLink size={14} /> Set status</button>
-                            <button onClick={() => onCopyClientLink(inv)}><Copy size={14} /> Copy client link</button>
-                            <button className="danger" onClick={() => onDelete(inv._id)}><Trash2 size={14} /> Delete</button>
+                        {/* View */}
+                        <button
+                          className="fm-btn fm-btn-ghost"
+                          title="View"
+                          onClick={() => setView(inv)}
+                        >
+                          <Eye size={16} />
+                        </button>
+
+                        {/* Edit */}
+                        <button
+                          className={`fm-btn fm-btn-ghost ${['Paid', 'Refunded'].includes(inv.status) ? 'fm-btn-disabled' : ''}`}
+                          title="Edit"
+                          onClick={() => {
+                            if (['Paid', 'Refunded'].includes(inv.status)) {
+                              return toast.error(`Editing not allowed: invoice is ${inv.status}`);
+                            }
+                            setEdit(inv);
+                          }}
+                        >
+                          <Pencil size={16} />
+                        </button>
+
+                        {!['Paid', 'Refunded'].includes(inv.status) && (
+                          <div className="fm-dropdown">
+                            <button
+                              className="fm-btn fm-btn-ghost"
+                              onClick={() => setOpenMenu(openMenu === inv._id ? null : inv._id)}
+                            >
+                              <MoreVertical size={16} />
+                            </button>
+
+                            {openMenu === inv._id && (
+                              <div className="fm-dropdown-menu">
+                                <button onClick={() => setStatusEdit(inv)}>
+                                  <ExternalLink size={14} /> Set status
+                                </button>
+                                <button onClick={() => onCopyClientLink(inv)}>
+                                  <Copy size={14} /> Copy client link
+                                </button>
+                                <button
+                                  className="fm-btn-danger"
+                                  onClick={() => {
+                                    if (['Paid', 'Refunded'].includes(inv.status)) {
+                                      return toast.error(`Cannot delete a ${inv.status} invoice`);
+                                    }
+                                    onDelete(inv._id);
+                                  }}
+                                >
+                                  <Trash2 size={14} /> Delete
+                                </button>
+                              </div>
+                            )}
                           </div>
-                        </div>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -183,11 +239,11 @@ export default function Invoices() {
             </table>
 
             <div className="fm-pagination">
-              <button className="btn ghost" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
+              <button className="fm-btn fm-btn-ghost" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
                 <ChevronLeft size={16} /> Prev
               </button>
               <div>Page {page} of {totalPages}</div>
-              <button className="btn ghost" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
+              <button className="fm-btn fm-btn-ghost" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
                 Next <ChevronRight size={16} />
               </button>
             </div>
@@ -247,8 +303,12 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
   const rmItem = (i) => setItems(prev => prev.filter((_, idx) => idx !== i));
 
   const save = async () => {
-    if (!userID.trim()) return toast.error('Enter user Register _id');
+    if (!userID.trim()) return toast.error('Please enter a valid User ID');
     if (items.length === 0) return toast.error('Add at least one line item');
+    if (items.some(it => !it.description.trim())) return toast.error('Each line item needs a description');
+    if (items.some(it => it.quantity <= 0)) return toast.error('Quantities must be at least 1');
+    if (items.some(it => it.unitPrice <= 0)) return toast.error('Unit price must be greater than 0');
+    if (subtotal <= 0) return toast.error('Invoice total must be greater than 0');
     try {
       setBusy(true);
       await api.post('/invoice', {
@@ -287,12 +347,12 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
               <input className="input" type="number" min="1" value={it.quantity} onChange={e => setItem(i, 'quantity', e.target.value)} />
               <input className="input" type="number" min="0" step="0.01" value={it.unitPrice} onChange={e => setItem(i, 'unitPrice', e.target.value)} />
               <div className="mono">{fmtLKR(line)}</div>
-              <button className="btn ghost" onClick={() => rmItem(i)}><Trash2 size={16} /></button>
+              <button className="fm-btn fm-btn-ghost" onClick={() => rmItem(i)}><Trash2 size={16} /></button>
             </div>
           );
         })}
         <div className="row end inv-add-item">
-          <button className="btn" onClick={addItem}><Plus size={16} /> Add item</button>
+          <button className="fm-btn fm-btn-btn" onClick={addItem}><Plus size={16} /> Add item</button>
         </div>
       </div>
 
@@ -307,8 +367,8 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
       </div>
 
       <div className="row end inv-totals-actions">
-        <button className="btn ghost" onClick={onClose}>Cancel</button>
-        <button className="btn primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Create'}</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Cancel</button>
+        <button className="fm-btn fm-btn-primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Create'}</button>
       </div>
     </Modal>
   );
@@ -353,11 +413,11 @@ function ViewInvoiceModal({ open, onClose, invoice }) {
       </div>
 
       <div className="row end inv-view-actions">
-        <button className="btn primary" onClick={() => {
+        <button className="fm-btn fm-btn-primary" onClick={() => {
           const url = `${window.location.origin}/pay/online?invoice=${invoice._id}`;
           navigator.clipboard.writeText(url).then(() => toast.success('Client payment link copied'));
         }}><Copy size={16} /> Copy client link</button>
-        <button className="btn ghost" onClick={onClose}>Close</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Close</button>
       </div>
     </Modal>
   );
@@ -365,7 +425,7 @@ function ViewInvoiceModal({ open, onClose, invoice }) {
 
 /* Edit Invoice */
 function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
-  const restricted = ['Paid','Refunded'].includes(invoice.status);
+  const restricted = ['Paid', 'Refunded'].includes(invoice.status);
   const [items, setItems] = useState(() => (invoice.lineItems || []).map(li => ({
     description: li.description, quantity: Number(li.quantity), unitPrice: Number(li.unitPrice)
   })));
@@ -380,7 +440,14 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
   const rmItem = (i) => setItems(prev => prev.filter((_, idx) => idx !== i));
 
   const save = async () => {
-    if (restricted) return toast.error('Cannot edit a finalized invoice');
+    if (restricted) {
+      return toast.error(`This invoice is ${invoice.status}. Editing is only allowed for Pending/Overdue/Cancelled invoices.`);
+    }
+    if (items.length === 0) return toast.error('Add at least one line item');
+    if (items.some(it => !it.description.trim())) return toast.error('Each line must include a description');
+    if (items.some(it => it.quantity <= 0)) return toast.error('Quantities must be ≥ 1');
+    if (items.some(it => it.unitPrice <= 0)) return toast.error('Unit price must be greater than 0');
+    if (subtotal <= 0) return toast.error('Invoice total must be positive');
     try {
       setBusy(true);
       await api.put(`/invoice/${invoice._id}`, {
@@ -419,13 +486,13 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
               <input className="input" type="number" min="1" value={it.quantity} onChange={e => setItem(i, 'quantity', e.target.value)} disabled={restricted} />
               <input className="input" type="number" min="0" step="0.01" value={it.unitPrice} onChange={e => setItem(i, 'unitPrice', e.target.value)} disabled={restricted} />
               <div className="mono">{fmtLKR(line)}</div>
-              <button className="btn ghost" onClick={() => rmItem(i)} disabled={restricted}><Trash2 size={16} /></button>
+              <button className="fm-btn fm-btn-ghost" onClick={() => rmItem(i)} disabled={restricted}><Trash2 size={16} /></button>
             </div>
           );
         })}
         {!restricted && (
           <div className="row end inv-add-item">
-            <button className="btn" onClick={addItem}><Plus size={16} /> Add item</button>
+            <button className="fm-btn fm-btn-btn" onClick={addItem}><Plus size={16} /> Add item</button>
           </div>
         )}
       </div>
@@ -441,8 +508,8 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
       </div>
 
       <div className="row end inv-totals-actions">
-        <button className="btn ghost" onClick={onClose}>Close</button>
-        {!restricted && <button className="btn primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Save changes'}</button>}
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Close</button>
+        {!restricted && <button className="fm-btn fm-btn-primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Save changes'}</button>}
       </div>
     </Modal>
   );
@@ -464,8 +531,8 @@ function StatusModal({ open, onClose, invoice, onUpdate }) {
         Paid and Refunded are set via payment/refund flows only.
       </div>
       <div className="row end inv-status-actions">
-        <button className="btn ghost" onClick={onClose}>Cancel</button>
-        <button className="btn primary" onClick={() => onUpdate(invoice._id, next)}>Update</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Cancel</button>
+        <button className="fm-btn fm-btn-primary" onClick={() => onUpdate(invoice._id, next)}>Update</button>
       </div>
     </Modal>
   );
@@ -473,13 +540,13 @@ function StatusModal({ open, onClose, invoice, onUpdate }) {
 
 /* utils */
 function toNum(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
-function round2(n) { return Math.round((Number(n)||0) * 100) / 100; }
+function round2(n) { return Math.round((Number(n) || 0) * 100) / 100; }
 function fmtLKR(n) {
   try { return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(Number(n) || 0); }
   catch { return `LKR ${Number(n || 0).toFixed(2)}`; }
 }
 function fmtDate(d) {
   if (!d) return '-';
-  try { return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
+  try { return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
   catch { return String(d); }
 }

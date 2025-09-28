@@ -59,11 +59,16 @@ export const createInvoiceFromCart = async (req, res) => {
 export const createInvoiceFromAppointment = async (req, res) => {
   try {
     const { appointmentId, userId } = req.body;
-    if (!appointmentId || !userId)
+    if (!appointmentId || !userId) {
       return res.status(400).json({ message: "appointmentId and userId are required" });
+    }
 
-    const appointment = await Appointment.findById(appointmentId).populate("userID", "name email");
-    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+    const appointment = await Appointment.findById(appointmentId)
+      .populate("user", "name email");  
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
 
     const feeMap = {
       VACCINE: 2000,
@@ -71,7 +76,6 @@ export const createInvoiceFromAppointment = async (req, res) => {
       DENTAL: 5000,
       GENERAL_CHECKUP: 1500,
     };
-
     const amount = feeMap[appointment.category] || 1500;
 
     const lineItems = [
@@ -86,18 +90,18 @@ export const createInvoiceFromAppointment = async (req, res) => {
     const subtotal = amount;
     const tax = toMoney(subtotal * 0.08);
     const total = toMoney(subtotal + tax);
-
     const dueDate = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
 
     const invoice = new Invoice({
       invoiceID: generateInvoiceID(),
-      userID,
+      userID: userId,   
       lineItems,
       subtotal,
       tax,
       total,
       status: "Pending",
       dueDate,
+      linkedAppointment: appointment._id,  // optional: lets you trace back
     });
 
     await invoice.save();

@@ -7,6 +7,8 @@ import {
 } from "../../../apis/appointmentApi";
 import jsPDF from "jspdf";
 import { autoTable } from "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api"; // <-- make sure this path is correct
 import "./UserAppointments.css";
 
 const UserAppointments = () => {
@@ -16,6 +18,9 @@ const UserAppointments = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loadingPayId, setLoadingPayId] = useState(null);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     petName: "",
     ownerName: "",
@@ -57,7 +62,6 @@ const UserAppointments = () => {
     if (!formData.petType.trim()) errors.petType = "Pet type is required";
 
     const phoneRegex = /^0\d{9}$/;
-
     if (!phoneRegex.test(formData.contact))
       errors.contact = "Valid phone number required";
 
@@ -140,6 +144,35 @@ const UserAppointments = () => {
     setFormErrors({});
   };
 
+  const handlePayment = async (appointment) => {
+  if (!appointment?.user?._id) {
+    alert("Login required or appointment not linked to a user");
+    return;
+  }
+
+  try {
+    setLoadingPayId(appointment._id);
+
+    const res = await api.post("/api/finance/invoice/appointment", {
+      appointmentId: appointment._id,
+      userId: appointment.user._id, // ✅ FIXED
+    });
+
+    const invoice = res.data?.invoice || res.invoice;
+    if (invoice?._id) {
+      navigate(`/pay/${invoice._id}`);
+    } else {
+      alert("Invoice not created");
+    }
+  } catch (err) {
+    console.error("Error creating appointment invoice:", err);
+    alert(err.response?.data?.message || "Failed to create invoice");
+  } finally {
+    setLoadingPayId(null);
+  }
+};
+
+  // -------- REPORT --------
   const generateReport = () => {
     const doc = new jsPDF();
 
@@ -166,6 +199,7 @@ const UserAppointments = () => {
 
     doc.save("appointments-report.pdf");
   };
+
   const filteredAppointments = appointments.filter((appointment) =>
     appointment.appointmentId
       ?.toLowerCase()
@@ -245,13 +279,16 @@ const UserAppointments = () => {
                 </button>
                 <button
                   className="btn-edit"
-                  onClick={() => {}}
+                  onClick={() => handlePayment(appointment)}
+                  disabled={loadingPayId === appointment._id}
                 >
-                  Pay
+                  {loadingPayId === appointment._id
+                    ? "Preparing Invoice…"
+                    : "Pay"}
                 </button>
                 <button
                   className="btn-delete"
-                  onClick={() =>{}}
+                  onClick={() => {}}
                 >
                   Prescription
                 </button>
@@ -355,7 +392,10 @@ const UserAppointments = () => {
                     type="email"
                     value={formData.contactEmail}
                     onChange={(e) =>
-                      setFormData({ ...formData, contactEmail: e.target.value })
+                      setFormData({
+                        ...formData,
+                        contactEmail: e.target.value,
+                      })
                     }
                     className={formErrors.contactEmail ? "error" : ""}
                   />

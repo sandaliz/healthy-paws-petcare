@@ -3,7 +3,10 @@ import { Toaster, toast } from 'react-hot-toast';
 import { api } from '../../finance/services/financeApi';
 import Modal from './components/Modal';
 import Skeleton from './components/Skeleton';
-import { Search, RefreshCcw, CheckCircle2, XCircle, Eye, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import {
+  Search, RefreshCcw, CheckCircle2, XCircle, Eye,
+  ChevronLeft, ChevronRight, Plus
+} from 'lucide-react';
 import '../css/dashboard.css';
 
 const STATUS_OPTIONS = ['All', 'Pending', 'Approved', 'Rejected', 'Refunded'];
@@ -25,7 +28,7 @@ export default function Refunds() {
       setLoading(true);
       const data = await api.get('/refunds');
       setItems(data.requests || []);
-    } catch (e) {
+    } catch {
       toast.error('Failed to load refunds');
     } finally {
       setLoading(false);
@@ -34,20 +37,31 @@ export default function Refunds() {
   useEffect(() => { load(); }, []);
 
   const filtered = useMemo(() => {
-    let arr = items || [];
-    if (status !== 'All') arr = arr.filter(r => (r.status || '') === status);
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      arr = arr.filter(r => {
-        const owner = (r.userID?.name || '').toLowerCase();
-        const pid = (r.paymentID?.paymentID || '').toLowerCase();
-        const inv = (r.paymentID?.invoiceID?.invoiceID || '').toLowerCase();
-        return owner.includes(q) || pid.includes(q) || inv.includes(q);
-      });
-    }
-    arr = [...arr].sort((a, b) => (a.status === 'Pending' ? -1 : 1));
-    return arr;
-  }, [items, search, status]);
+  let arr = items || [];
+
+  if (status !== 'All') arr = arr.filter(r => (r.status || '') === status);
+
+  if (search.trim()) {
+    const q = search.toLowerCase();
+    arr = arr.filter(r => {
+      const owner = (r.userID?.name || '').toLowerCase();
+      const pid = (r.paymentID?.paymentID || '').toLowerCase();
+      const inv = (r.paymentID?.invoiceID?.invoiceID || '').toLowerCase();
+      return owner.includes(q) || pid.includes(q) || inv.includes(q);
+    });
+  }
+
+  // Sort: Pending first, then by createdAt desc within
+  arr = [...arr].sort((a, b) => {
+    const isPendingA = a.status === 'Pending';
+    const isPendingB = b.status === 'Pending';
+    if (isPendingA && !isPendingB) return -1;
+    if (isPendingB && !isPendingA) return 1;
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  return arr;
+}, [items, search, status]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageItems = useMemo(() => {
@@ -55,7 +69,7 @@ export default function Refunds() {
     return filtered.slice(start, start + PAGE_SIZE);
   }, [filtered, page]);
 
-  const approve = async (id) => {
+  const approve = async id => {
     try {
       await api.put(`/refund/approve/${id}`);
       toast.success('Refund approved');
@@ -66,7 +80,7 @@ export default function Refunds() {
   };
 
   const reject = async (id, reasonRejected) => {
-    if (!reasonRejected || !reasonRejected.trim()) return toast.error('Reason required');
+    if (!reasonRejected?.trim()) return toast.error('Reason required');
     try {
       await api.put(`/refund/reject/${id}`, { reasonRejected });
       toast.success('Refund rejected');
@@ -76,7 +90,7 @@ export default function Refunds() {
     }
   };
 
-  const createRefund = async (form) => {
+  const createRefund = async form => {
     try {
       await api.post('/refund', form);
       toast.success('Refund request created');
@@ -93,59 +107,50 @@ export default function Refunds() {
       <div className="page-head">
         <h2>Refunds</h2>
         <div className="row">
-          <button className="btn" onClick={load}><RefreshCcw size={16} /> Refresh</button>
-          <button className="btn primary" onClick={() => setCreateOpen(true)}><Plus size={16} /> New Refund Request</button>
+          <button className="fm-btn" onClick={load}><RefreshCcw size={16} /> Refresh</button>
+          <button className="fm-btn fm-btn-primary" onClick={() => setCreateOpen(true)}>
+            <Plus size={16} /> New Refund Request
+          </button>
         </div>
       </div>
 
-      <div className="fm-toolbar">
-  <div className="fm-filters">
-    <div className="fm-search wide">
-      <Search size={16} />
-      <input
-        className="input"
-        placeholder="Search by owner, payment, or invoice"
-        value={search}
-        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-      />
-    </div>
-    <select
-      className="input"
-      value={status}
-      onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-    >
-      {STATUS_OPTIONS.map(s => (
-        <option key={s} value={s}>
-          {s}
-        </option>
-      ))}
-    </select>
-  </div>
-</div>
+      <div className="rf-filters">
+        <div className="rf-search">
+          <Search size={16} />
+          <input
+            className="rf-search-input"
+            placeholder="Search by owner, payment, invoice"
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+          />
+        </div>
+        <div className="rf-filter">
+          <label>Status:</label>
+          <select value={status} onChange={e => { setStatus(e.target.value); setPage(1); }}>
+            {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+      </div>
 
-      <div className="card">
-        {loading ? (
-          <Skeleton rows={8} />
-        ) : (
+      <div className="fm-card">
+        {loading ? <Skeleton rows={8} /> : (
           <>
             <table className="refunds-table">
               <thead>
                 <tr>
-                  <th>Payment</th>
                   <th>Invoice</th>
                   <th>Owner</th>
                   <th>Amount</th>
                   <th>Status</th>
-                  <th className="right">Actions</th>
+                  <th className="right" style={{width:"240px"}}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {pageItems.length === 0 && (
-                  <tr><td colSpan={6} className="muted">No refund requests</td></tr>
+                  <tr><td colSpan={5} className="muted">No refund requests</td></tr>
                 )}
                 {pageItems.map(r => (
                   <tr key={r._id}>
-                    <td className="mono">{r.paymentID?.paymentID || '-'}</td>
                     <td className="mono">{r.paymentID?.invoiceID?.invoiceID || '-'}</td>
                     <td>
                       <div className="owner">
@@ -154,16 +159,18 @@ export default function Refunds() {
                       </div>
                     </td>
                     <td className="mono">{fmtLKR(r.amount)}</td>
-                    <td>
-                      <span className={`tag-pill ${r.status?.toLowerCase()}`}>{r.status}</span>
-                    </td>
+                    <td><span className={`tag-pill ${r.status?.toLowerCase()}`}>{r.status}</span></td>
                     <td className="right">
                       <div className="row end">
-                        <button className="btn ghost" onClick={() => setView(r)} title="View"><Eye size={16} /></button>
+                        <button className="fm-btn fm-btn-ghost" onClick={() => setView(r)}><Eye size={16}/></button>
                         {r.status === 'Pending' && (
                           <>
-                            <button className="btn secondary" onClick={() => approve(r._id)} title="Approve"><CheckCircle2 size={16} /> Approve</button>
-                            <button className="btn ghost" onClick={() => setRejectModal(r)} title="Reject"><XCircle size={16} /> Reject</button>
+                            <button className="fm-btn fm-btn-secondary" onClick={() => approve(r._id)}>
+                              <CheckCircle2 size={16}/> Approve
+                            </button>
+                            <button className="fm-btn fm-btn-ghost" onClick={() => setRejectModal(r)}>
+                              <XCircle size={16}/> Reject
+                            </button>
                           </>
                         )}
                       </div>
@@ -174,33 +181,22 @@ export default function Refunds() {
             </table>
 
             <div className="fm-pagination">
-              <button className="btn ghost" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
-                <ChevronLeft size={16} /> Prev
+              <button className="fm-btn fm-btn-ghost" onClick={() => setPage(p => Math.max(1,p-1))} disabled={page===1}>
+                <ChevronLeft size={16}/> Prev
               </button>
               <div>Page {page} of {totalPages}</div>
-              <button className="btn ghost" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
-                Next <ChevronRight size={16} />
-              </button>
+              <button className="fm-btn fm-btn-ghost" onClick={() => setPage(p => Math.min(totalPages,p+1))} disabled={page===totalPages}>
+                Next <ChevronRight size={16}/></button>
             </div>
           </>
         )}
       </div>
 
-      {view && <RefundViewModal open={!!view} onClose={() => setView(null)} r={view} />}
+      {view && <RefundViewModal open onClose={() => setView(null)} r={view} />}
       {rejectModal && (
-        <RejectModal
-          open={!!rejectModal}
-          onClose={() => setRejectModal(null)}
-          onReject={(reason) => reject(rejectModal._id, reason)}
-        />
+        <RejectModal open onClose={() => setRejectModal(null)} onReject={reason => reject(rejectModal._id, reason)} />
       )}
-      {createOpen && (
-        <CreateRefundModal
-          open={createOpen}
-          onClose={() => setCreateOpen(false)}
-          onCreate={createRefund}
-        />
-      )}
+      {createOpen && <CreateRefundModal open onClose={() => setCreateOpen(false)} onCreate={createRefund} />}
     </div>
   );
 }
@@ -215,13 +211,29 @@ function RefundViewModal({ open, onClose, r }) {
         <div className="kv"><span>Email</span><b>{r.userID?.email || '-'}</b></div>
         <div className="kv"><span>Amount</span><b>{fmtLKR(r.amount)}</b></div>
         <div className="kv"><span>Status</span><b><span className={`tag-pill ${r.status?.toLowerCase()}`}>{r.status}</span></b></div>
-        <div className="kv"><span>Reason</span><b>{r.reason || '-'}</b></div>
-        {r.reasonRejected && <div className="kv"><span>Reason (rejected)</span><b>{r.reasonRejected}</b></div>}
+      </div>
+
+      {r.reason && (
+        <div className="rf-reason-block">
+          <strong>Reason:</strong>
+          <div className="reason-text">{r.reason}</div>
+        </div>
+      )}
+
+      {r.reasonRejected && (
+        <div className="rf-reason-block rejected">
+          <strong>Rejected Reason:</strong>
+          <div className="reason-text">{r.reasonRejected}</div>
+        </div>
+      )}
+
+      <div className="summary vlist">
         <div className="kv"><span>Submitted</span><b>{fmtDate(r.createdAt)}</b></div>
         {r.processedAt && <div className="kv"><span>Processed</span><b>{fmtDate(r.processedAt)}</b></div>}
       </div>
+
       <div className="row end rf-view-actions">
-        <button className="btn ghost" onClick={onClose}>Close</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Close</button>
       </div>
     </Modal>
   );
@@ -233,39 +245,32 @@ function RejectModal({ open, onClose, onReject }) {
     <Modal open={open} onClose={onClose} title="Reject refund">
       <div className="field">
         <label>Reason</label>
-        <textarea className="input" rows={4} value={reason} onChange={(e) => setReason(e.target.value)} />
+        <textarea className="input" rows={4} value={reason} onChange={e=>setReason(e.target.value)} />
       </div>
       <div className="row end rf-reject-actions">
-        <button className="btn ghost" onClick={onClose}>Cancel</button>
-        <button className="btn primary" onClick={() => onReject(reason)}>Reject</button>
-      </div>
-    </Modal>
-  );
-}
-
-function CreateRefundModal({ open, onClose, onCreate }) {
-  const [form, setForm] = useState({ paymentID: '', reason: '' });
-  const set = (k,v) => setForm(prev=>({...prev,[k]:v}));
-  return (
-    <Modal open={open} onClose={onClose} title="New Refund Request">
-      <div className="field">
-        <label>Payment ID</label>
-        <input className="input" value={form.paymentID} onChange={e=>set('paymentID',e.target.value)} placeholder="Enter Payment ID"/>
-      </div>
-      <div className="field">
-        <label>Reason</label>
-        <textarea className="input" rows={3} value={form.reason} onChange={e=>set('reason',e.target.value)} />
-      </div>
-      <div className="row end rf-create-actions">
-        <button className="btn ghost" onClick={onClose}>Cancel</button>
-        <button className="btn primary" onClick={()=>onCreate(form)}>Submit Request</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Cancel</button>
+        <button className="fm-btn fm-btn-danger" onClick={()=>onReject(reason)}>Reject</button>
       </div>
     </Modal>
   )
 }
 
-function fmtLKR(n) {
-  try { return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(Number(n) || 0); }
-  catch { return `LKR ${Number(n || 0).toFixed(2)}`; }
+function CreateRefundModal({ open, onClose, onCreate }) {
+  const [form, setForm] = useState({ paymentID:'', reason:'' });
+  const set = (k,v)=>setForm(prev=>({...prev,[k]:v}));
+  return (
+    <Modal open={open} onClose={onClose} title="New Refund Request">
+      <div className="field"><label>Payment ID</label>
+        <input className="input" value={form.paymentID} onChange={e=>set('paymentID',e.target.value)} /></div>
+      <div className="field"><label>Reason</label>
+        <textarea className="input" rows={3} value={form.reason} onChange={e=>set('reason',e.target.value)} /></div>
+      <div className="row end rf-create-actions">
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Cancel</button>
+        <button className="fm-btn fm-btn-primary" onClick={()=>onCreate(form)}>Submit</button>
+      </div>
+    </Modal>
+  )
 }
-function fmtDate(d) { try { return new Date(d).toLocaleString(); } catch { return '-'; } }
+
+function fmtLKR(n){try{return new Intl.NumberFormat('en-LK',{style:'currency',currency:'LKR'}).format(Number(n)||0)}catch{return`LKR ${Number(n||0).toFixed(2)}`} }
+function fmtDate(d){if(!d) return '-'; try{return new Date(d).toLocaleString()}catch{return '-'} }
