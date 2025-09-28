@@ -71,10 +71,10 @@ export const createInvoiceFromAppointment = async (req, res) => {
     }
 
     const feeMap = {
-      VACCINE: 2000,
+      VACCINE: 4000,
       SURGERY: 10000,
       DENTAL: 5000,
-      GENERAL_CHECKUP: 1500,
+      GENERAL_CHECKUP: 3500,
     };
     const amount = feeMap[appointment.category] || 1500;
 
@@ -122,11 +122,11 @@ export const createInvoiceFromDaycare = async (req, res) => {
     if (!care) return res.status(404).json({ message: "Daycare booking not found" });
 
     // Simple flat nightly fee (customize with grooming/walking extras)
-    const nightlyRate = 1000; // example
+    const nightlyRate = 3000;
     let subtotal = care.nightsStay * nightlyRate;
 
-    if (care.grooming) subtotal += 500;
-    if (care.walking) subtotal += 300;
+    if (care.grooming) subtotal += 3500;
+    if (care.walking) subtotal += 2000;
 
     const lineItems = [
       {
