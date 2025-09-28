@@ -11,7 +11,7 @@ const Hero = () => {
           <p>Because every pet deserves love, care, and the best!</p>
           <div className="cta-buttons">
             <Link to="/ask-quesions"><button className="glass-btn">Ask A Vet</button></Link>
-            <Link to="/appointments"><button className="glass-btn highlight">Make a reservation</button></Link>
+            <Link to="/appointments"><button className="glass-btn highlight">Make a appointment</button></Link>
           </div>
         </div>
       </div>
