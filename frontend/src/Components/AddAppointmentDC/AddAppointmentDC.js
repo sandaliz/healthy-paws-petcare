@@ -324,8 +324,12 @@ const sendRequest = async () => {
                             <option value="authorize-treatment">Authorize Necessary Treatment</option>
                         </select>
                     </div>
+                    <p>Pets must be fully vaccinated.
+                        Owners must provide medical instructions.
+                        Emergency vet care will be authorized if needed.</p>
 
                     <div className="checkbox-group agreement">
+                        
                         <label className="checkbox-label">
                             <input type="checkbox" name="agree" checked={inputs.agree} onChange={handleChange} required />
                             <span>I agree to the terms and conditions *</span>

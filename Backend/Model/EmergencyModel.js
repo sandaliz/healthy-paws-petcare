@@ -1,21 +1,20 @@
-// models/EmergencyModel.js
 import mongoose from "mongoose";
 
 const emergencySchema = new mongoose.Schema(
   {
     pet: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "CareCustomer", // Link to pet/appointment record
+      ref: "CareCustomer",
       required: true,
     },
     reportedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Staff or system
+      ref: "User",
       required: true,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "CareCustomer", // Owner user record
+      ref: "CareCustomer",
       required: true,
     },
     actionTaken: {
@@ -44,6 +43,9 @@ const emergencySchema = new mongoose.Schema(
       type: String,
       enum: ["sent", "failed"],
       default: "sent",
+    },
+    emailDebug: {
+      type: mongoose.Schema.Types.Mixed, // full email info for debugging
     },
     timestamp: {
       type: Date,
