@@ -13,12 +13,12 @@ export default function Sidebar() {
       </div>
       <nav className="fm-nav">
         <NavLink to="/fm" end className={link}><PieChart size={18} /><span>Overview</span></NavLink>
-        <NavLink to="/fm/invoices" className={link}><Receipt size={18} /><span>Invoices</span></NavLink>
-        <NavLink to="/fm/payments" className={link}><CreditCard size={18} /><span>Payments</span></NavLink>
-        <NavLink to="/fm/refunds" className={link}><RefreshCcw size={18} /><span>Refunds</span></NavLink>
+        <NavLink to="/fm/invoices" className={link}><Receipt size={18} /><span>Invoice Center</span></NavLink>
+        <NavLink to="/fm/payments" className={link}><CreditCard size={18} /><span>Payment Management</span></NavLink>
+        <NavLink to="/fm/refunds" className={link}><RefreshCcw size={18} /><span>Refund Management</span></NavLink>
         <NavLink to="/fm/coupons" className={link}><Ticket size={18} /><span>Coupons</span></NavLink>
-        <NavLink to="/fm/loyalty" className={link}><Trophy size={18} /><span>Loyalty</span></NavLink>
-        <NavLink to="/fm/salaries" className={link}><Wallet size={18} /><span>Salaries</span></NavLink>
+        <NavLink to="/fm/loyalty" className={link}><Trophy size={18} /><span>PawPerks Loyalty Management</span></NavLink>
+        <NavLink to="/fm/salaries" className={link}><Wallet size={18} /><span>Payroll Management</span></NavLink>
       </nav>
     </aside>
   );

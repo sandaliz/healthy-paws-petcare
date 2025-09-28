@@ -464,14 +464,14 @@ export const confirmStripePayment = async (req, res) => {
 
         // resolve owner for display name
         const owner = await resolveOwnerDoc({ invoice, payment });
-        const toEmail = typedEmail || chargeEmail || owner?.OwnerEmail || null;
+        const toEmail = typedEmail || chargeEmail || owner?.email || null;
 
         if (toEmail) {
           await sendPaymentEmail({
             to: toEmail,
             invoice,
             payment,
-            ownerName: owner?.OwnerName,
+            ownerName: owner?.name,
             ownerEmail: toEmail,
           });
           payment.receiptEmailSentAt = new Date();
@@ -523,14 +523,14 @@ export const confirmStripePayment = async (req, res) => {
       const typedEmail = (typeof typedEmailRaw === 'string' && typedEmailRaw.trim()) ? typedEmailRaw.trim() : null;
 
       const owner = await resolveOwnerDoc({ invoice, payment });
-      const toEmail = typedEmail || chargeEmail || owner?.OwnerEmail || null;
+      const toEmail = typedEmail || chargeEmail || owner?.email || null;
 
       if (!payment.receiptEmailSentAt && toEmail) {
         await sendPaymentEmail({
           to: toEmail,
           invoice,
           payment,
-          ownerName: owner?.OwnerName,
+          ownerName: owner?.name,
           ownerEmail: toEmail,
         });
         payment.receiptEmailSentAt = new Date();
@@ -558,7 +558,7 @@ export const getAllPayments = async (req, res) => {
       .populate({
         path: "invoiceID",
         select: "invoiceID status total userID",
-        populate: { path: "userID", select: "OwnerName OwnerEmail" },
+        populate: { path: "userID", select: "name email" },
       })
       .populate("couponId", "code discountType discountValue scope ownerUserID parentId status")
       .lean();
