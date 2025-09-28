@@ -74,6 +74,7 @@ import DailyLogsPet from "./Components/DailyLogsPet/DailyLogsPet";
 
 // ---------------- Dashboard & nested pages (Daycare) ----------------
 import DashboardDC from "./Components/DashboardDC/DashboardDC/DashboardDC";
+import AnalyticsDashboardDC from "./Components/DashboardDC/AnalyticsDashboardDC/AnalyticsDashboardDC";
 import TodaysPets from "./Components/DashboardDC/TodaysPets/TodaysPets";
 import PendingAppointments from "./Components/DashboardDC/PendingAppointmentsDC/PendingAppointmentsDC";
 import UpcomingAppointmentsDC from "./Components/DashboardDC/UpcomingAppointmentsDC/UpcomingAppointmentsDC";
@@ -179,42 +180,30 @@ function App() {
       <Route path="/daycare" element={<Daycare />} />
       <Route path="/appointmentDC" element={<AppointmentDCs />} />
       <Route path="/addappointmentDC" element={<AddAppointmentDC />} />
-      <Route
-        path="/updateAppointmentDC/:id"
-        element={<UpdateAppointmentDC />}
-      />
+      <Route path="/updateAppointmentDC/:id" element={<UpdateAppointmentDC />} />
       <Route path="/updateApphisDC/:id" element={<UpdateApphisDC />} />
       <Route path="/reviews" element={<Review />} />
       <Route path="/addreviews" element={<AddReviews />} />
       <Route path="/updatereview/:id" element={<UpdateReviews />} />
       <Route path="/StarRating" element={<StarRating />} />
-      <Route
-        path="/appointmentDisplayDC/:id"
-        element={<AppointmentDisplayDC />}
-      />
+      <Route path="/appointmentDisplayDC/:id" element={<AppointmentDisplayDC />} />
       <Route path="/daycareLogs/:appointmentId" element={<DailyLogsPet />} />
 
       {/* -------- Daycare Dashboard (Nested) -------- */}
       <Route path="/dashboardDC/*" element={<DashboardDC />}>
-        <Route
-          path=""
-          element={<div>Welcome to HealthyPaws Daycare Dashboard</div>}
-        />
-        <Route path="todaysPets" element={<TodaysPets />} />
-        <Route path="pendingAppointments" element={<PendingAppointments />} />
-        <Route
-          path="upcomingAppointments"
-          element={<UpcomingAppointmentsDC />}
-        />
-        <Route path="appointmentHistory" element={<AppointmentHistory />} />
-        <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
-        <Route path="emergency" element={<EmergencyPage />} />
-        <Route
-          path="appointmentDetailsDC/:id"
-          element={<AppointmentDetailsDC />}
-        />
-        <Route path="reviews" element={<ReviewsDC />} />
-      </Route>
+  <Route index element={<AnalyticsDashboardDC />} />  {/* <-- default page */}
+  <Route path="analyticDC" element={<AnalyticsDashboardDC />}/>
+  <Route path="todaysPets" element={<TodaysPets />} />
+  <Route path="pendingAppointments" element={<PendingAppointments />} />
+  <Route path="upcomingAppointments" element={<UpcomingAppointmentsDC />} />
+  <Route path="appointmentHistory" element={<AppointmentHistory />} />
+  <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
+  <Route path="emergency" element={<EmergencyPage />} />
+  <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
+  <Route path="reviews" element={<ReviewsDC />} />
+</Route>
+
+
       {/* DOCTOR ROUTES */}
       <Route path="/doctor-login" element={<DoctorDashboard />} />
       <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
