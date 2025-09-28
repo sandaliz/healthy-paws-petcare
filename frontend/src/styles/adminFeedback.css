@@ -157,11 +157,62 @@
   color: #666666;
 }
 
+/* ================================
+   MESSAGE CELL STYLES - UPDATED FOR LONG MESSAGES
+================================= */
 .message-cell {
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Show full message on hover */
+.message-cell:hover {
+  white-space: normal;
+  overflow: visible;
+  background: #fff;
+  z-index: 10;
+  position: relative;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  padding: 8px 12px;
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+/* Alternative: Tooltip style for messages */
+.message-cell.tooltip-enabled {
+  position: relative;
+}
+
+.message-cell.tooltip-enabled::after {
+  content: attr(data-full-message);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: normal;
+  width: 250px;
+  word-wrap: break-word;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.message-cell.tooltip-enabled:hover::after {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* ================================
@@ -376,7 +427,7 @@
 }
 
 /* ================================
-   REPORT TYPE SELECT (NEW ⬇)
+   REPORT TYPE SELECT
 ================================= */
 .report-options {
   display: flex;
@@ -464,6 +515,13 @@
   .report-options select {
     width: 100%;
     max-width: 300px;
+  }
+  
+  /* Adjust message cell for mobile */
+  .message-cell:hover {
+    max-width: 200px;
+    position: static;
+    transform: none;
   }
 }
 
