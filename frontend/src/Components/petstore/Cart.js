@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Cart.css";
-import InvoiceModal from "../finance/InvoiceModal"; 
+import InvoiceModal from "../finance/InvoiceModal";
 
 function Cart() {
   const { id } = useParams(); // if prescription
@@ -78,7 +78,7 @@ function Cart() {
         // 🔹 PRESCRIPTION CHECKOUT
         // ======================
         await axios.put(`http://localhost:5001/prescriptions/${prescription._id}`, {
-          status: "paid",
+          status: "pending", //let Finance control
         });
 
         const cartRes = await axios.post("http://localhost:5001/checkout", {
@@ -95,6 +95,13 @@ function Cart() {
 
         const savedCart = cartRes.data;
 
+        const invoiceRes = await axios.post("http://localhost:5001/api/finance/invoice/cart", {
+          cartId: savedCart.cartId,
+          userId: savedCart.userId,
+        });
+
+        const invoice = invoiceRes.data.invoice;
+
         if (paymentOption === "payOnline") {
           await axios.post("http://localhost:5001/shipping", {
             ...shippingDetails,
@@ -107,9 +114,18 @@ function Cart() {
             })),
             totalPrice: total,
           });
-          navigate("/payment");
+          navigate(`/pay/online?invoice=${invoice._id}`);
         } else {
-          navigate("/store");
+          const offlineRes = await axios.post("http://localhost:5001/api/finance/payment/offline", {
+            invoiceID: invoice._id,
+            method: "Cash",   
+          });
+
+          const offlinePayment = offlineRes.data.payment;
+          console.log("Prescription offline payment created:", offlinePayment);
+
+          setLatestInvoice(invoice);
+          setShowInvoiceModal(true);
         }
 
       } else {
@@ -154,7 +170,15 @@ function Cart() {
           setCart([]);
           navigate(`/pay/online?invoice=${invoice._id}`);
         } else {
-          // Show invoice modal instead of alert
+          const offlineRes = await axios.post("http://localhost:5001/api/finance/payment/offline", {
+            invoiceID: invoice._id,
+            method: "Cash", // or "Card"/"BankTransfer" if you want to extend UI
+          });
+
+          const offlinePayment = offlineRes.data.payment;
+          console.log("Offline payment created in DB:", offlinePayment);
+
+          // Then show invoice modal
           setLatestInvoice(invoice);
           setShowInvoiceModal(true);
           localStorage.removeItem("cart");

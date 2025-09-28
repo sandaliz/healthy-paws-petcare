@@ -163,7 +163,7 @@ export const approveRefund = async (req, res) => {
       const toEmail = owner?.email ?? null;
 
       if (toEmail) {
-        await sendRefundEmail({ to: toEmail, invoice, payment, refundAmount, stripeRefundId, mode: payment.method === "Stripe" ? "online" : "offline", ownerName: owner?.OwnerName, ownerEmail: owner?.OwnerEmail });
+        await sendRefundEmail({ to: toEmail, invoice, payment, refundAmount, stripeRefundId, mode: payment.method === "Stripe" ? "online" : "offline", ownerName: owner?.name, ownerEmail: owner?.email });
       }
       refundRequest.approvalEmailSentAt = new Date();
       await refundRequest.save();
@@ -202,7 +202,7 @@ export const rejectRefund = async (req, res) => {
         const toEmail = owner?.email ?? null;
 
         if (toEmail) {
-          await sendRefundRejectedEmail({ to: toEmail, invoice, payment, refundAmount: refundRequest.amount, reasonProvided: refundRequest.reason, reasonRejected, ownerName: owner?.OwnerName, ownerEmail: owner?.OwnerEmail });
+          await sendRefundRejectedEmail({ to: toEmail, invoice, payment, refundAmount: refundRequest.amount, reasonProvided: refundRequest.reason, reasonRejected, ownerName: owner?.name, ownerEmail: owner?.email });
         }
       }
       refundRequest.rejectionEmailSentAt = new Date();
