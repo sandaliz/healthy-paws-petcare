@@ -29,17 +29,9 @@ const Navbar = () => {
       {/* Center Links */}
       <ul className="nav-links">
         <li><a href="#home">Home</a></li>
-        <li className="dropdown">
-          <a href="#services">Services ▾</a>
-          <ul className="dropdown-content">
-            <li><a href="#reservation">Reservation</a></li>
-            <li><a href="#petstore">Pet Store</a></li>
-            <li><a href="#daycare">Pet Daycare</a></li>
-            <li><a href="#vaccine">Vaccine Plan</a></li>
-          </ul>
-        </li>
+        <li><a href="/register/owner">Register</a></li>
+        <li><a href="#about">Vaccine Plan</a></li>
         <li><a href="/feedback">Feedbacks</a></li>
-        <li><a href="#contact">Contact Us</a></li>
       </ul>
 
       {/* Right Side (Auth) */}
