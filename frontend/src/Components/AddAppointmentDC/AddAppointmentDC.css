@@ -4,19 +4,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Poppins:wght@400;500;600;700&display=swap');
 
 .dc-back {
-    background-color: #faead4;
+    /* Full page */
+    min-height: 100vh;
+    width: 100%;
+    
+    /* Background image */
+    background-image: url('../../../public/images/dc-dog.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    /* Optional overlay for better contrast */
+    position: relative;
+}
+
+.dc-back::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Frosted glass overlay effect */
+    background: rgba(255, 255, 255, 0.15); /* semi-transparent */
+    backdrop-filter: blur(1px); /* frosted glass */
+    -webkit-backdrop-filter: blur(10px); /* for Safari */
+    
+    /* Optional subtle gradient for depth */
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.15), 
+        rgba(255, 255, 255, 0.05)
+    );
+    
+    z-index: 0;
 }
 
 .appointment-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #333;
-    background-color: #FFFFFF;
-    min-height: 100vh;
+    position: relative;
+    z-index: 1; /* above the overlay */
 }
 
 .appointment-form {

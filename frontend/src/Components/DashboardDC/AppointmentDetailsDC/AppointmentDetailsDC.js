@@ -57,6 +57,7 @@ function AppointmentDetailsDC() {
       <p><strong>Feeding Times:</strong> {appointment.feedingTimes}</p>
       <p><strong>Grooming:</strong> {appointment.grooming ? "Yes" : "No"}</p>
       <p><strong>Walking:</strong> {appointment.walking ? "Yes" : "No"}</p>
+      <p><strong>Emergency Action:</strong> {appointment.emergencyAction}</p>
 
       <p><strong>Status:</strong> {appointment.status}</p>
     </div>

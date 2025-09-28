@@ -1,7 +1,7 @@
 // AddReviews.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+import api from '../../utils/api';
 import './AddReviews.css'; 
 import StarRating from "../StarRating/StarRating"; 
 
@@ -57,7 +57,7 @@ function AddReviews() {
   };
 
   const sendRequest = async () => {
-    await axios.post("http://localhost:5001/reviews", {
+    await api.post("/reviews", {
       ownerName: String(inputs.ownerName),
       petName: String(inputs.petName),
       species: String(inputs.species),
