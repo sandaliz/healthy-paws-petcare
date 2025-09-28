@@ -5,46 +5,67 @@ import sendEmail from "../utils/sendEmail.js";
 
 /**
  * Handle emergency for a pet appointment
- * @route POST /api/emergency/send
+ * @route POST /api/emergencies/send
  * @body { appointmentID, treatmentGiven, emergencyAction }
  */
 export const handleEmergencyAction = async (req, res) => {
   try {
     const { appointmentID, treatmentGiven, emergencyAction } = req.body;
 
+    console.log("🚨 Emergency triggered:", { appointmentID, treatmentGiven, emergencyAction });
+
+    if (!appointmentID || !emergencyAction) {
+      return res.status(400).json({ message: "Missing required fields: appointmentID or emergencyAction" });
+    }
+
     // Find appointment
-    const appointment = await CareCustomer.findOne({ _id: appointmentID });
+    const appointment = await CareCustomer.findById(appointmentID);
     if (!appointment) {
+      console.warn("⚠️ Appointment not found:", appointmentID);
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    // Determine email subject and content
+    console.log("Found appointment:", {
+      petName: appointment.petName,
+      ownerName: appointment.ownerName,
+      ownerEmail: appointment.email,
+    });
+
+    // Compose email
     let emailSubject = "";
     let emailText = "";
 
-    if (emergencyAction === "contact-owner") {
-      emailSubject = `Emergency with ${appointment.petName}`;
-      emailText = `Dear ${appointment.ownerName},\n\nYour pet ${appointment.petName} is experiencing an emergency. Please contact us immediately.`;
-    } else if (emergencyAction === "authorize-treatment") {
-      emailSubject = `Emergency Treatment for ${appointment.petName}`;
-      emailText = `Dear ${appointment.ownerName},\n\nYour pet ${appointment.petName} required emergency treatment.\n\nTreatment: ${treatmentGiven || "Details not provided"}.\n\nWe have proceeded as authorized.`;
-    } else {
-      emailSubject = `Emergency Alert for ${appointment.petName}`;
-      emailText = `Dear ${appointment.ownerName},\n\nYour pet ${appointment.petName} is in an emergency situation. Please contact us immediately.`;
+    switch (emergencyAction) {
+      case "contact-owner":
+        emailSubject = `Emergency with ${appointment.petName}`;
+        emailText = `Dear ${appointment.ownerName},\n\nYour pet ${appointment.petName} is experiencing an emergency. Please contact us immediately.`;
+        break;
+
+      case "authorize-treatment":
+        emailSubject = `Emergency Treatment for ${appointment.petName}`;
+        emailText = `Dear ${appointment.ownerName},\n\nYour pet ${appointment.petName} required emergency treatment.\n\nTreatment: ${treatmentGiven || "Details not provided"}.\n\nWe have proceeded as authorized.`;
+        break;
+
+      default:
+        emailSubject = `Emergency Alert for ${appointment.petName}`;
+        emailText = `Dear ${appointment.ownerName},\n\nYour pet ${appointment.petName} is in an emergency situation. Please contact us immediately.`;
+        break;
     }
 
-    // Send email to appointment owner's email
+    // Send email
     const emailStatus = await sendEmail({
       to: appointment.email,
       subject: emailSubject,
       text: emailText,
     });
 
+    console.log("Email sending result:", emailStatus);
+
     // Save emergency record
     const emergencyRecord = new Emergency({
       pet: appointment._id,
-      reportedBy: req.user?.id || null, // Fixed: use req.user.id from authMiddleware
-      owner: appointment._id, // owner is the appointment record itself
+      reportedBy: req.user?.id || null,
+      owner: appointment._id,
       actionTaken: emergencyAction,
       treatmentGiven: treatmentGiven || "",
       emailStatus,
@@ -53,33 +74,16 @@ export const handleEmergencyAction = async (req, res) => {
     });
 
     await emergencyRecord.save();
+    console.log("Emergency record saved:", emergencyRecord._id);
 
     return res.status(200).json({
       message: "Emergency handled successfully",
       emailStatus,
       emergency: emergencyRecord,
     });
-  } catch (err) {
-    console.error("Emergency handling error:", err);
-    return res.status(500).json({ message: "Server error" });
-  }
-};
 
-/**
- * Get all emergency history
- * @route GET /api/emergency/history
- */
-export const getEmergencyHistory = async (req, res) => {
-  try {
-    const emergencies = await Emergency.find()
-      .populate("pet", "petName ownerName email")
-      .populate("owner", "ownerName email")
-      .populate("reportedBy", "email role")
-      .sort({ createdAt: -1 });
-
-    return res.status(200).json(emergencies);
   } catch (err) {
-    console.error("Error fetching emergency history:", err);
-    return res.status(500).json({ message: "Error fetching emergency history" });
+    console.error("❌ Emergency handling error:", err);
+    return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
