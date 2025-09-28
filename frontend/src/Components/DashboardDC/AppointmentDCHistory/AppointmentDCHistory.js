@@ -135,7 +135,7 @@ function AppointmentDCHistory() {
   };
 
   return (
-    <div className="history-container">
+    <div className="Ahistory-container">
       <h2>Appointment History</h2>
       <div className="history-controls">
         <input

@@ -16,26 +16,36 @@ const EmergencyPage = () => {
 
   const reportEmergency = async (actionType) => {
     try {
-      // Send the correct emergencyAction to the backend
-      await api.post("/emergency/send", {
+      const payload = {
         appointmentID: appointment._id,
         treatmentGiven: actionType === "authorize-treatment" ? treatment : "",
         emergencyAction: actionType,
-      });
+      };
 
-      alert("Emergency reported successfully!");
-      navigate("/dashboardDC/todaysPets");
+      // ✅ fixed endpoint path
+      const res = await api.post("/api/emergencies/send", payload);
+
+      if (res.status === 200) {
+        alert("Emergency reported successfully!");
+        navigate("/dashboardDC/todaysPets");
+      }
     } catch (err) {
       console.error("Failed to report emergency:", err);
-      const msg =
-        err.response?.data?.message || "Failed to report emergency. Check console.";
-      alert(msg);
+      alert(
+        err.response?.data?.message ||
+          "Failed to report emergency. Check console."
+      );
     }
   };
 
   return (
     <div className="emergency-page">
       <h2>Report Emergency for {appointment.petName}</h2>
+      <p>
+        <strong>Owner:</strong> {appointment.ownerName} <br />
+        <strong>Email:</strong> {appointment.email} <br />
+        <strong>Emergency Action:</strong> {appointment.emergencyAction}
+      </p>
 
       <div className="emergency-actions">
         <button

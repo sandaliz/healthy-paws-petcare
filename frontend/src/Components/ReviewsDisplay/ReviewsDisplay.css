@@ -144,8 +144,8 @@
   margin-top: 15px;
 }
 
-.update-btn,
-.delete-btn {
+.re-update-btn,
+.re-delete-btn {
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -155,23 +155,23 @@
   transition: 0.3s ease;
 }
 
-.update-btn {
+.re-update-btn {
   background-color: #FFD58E;
   color: #54413C;
   border: none;
 }
 
-.update-btn:hover {
+.re-update-btn:hover {
   background-color: #e6be7a;
 }
 
-.delete-btn {
+.re-delete-btn {
   background-color: #54413C;
   color: #fff;
   border: none;
 }
 
-.delete-btn:hover {
+.re-delete-btn:hover {
   background-color: #3d302c;
 }
 

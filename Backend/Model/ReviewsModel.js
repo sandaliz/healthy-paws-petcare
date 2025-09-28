@@ -1,10 +1,11 @@
-// Model/ReviewsModel.js (ESM)
+// Model/ReviewsModel.js
 import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const reviewSchema = new Schema(
   {
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // <-- add owner
     ownerName: { type: String, required: true },
     petName: { type: String, required: true },
     grooming: { type: Boolean, default: false },
