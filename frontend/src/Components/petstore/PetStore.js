@@ -76,20 +76,7 @@ function PetStore() {
         </div>
       </div>
 
-      <div className="ps-promo-section">
-        <div className="ps-promo-grid">
-          <div className="ps-promo-card ps-deals">
-            <h3>Super Deals</h3>
-            <p>Limited time only!</p>
-            <button className="ps-promo-cta">Shop now</button>
-          </div>
-          <div className="ps-promo-card ps-featured">
-            <h3>Premium Quality</h3>
-            <p>The finest ingredients for your beloved pets.</p>
-            <button className="ps-promo-cta">Shop now</button>
-          </div>
-        </div>
-      </div>
+      
 
       <div className="ps-search-container">
         <input
