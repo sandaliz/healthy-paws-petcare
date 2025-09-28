@@ -13,60 +13,59 @@ const emailNormalizeOptions = {
 
 export const registerValidationRules = () => {
   return [
-    // ✅ Foreign key validation for User reference
     body("userId")
       .isMongoId()
-      .withMessage("Valid userId is required"),
+      .withMessage("Valid userId (Mongo ObjectId) is required"),
 
     body("OwnerName")
       .notEmpty()
       .withMessage("Owner name is required")
-      .isLength({ max: 50 }),
+      .isLength({ max: 50 })
+      .withMessage("Owner name must be ≤ 50 characters"),
 
+    // ✅ Modern email regex
     body("OwnerEmail")
-      .isEmail()
-      .withMessage("Valid email required")
+      .matches(/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/)
+      .withMessage("Please enter a valid email address")
       .normalizeEmail(emailNormalizeOptions),
 
+    // ✅ Phones: exactly 10 digits
     body("OwnerPhone")
-      .notEmpty()
-      .withMessage("Phone required"),
+      .matches(/^\d{10}$/)
+      .withMessage("Phone number must be exactly 10 digits"),
 
     body("EmergencyContact")
-      .notEmpty()
-      .withMessage("Emergency contact required"),
+      .matches(/^\d{10}$/)
+      .withMessage("Emergency contact must be exactly 10 digits"),
 
     body("OwnerAddress")
       .notEmpty()
-      .withMessage("Address required"),
+      .withMessage("Owner address is required"),
 
-    body("PetName")
-      .notEmpty()
-      .withMessage("Pet name is required"),
+    // ✅ Pet fields
+    body("PetName").notEmpty().withMessage("Pet name is required"),
 
     body("PetSpecies")
       .isIn(["cat", "dog"])
-      .withMessage("Species must be cat or dog"),
+      .withMessage("PetSpecies must be 'cat' or 'dog'"),
 
-    body("PetBreed")
-      .notEmpty()
-      .withMessage("Pet breed required"),
+    body("PetBreed").notEmpty().withMessage("Pet breed is required"),
 
     body("PetAge")
       .isInt({ min: 0 })
-      .withMessage("Age must be a positive number"),
+      .withMessage("PetAge must be a valid number ≥ 0"),
 
     body("PetWeight")
       .isFloat({ min: 0 })
-      .withMessage("Weight must be positive"),
+      .withMessage("PetWeight must be a valid number ≥ 0"),
 
     body("BloodGroup")
-      .isIn(["O", "O+", "B+"])
-      .withMessage("Invalid blood group"),
+      .isIn(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
+      .withMessage("Blood group must be one of: A+, A-, B+, B-, AB+, AB-, O+, O-"),
 
     body("PetGender")
       .isIn(["Male", "Female"])
-      .withMessage("Invalid gender"),
+      .withMessage("Pet gender must be either 'Male' or 'Female'"),
   ];
 };
 
@@ -74,9 +73,14 @@ export const validateRegister = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) return next();
 
-  const extractedErrors = errors.array().map((err) => ({
-    [err.param]: err.msg,
-  }));
+  const extractedErrors = {};
+  errors.array().forEach((err) => {
+    extractedErrors[err.param] = err.msg;
+  });
 
-  return res.status(422).json({ errors: extractedErrors });
+  return res.status(422).json({
+    success: false,
+    message: "Validation failed",
+    errors: extractedErrors,
+  });
 };

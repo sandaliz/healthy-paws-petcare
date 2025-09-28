@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
-import { api } from './services/financeApi';   
-import useAuthUser from './hooks/useAuthUser'; 
+import { api } from './services/financeApi';
+import useAuthUser from './hooks/useAuthUser';
 import './css/clientPay.css';
+
+const COUPON_REGEX = /^[A-Za-z0-9._-]{3,32}$/;
 
 export default function ClientPay() {
   const nav = useNavigate();
@@ -21,7 +24,7 @@ export default function ClientPay() {
     }
   }, []);
 
-  const [invoiceId, setInvoiceId] = useState('');
+  const { invoiceId } = useParams();
   const [invoice, setInvoice] = useState(null);
   const [loadingInv, setLoadingInv] = useState(false);
 
@@ -34,6 +37,9 @@ export default function ClientPay() {
   const [busy, setBusy] = useState(false);
 
   const [invoiceError, setInvoiceError] = useState('');
+  const [allowCoupon, setAllowCoupon] = useState(false);
+  const [myCoupons, setMyCoupons] = useState([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(false);
 
   useEffect(() => {
     if (!invoiceId) {
@@ -65,20 +71,26 @@ export default function ClientPay() {
   const applyOfflineCoupon = async () => {
     try {
       if (!invoice) return toast.error('Load an invoice first');
-      if (!offlineCouponCode.trim()) return toast.error('Enter a coupon code');
+      if (!offlineCouponCode.trim()) return toast.error('Enter a promo code');
+
+      const code = offlineCouponCode.trim();
+      if (!COUPON_REGEX.test(code)) {
+        return toast.error('Use 3–32 chars: letters, numbers, dash, underscore, dot.');
+      }
+
       setOfflineApplying(true);
       const total = computeInvoiceTotal(invoice);
 
       try {
-        const resp = await api.post('/coupon/validate', { code: offlineCouponCode.trim(), invoiceTotal: total });
+        const resp = await api.post('/coupon/validate', { code, invoiceTotal: total });
         setOfflineCouponId(resp.couponId);
         setOfflineDiscount(Number(resp.discount || 0));
         toast.success(`Coupon applied: -${fmtLKR(resp.discount || 0)}`);
       } catch {
-        // user‑specific coupon
+        // Fallback to user‑specific coupon
         if (!ownerId) throw new Error('Please login first');
         const res = await api.post('/coupon/validate-user', {
-          code: offlineCouponCode.trim(),
+          code,
           userID: ownerId,
           invoiceTotal: total
         });
@@ -144,157 +156,217 @@ export default function ClientPay() {
 
   return (
     <div className="finance-scope">
-    <div className="pay-wrap">
-      <Toaster position="top-right" />
-      <div className="page-header">
-        <div>
-          <h1>Make a Payment</h1>
-          <p className="muted">Enter your invoice ID to review it, then select how you’d like to pay.</p>
-        </div>
-      </div>
-
-      {authLoading && <div className="muted">Checking account…</div>}
-      {authError && <div className="error">{authError}</div>}
-      {!authLoading && !ownerId && <div className="notice">Please log in to create a payment.</div>}
-
-      <div className="card">
-        <div className="section">
-          <h2 className="section-title">Find Your Invoice</h2>
-          <div className="field">
-            <label>Invoice ID (Mongo _id)</label>
-            <input
-              className={`input ${invoiceError ? 'input-error' : ''}`}
-              placeholder="e.g. 66f4c0..."
-              value={invoiceId}
-              onChange={(e) => {
-                setInvoiceId(e.target.value);
-                setInvoiceError('');
-              }}
-            />
-            {loadingInv && <div className="muted loading-small">Loading invoice…</div>}
-            {invoiceError && <div className="error">{invoiceError}</div>}
+      <div className="pay-wrap">
+        <Toaster position="top-right" />
+        <div className="page-header">
+          <div>
+            <h1>Make a Payment</h1>
+            <p className="muted">Review your Invoice, then select how you’d like to pay.</p>
           </div>
         </div>
 
-        {!!invoice && !loadingInv && (
-          <div className="section">
-            <h2 className="section-title">Invoice Summary</h2>
-            <div className="summary-grid">
-              <div className="summary-item">
-                <span className="label">Invoice</span>
-                <span className="value mono">{invoice.invoiceID || invoice._id}</span>
+        {authLoading && <div className="muted">Checking account…</div>}
+        {authError && <div className="error">{authError}</div>}
+        {!authLoading && !ownerId && <div className="notice">Please log in to create a payment.</div>}
+
+        <div className="card">
+
+          {!!invoice && !loadingInv && (
+            <div className="section">
+              <h2 className="section-title">Invoice Summary</h2>
+              <div className="summary-grid">
+                <div className="summary-item">
+                  <span className="label">Invoice</span>
+                  <span className="value mono">{invoice.invoiceID || invoice._id}</span>
+                </div>
+                <div className="summary-item">
+                  <span className="label">Status</span>
+                  <span className={`status-pill ${statusColor(invoice.status)}`}>{invoice.status}</span>
+                </div>
+                <div className="summary-item">
+                  <span className="label">Due Date</span>
+                  <span className="value">{fmtDate(invoice.dueDate)}</span>
+                </div>
               </div>
-              <div className="summary-item">
-                <span className="label">Status</span>
-                <span className={`status-pill ${statusColor(invoice.status)}`}>{invoice.status}</span>
-              </div>
-              <div className="summary-item">
-                <span className="label">Due Date</span>
-                <span className="value">{fmtDate(invoice.dueDate)}</span>
+
+              <div className="items-wrap">
+                <div className="items-header">
+                  <div>Description</div><div>Qty</div><div>Rate</div><div className="right">Line Total</div>
+                </div>
+                <div className="items-body">
+                  {(invoice.lineItems || []).map((li, i) => {
+                    const qty = toNum(li.quantity);
+                    const unit = toNum(li.unitPrice);
+                    const lineTotal = li.total != null ? toNum(li.total) : qty * unit;
+                    return (
+                      <div className="items-row" key={i}>
+                        <div className="desc">{li.description}</div>
+                        <div>{qty}</div>
+                        <div>{fmtLKR(unit)}</div>
+                        <div className="right bold">{fmtLKR(lineTotal)}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="totals">
+                  <div className="totals-row"><span>Subtotal</span><span className="mono">{fmtLKR(totalBeforeDiscount)}</span></div>
+                  <div className="totals-row grand"><span>Amount Due</span><span className="mono">{fmtLKR(totalBeforeDiscount)}</span></div>
+                </div>
               </div>
             </div>
+          )}
 
-            <div className="items-wrap">
-              <div className="items-header">
-                <div>Description</div><div>Qty</div><div>Rate</div><div className="right">Line Total</div>
-              </div>
-              <div className="items-body">
-                {(invoice.lineItems || []).map((li, i) => {
-                  const qty = toNum(li.quantity);
-                  const unit = toNum(li.unitPrice);
-                  const lineTotal = li.total != null ? toNum(li.total) : qty * unit;
-                  return (
-                    <div className="items-row" key={i}>
-                      <div className="desc">{li.description}</div>
-                      <div>{qty}</div>
-                      <div>{fmtLKR(unit)}</div>
-                      <div className="right bold">{fmtLKR(lineTotal)}</div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="totals">
-                <div className="totals-row"><span>Subtotal</span><span className="mono">{fmtLKR(totalBeforeDiscount)}</span></div>
-                <div className="totals-row grand"><span>Amount Due</span><span className="mono">{fmtLKR(totalBeforeDiscount)}</span></div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {invoice && (
-          <div className="section">
-            <h2 className="section-title">Choose your method</h2>
-            <div className="row wrap">
-              <button
-                className="btn primary"
-                onClick={() => {
-                  setShowOfflineModal(true);
-                  setOfflineCouponCode('');
-                  setOfflineCouponId(null);
-                  setOfflineDiscount(0);
-                }}
-              >
-                Pay at Counter (Offline)
-              </button>
-              <button
-                className="btn dark"
-                onClick={() => {
-                  const qp = new URLSearchParams();
-                  qp.set('invoice', invoice._id);
-                  nav(`/pay/online?${qp.toString()}`);
-                }}
-              >
-                Pay Online (Card)
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {showOfflineModal && (
-        <div className="modal">
-          <div className="modal-box">
-            <h3>Confirm offline payment</h3>
-            <p className="muted offline-msg">
-              This will create a <b>pending payment</b>. Please pay at Healthy Paws reception
-              {invoice ? ` before ${fmtDate(invoice.dueDate)}` : ''}.
-            </p>
-
-            <div className="modal-coupon">
-              <label className="modal-coupon-label">Have a coupon?</label>
-              <div className="row">
-                <input
-                  className="input"
-                  placeholder="Enter coupon code"
-                  value={offlineCouponCode}
-                  onChange={(e) => setOfflineCouponCode(e.target.value)}
-                />
-                <button className="btn" onClick={applyOfflineCoupon} disabled={!invoice || offlineApplying}>
-                  {offlineApplying ? 'Applying…' : 'Apply'}
+          {invoice && (
+            <div className="section">
+              <h2 className="section-title">Choose your method</h2>
+              <div className="row wrap">
+                <button
+                  className="btn primary"
+                  onClick={() => {
+                    setShowOfflineModal(true);
+                    setOfflineCouponCode('');
+                    setOfflineCouponId(null);
+                    setOfflineDiscount(0);
+                  }}
+                >
+                  Pay at Counter (Offline)
                 </button>
-                {offlineCouponId && (
-                  <button className="btn ghost" onClick={clearOfflineCoupon}>Clear</button>
-                )}
+                <button
+                  className="btn dark"
+                  onClick={() => {
+                    const qp = new URLSearchParams();
+                    qp.set('invoice', invoice._id);
+                    nav(`/pay/online?${qp.toString()}`);
+                  }}
+                >
+                  Pay Online (Card)
+                </button>
               </div>
+            </div>
+          )}
+        </div>
 
-              {offlineDiscount > 0 && (
-                <div className="applied-discount">
-                  Discount applied: <b>{fmtLKR(offlineDiscount)}</b> — 
-                  Pay at counter: <b>{fmtLKR(offlineAmountAfterDiscount)}</b>
+        {showOfflineModal && (
+          <div className="f-offline-modal">
+            <div className="f-offline-modal-box">
+              {showOfflineModal && (
+                <div className="f-offline-modal">
+                  <div className="f-offline-modal-box">
+                    <h3>Confirm offline payment</h3>
+                    <p className="muted offline-msg">
+                      This will create a <b>pending payment</b>. Please pay at reception
+                      {invoice ? ` before ${fmtDate(invoice.dueDate)}` : ''}.
+                    </p>
+
+                    {/* ✅ NEW Toggle */}
+                    <div className="f-offline-coupon-toggle">
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={allowCoupon}
+                          onChange={(e) => {
+                            setAllowCoupon(e.target.checked);
+                            if (e.target.checked && ownerId && invoice) {
+                              setLoadingCoupons(true);
+                              api.get(`/coupon/user-available?userId=${ownerId}&invoiceTotal=${invoice.total}`)
+                                .then(res => setMyCoupons(res.coupons || []))
+                                .catch(() => setMyCoupons([]))
+                                .finally(() => setLoadingCoupons(false));
+                            }
+                          }}
+                        />
+                        Apply coupon?
+                      </label>
+                    </div>
+
+                    {allowCoupon && (
+                      <div className="f-offline-coupon-body">
+                        {/* Show available coupons */}
+                        {loadingCoupons ? (
+                          <p className="f-offline-hint">Loading coupons…</p>
+                        ) : myCoupons.length > 0 ? (
+                          <div className="f-offline-coupon-grid">
+                            {myCoupons.map(c => (
+                              <div key={c.couponId} className="f-offline-coupon-card">
+                                <div className="f-offline-coupon-header">
+                                  <span className="f-offline-code">{c.code}</span>
+                                  <span className="f-offline-type">
+                                    {c.discountType} {c.discountValue}
+                                  </span>
+                                </div>
+                                <div className="f-offline-meta">
+                                  Min: {fmtLKR(c.minInvoiceAmount)} • Expires: {fmtDate(c.expiryDate)}
+                                </div>
+                                <div className="row end">
+                                  <button
+                                    className="f-offline-btn"
+                                    onClick={() => {
+                                      setOfflineCouponId(c.couponId);
+                                      setOfflineDiscount(c.discountValue);
+                                      toast.success(`Coupon applied: -${fmtLKR(c.discountValue)}`);
+                                    }}
+                                  >
+                                    Apply
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="f-offline-hint">No coupons available.</p>
+                        )}
+
+                        {/* Promo code input */}
+                        <div className="f-offline-promo">
+                          <input
+                            className={`input ${offlineCouponCode.trim() && !COUPON_REGEX.test(offlineCouponCode.trim()) ? 'input-error' : ''}`}
+                            placeholder="Or Have a Promo Code? then, Apply here!"
+                            value={offlineCouponCode}
+                            onChange={(e) => setOfflineCouponCode(e.target.value)}
+                          />
+                          <button
+                            className="f-offline-btn"
+                            onClick={applyOfflineCoupon}
+                            disabled={!invoice || offlineApplying}
+                          >
+                            {offlineApplying ? 'Applying…' : 'Apply'}
+                          </button>
+                          {offlineCouponId && (
+                            <button className="btn ghost" onClick={clearOfflineCoupon}>Clear</button>
+                          )}
+                        </div>
+
+                        {/* Show validation error message */}
+                        {offlineCouponCode.trim() && !COUPON_REGEX.test(offlineCouponCode.trim()) && (
+                          <div className="error promo-error">
+                            Code must be 3–32 chars, only letters, numbers, dash, underscore, dot.
+                          </div>
+                        )}
+
+                        {offlineDiscount > 0 && (
+                          <div className="f-offline-applied">
+                            Discount applied: <b>{fmtLKR(offlineDiscount)}</b> —
+                            Pay at counter: <b>{fmtLKR(offlineAmountAfterDiscount)}</b>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="row end offline-actions">
+                      <button className="btn ghost" onClick={() => setShowOfflineModal(false)}>
+                        Close
+                      </button>
+                      <button className="btn primary" onClick={confirmOffline} disabled={busy}>
+                        {busy ? 'Saving…' : 'Confirm'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-
-            <div className="row end offline-actions">
-              <button className="btn ghost" onClick={() => setShowOfflineModal(false)}>Close</button>
-              <button className="btn primary" onClick={confirmOffline} disabled={busy}>
-                {busy ? 'Saving…' : 'Confirm'}
-              </button>
-            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -318,6 +390,6 @@ function fmtLKR(n) {
 }
 function fmtDate(d) {
   if (!d) return '-';
-  try { return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
+  try { return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
   catch { return String(d); }
 }

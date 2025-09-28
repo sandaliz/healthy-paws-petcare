@@ -3,24 +3,28 @@ import mongoose from "mongoose";
 import CheckInOut from "../Model/CheckInOutModel.js";
 import CareCustomer from "../Model/CareModel.js";
 
-
-// Check in Pet
+// -------------------- Check-In Pet -------------------- //
 export const checkInPet = async (req, res) => {
   try {
     const { appointmentId, checkedInBy } = req.body;
+    const userId = req.user?.id; // JWT-authenticated user
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: user not found" });
+    }
 
     const appointment = await CareCustomer.findById(appointmentId);
     if (!appointment) return res.status(404).json({ message: "Appointment not found" });
 
-    // Only allow check-in if status is Approved
     if (appointment.status !== "Approved") {
       return res.status(400).json({ message: "Appointment is not approved for check-in" });
     }
 
     const checkInRecord = new CheckInOut({
       appointment: appointment._id,
+      user: userId,             // include user reference
       checkInTime: new Date(),
-      checkedInBy,
+      checkedInBy: checkedInBy || "Receptionist",
     });
 
     await checkInRecord.save();
@@ -35,10 +39,11 @@ export const checkInPet = async (req, res) => {
   }
 };
 
-// Check Out Pet
+// -------------------- Check-Out Pet -------------------- //
 export const checkOutPet = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user?.id;
 
     const checkInRecord = await CheckInOut.findById(id).populate("appointment");
     if (!checkInRecord) return res.status(404).json({ message: "Check-in record not found" });
@@ -48,7 +53,7 @@ export const checkOutPet = async (req, res) => {
     }
 
     checkInRecord.checkOutTime = new Date();
-    checkInRecord.checkedOutBy = "System"; // replace with req.user if auth is added
+    checkInRecord.checkedOutBy = userId || "System";
     await checkInRecord.save();
 
     const appointment = checkInRecord.appointment;
@@ -62,7 +67,7 @@ export const checkOutPet = async (req, res) => {
   }
 };
 
-// Reject Appointment
+// -------------------- Reject Appointment -------------------- //
 export const rejectAppointment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,10 +85,11 @@ export const rejectAppointment = async (req, res) => {
   }
 };
 
-// Cancel Appointment
+// -------------------- Cancel Appointment -------------------- //
 export const cancelAppointment = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user?.id;
 
     const appointment = await CareCustomer.findById(id);
     if (!appointment) return res.status(404).json({ message: "Appointment not found" });
@@ -93,6 +99,7 @@ export const cancelAppointment = async (req, res) => {
 
     const history = new CheckInOut({
       appointment: appointment._id,
+      user: userId || null,
       checkInTime: null,
       checkOutTime: null,
       checkedInBy: "System",
@@ -107,19 +114,14 @@ export const cancelAppointment = async (req, res) => {
   }
 };
 
-// Get History
+// -------------------- Get History -------------------- //
 export const getHistory = async (req, res) => {
   try {
-    const history = await CheckInOut.find({
-      $or: [{ checkOutTime: { $ne: null } }],
-    })
+    const history = await CheckInOut.find({ checkOutTime: { $ne: null } })
       .populate("appointment")
       .sort({ createdAt: -1 });
 
-    const rejectedAndCancelled = await CheckInOut.find({
-      checkInTime: null,
-      checkOutTime: null,
-    })
+    const rejectedAndCancelled = await CheckInOut.find({ checkInTime: null, checkOutTime: null })
       .populate("appointment")
       .sort({ createdAt: -1 });
 
@@ -132,7 +134,7 @@ export const getHistory = async (req, res) => {
   }
 };
 
-// Get Currently Checked-In Pets
+// -------------------- Get Currently Checked-In Pets -------------------- //
 export const getCurrentCheckedInPets = async (req, res) => {
   try {
     const checkedInPets = await CheckInOut.find({ checkOutTime: null })
@@ -146,7 +148,7 @@ export const getCurrentCheckedInPets = async (req, res) => {
   }
 };
 
-// Delete empty history
+// -------------------- Delete Empty History -------------------- //
 export const deleteEmptyHistory = async (req, res) => {
   try {
     const result = await CheckInOut.deleteMany({ appointment: null });
@@ -159,7 +161,7 @@ export const deleteEmptyHistory = async (req, res) => {
   }
 };
 
-// Delete history by ID
+// -------------------- Delete history by ID -------------------- //
 export const deleteHistoryById = async (req, res) => {
   try {
     const { id } = req.params;

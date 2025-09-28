@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { getAppointments, updateAppointment } from "../../apis/appointmentApi";
 import "./DoctorAppointments.css";
 import jsPDF from "jspdf";
-import {autoTable}from "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
+import { useNavigate } from "react-router-dom"; // ✅ added
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -12,12 +13,13 @@ const DoctorAppointments = () => {
   const [updating, setUpdating] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const navigate = useNavigate(); // ✅ hook for redirect
+
   useEffect(() => {
     fetchAppointments();
   }, []);
 
   useEffect(() => {
-    // Filter appointments based on search term (owner name or appointment ID)
     if (searchTerm.trim() === "") {
       setFilteredAppointments(appointments);
     } else {
@@ -94,40 +96,34 @@ const DoctorAppointments = () => {
     }
   };
 
-  const handlePrescription = (appointmentId) => {
-    console.log("Prescription for appointment:", appointmentId);
-    // Future implementation: Navigate to prescription page or open prescription modal
+  // ✅ Redirect to prescription form page with both appointmentId + ownerEmail
+  const handlePrescription = (appointment) => {
+    navigate(`/prescription/${appointment._id}`, {
+      state: { ownerEmail: appointment.contactEmail },
+    });
   };
 
   const generatePDF = () => {
     const doc = new jsPDF();
-    
-    // Add title
     doc.setFontSize(18);
-    doc.setTextColor(84, 65, 60); // Dark Brown - secondary color
+    doc.setTextColor(84, 65, 60);
     doc.text("Patient Appointments Report", 14, 22);
-    
-    // Add date
     doc.setFontSize(11);
     doc.setTextColor(100, 100, 100);
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
-    
-    // Define the table columns
+
     const tableColumn = [
-      "Appointment ID", 
-      "Pet Name", 
-      "Owner", 
-      "Date", 
-      "Time", 
-      "Category", 
-      "Status"
+      "Appointment ID",
+      "Pet Name",
+      "Owner",
+      "Date",
+      "Time",
+      "Category",
+      "Status",
     ];
-    
-    // Define the table rows
+
     const tableRows = [];
-    
-    // Add data to rows
-    filteredAppointments.forEach(appointment => {
+    filteredAppointments.forEach((appointment) => {
       const appointmentData = [
         appointment.appointmentId,
         appointment.petName,
@@ -135,43 +131,56 @@ const DoctorAppointments = () => {
         formatDate(appointment.appointmentDate),
         formatTime(appointment.appointmentTime),
         appointment.category.replace("_", " "),
-        appointment.status
+        appointment.status,
       ];
       tableRows.push(appointmentData);
     });
-    
-    // Generate the table
-    autoTable(doc,{
+
+    autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
       startY: 40,
-      theme: 'grid',
+      theme: "grid",
       styles: {
         fontSize: 9,
         cellPadding: 3,
-        lineColor: [200, 200, 200]
+        lineColor: [200, 200, 200],
       },
       headStyles: {
-        fillColor: [84, 65, 60], // Dark Brown - secondary color
+        fillColor: [84, 65, 60],
         textColor: [255, 255, 255],
-        fontStyle: 'bold'
+        fontStyle: "bold",
       },
       alternateRowStyles: {
-        fillColor: [245, 245, 245]
-      }
+        fillColor: [245, 245, 245],
+      },
     });
-    
-    // Add summary
+
     const finalY = doc.lastAutoTable.finalY + 10;
     doc.setFontSize(11);
     doc.setTextColor(84, 65, 60);
     doc.text(`Total Appointments: ${filteredAppointments.length}`, 14, finalY);
-    doc.text(`Pending: ${filteredAppointments.filter(apt => apt.status === "PENDING").length}`, 14, finalY + 7);
-    doc.text(`Confirmed: ${filteredAppointments.filter(apt => apt.status === "CONFIRMED").length}`, 14, finalY + 14);
-    doc.text(`Completed: ${filteredAppointments.filter(apt => apt.status === "COMPLETED").length}`, 14, finalY + 21);
-    doc.text(`Cancelled: ${filteredAppointments.filter(apt => apt.status === "CANCELLED").length}`, 14, finalY + 28);
-    
-    // Save the PDF
+    doc.text(
+      `Pending: ${filteredAppointments.filter((apt) => apt.status === "PENDING").length}`,
+      14,
+      finalY + 7
+    );
+    doc.text(
+      `Confirmed: ${filteredAppointments.filter((apt) => apt.status === "CONFIRMED").length}`,
+      14,
+      finalY + 14
+    );
+    doc.text(
+      `Completed: ${filteredAppointments.filter((apt) => apt.status === "COMPLETED").length}`,
+      14,
+      finalY + 21
+    );
+    doc.text(
+      `Cancelled: ${filteredAppointments.filter((apt) => apt.status === "CANCELLED").length}`,
+      14,
+      finalY + 28
+    );
+
     doc.save("appointments-report.pdf");
   };
 
@@ -194,7 +203,7 @@ const DoctorAppointments = () => {
               <i className="search-icon">🔍</i>
             </button>
           </div>
-       
+
           <div className="stats">
             <div className="stat-item">
               <span className="stat-number">{filteredAppointments.length}</span>
@@ -211,17 +220,19 @@ const DoctorAppointments = () => {
               <span className="stat-label">Pending</span>
             </div>
             <div className="stat-item">
-              <span className="stat-number">{appointments.filter((apt) => apt.status === "CONFIRMED").length}</span>
+              <span className="stat-number">
+                {appointments.filter((apt) => apt.status === "CONFIRMED").length}
+              </span>
               <span className="stat-label">Confirmed</span>
             </div>
           </div>
         </div>
       </div>
-   <div style={{display: "flex", justifyContent: "flex-end",marginBottom:10}}>
-    <button className="generate-pdf-button" onClick={generatePDF}>
-            Generate PDF Report
-          </button>
-   </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+        <button className="generate-pdf-button" onClick={generatePDF}>
+          Generate PDF Report
+        </button>
+      </div>
       {error && <div className="error-message">{error}</div>}
 
       <div className="appointments-table">
@@ -265,9 +276,7 @@ const DoctorAppointments = () => {
             </div>
 
             <div className="cell category">
-              <span
-                className={`category-badge ${appointment.category.toLowerCase()}`}
-              >
+              <span className={`category-badge ${appointment.category.toLowerCase()}`}>
                 {appointment.category.replace("_", " ")}
               </span>
             </div>
@@ -299,11 +308,11 @@ const DoctorAppointments = () => {
                 <div className="updating-spinner">Updating...</div>
               )}
             </div>
-            
+
             <div className="cell prescription">
-              <button 
+              <button
                 className="prescription-button"
-                onClick={() => handlePrescription(appointment._id)}
+                onClick={() => handlePrescription(appointment)} // ✅ redirect
               >
                 Prescription
               </button>

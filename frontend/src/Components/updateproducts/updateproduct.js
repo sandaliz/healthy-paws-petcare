@@ -17,6 +17,7 @@ function Updateproduct() {
   });
 
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false); // ✅ loading state
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -26,6 +27,7 @@ function Updateproduct() {
         const res = await axios.get(`http://localhost:5001/products/${id}`);
         let product = res.data;
 
+        // Format expirationDate for input type="date"
         if (product.expirationDate) {
           product.expirationDate = product.expirationDate.split("T")[0];
         }
@@ -45,6 +47,7 @@ function Updateproduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // ✅ show spinner when update runs
     try {
       const formData = new FormData();
 
@@ -65,6 +68,8 @@ function Updateproduct() {
       navigate("/product");
     } catch (err) {
       console.error("Error updating product:", err);
+    } finally {
+      setLoading(false); // ✅ hide spinner after update
     }
   };
 
@@ -79,7 +84,14 @@ function Updateproduct() {
         <input type="text" name="name" value={inputs.name} onChange={handleChange} required />
 
         <label>Expiration Date</label>
-        <input type="date" name="expirationDate" value={inputs.expirationDate} onChange={handleChange} required />
+        <input
+          type="date"
+          name="expirationDate"
+          value={inputs.expirationDate}
+          onChange={handleChange}
+          required
+          min={new Date().toISOString().split("T")[0]} // ✅ stop past date selection
+        />
 
         <label>Cost</label>
         <input type="number" name="cost" value={inputs.cost} onChange={handleChange} required />
@@ -95,7 +107,7 @@ function Updateproduct() {
           <option value="">-- Select Category --</option>
           <option value="Medicine">Medicine</option>
           <option value="Equipment">Equipment</option>
-          <option value="Food">Foods</option>
+          <option value="Food">Food</option>
           <option value="Accessory">Accessory</option>
           <option value="Toy">Toy</option>
           <option value="Grooming">Grooming</option>
@@ -110,8 +122,17 @@ function Updateproduct() {
         <label>Update Image</label>
         <input type="file" accept="image/*" onChange={handleFileChange} />
 
-        <button type="submit" className="submit-btn">Update Product</button>
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? "Updating..." : "Update Product"}
+        </button>
       </form>
+
+      {/* ✅ Centered Circle Loader */}
+      {loading && (
+        <div className="center-loader">
+          <div className="loader-circle"></div>
+        </div>
+      )}
     </div>
   );
 }

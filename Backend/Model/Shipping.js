@@ -31,6 +31,13 @@ const shippingSchema = new mongoose.Schema({
 
   totalPrice: { type: Number, required: true },
 
+  // ✅ New field
+  orderStatus: {
+    type: String,
+    enum: ["pending", "cancelled", "completed"],
+    default: "pending",
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

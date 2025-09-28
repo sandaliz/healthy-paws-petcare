@@ -5,9 +5,11 @@ import { useParams } from "react-router-dom";
 import "./DailyLogs.css";
 
 const DAILY_LOGS_URL = "http://localhost:5001/dailyLogs";
+const CARE_CUSTOMER_URL = "http://localhost:5001/careCustomers";
 
 function DailyLogs() {
-  const { appointmentId } = useParams(); 
+  const { appointmentId } = useParams();
+  const [appointment, setAppointment] = useState(null);
   const [dailyLogs, setDailyLogs] = useState([]);
   const [formData, setFormData] = useState({
     feeding: "",
@@ -19,25 +21,32 @@ function DailyLogs() {
     loggedBy: ""
   });
 
-  // ✅ Wrap in useCallback so it’s stable across renders
+  // Fetch appointment details
+  const fetchAppointment = useCallback(async () => {
+    if (!appointmentId) return;
+    try {
+      const res = await axios.get(`${CARE_CUSTOMER_URL}/${appointmentId}`, { withCredentials: true });
+      setAppointment(res.data.careCustomer || null);
+    } catch (err) {
+      console.error("Error fetching appointment:", err);
+    }
+  }, [appointmentId]);
+
+  // Fetch daily logs
   const fetchLogs = useCallback(async () => {
     if (!appointmentId) return;
     try {
-      const res = await axios.get(`${DAILY_LOGS_URL}/appointment/${appointmentId}`);
-      if (res.data && res.data.dailyLogs) {
-        setDailyLogs(res.data.dailyLogs);
-      } else {
-        setDailyLogs([]);
-      }
+      const res = await axios.get(`${DAILY_LOGS_URL}/appointment/${appointmentId}`, { withCredentials: true });
+      setDailyLogs(res.data.dailyLogs || []);
     } catch (err) {
       console.error("Error fetching daily logs:", err);
     }
   }, [appointmentId]);
 
-  // ✅ Depend on fetchLogs
   useEffect(() => {
+    fetchAppointment();
     fetchLogs();
-  }, [fetchLogs]);
+  }, [fetchAppointment, fetchLogs]);
 
   const handleInputChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -46,7 +55,7 @@ function DailyLogs() {
   const handleAddLog = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(DAILY_LOGS_URL, { appointment: appointmentId, ...formData });
+      const res = await axios.post(DAILY_LOGS_URL, { appointment: appointmentId, ...formData }, { withCredentials: true });
       if (res.status === 201) {
         alert("Daily log added successfully!");
         setFormData({
@@ -58,7 +67,7 @@ function DailyLogs() {
           mood: "good",
           loggedBy: ""
         });
-        fetchLogs(); // ✅ refresh logs after add
+        fetchLogs();
       }
     } catch (err) {
       console.error("Error adding daily log:", err);
@@ -70,7 +79,7 @@ function DailyLogs() {
     const value = prompt(`Update ${field}:`, dailyLogs.find(log => log._id === id)?.[field] || "");
     if (value === null) return;
     try {
-      await axios.put(`${DAILY_LOGS_URL}/${id}`, { [field]: value });
+      await axios.put(`${DAILY_LOGS_URL}/${id}`, { [field]: value }, { withCredentials: true });
       fetchLogs();
     } catch (err) {
       console.error("Error updating daily log:", err);
@@ -82,21 +91,78 @@ function DailyLogs() {
     <div className="daily-logs-container">
       <h2>Daily Logs</h2>
 
+      {/* ---------------- Appointment Details ---------------- */}
+      {appointment && (
+        <div className="appointment-details">
+          <h3>Appointment Details</h3>
+          <p><strong>Owner:</strong> {appointment.ownerName}</p>
+          <p><strong>Pet:</strong> {appointment.petName} ({appointment.species})</p>
+          <p><strong>Health Notes:</strong> {appointment.healthDetails || "-"}</p>
+          <p><strong>Grooming:</strong> {appointment.grooming ? "Yes" : "No"}</p>
+          <p><strong>Walking:</strong> {appointment.walking ? "Yes" : "No"}</p>
+          <p><strong>Feeding Times:</strong> {appointment.feedingTimes || "-"}</p>
+        </div>
+      )}
+
+      {/* ---------------- Daily Log Form ---------------- */}
       <form className="daily-log-form" onSubmit={handleAddLog}>
         <div className="form-row">
-          <input type="text" name="feeding" placeholder="Feeding *" value={formData.feeding} onChange={handleInputChange} required />
-          <input type="text" name="loggedBy" placeholder="Logged by *" value={formData.loggedBy} onChange={handleInputChange} required />
+          <input
+            type="text"
+            name="feeding"
+            placeholder="Feeding *"
+            value={formData.feeding}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            type="text"
+            name="loggedBy"
+            placeholder="Logged by *"
+            value={formData.loggedBy}
+            onChange={handleInputChange}
+            required
+          />
         </div>
+
         <div className="form-row">
-          <input type="text" name="note" placeholder="Notes" value={formData.note} onChange={handleInputChange} />
-          <input type="text" name="playtime" placeholder="Playtime" value={formData.playtime} onChange={handleInputChange} />
+          <input
+            type="text"
+            name="note"
+            placeholder="Notes"
+            value={formData.note}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            name="playtime"
+            placeholder="Playtime"
+            value={formData.playtime}
+            onChange={handleInputChange}
+          />
         </div>
+
         <div className="form-row">
-          <input type="text" name="walking" placeholder="Walking" value={formData.walking} onChange={handleInputChange} />
-          <input type="text" name="grooming" placeholder="Grooming" value={formData.grooming} onChange={handleInputChange} />
+          <input
+            type="text"
+            name="walking"
+            placeholder="Walking"
+            value={formData.walking}
+            onChange={handleInputChange}
+            disabled={!appointment?.walking}
+          />
+          <input
+            type="text"
+            name="grooming"
+            placeholder="Grooming"
+            value={formData.grooming}
+            onChange={handleInputChange}
+            disabled={!appointment?.grooming}
+          />
         </div>
+
         <div className="form-row">
-          <label>Mood: 
+          <label>Mood:
             <select name="mood" value={formData.mood} onChange={handleInputChange}>
               <option value="excellent">Excellent</option>
               <option value="good">Good</option>
@@ -105,9 +171,11 @@ function DailyLogs() {
             </select>
           </label>
         </div>
+
         <button type="submit" className="btn-add-log">Add Log</button>
       </form>
 
+      {/* ---------------- Daily Logs Table ---------------- */}
       {dailyLogs.length > 0 ? (
         <table className="daily-logs-table">
           <thead>

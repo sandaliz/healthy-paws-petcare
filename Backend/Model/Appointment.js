@@ -26,7 +26,7 @@ const appointmentSchema = new mongoose.Schema(
     contactEmail: { type: String, required: true },
 
     appointmentDate: { type: Date, required: true },
-    appointmentTime: { type: String, required: true }, // store as "HH:mm"
+    appointmentTime: { type: String, required: true }, 
 
     status: {
       type: String,

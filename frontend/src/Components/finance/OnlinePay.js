@@ -44,6 +44,7 @@ export default function OnlinePay() {
 
   const [showCoupons, setShowCoupons] = useState(false);
   const [showPromoCode, setShowPromoCode] = useState(false);
+  const [allowCoupon, setAllowCoupon] = useState(false);
 
   useEffect(() => {
     if (!invoiceParam) return;
@@ -162,7 +163,166 @@ export default function OnlinePay() {
         )}
 
         <div className="section">
-          <h2 className="section-title">Invoice</h2>
+          <h2 className="section-title">Card Payment</h2>
+
+          {authLoading && <div className="muted">Checking authentication…</div>}
+          {authError && <div className="error">{authError}</div>}
+          {!authLoading && !ownerId && <div className="notice">Please log in to continue.</div>}
+
+          <div className="panel coupon-panel">
+  <h3 className="coupon-panel-title">Coupons & Codes</h3>
+  {invoice && ownerId && (
+    <>
+      <label className="coupon-toggle-label">
+        <input
+          type="checkbox"
+          checked={allowCoupon}
+          onChange={e => setAllowCoupon(e.target.checked)}
+        />
+        Use a coupon or a code?
+      </label>
+
+      {allowCoupon && (
+        <>
+          {myCoupons.length > 0 && (
+            <div className="wallet-coupons-wrap">
+              <button
+                className="btn big-coupon-toggle"
+                type="button"
+                onClick={() => setShowCoupons(p => !p)}
+              >
+                {showCoupons ? 'Hide Coupons' : 'Show My Coupons'}
+              </button>
+
+              {showCoupons && (
+                <div className="onpay-coupon-grid">
+                  {myCoupons.map(c => {
+                    const active = selectedIssuedId === c.couponId;
+                    return (
+                      <div key={c.couponId} className={`coupon-card${active ? ' active' : ''}`}>
+                        <div className="coupon-card-header">
+                          <div className="coupon-code">{c.code}</div>
+                          <div className="coupon-type">{c.discountType} {c.discountValue}</div>
+                        </div>
+                        <div className="coupon-meta">
+                          Min: {fmtLKR(c.minInvoiceAmount)} • Expires: {fmtDate(c.expiryDate)}
+                        </div>
+                        <div className="row end coupon-actions">
+                          {active ? (
+                            <>
+                              <span className="applied-label"> Applied</span>
+                              <button
+                                className="btn ghost"
+                                onClick={() => {
+                                  setCouponId(null); setDiscount(0);
+                                  setSelectedIssuedId(''); setAppliedIssuedCode('');
+                                }}
+                              >
+                                Clear
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              className="btn secondary"
+                              onClick={() => applyIssued(c)}
+                            >
+                              Apply
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="promo-toggle">
+            <button
+              className="btn big-promo-toggle"
+              type="button"
+              onClick={() => setShowPromoCode(p => !p)}
+            >
+              {showPromoCode ? 'Hide Promo Code' : 'Have a promo code?'}
+            </button>
+
+            {showPromoCode && (
+              <div className="promo-code-wrap">
+                <div className="row">
+                  <input
+                    className="input"
+                    placeholder="Enter code"
+                    value={couponCode}
+                    onChange={e => setCouponCode(e.target.value)}
+                    aria-invalid={
+                      couponCode.trim() && !COUPON_REGEX.test(couponCode.trim())
+                    }
+                  />
+                  <button
+                    className="btn secondary"
+                    onClick={applyCoupon}
+                    disabled={!invoice || invoiceBlocked}
+                  >
+                    Apply
+                  </button>
+                  {(couponId || selectedIssuedId) && (
+                    <button
+                      className="btn ghost"
+                      onClick={() => {
+                        setCouponId(null); setDiscount(0);
+                        setCouponCode(''); setSelectedIssuedId(''); setAppliedIssuedCode('');
+                      }}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+
+                {couponCode.trim() && !COUPON_REGEX.test(couponCode.trim()) && (
+                  <div className="error promo-error">
+                    Use 3–32 characters: letters, numbers, - _ .
+                  </div>
+                )}
+                {appliedIssuedCode && discount > 0 && (
+                  <p className="hint applied-hint">
+                    Applied {appliedIssuedCode}: -{fmtLKR(discount)}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </>
+      )}
+    </>
+  )}
+</div>
+
+          <div className="panel panel-peach stripe-panel">
+            {!invoice && <div className="muted">Load an invoice to continue.</div>}
+            {invoice && invoiceBlocked && <div className="notice error">This invoice cannot be paid.</div>}
+            {invoice && ownerId && !invoiceBlocked && (
+              <StripePayBox
+                key={invoice._id}
+                invoice={invoice}
+                ownerId={ownerId}
+                couponId={couponId}
+                amountToCharge={amountAfterDiscount}
+                onSuccess={({ paymentIntentId, amount, email }) => {
+                  const qp = new URLSearchParams();
+                  qp.set('invoice', invoice._id);
+                  qp.set('pi', paymentIntentId);
+                  qp.set('amount', String(amount));
+                  if (email) qp.set('email', email);
+                  navigate(`/pay/success?${qp.toString()}`);
+                }}
+              />
+            )}
+          </div>
+        </div>
+        
+        <div className="section">
+          <h2 className="section-title">Review Invoice</h2>
           {!invoiceParam && <div className="muted">No invoice id in URL.</div>}
           {loadingInvoice && <div className="muted">Loading invoice…</div>}
           {error && <div className="error">{error}</div>}
@@ -208,121 +368,7 @@ export default function OnlinePay() {
           )}
         </div>
 
-        <div className="section">
-          <h2 className="section-title">Card Payment</h2>
-
-          {authLoading && <div className="muted">Checking authentication…</div>}
-          {authError && <div className="error">{authError}</div>}
-          {!authLoading && !ownerId && <div className="notice">Please log in to continue.</div>}
-
-          <div className="panel coupon-panel">
-            <h3 className="coupon-panel-title">Coupons & Codes</h3>
-            {invoice && ownerId && (
-              <>
-                {myCoupons.length > 0 && (
-                  <div className="wallet-coupons-wrap">
-                    <button
-                      className="btn big-coupon-toggle"
-                      type="button"
-                      onClick={() => setShowCoupons(p => !p)}
-                    >
-                      {showCoupons ? 'Hide Coupons' : 'Show My Coupons'}
-                    </button>
-
-                    {showCoupons && (
-                      <div className="onpay-coupon-grid">
-                        {myCoupons.map(c => {
-                          const active = selectedIssuedId === c.couponId;
-                          return (
-                            <div key={c.couponId} className={`coupon-card${active ? ' active' : ''}`}>
-                              <div className="coupon-card-header">
-                                <div className="coupon-code">{c.code}</div>
-                                <div className="coupon-type">{c.discountType} {c.discountValue}</div>
-                              </div>
-                              <div className="coupon-meta">Min: {fmtLKR(c.minInvoiceAmount)} • Expires: {fmtDate(c.expiryDate)}</div>
-                              <div className="row end coupon-actions">
-                                {active ? (
-                                  <>
-                                    <span className="applied-label"> Applied</span>
-                                    <button className="btn ghost" onClick={() => {
-                                      setCouponId(null); setDiscount(0);
-                                      setSelectedIssuedId(''); setAppliedIssuedCode('');
-                                    }}>
-                                      Clear
-                                    </button>
-                                  </>
-                                ) : (
-                                  <button className="btn secondary" onClick={() => applyIssued(c)}>Apply</button>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div className="promo-toggle">
-                  <button
-                    className="btn big-promo-toggle"
-                    type="button"
-                    onClick={() => setShowPromoCode(p => !p)}
-                  >
-                    {showPromoCode ? 'Hide Promo Code' : 'Have a promo code?'}
-                  </button>
-                  {showPromoCode && (
-                    <div className="promo-code-wrap">
-                      <div className="row">
-                        <input
-                          className="input"
-                          placeholder="Enter code"
-                          value={couponCode}
-                          onChange={(e) => setCouponCode(e.target.value)}
-                          aria-invalid={couponCode.trim() && !COUPON_REGEX.test(couponCode.trim())}
-                        />
-                        <button className="btn secondary" onClick={applyCoupon} disabled={!invoice || invoiceBlocked}>Apply</button>
-                        {(couponId || selectedIssuedId) && (
-                          <button className="btn ghost" onClick={() => { setCouponId(null); setDiscount(0); setCouponCode(''); setSelectedIssuedId(''); setAppliedIssuedCode(''); }}>Clear</button>
-                        )}
-                      </div>
-                      {couponCode.trim() && !COUPON_REGEX.test(couponCode.trim()) && (
-                        <div className="error promo-error">
-                          Use 3–32 characters: letters, numbers, - _ .
-                        </div>
-                      )}
-                      {appliedIssuedCode && discount > 0 && (
-                        <p className="hint applied-hint">Applied {appliedIssuedCode}: -{fmtLKR(discount)}</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="panel panel-peach stripe-panel">
-            {!invoice && <div className="muted">Load an invoice to continue.</div>}
-            {invoice && invoiceBlocked && <div className="notice error">This invoice cannot be paid.</div>}
-            {invoice && ownerId && !invoiceBlocked && (
-              <StripePayBox
-                key={invoice._id}
-                invoice={invoice}
-                ownerId={ownerId}
-                couponId={couponId}
-                amountToCharge={amountAfterDiscount}
-                onSuccess={({ paymentIntentId, amount, email }) => {
-                  const qp = new URLSearchParams();
-                  qp.set('invoice', invoice._id);
-                  qp.set('pi', paymentIntentId);
-                  qp.set('amount', String(amount));
-                  if (email) qp.set('email', email);
-                  navigate(`/pay/success?${qp.toString()}`);
-                }}
-              />
-            )}
-          </div>
-        </div>
+        
       </div>
     </div>
     </div>

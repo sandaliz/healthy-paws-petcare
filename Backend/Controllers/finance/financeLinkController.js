@@ -2,6 +2,7 @@
 import Invoice from "../../Model/finance/invoiceModel.js";
 import Cart from "../../Model/Cart.js";
 import Appointment from "../../Model/Appointment.js";
+import CareCustomer from "../../Model/CareModel.js";
 
 const generateInvoiceID = () => {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, ""); // YYYYMMDD
@@ -104,5 +105,60 @@ export const createInvoiceFromAppointment = async (req, res) => {
   } catch (err) {
     console.error("createInvoiceFromAppointment error:", err);
     res.status(500).json({ message: err?.message || "Server error" });
+  }
+};
+
+export const createInvoiceFromDaycare = async (req, res) => {
+  try {
+    const { careId, userID } = req.body;
+    if (!careId || !userID)
+      return res.status(400).json({ message: "careId and userID are required" });
+
+    const care = await CareCustomer.findById(careId).populate("user", "name email");
+    if (!care) return res.status(404).json({ message: "Daycare booking not found" });
+
+    // Simple flat nightly fee (customize with grooming/walking extras)
+    const nightlyRate = 1000; // example
+    let subtotal = care.nightsStay * nightlyRate;
+
+    if (care.grooming) subtotal += 500;
+    if (care.walking) subtotal += 300;
+
+    const lineItems = [
+      {
+        description: `Daycare for ${care.petName} (${care.nightsStay} nights)`,
+        quantity: care.nightsStay,
+        unitPrice: nightlyRate,
+        total: care.nightsStay * nightlyRate
+      },
+    ];
+
+    if (care.grooming)
+      lineItems.push({ description: "Grooming service", quantity: 1, unitPrice: 500, total: 500 });
+
+    if (care.walking)
+      lineItems.push({ description: "Daily Walking", quantity: care.nightsStay, unitPrice: 300, total: care.nightsStay * 300 });
+
+    const tax = +(subtotal * 0.08).toFixed(2);
+    const total = subtotal + tax;
+    const dueDate = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
+
+    const invoice = new Invoice({
+      invoiceID: `INV-${Date.now()}`,
+      userID,
+      lineItems,
+      subtotal,
+      tax,
+      total,
+      status: "Pending",
+      dueDate,
+      linkedDaycare: care._id, // so we can always trace booking
+    });
+
+    await invoice.save();
+    res.status(201).json({ message: "Invoice created for daycare", invoice });
+  } catch (err) {
+    console.error("createInvoiceFromDaycare error", err);
+    res.status(500).json({ message: err.message || "Server error" });
   }
 };

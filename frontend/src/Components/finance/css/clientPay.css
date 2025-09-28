@@ -264,6 +264,29 @@ button, .cta {
 /* Modals */
 .finance-scope .modal{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:grid; place-items:center; padding:12px; z-index:50;}
 .finance-scope .modal-box{ width:520px; max-width:95vw; background:#fff; border-radius:16px; padding:16px; border:1px solid #eee;}
+/* Offline Payment Modal Styling */
+.f-offline-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 2000;
+}
+
+.f-offline-modal-box {
+  width: 100%;
+  max-width: 640px;        /* bigger, clean */
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #ddd;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
 
 /* Success Page */
 .finance-scope .success-hero{ text-align:center; margin-bottom:var(--space-3);}
@@ -309,4 +332,125 @@ button, .cta {
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 600;
+}
+
+.f-offline-coupon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.f-offline-coupon-card {
+  position: relative;
+  background: linear-gradient(135deg, #fffdfa 0%, #ffffff 60%);
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.f-offline-coupon-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  border-color: #ddd;
+}
+
+.f-offline-coupon-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.f-offline-code {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--brown);
+  font-family: 'Poppins', sans-serif;
+}
+
+.f-offline-type {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.f-offline-meta {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.f-offline-btn {
+  background: #f3f4f6;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.f-offline-btn:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.f-offline-applied {
+  background: #fef8e7;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 600;
+  color: #92400e;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.f-offline-promo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.f-offline-promo .input {
+  flex: 1; /* input grows to full width */
+}
+
+.f-offline-promo .f-offline-btn,
+.f-offline-promo .btn.ghost {
+  flex-shrink: 0; /* buttons stay sized, don’t stretch */
+  height: 44px;   /* align height with input nicely */
+}
+
+.f-offline-coupon-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 8px;        /* spacing between checkbox + text */
+  font-weight: 600;
+  margin: 12px 0;  /* extra breathing room around toggle row */
+}
+
+.f-offline-coupon-body {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.coupon-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.finance-scope .coupon-panel {
+  margin-bottom: 24px;  /* or var(--space-4) for consistency */
 }

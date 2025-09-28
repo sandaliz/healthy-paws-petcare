@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/petownerregister.css";
-
-// ✅ Import background image via ES6
 import bgImage from "../../assets/registration_bg.png";
 
 const RegisterOwner = ({ user }) => {
@@ -26,21 +24,38 @@ const RegisterOwner = ({ user }) => {
     }
   }, [user?.email]);
 
+  // 🔹 Enhanced handleChange with phone validation
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setOwnerData({ ...ownerData, [name]: value });
+
+    if (name === "OwnerPhone" || name === "EmergencyContact") {
+      // Allow only digits
+      const numericValue = value.replace(/\D/g, "");
+
+      // Restrict to 10 digits
+      if (numericValue.length > 10) return;
+
+      setOwnerData({ ...ownerData, [name]: numericValue });
+    } else {
+      setOwnerData({ ...ownerData, [name]: value });
+    }
   };
 
   const validate = () => {
     let tempErrors = {};
     if (!ownerData.OwnerName.trim())
       tempErrors.OwnerName = "Owner name is required";
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ownerData.OwnerEmail))
       tempErrors.OwnerEmail = "Valid email is required";
+
     if (!/^\d{10}$/.test(ownerData.OwnerPhone))
       tempErrors.OwnerPhone = "Enter a valid 10-digit phone number";
+
     if (!/^\d{10}$/.test(ownerData.EmergencyContact))
-      tempErrors.EmergencyContact = "Enter a valid 10-digit emergency contact";
+      tempErrors.EmergencyContact =
+        "Enter a valid 10-digit emergency contact";
+
     if (!ownerData.OwnerAddress.trim())
       tempErrors.OwnerAddress = "Address is required";
 
@@ -60,31 +75,26 @@ const RegisterOwner = ({ user }) => {
 
   return (
     <main className="register-page">
-      {/* ✅ Scoped Toast */}
       <div className="register-toast-wrapper">
         <ToastContainer />
       </div>
 
-      {/* ✅ Background image */}
       <img src={bgImage} alt="background" className="register-bg-image" />
 
-      {/* ✅ Overlay container */}
       <div className="register-form-overlay">
         <div className="glass-header">
           <h2>Owner Information</h2>
           <p>
-            Please provide your personal information. This helps us contact
-            you quickly in case of emergencies and care updates.
+            Please provide your personal information. This helps us contact you
+            quickly in case of emergencies and care updates.
           </p>
         </div>
 
-        {/* Progress bar */}
         <div className="registration-progress">
           <div className="progress-step active"></div>
           <div className="progress-step"></div>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleNext} className="register-form">
           <div className="form-section">
             <div className="form-section-title">Contact Details</div>
@@ -134,6 +144,7 @@ const RegisterOwner = ({ user }) => {
               <input
                 id="OwnerPhone"
                 className={`form-input ${errors.OwnerPhone ? "error" : ""}`}
+                type="text"
                 name="OwnerPhone"
                 placeholder="07XXXXXXXX"
                 value={ownerData.OwnerPhone}
@@ -152,6 +163,7 @@ const RegisterOwner = ({ user }) => {
               <input
                 id="EmergencyContact"
                 className={`form-input ${errors.EmergencyContact ? "error" : ""}`}
+                type="text"
                 name="EmergencyContact"
                 placeholder="Emergency contact number"
                 value={ownerData.EmergencyContact}
@@ -181,7 +193,6 @@ const RegisterOwner = ({ user }) => {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="form-actions">
             <button type="submit" className="register-btn">
               Next: Pet Info →

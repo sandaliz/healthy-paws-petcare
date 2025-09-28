@@ -1,47 +1,35 @@
+// src/Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC.js
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useParams } from "react-router-dom";
+import api from "../../../utils/api"; // centralized API with JWT
 import "./AppointmentDetailsDC.css";
-
-const URL = "http://localhost:5001/careCustomers";
 
 function AppointmentDetailsDC() {
   const { id } = useParams();
   const [appointment, setAppointment] = useState(null);
-  const navigate = useNavigate();
+
+  // Sri Lanka timezone formatting
+  const formatDateSL = (dateStr) => {
+    if (!dateStr) return "-";
+    const dt = new Date(dateStr);
+    return dt.toLocaleDateString("en-GB", { timeZone: "Asia/Colombo" });
+  };
 
   const fetchAppointment = useCallback(async () => {
     try {
-      const res = await axios.get(`${URL}/${id}`);
+      const res = await api.get(`/careCustomers/${id}`);
       if (res.data && res.data.careCustomer) {
         setAppointment(res.data.careCustomer);
       }
     } catch (err) {
       console.error("Error fetching appointment:", err);
+      alert(err.response?.data?.message || "Failed to fetch appointment");
     }
   }, [id]);
 
   useEffect(() => {
     fetchAppointment();
   }, [fetchAppointment]);
-
-  const approveHandler = async () => {
-    try {
-      await axios.put(`${URL}/${id}`, { status: "Approved" });
-      navigate("/pending-appointments");
-    } catch (err) {
-      console.error("Error approving:", err);
-    }
-  };
-
-  const rejectHandler = async () => {
-    try {
-      await axios.put(`${URL}/${id}`, { status: "Rejected" });
-      navigate("/pending-appointments");
-    } catch (err) {
-      console.error("Error rejecting:", err);
-    }
-  };
 
   if (!appointment) {
     return <p>Loading appointment...</p>;
@@ -58,8 +46,7 @@ function AppointmentDetailsDC() {
       <p><strong>Pet:</strong> {appointment.petName} ({appointment.species})</p>
       <p>
         <strong>Stay:</strong>{" "}
-        {new Date(appointment.dateStay).toLocaleDateString("en-GB")} →{" "}
-        {new Date(appointment.pickUpDate).toLocaleDateString("en-GB")}
+        {formatDateSL(appointment.dateStay)} → {formatDateSL(appointment.pickUpDate)}
       </p>
       <p><strong>Nights:</strong> {appointment.nightsStay}</p>
 
@@ -72,15 +59,6 @@ function AppointmentDetailsDC() {
       <p><strong>Walking:</strong> {appointment.walking ? "Yes" : "No"}</p>
 
       <p><strong>Status:</strong> {appointment.status}</p>
-
-      <div className="ad-dc-action-btns">
-        <button className="ad-dc-btn ad-dc-btn-approve" onClick={approveHandler}>
-          Approve
-        </button>
-        <button className="ad-dc-btn ad-dc-btn-reject" onClick={rejectHandler}>
-          Reject
-        </button>
-      </div>
     </div>
   );
 }

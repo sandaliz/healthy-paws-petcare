@@ -79,6 +79,7 @@ import PendingAppointments from "./Components/DashboardDC/PendingAppointmentsDC/
 import UpcomingAppointmentsDC from "./Components/DashboardDC/UpcomingAppointmentsDC/UpcomingAppointmentsDC";
 import AppointmentHistory from "./Components/DashboardDC/AppointmentDCHistory/AppointmentDCHistory";
 import DailyLogs from "./Components/DashboardDC/DailyLogs/DailyLogs";
+import EmergencyPage from "./Components/DashboardDC/EmergencyPage/EmergencyPage";
 import AppointmentDetailsDC from "./Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC";
 import ReviewsDC from "./Components/DashboardDC/ReviewsDC/ReviewsDC";
 import DoctorDashboard from "./pages/doctor_dashboard/DoctorDashboard";
@@ -172,7 +173,7 @@ function App() {
       </Route>
 
       {/* -------- Prescription -------- */}
-      <Route path="/prescription" element={<PrescriptionForm />} />
+      <Route path="/prescription/:appointmentId" element={<PrescriptionForm />} />
 
       {/* -------- Daycare & Reviews -------- */}
       <Route path="/daycare" element={<Daycare />} />
@@ -207,6 +208,7 @@ function App() {
         />
         <Route path="appointmentHistory" element={<AppointmentHistory />} />
         <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
+        <Route path="emergency" element={<EmergencyPage />} />
         <Route
           path="appointmentDetailsDC/:id"
           element={<AppointmentDetailsDC />}
@@ -233,7 +235,7 @@ function App() {
       <Route path="/ask-quesions" element={<UserQuesions />} />
 
       {/* -------- Finance -------- */}
-      <Route path="/pay" element={<ClientPay />} />
+      <Route path="/pay/:invoiceId" element={<ClientPay />} />
       <Route path="/pay/online" element={<OnlinePay />} />
       <Route path="/pay/success" element={<PaySuccess />} />
       <Route path="/pay/summary" element={<PaymentSummary />} />

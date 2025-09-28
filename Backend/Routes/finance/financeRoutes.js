@@ -55,6 +55,7 @@ import {
 import {
   createInvoiceFromCart,
   createInvoiceFromAppointment,
+  createInvoiceFromDaycare,
 } from "../../Controllers/finance/financeLinkController.js";
 
 // ========== INVOICES ==========
@@ -103,6 +104,7 @@ router.put("/refund/reject/:id", rejectRefund);
 // ========== FINANCE LINKS ==========
 router.post("/invoice/cart", createInvoiceFromCart);
 router.post("/invoice/appointment", createInvoiceFromAppointment);
+router.post("/invoice/daycare", createInvoiceFromDaycare);
 
 // ========== DASHBOARD ==========
 router.get("/financial-dashboard", getFinancialManagerDashboard);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
+import api from '../../utils/api';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router';
 
@@ -30,13 +31,11 @@ function UpdateApphisDC() {
     useEffect(() => {
     const fetchHandler = async () => {
         try {
-            const response = await axios.get(`http://localhost:5001/careCustomers/${id}`);
-            console.log('API Response:', response.data);
+            const response = await api.get(`/careCustomers/${id}`);
             
             
             const data = response.data.careCustomer || {};
-            
-            console.log('Fetched data:', data); 
+             
             if (data.dateStay) {
                 data.dateStay = new Date(data.dateStay).toISOString().split("T")[0];
             }
@@ -55,7 +54,7 @@ function UpdateApphisDC() {
 
     const sendRequest = async () => {
         try {
-            await axios.put(`http://localhost:5001/careCustomers/${id}`, {
+            await api.put(`/careCustomers/${id}`, {
                 ownerName: String(inputs.ownerName),
                 contactNumber: String(inputs.contactNumber),
                 email: String(inputs.email),

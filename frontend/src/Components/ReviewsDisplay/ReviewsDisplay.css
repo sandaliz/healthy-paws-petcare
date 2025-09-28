@@ -1,70 +1,87 @@
-/* ReviewsDisplay.css */
+/* =================== ReviewsDisplay =================== */
 
-/* Page Container */
 .reviews-page-container {
   font-family: 'Roboto', sans-serif;
-  padding: 40px 20px;
-  background-color: #FFFFFF;
+  background-color: #fff;
   color: #333;
+  padding: 20px;
 }
 
-/* Header Section */
-.page-header {
-  background: linear-gradient(135deg, #FFD58E, #FFF5E1);
-  padding: 40px 20px;   /* fixed padding */
-  border-radius: 16px;
+/* -------------------- Hero Section -------------------- */
+.reviews-hero {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
   margin-bottom: 40px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.page-header h1 {
-  font-family: 'Poppins', sans-serif;
-  font-size: 2.4rem;
-  font-weight: 600;
-  color: #54413C;
-  margin-bottom: 10px;
+.reviews-hero-image {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  filter: brightness(0.7);
 }
 
-.page-header .motto {
-  font-size: 1.2rem;
-  font-style: italic;
-  color: #54413C;
-  margin-bottom: 8px;
-}
-
-.page-header .subtitle {
-  font-size: 1rem;
-  color: #333;
+.reviews-hero-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   max-width: 700px;
-  margin: 0 auto 20px;
-  line-height: 1.5;
+  text-align: center;
+  color: #fff;
+  padding: 0 20px;
+  z-index: 2;
 }
 
-/* Add Review Button */
+.reviews-hero-overlay h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 3rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+}
+
+.reviews-hero-overlay .motto {
+  font-size: 1.5rem;
+  font-style: italic;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+.reviews-hero-overlay .subtitle {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
 .add-review-btn {
   display: inline-block;
-  background-color: #54413C;
-  color: #FFFFFF;
-  padding: 12px 24px;
-  border-radius: 8px;
+  background-color: rgba(255, 213, 142, 0.95);
+  color: #54413C;
+  padding: 14px 28px;
+  border-radius: 10px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.1rem;
   text-decoration: none;
-  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
 }
 
 .add-review-btn:hover {
-  background-color: #3d302c;
-  transform: scale(1.05);
+  background-color: rgba(255, 213, 142, 1);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
 
-/* Reviews Grid */
+/* -------------------- Reviews Grid -------------------- */
 .reviews-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;  
-  justify-items: center;
+  grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+  gap: 90px;
+  justify-content: center; /* center grid */
+  margin: 0 auto;
+  max-width: 1300px; /* optional: limit the width */
 }
 
 /* Review Card */
@@ -94,7 +111,6 @@
   padding-bottom: 6px;
 }
 
-/* Review Details */
 .review-detail {
   margin: 8px 0;
   font-size: 0.95rem;
@@ -112,7 +128,6 @@
   color: #FFD58E;
 }
 
-/* Comment */
 .review-comment {
   margin-top: 12px;
   font-style: italic;
@@ -123,17 +138,6 @@
   line-height: 1.4;
 }
 
-/* No Reviews State */
-.no-reviews {
-  text-align: center;
-  padding: 40px;
-  background: #FFF8F0;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  color: #54413C;
-}
-
-/* Action buttons */
 .review-actions {
   display: flex;
   justify-content: space-between;
@@ -169,4 +173,13 @@
 
 .delete-btn:hover {
   background-color: #3d302c;
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 40px;
+  background: #FFF8F0;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  color: #54413C;
 }

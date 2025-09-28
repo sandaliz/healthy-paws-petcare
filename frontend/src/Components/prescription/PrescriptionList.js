@@ -1,46 +1,50 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Modal from "react-modal";
-import { QRCodeCanvas } from "qrcode.react";
-import "./PrescriptionList.css";   
-
-Modal.setAppElement("#root");
+import "./PrescriptionList.css";
 
 function PrescriptionList() {
   const [prescriptions, setPrescriptions] = useState([]);
-  const [selectedPrescription, setSelectedPrescription] = useState(null);
-  const [email, setEmail] = useState("");
-  const [showQR, setShowQR] = useState(false);
+
+  const fetchPrescriptions = async () => {
+    try {
+      const res = await axios.get("http://localhost:5001/prescriptions");
+      const sorted = [...res.data].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setPrescriptions(sorted);
+    } catch (err) {
+      console.error("Error fetching prescriptions:", err);
+    }
+  };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5001/prescriptions")
-      .then((res) => setPrescriptions(res.data))
-      .catch((err) => console.error("Error fetching prescriptions:", err));
+    fetchPrescriptions();
   }, []);
 
-  const openQR = (prescription) => {
-    setSelectedPrescription(prescription);
-    setShowQR(true);
-  };
+  // ✅ Send email directly to ownerEmail
+  const sendToCustomer = async (prescription) => {
+    if (!prescription.ownerEmail) {
+      alert("❌ No customer email found for this prescription.");
+      return;
+    }
 
-  const closeQR = () => {
-    setShowQR(false);
-    setEmail("");
-    setSelectedPrescription(null);
-  };
+    // ✅ Confirmation box before sending
+    const confirmSend = window.confirm(
+      `Do you want to send this prescription to ${prescription.ownerEmail}?`
+    );
 
-  const sendEmail = async () => {
+    if (!confirmSend) return;
+
     try {
       await axios.post("http://localhost:5001/send-prescription", {
-        email,
-        prescriptionId: selectedPrescription._id,
+        email: prescription.ownerEmail,
+        prescriptionId: prescription._id,
       });
-      alert("✅ QR sent to customer successfully!");
-      closeQR();
+      alert(`✅ Prescription sent to ${prescription.ownerEmail}`);
+      fetchPrescriptions(); // refresh list
     } catch (err) {
       console.error("Error sending email:", err);
-      alert("❌ Failed to send email");
+      alert("❌ Failed to send prescription");
     }
   };
 
@@ -66,9 +70,8 @@ function PrescriptionList() {
               <td>{p._id.slice(0, 6)}</td>
               <td>
                 <span
-                  className={`pl-status-badge ${
-                    p.status === "paid" ? "pl-status-paid" : "pl-status-pending"
-                  }`}
+                  className={`pl-status-badge ${p.status === "paid" ? "pl-status-paid" : "pl-status-pending"
+                    }`}
                 >
                   {p.status}
                 </span>
@@ -85,12 +88,15 @@ function PrescriptionList() {
               <td>
                 <div className="pl-action-buttons">
                   {p.status === "pending" ? (
-                    <button className="pl-btn-send" onClick={() => openQR(p)}>
+                    <button
+                      className="pl-btn-send"
+                      onClick={() => sendToCustomer(p)}
+                    >
                       Send to Customer
                     </button>
                   ) : (
                     <button className="pl-btn-paid" disabled>
-                      Paid 
+                      Paid
                     </button>
                   )}
                 </div>
@@ -99,54 +105,6 @@ function PrescriptionList() {
           ))}
         </tbody>
       </table>
-
-      {/* ✅ QR Modal */}
-      <Modal
-        isOpen={showQR}
-        onRequestClose={closeQR}
-        contentLabel="Send Prescription QR"
-        style={{
-          content: {
-            padding: "20px",
-            maxWidth: "400px",
-            margin: "auto",
-            borderRadius: "10px",
-          },
-        }}
-      >
-        <h3>Send Prescription</h3>
-        {selectedPrescription && (
-          <>
-            <QRCodeCanvas
-              value={`http://localhost:3000/cart/${selectedPrescription._id}`}
-              size={200}
-              includeMargin={true}
-            />
-            <p style={{ marginTop: "10px" }}>
-              Scan this QR or click the link in your email to view your
-              prescription.
-            </p>
-            <input
-              type="email"
-              placeholder="Enter Customer Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{
-                display: "block",
-                margin: "10px 0",
-                padding: "6px",
-                width: "100%",
-              }}
-            />
-            <button onClick={sendEmail} className="pl-btn-send">
-              Send QR
-            </button>
-            <button onClick={closeQR} style={{ marginLeft: "10px", padding: "6px 10px" }}>
-              Cancel
-            </button>
-          </>
-        )}
-      </Modal>
     </div>
   );
 }
