@@ -1,4 +1,4 @@
-/* Login page specific wrapper */
+/* ---------- Login Page Wrapper ---------- */
 .login-page-wrapper {
   background: #FFD58E !important; /* Soft Peach background only for login */
   min-height: 100vh;
@@ -8,15 +8,7 @@
   justify-content: center;
 }
 
-/* Rest of your existing CSS remains exactly the same below this line */
-/* Titles */
-h1, h2, h3 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  color: #2D2D2D;
-}
-
-/* Doodle panel */
+/* ---------- Doodle Panel ---------- */
 .doodle-panel {
   border-radius: 24px;
   padding: 3rem;
@@ -32,32 +24,7 @@ h1, h2, h3 {
   box-shadow: 0 15px 40px rgba(0,0,0,0.25);
 }
 
-/* ... rest of your existing CSS remains unchanged ... */
-
-/* Titles */
-h1, h2, h3 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  color: #2D2D2D;
-}
-
-/* Doodle panel */
-.doodle-panel {
-  border-radius: 24px;
-  padding: 3rem;
-  width: 100%;
-  max-width: 2000px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-  background-image: url('../assets/LOG_page.png');
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-}
-
-/* Layout inside panel */
+/* ---------- Layout ---------- */
 .login-content {
   display: flex;
   align-items: center;
@@ -66,7 +33,7 @@ h1, h2, h3 {
   width: 100%;
 }
 
-/* Dog picture circle */
+/* ---------- Image Circle ---------- */
 .image-circle {
   width: 350px;
   height: 350px;
@@ -84,7 +51,7 @@ h1, h2, h3 {
   object-fit: cover;
 }
 
-/* Login card with glass effect */
+/* ---------- Login Card ---------- */
 .login-card {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(15px);
@@ -95,16 +62,27 @@ h1, h2, h3 {
   max-width: 420px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
-.login-title {
+
+/* Login card headings */
+.login-card__title {
   font-family: 'Poppins', sans-serif;
   font-size: 1.8rem;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   color: #54413C;
 }
 
-/* Error box */
+.login-card__subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  text-align: center;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Error Box ---------- */
 .error-box {
   display: flex;
   align-items: center;
@@ -119,7 +97,7 @@ h1, h2, h3 {
 }
 .error-icon { width: 18px; height: 18px; }
 
-/* Form inputs */
+/* ---------- Form Inputs ---------- */
 .form { display: flex; flex-direction: column; gap: 1.2rem; }
 
 .login-input {
@@ -135,11 +113,7 @@ h1, h2, h3 {
   box-sizing: border-box;
 }
 
-.login-input::placeholder {
-  color: #888;
-  text-align: left;
-}
-
+.login-input::placeholder { color: #888; text-align: left; }
 .login-input:focus {
   border-color: #FFD58E;
   box-shadow: 0 0 0 2px rgba(255,213,142,0.3);
@@ -149,10 +123,17 @@ h1, h2, h3 {
 .input-error { border-color: red !important; }
 .error-text { font-size: 0.8rem; color: red; margin-top: 0.3rem; }
 
-/* Links + button */
-.form-links { text-align: right; }
-.link { font-size: 0.85rem; color: #54413C; text-decoration: none; }
-.link:hover { color: #333; }
+/* ---------- Links & Buttons ---------- */
+.form-links { text-align: right; margin-bottom: 0.5rem; }
+.link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #54413C;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  transition: color 0.2s ease;
+}
+.link:hover { color: #2D2D2D; text-decoration: underline; }
 
 .login-btn {
   margin-top: 0.5rem;
@@ -164,34 +145,42 @@ h1, h2, h3 {
   border: none;
   border-radius: 30px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
 }
 .login-btn:hover { background: #333; }
+.login-btn:disabled { background: #cccccc; cursor: not-allowed; }
 
-.signup-text { text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #333; }
-.signup-link { font-weight: 600; color: #54413C; text-decoration: none; }
-.signup-link:hover { color: #333; }
-
-/* Responsive */
-@media (max-width: 900px) {
-  .login-content { flex-direction: column; text-align: center; gap: 2rem; }
-  .image-circle { width: 220px; height: 220px; }
-  .doodle-panel { width: 95%; padding: 2rem; }
+/* Signup text */
+.signup-text {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #54413C;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
 }
+.signup-link {
+  font-weight: 600;
+  color: #54413C;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  transition: color 0.2s ease;
+}
+.signup-link:hover { color: #2D2D2D; text-decoration: underline; }
 
-/* === Login Specific Icon Styling === */
+/* ---------- Input Wrapper Icons ---------- */
 .login-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
 }
-
 .login-input-wrapper .login-input {
-  padding-left: 2.8rem; /* space for left icon */
-  padding-right: 2.8rem; /* space for right icon (eye toggle) */
+  padding-left: 2.8rem;
+  padding-right: 2.8rem;
   width: 100%;
 }
-
 .login-left-icon {
   position: absolute;
   left: 0.8rem;
@@ -201,7 +190,6 @@ h1, h2, h3 {
   z-index: 1;
   pointer-events: none;
 }
-
 .login-right-icon {
   position: absolute;
   right: 0.8rem;
@@ -210,21 +198,14 @@ h1, h2, h3 {
   color: #888;
   z-index: 2;
 }
+.login-eye-toggle { cursor: pointer; transition: color 0.2s ease; }
+.login-eye-toggle:hover { color: #54413C; }
+.login-eye-toggle svg { width: 22px; height: 22px; }
 
-.login-eye-toggle {
-  cursor: pointer;
-}
-
-.login-eye-toggle svg {
-  width: 22px;
-  height: 22px;
-}
-
-.login-subtitle {
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 400;
-  text-align: center;
-  color: #555;
-  margin-bottom: 1.5rem;
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .login-content { flex-direction: column; text-align: center; gap: 2rem; }
+  .image-circle { width: 220px; height: 220px; }
+  .doodle-panel { width: 95%; padding: 2rem; }
+  .form-links { text-align: center; }
 }

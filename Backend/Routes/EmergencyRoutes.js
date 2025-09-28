@@ -1,19 +1,10 @@
-// routes/EmergencyRoutes.js
 import express from "express";
-import {
-  createEmergency,
-  getAllEmergencies,
-  getEmergencyById,
-  updateEmergency,
-  deleteEmergency,
-} from "../Controllers/EmergencyControllers.js";
+import { handleEmergencyAction, getEmergencyHistory } from "../Controllers/EmergencyControllers.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createEmergency);
-router.get("/", getAllEmergencies);
-router.get("/:id", getEmergencyById);
-router.put("/:id", updateEmergency);
-router.delete("/:id", deleteEmergency);
+router.post("/send", protect, handleEmergencyAction);
+router.get("/history", protect, getEmergencyHistory);
 
 export default router;

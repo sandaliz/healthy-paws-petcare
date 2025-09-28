@@ -1,41 +1,34 @@
+// src/Components/DashboardDC/AppointmentDCHistory/AppointmentDCHistory.js
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import api from "../../../utils/api";
 import { utils, writeFile } from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "./AppointmentDCHistory.css";
 
-const HISTORY_URL = "http://localhost:5001/checkinout/history";
-const REJECTED_URL = "http://localhost:5001/careCustomers/status/Rejected";
-const CANCELLED_URL = "http://localhost:5001/careCustomers/status/Cancelled";
-
-function formatDateTime(dateTimeStr) {
+// Format datetime in Sri Lanka timezone
+const formatDateTimeSL = (dateTimeStr) => {
   if (!dateTimeStr) return "-";
   const dt = new Date(dateTimeStr);
-  const day = String(dt.getDate()).padStart(2, "0");
-  const month = String(dt.getMonth() + 1).padStart(2, "0");
-  const year = dt.getFullYear();
-  const hours = String(dt.getHours()).padStart(2, "0");
-  const minutes = String(dt.getMinutes()).padStart(2, "0");
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
-}
+  return dt.toLocaleString("en-GB", { timeZone: "Asia/Colombo", hour12: false });
+};
 
 function AppointmentDCHistory() {
   const [history, setHistory] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [monthFilter, setMonthFilter] = useState(""); // YYYY-MM
+  const [monthFilter, setMonthFilter] = useState("");
 
   const fetchHistory = async () => {
     try {
+      // Multiple API calls: completed, rejected, cancelled
       const [cioRes, rejectedRes, cancelledRes] = await Promise.all([
-        axios.get(HISTORY_URL),
-        axios.get(REJECTED_URL),
-        axios.get(CANCELLED_URL)
+        api.get("/checkInOut/history"), // Completed
+        api.get("/careCustomers/status/Rejected"),
+        api.get("/careCustomers/status/Cancelled")
       ]);
 
-      // Completed check-ins
       const cioHistory = (cioRes.data.history || []).map((rec) => ({
         _id: rec._id,
         ownerName: rec.appointment?.ownerName || "-",
@@ -50,7 +43,6 @@ function AppointmentDCHistory() {
         ].filter(Boolean)
       }));
 
-      // Rejected & Cancelled appointments
       const rejectedCancelled = [
         ...(rejectedRes.data.careCustomers || []),
         ...(cancelledRes.data.careCustomers || [])
@@ -114,8 +106,8 @@ function AppointmentDCHistory() {
         Owner: rec.ownerName,
         Pet: rec.petName,
         Status: rec.status,
-        "Check-In": formatDateTime(rec.checkInTime),
-        "Check-Out": formatDateTime(rec.checkOutTime),
+        "Check-In": formatDateTimeSL(rec.checkInTime),
+        "Check-Out": formatDateTimeSL(rec.checkOutTime),
         Services: rec.services.join(", ") || "-"
       }))
     );
@@ -134,8 +126,8 @@ function AppointmentDCHistory() {
         rec.ownerName,
         rec.petName,
         rec.status,
-        formatDateTime(rec.checkInTime),
-        formatDateTime(rec.checkOutTime),
+        formatDateTimeSL(rec.checkInTime),
+        formatDateTimeSL(rec.checkOutTime),
         rec.services.join(", ") || "-"
       ])
     });
@@ -143,7 +135,7 @@ function AppointmentDCHistory() {
   };
 
   return (
-    <div className="history-container">
+    <div className="Ahistory-container">
       <h2>Appointment History</h2>
       <div className="history-controls">
         <input
@@ -184,9 +176,13 @@ function AppointmentDCHistory() {
               <tr key={rec._id}>
                 <td>{rec.ownerName}</td>
                 <td>{rec.petName}</td>
-                <td><span className={`status-badge ${rec.status.toLowerCase()}`}>{rec.status}</span></td>
-                <td>{formatDateTime(rec.checkInTime)}</td>
-                <td>{formatDateTime(rec.checkOutTime)}</td>
+                <td>
+                  <span className={`status-badge ${rec.status.toLowerCase()}`}>
+                    {rec.status}
+                  </span>
+                </td>
+                <td>{formatDateTimeSL(rec.checkInTime)}</td>
+                <td>{formatDateTimeSL(rec.checkOutTime)}</td>
                 <td>{rec.services.length > 0 ? rec.services.join(", ") : "-"}</td>
               </tr>
             ))}

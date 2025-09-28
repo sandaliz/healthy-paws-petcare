@@ -13,7 +13,7 @@ const careSchema = new Schema(
     // Foreign key reference to logged-in User
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // must match model name in UserModel.js
+      ref: "User", 
       required: true,
     },
 

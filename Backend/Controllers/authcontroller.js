@@ -71,16 +71,32 @@ export const register = async (req, res) => {
       });
     }
 
-    await transporter.sendMail({
-      from: process.env.SENDER_EMAIL,
-      to: email,
-      subject: "Welcome to Pet Care Management System!",
-      text: `Welcome ${name}, your account has been created with role ${assignedRole}.`,
-    });
+    // 📧 Send welcome/confirmation email
+    try {
+      await transporter.sendMail({
+        from: process.env.SENDER_EMAIL, // must be verified sender in Brevo or your SMTP config
+        to: email,
+        subject: "🎉 Welcome to Pet Care Management System!",
+        html: `
+          <h2>Welcome, ${name}!</h2>
+          <p>Your account has been created successfully with the role <b>${assignedRole}</b>.</p>
+          <p>You can now log in to start using our platform.</p>
+          <a href="${process.env.FRONTEND_URL}/login" 
+             style="display:inline-block;padding:10px 20px;background:#4CAF50;color:#fff;text-decoration:none;margin-top:10px;border-radius:5px;">
+             Login Now
+          </a>
+          <p>Thank you for joining <b>Pet Care</b> 🐾</p>
+        `,
+      });
+      console.log(`📧 Registration email sent to: ${email}`);
+    } catch (emailErr) {
+      console.error("❌ Failed to send registration email:", emailErr.message);
+      // We don’t fail registration if email fails — user still gets created
+    }
 
     return res.status(201).json({
       success: true,
-      message: "User registered successfully",
+      message: "User registered successfully. A confirmation email has been sent.",
       user: {
         _id: user._id,
         name: user.name,
@@ -97,7 +113,6 @@ export const register = async (req, res) => {
     });
   }
 };
-
 // ---------- User login ----------
 export const login = async (req, res) => {
   const { email, password } = req.body;

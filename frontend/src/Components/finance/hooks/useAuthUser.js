@@ -1,4 +1,3 @@
-// src/hooks/useAuthUser.js
 import { useEffect, useState } from "react";
 import { authApi } from "../services/authApi";
 

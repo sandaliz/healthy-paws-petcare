@@ -3,9 +3,6 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import assets from '../../assets/assets';
 import {
-  EnvelopeIcon,
-  LockClosedIcon,
-  UserIcon,
   EyeIcon,
   EyeSlashIcon,
   ExclamationCircleIcon,
@@ -16,13 +13,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../styles/Register.css';
 
+// Password rules
 const requirements = [
   { label: '8–12 characters minimum', test: /^.{8,12}$/ },
   { label: 'One uppercase letter (A–Z)', test: /[A-Z]/ },
   { label: 'One lowercase letter (a–z)', test: /[a-z]/ },
   { label: 'One number (0–9)', test: /[0-9]/ },
-  { label: 'One special character (!@#$%^&*)', test: /[!@#$%^&*()_\-+=]/ }, // ✅ fixed!
+  { label: 'One special character (!@#$%^&*)', test: /[!@#$%^&*()_\-+=]/ },
 ];
+
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -43,27 +42,23 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  // helpers
+  // Validation helpers
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validateName = (name) => name.trim().length >= 2;
 
-  // input handlers
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
 
-    // check each requirement
     const checks = requirements.map((req) => req.test.test(value));
     setPasswordChecks(checks);
 
-    // if confirmPassword already entered, validate matching
     if (confirmPassword && value !== confirmPassword) {
       setConfirmPasswordError('Passwords do not match');
     } else {
       setConfirmPasswordError('');
     }
 
-    // overall error if any requirement fails
     if (value && checks.includes(false)) {
       setPasswordError('Invalid password. Must meet all requirements.');
     } else {
@@ -102,9 +97,10 @@ const Register = () => {
 
       if (res.data.success) {
         toast.success("✅ " + res.data.message);
+        // ✅ Redirect user directly to login page after a brief success notification
         setTimeout(() => {
-          navigate('/email-verify', { state: { email } });
-        }, 1500);
+          navigate('/login');
+        }, 1200);
       } else {
         toast.error(res.data.message || 'Something went wrong');
       }
@@ -122,11 +118,11 @@ const Register = () => {
         <p className="register-description">
           Please fill in your details to create an account and enjoy our services.
         </p>
+
         <form onSubmit={handleRegister} className="register-form">
           {/* NAME INPUT */}
           <div className="input-group">
             <div className="input-wrapper register-input-wrapper">
-              <UserIcon className="input-icon register-left-icon" />
               <input
                 type="text"
                 placeholder="Full Name"
@@ -135,17 +131,21 @@ const Register = () => {
                   setName(e.target.value);
                   setNameError(!validateName(e.target.value) ? 'Name must be at least 2 characters long' : '');
                 }}
-                className={`input-field register-input ${nameError ? 'input-error' : ''}`}
+                className={`register-input ${nameError ? 'input-error' : ''}`}
                 required
               />
             </div>
-            {nameError && <p className="input-error-message"><ExclamationCircleIcon className="error-icon" />{nameError}</p>}
+            {nameError && (
+              <p className="input-error-message">
+                <ExclamationCircleIcon className="error-icon" />
+                {nameError}
+              </p>
+            )}
           </div>
 
           {/* EMAIL INPUT */}
           <div className="input-group">
             <div className="input-wrapper register-input-wrapper">
-              <EnvelopeIcon className="input-icon register-left-icon" />
               <input
                 type="email"
                 placeholder="Email"
@@ -154,36 +154,51 @@ const Register = () => {
                   setEmail(e.target.value);
                   setEmailError(!validateEmail(e.target.value) ? 'Please enter a valid email address' : '');
                 }}
-                className={`input-field register-input ${emailError ? 'input-error' : ''}`}
+                className={`register-input ${emailError ? 'input-error' : ''}`}
                 required
               />
             </div>
-            {emailError && <p className="input-error-message"><ExclamationCircleIcon className="error-icon" />{emailError}</p>}
+            {emailError && (
+              <p className="input-error-message">
+                <ExclamationCircleIcon className="error-icon" />
+                {emailError}
+              </p>
+            )}
           </div>
 
           {/* PASSWORD INPUT */}
           <div className="input-group">
-            <div className="input-wrapper register-input-wrapper">
-              <LockClosedIcon className="input-icon register-left-icon" />
+            <div className="input-wrapper register-input-wrapper with-toggle">
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 value={password}
                 onChange={handlePasswordChange}
-                className={`input-field register-input ${passwordError ? 'input-error' : ''}`}
+                className={`register-input ${passwordError ? 'input-error' : ''}`}
                 required
               />
-              <div className="register-password-toggle" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? <EyeSlashIcon className="toggle-icon" /> : <EyeIcon className="toggle-icon" />}
+              <div
+                className="register-password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
               </div>
             </div>
-            {passwordError && <p className="input-error-message"><ExclamationCircleIcon className="error-icon" />{passwordError}</p>}
+            {passwordError && (
+              <p className="input-error-message">
+                <ExclamationCircleIcon className="error-icon" />
+                {passwordError}
+              </p>
+            )}
           </div>
 
-          {/* ✅ PASSWORD REQUIREMENTS DYNAMIC LIST */}
+          {/* PASSWORD REQUIREMENTS */}
           <ul className="password-requirements-list">
             {requirements.map((req, index) => (
-              <li key={index} className={passwordChecks[index] ? 'requirement-met' : 'requirement-unmet'}>
+              <li
+                key={index}
+                className={passwordChecks[index] ? 'requirement-met' : 'requirement-unmet'}
+              >
                 {passwordChecks[index] ? (
                   <CheckCircleIcon className="requirement-icon success" />
                 ) : (
@@ -196,24 +211,31 @@ const Register = () => {
 
           {/* CONFIRM PASSWORD */}
           <div className="input-group">
-            <div className="input-wrapper register-input-wrapper">
-              <LockClosedIcon className="input-icon register-left-icon" />
+            <div className="input-wrapper register-input-wrapper with-toggle">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
-                className={`input-field register-input ${confirmPasswordError ? 'input-error' : ''}`}
+                className={`register-input ${confirmPasswordError ? 'input-error' : ''}`}
                 required
               />
-              <div className="register-password-toggle" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                {showConfirmPassword ? <EyeSlashIcon className="toggle-icon" /> : <EyeIcon className="toggle-icon" />}
+              <div
+                className="register-password-toggle"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeSlashIcon /> : <EyeIcon />}
               </div>
             </div>
-            {confirmPasswordError && <p className="input-error-message"><ExclamationCircleIcon className="error-icon" />{confirmPasswordError}</p>}
+            {confirmPasswordError && (
+              <p className="input-error-message">
+                <ExclamationCircleIcon className="error-icon" />
+                {confirmPasswordError}
+              </p>
+            )}
           </div>
 
-          {/* CONFIRMATION CHECKBOX */}
+          {/* CONFIRM CHECKBOX */}
           <div className="checkbox-group">
             <label>
               <input
@@ -225,6 +247,7 @@ const Register = () => {
             </label>
           </div>
 
+          {/* SUBMIT BUTTON */}
           <button
             type="submit"
             disabled={
@@ -238,21 +261,13 @@ const Register = () => {
             }
             className="submit-btn"
           >
-            {loading ? (
-              <span className="loading-spinner">
-                <svg className="animate-spin spinner-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Creating Account...
-              </span>
-            ) : (
-              'Sign Up'
-            )}
+            {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
+
         <p className="login-text">
-          Already have an account? <Link to="/login" className="login-link">Login</Link>
+          Already have an account?{' '}
+          <Link to="/login" className="login-link">Login</Link>
         </p>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />

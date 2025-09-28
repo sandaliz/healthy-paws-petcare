@@ -93,7 +93,7 @@ export const claimCoupon = async (req, res) => {
     if (!userID || (!code && !templateId)) {
       return res.status(400).json({ message: "userID and code/templateId are required" });
     }
-    const userObjectId = new mongoose.Types.ObjectId(userID);
+    const userObjectId = new mongoose.Types.ObjectId(String(userID));
     if (code) code = String(code).trim().toUpperCase();
     const template = templateId
       ? await Coupon.findById(templateId)
@@ -169,20 +169,27 @@ export const getUserAvailableCoupons = async (req, res) => {
 
 export const validateUserCoupon = async (req, res) => {
   try {
-    const { couponId, userID, invoiceTotal } = req.body;
-    if (!couponId || !userID || invoiceTotal == null) {
-      return res.status(400).json({ message: "couponId, userID and invoiceTotal required" });
+    // allow code OR couponId
+    let { couponId, code, userID, invoiceTotal } = req.body;
+
+    if ((!couponId && !code) || !userID || invoiceTotal == null) {
+      return res.status(400).json({ message: "couponId/code, userID and invoiceTotal required" });
     }
 
-    const ownerObjId = mongoose.isValidObjectId(userID) ? new mongoose.Types.ObjectId(userID) : userID;
+    // Cast userID properly (fix deprecation)
+    const ownerObjId = mongoose.isValidObjectId(userID) 
+      ? new mongoose.Types.ObjectId(String(userID)) 
+      : userID;
 
-    const c = await Coupon.findOne({
-      _id: couponId,
-      scope: "ISSUED",
-      ownerUserID: ownerObjId,
-      status: "Available",
-    });
+    // Build query - allow search by couponId OR typed code
+    const query = { scope: "ISSUED", ownerUserID: ownerObjId, status: "Available" };
+    if (couponId) {
+      query._id = couponId;
+    } else {
+      query.code = String(code).trim().toUpperCase();
+    }
 
+    const c = await Coupon.findOne(query);
     if (!c) return res.status(404).json({ message: "Coupon not available" });
 
     if (!c.canApply(Number(invoiceTotal))) {
@@ -194,10 +201,10 @@ export const validateUserCoupon = async (req, res) => {
         ? +(Number(invoiceTotal) * (c.discountValue / 100)).toFixed(2)
         : Math.min(Number(invoiceTotal), c.discountValue);
 
+    // Keep consistent payload
     res.json({ couponId: c._id, discount });
   } catch (err) {
     console.error("validateUserCoupon error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
-

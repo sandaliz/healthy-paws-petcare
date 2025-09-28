@@ -1,11 +1,8 @@
 // src/Components/DashboardDC/UpcomingAppointmentsDC/UpcomingAppointmentsDC.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../utils/api";
 import "./UpcomingAppointmentsDC.css";
-
-const URL = "http://localhost:5001/careCustomers";
-const CHECKIN_URL = "http://localhost:5001/checkInOut/checkin";
 
 function UpcomingAppointmentsDC() {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -17,30 +14,36 @@ function UpcomingAppointmentsDC() {
 
   const fetchUpcomingAppointments = async () => {
     try {
-      const res = await axios.get(`${URL}/status/Approved`);
+      const res = await api.get("/careCustomers/status/Approved");
       if (res.data && res.data.careCustomers) {
         setUpcomingAppointments(res.data.careCustomers);
       }
     } catch (err) {
       console.error("Error fetching upcoming appointments:", err);
+      alert(err.response?.data?.message || "Failed to fetch upcoming appointments");
     }
   };
 
   const handleCheckIn = async (appointmentId) => {
+    if (!window.confirm("Check in this pet?")) return;
+
     try {
-      const res = await axios.post(CHECKIN_URL, {
+      const res = await api.post("/checkInOut/checkin", {
         appointmentId,
         checkedInBy: "Receptionist",
       });
 
       if (res.status === 201) {
         alert("Pet checked in successfully!");
+        // Remove checked-in appointment from upcoming list
         setUpcomingAppointments((prev) =>
           prev.filter((appt) => appt._id !== appointmentId)
         );
+        // Navigate to TodaysPets page
+        navigate("/dashboardDC/todaysPets");
       }
     } catch (err) {
-      console.error("Error checking in pet:", err);
+      console.error("Check-in error:", err);
       alert(err.response?.data?.message || "Error during check-in");
     }
   };
