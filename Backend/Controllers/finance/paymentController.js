@@ -2,6 +2,7 @@ import Payment from "../../Model/finance/paymentModel.js";
 import Invoice from "../../Model/finance/invoiceModel.js";
 import User from "../../Model/userModel.js";
 import Coupon from "../../Model/finance/couponModel.js";
+import Loyalty from "../../Model/finance/loyaltyModel.js";
 import Stripe from "stripe";
 import mongoose from "mongoose";
 import { sendPaymentEmail } from "../../config/finance/email.js";
@@ -43,10 +44,36 @@ async function resolveCouponForPayment({ couponId, couponCode, userID }) {
   }
 
   if (couponCode) {
-    const c = await Coupon.findOne({ code: couponCode, scope: "GLOBAL" });
-    if (!c) throw new Error("Invalid coupon code");
-    return c;
+    const formattedCode = String(couponCode).trim().toUpperCase();
+
+    // Try a direct issued coupon match for this user
+    let c = await Coupon.findOne({
+      code: formattedCode,
+      scope: "ISSUED",
+      ownerUserID: userID,
+      status: "Available",
+    });
+    if (c) return c;
+
+    // Try finding the global template directly
+    c = await Coupon.findOne({ code: formattedCode, scope: "GLOBAL" });
+    if (c) return c;
+
+    // If user typed global *base* code, find their issued copy
+    const template = await Coupon.findOne({ code: formattedCode, scope: "GLOBAL" });
+    if (template) {
+      c = await Coupon.findOne({
+        scope: "ISSUED",
+        ownerUserID: userID,
+        parentId: template._id,
+        status: "Available",
+      });
+      if (c) return c;
+    }
+
+    throw new Error("Invalid coupon code");
   }
+
   return null;
 }
 
@@ -62,8 +89,8 @@ async function normalizeInvoiceStatus(invoice) {
       p.refundedAmount != null
         ? p.refundedAmount
         : p.status === "Refunded"
-        ? p.amount || 0
-        : 0
+          ? p.amount || 0
+          : 0
     );
     if (p.status === "Completed" || p.status === "Refunded") {
       totalCompleted += paid;
@@ -136,7 +163,7 @@ async function resolveOwnerDoc({ invoice, payment }) {
     try {
       const doc = await User.findById(id).select("name email").lean();
       if (doc) return doc;
-    } catch (_) {}
+    } catch (_) { }
   }
   return null;
 }
@@ -209,15 +236,15 @@ export const confirmOfflinePayment = async (req, res) => {
 
         // resolve owner robustly for display name and email
         const owner = await resolveOwnerDoc({ invoice, payment });
-        const toEmail = owner?.OwnerEmail || null;
+        const toEmail = owner?.email || null;
 
         if (toEmail) {
           await sendPaymentEmail({
             to: toEmail,
             invoice,
             payment,
-            ownerName: owner?.OwnerName,
-            ownerEmail: owner?.OwnerEmail,
+            ownerName: owner?.name,
+            ownerEmail: owner?.email,
           });
           payment.receiptEmailSentAt = new Date();
           await payment.save();
@@ -259,7 +286,7 @@ export const confirmOfflinePayment = async (req, res) => {
 
         // resolve owner robustly
         const owner = await resolveOwnerDoc({ invoice, payment });
-        const toEmail = owner?.OwnerEmail || null;
+        const toEmail = owner?.email || null;
 
         // Send once
         if (!payment.receiptEmailSentAt && toEmail) {
@@ -267,8 +294,8 @@ export const confirmOfflinePayment = async (req, res) => {
             to: toEmail,
             invoice,
             payment,
-            ownerName: owner?.OwnerName,
-            ownerEmail: owner?.OwnerEmail,
+            ownerName: owner?.name,
+            ownerEmail: owner?.email,
           });
           payment.receiptEmailSentAt = new Date();
           await payment.save();
@@ -278,15 +305,19 @@ export const confirmOfflinePayment = async (req, res) => {
       }
     }
 
-    if (invoice && invoice.userID) {
-  try {
-    let loyalty = await Loyalty.findOne({ userID: invoice.userID });
-    if (!loyalty) loyalty = new Loyalty({ userID: invoice.userID, points: 0 });
-    await loyalty.addPoints(payment.amount); // award based on spend
-  } catch (e) {
-    console.error("Loyalty add error", e);
-  }
-}
+    if (payment.invoiceID && payment.invoiceID.userID) {
+      try {
+        const userId = payment.invoiceID.userID._id || payment.invoiceID.userID;
+        let loyalty = await Loyalty.findOne({ userID: userId });
+        if (!loyalty) {
+          loyalty = await Loyalty.create({ userID: userId, points: 0, tier: "Bronze" });
+        }
+        await loyalty.addPoints(payment.amount);
+      } catch (e) {
+        console.error("Loyalty add error", e);
+      }
+    }
+
 
     res.json({ message: "Offline payment confirmed and invoice marked as Paid", payment });
   } catch (err) {
@@ -448,15 +479,18 @@ export const confirmStripePayment = async (req, res) => {
         }
       }
 
-      if (invoice && invoice.userID) {
-  try {
-    let loyalty = await Loyalty.findOne({ userID: invoice.userID });
-    if (!loyalty) loyalty = new Loyalty({ userID: invoice.userID, points: 0 });
-    await loyalty.addPoints(payment.amount); // award based on spend
-  } catch (e) {
-    console.error("Loyalty add error", e);
-  }
-}
+      if (payment.invoiceID && payment.invoiceID.userID) {
+        try {
+          const userId = payment.invoiceID.userID._id || payment.invoiceID.userID;
+          let loyalty = await Loyalty.findOne({ userID: userId });
+          if (!loyalty) {
+            loyalty = await Loyalty.create({ userID: userId, points: 0, tier: "Bronze" });
+          }
+          await loyalty.addPoints(payment.amount);
+        } catch (e) {
+          console.error("Loyalty add error", e);
+        }
+      }
       return res.json({ message: "Payment already confirmed", payment });
     }
 

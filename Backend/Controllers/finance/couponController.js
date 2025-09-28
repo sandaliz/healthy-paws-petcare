@@ -136,7 +136,9 @@ export const getUserAvailableCoupons = async (req, res) => {
     if (!userId) return res.status(400).json({ message: "userId required" });
 
     // cast
-    const ownerId = mongoose.isValidObjectId(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+    const ownerId = mongoose.isValidObjectId(userId)
+      ? new mongoose.Types.ObjectId(String(userId))
+      : userId;
 
     const rows = await Coupon.find({
       scope: "ISSUED",
@@ -169,27 +171,40 @@ export const getUserAvailableCoupons = async (req, res) => {
 
 export const validateUserCoupon = async (req, res) => {
   try {
-    // allow code OR couponId
-    let { couponId, code, userID, invoiceTotal } = req.body;
-
+    const { couponId, code, userID, invoiceTotal } = req.body;
     if ((!couponId && !code) || !userID || invoiceTotal == null) {
       return res.status(400).json({ message: "couponId/code, userID and invoiceTotal required" });
     }
 
-    // Cast userID properly (fix deprecation)
-    const ownerObjId = mongoose.isValidObjectId(userID) 
-      ? new mongoose.Types.ObjectId(String(userID)) 
-      : userID;
+    const ownerObjId = mongoose.isValidObjectId(userID) ? new mongoose.Types.ObjectId(userID) : userID;
 
-    // Build query - allow search by couponId OR typed code
-    const query = { scope: "ISSUED", ownerUserID: ownerObjId, status: "Available" };
-    if (couponId) {
-      query._id = couponId;
-    } else {
-      query.code = String(code).trim().toUpperCase();
+    // Pick query condition
+    const condition = couponId
+      ? { _id: couponId }
+      : { code: String(code).trim().toUpperCase() };
+
+    let c = await Coupon.findOne({
+      scope: "ISSUED",
+      ownerUserID: ownerObjId,
+      status: "Available",
+      ...(couponId
+        ? { _id: couponId }
+        : { code: String(code).trim().toUpperCase() }),
+    });
+
+    // If not found by direct code, try resolving parent template
+    if (!c && code) {
+      const template = await Coupon.findOne({ code: String(code).trim().toUpperCase(), scope: "GLOBAL" });
+      if (template) {
+        c = await Coupon.findOne({
+          scope: "ISSUED",
+          ownerUserID: ownerObjId,
+          parentId: template._id,
+          status: "Available",
+        });
+      }
     }
 
-    const c = await Coupon.findOne(query);
     if (!c) return res.status(404).json({ message: "Coupon not available" });
 
     if (!c.canApply(Number(invoiceTotal))) {
@@ -201,7 +216,6 @@ export const validateUserCoupon = async (req, res) => {
         ? +(Number(invoiceTotal) * (c.discountValue / 100)).toFixed(2)
         : Math.min(Number(invoiceTotal), c.discountValue);
 
-    // Keep consistent payload
     res.json({ couponId: c._id, discount });
   } catch (err) {
     console.error("validateUserCoupon error:", err);

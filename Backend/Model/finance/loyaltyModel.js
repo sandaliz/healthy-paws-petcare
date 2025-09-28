@@ -1,4 +1,3 @@
-// models/loyaltyModel.js
 import mongoose from "mongoose";
 import Coupon from "./couponModel.js"; // careful adjust path
 
@@ -18,8 +17,8 @@ const getTierFromPoints = (points) => {
   return "Bronze";
 };
 
-loyaltySchema.methods.addPoints = async function(amountSpent) {
-  const pointsEarned = Math.floor(amountSpent / 100);
+loyaltySchema.methods.addPoints = async function (amountSpent) {
+  const pointsEarned = Math.round(amountSpent / 1);
   this.points += pointsEarned;
   const oldTier = this.tier;
   const newTier = getTierFromPoints(this.points);
@@ -31,13 +30,13 @@ loyaltySchema.methods.addPoints = async function(amountSpent) {
   if (newTier !== oldTier) {
     // Example: issue a fixed discount coupon for tier-up
     await Coupon.create({
-      code: `${newTier}-BONUS-${Math.random().toString(36).slice(2,6).toUpperCase()}`,
+      code: `${newTier}-BONUS-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
       description: `Congrats on reaching ${newTier}! 🎉 Enjoy your reward.`,
       discountType: "Fixed",
       discountValue: newTier === "Silver" ? 500 : newTier === "Gold" ? 1500 : 3000,
       scope: "ISSUED",
       ownerUserID: this.userID,
-      expiryDate: new Date(Date.now() + 60*24*60*60*1000), // valid 2 months
+      expiryDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // valid 2 months
       status: "Available"
     });
   }
@@ -45,7 +44,7 @@ loyaltySchema.methods.addPoints = async function(amountSpent) {
   return this;
 };
 
-loyaltySchema.methods.updateTier = function(newTier) {
+loyaltySchema.methods.updateTier = function (newTier) {
   if (["Bronze", "Silver", "Gold", "Platinum"].includes(newTier)) {
     this.tier = newTier;
   }
