@@ -171,7 +171,7 @@ export const login = async (req, res) => {
         message = "Welcome Pet Care Taker! Redirecting to Pet Care Taker Dashboard";
         break;
       case "FINANCE_MANAGER":
-        redirectUrl = "/finance-dashboard";
+        redirectUrl = "/fm";
         message = "Welcome Finance Manager! Redirecting to Finance Dashboard";
         break;
     }
