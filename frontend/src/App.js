@@ -91,7 +91,7 @@ import UserQuesions from "./pages/user-dashboard/UserQuesions/UserQuesions";
 
 // ---------------- Finance ----------------
 import CouponWall from "./Components/finance/CouponWall";
-import ClientPay from "./Components/finance/ClientPay";
+import ClientPay from "./Components/finance/client/offline/ClientPay";
 import OnlinePay from "./Components/finance/OnlinePay";
 import PaySuccess from "./Components/finance/PaySuccess";
 import PaymentSummary from "./Components/finance/PaymentSummary";
@@ -191,17 +191,17 @@ function App() {
 
       {/* -------- Daycare Dashboard (Nested) -------- */}
       <Route path="/dashboardDC/*" element={<DashboardDC />}>
-  <Route index element={<AnalyticsDashboardDC />} />  {/* <-- default page */}
-  <Route path="analyticDC" element={<AnalyticsDashboardDC />}/>
-  <Route path="todaysPets" element={<TodaysPets />} />
-  <Route path="pendingAppointments" element={<PendingAppointments />} />
-  <Route path="upcomingAppointments" element={<UpcomingAppointmentsDC />} />
-  <Route path="appointmentHistory" element={<AppointmentHistory />} />
-  <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
-  <Route path="emergency" element={<EmergencyPage />} />
-  <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
-  <Route path="reviews" element={<ReviewsDC />} />
-</Route>
+        <Route index element={<AnalyticsDashboardDC />} />  {/* <-- default page */}
+        <Route path="analyticDC" element={<AnalyticsDashboardDC />} />
+        <Route path="todaysPets" element={<TodaysPets />} />
+        <Route path="pendingAppointments" element={<PendingAppointments />} />
+        <Route path="upcomingAppointments" element={<UpcomingAppointmentsDC />} />
+        <Route path="appointmentHistory" element={<AppointmentHistory />} />
+        <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
+        <Route path="emergency" element={<EmergencyPage />} />
+        <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
+        <Route path="reviews" element={<ReviewsDC />} />
+      </Route>
 
 
       {/* DOCTOR ROUTES */}
