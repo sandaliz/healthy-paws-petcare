@@ -1,4 +1,3 @@
-// Routes/authRoutes.js
 import express from "express";
 import {
   register,
@@ -19,7 +18,7 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.post("/send-reset-otp", sendResetOtp);
-router.post("/verify-reset-otp", verifyResetOtp);   // ✅ fixed route
+router.post("/verify-reset-otp", verifyResetOtp);   
 router.post("/reset-password", resetPassword);
 
 // Protected routes

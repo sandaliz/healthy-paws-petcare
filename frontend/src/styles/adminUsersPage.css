@@ -1,6 +1,4 @@
-/* ================================
-   USERS PAGE CONTAINER
-================================= */
+/* USERS PAGE CONTAINER*/
 .aup-container {
   display: flex;
   min-height: 100vh;
@@ -21,9 +19,7 @@
   background: #FFFFFF;
 }
 
-/* ================================
-   MAIN CONTENT AREA
-================================= */
+/*MAIN CONTENT AREA*/
 .aup-content {
   flex: 1;
   margin-left: 280px;
@@ -33,9 +29,7 @@
   width: calc(100% - 280px);
 }
 
-/* ================================
-   HEADER CONTAINER
-================================= */
+/* HEADER CONTAINER */
 .aup-header-container {
   background: #FFFFFF;
   padding: 40px 40px 30px;
@@ -95,9 +89,7 @@
   color: #54413C;
 }
 
-/* ================================
-   MAIN GRID LAYOUT
-================================= */
+/* MAIN GRID LAYOUT */
 .aup-main-grid {
   padding: 30px 40px 40px;
   max-width: 1400px;
@@ -108,9 +100,7 @@
   align-items: start;
 }
 
-/* ================================
-   CARD STYLES
-================================= */
+/* CARD STYLES*/
 .aup-card {
   background: #FFFFFF;
   border-radius: 12px;
@@ -139,9 +129,7 @@
   line-height: 1.5;
 }
 
-/* ================================
-   CHART SECTION
-================================= */
+/* CHART SECTION */
 .aup-chart-section {
   position: sticky;
   top: 30px;
@@ -154,9 +142,7 @@
   justify-content: center;
 }
 
-/* ================================
-   ROLES GRID SECTION
-================================= */
+/* ROLES GRID SECTION*/
 .aup-roles-section {
   min-height: 600px;
 }
@@ -167,9 +153,7 @@
   gap: 20px;
 }
 
-/* ================================
-   ROLE CARD STYLES
-================================= */
+/*ROLE CARD STYLES */
 .aup-role-card {
   background: #FFFFFF;
   border-radius: 8px;
@@ -209,9 +193,7 @@
   padding: 24px;
 }
 
-/* ================================
-   STAFF SECTION
-================================= */
+/*STAFF SECTION */
 .aup-staff-section h4 {
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
@@ -294,9 +276,7 @@
   font-style: italic;
 }
 
-/* ================================
-   LOADING & ERROR STATES
-================================= */
+/*LOADING & ERROR STATET */
 .aup-loading-container,
 .aup-error-container {
   display: flex;
@@ -330,9 +310,7 @@
   border: 1px solid #7A635C;
 }
 
-/* ================================
-   RESPONSIVE DESIGN
-================================= */
+/*RESPONSIVE DESIGN */
 @media (max-width: 1200px) {
   .aup-main-grid {
     grid-template-columns: 1fr;

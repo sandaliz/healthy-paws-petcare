@@ -1,5 +1,3 @@
-// src/pages/FeedbackForm.js
-// src/pages/FeedbackForm.js
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
