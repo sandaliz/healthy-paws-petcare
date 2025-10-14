@@ -1,5 +1,3 @@
-// src/assets/assets.js
-
 import arrow_icon from './arrow_icon.svg';
 import lock_icon from './lock_icon.svg';
 import logo from './logo.png';

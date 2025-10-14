@@ -1,10 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-/**
- * 🧠 Knowledge base: keywords → replies
- * Each object contains synonyms for what users might type
- */
+
 const knowledgeBase = [
   // Greetings
   { keywords: ["hi", "hello", "hey", "greetings"], reply: "👋 Hello! How can I assist you and your furry friend today?" },

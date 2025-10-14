@@ -207,7 +207,7 @@
 /* Feedback Preview - Fixed line-clamp issue */
 .feedback-preview {
   margin-bottom: 20px;
-  max-height: 72px; /* 3 lines * 24px line-height */
+  max-height: 72px; 
   overflow: hidden;
   position: relative;
 }
@@ -221,8 +221,8 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-clamp: 3; /* Standard property */
-  box-orient: vertical; /* Standard property */
+  line-clamp: 3; 
+  box-orient: vertical; 
 }
 
 /* Add fade effect for better UX */
@@ -353,7 +353,7 @@
   
   /* Adjust line-clamp for mobile */
   .feedback-preview {
-    max-height: 96px; /* 4 lines * 24px line-height for better mobile readability */
+    max-height: 96px; 
   }
   
   .feedback-preview p {
@@ -385,7 +385,7 @@
   }
 }
 
-/* Fallback for browsers that don't support line-clamp */
+/* Fallback for browsers  */
 @supports not ((-webkit-line-clamp: 3) or (line-clamp: 3)) {
   .feedback-preview {
     max-height: 72px;

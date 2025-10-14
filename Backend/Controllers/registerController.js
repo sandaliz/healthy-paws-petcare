@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
 import Register from "../Model/Register.js";
-import nodemailer from "nodemailer"; // ✅ use nodemailer directly
+import nodemailer from "nodemailer"; 
 
-/**
- * Helper: handle Mongoose validation + duplicate errors
- */
+// Helper: handle Mongoose validation + duplicate errors
+ 
 const handleMongooseError = (err, res) => {
   console.error("❌ Register Controller Error:", err.message);
 
@@ -28,18 +27,20 @@ const handleMongooseError = (err, res) => {
     });
   }
 
-  return res
-    .status(500)
-    .json({ success: false, message: "Server error", error: err.message });
+  return res.status(500).json({
+    success: false,
+    message: "Server error",
+    error: err.message,
+  });
 };
 
-// ✅ Setup nodemailer transporter once
+// Setup nodemailer
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
   secure: false,
   auth: {
-    user: process.env.SMTP_USER, // from your .env
+    user: process.env.SMTP_USER, 
     pass: process.env.SMTP_PASS,
   },
   tls: {
@@ -47,20 +48,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-/**
- * Create a new register (Pet + Owner) and send email
- */
+//Create a new register 
 export const createRegister = async (req, res) => {
   try {
     const newRegister = new Register(req.body);
     const saved = await newRegister.save();
 
-    // 📧 Send email after saving
+    // Send email after saving
     try {
-      // Send confirmation to pet owner
       await transporter.sendMail({
-        from: process.env.SENDER_EMAIL,       // must match verified sender in Brevo
-        to: saved.OwnerEmail,                 // pet owner's email
+        from: process.env.SENDER_EMAIL,
+        to: saved.OwnerEmail, 
         subject: "🐾 Pet Registered Successfully!",
         text: `Hello ${saved.OwnerName}, your pet ${saved.PetName} has been registered successfully.`,
         html: `
@@ -77,7 +75,6 @@ export const createRegister = async (req, res) => {
         `,
       });
 
-      // Optionally send notification to admin
       if (process.env.SUPER_ADMIN_EMAIL) {
         await transporter.sendMail({
           from: process.env.SENDER_EMAIL,
@@ -91,7 +88,6 @@ export const createRegister = async (req, res) => {
           `,
         });
       }
-
       console.log(`📧 Email sent to owner: ${saved.OwnerEmail}`);
     } catch (mailErr) {
       console.error("❌ Failed to send registration email:", mailErr.message);
@@ -107,17 +103,16 @@ export const createRegister = async (req, res) => {
   }
 };
 
-/**
- * Get all registers (optional pagination)
- */
+//Get all registers 
 export const getRegisters = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    const limit = parseInt(req.query.limit) || 100;  
     const skip = (page - 1) * limit;
 
     const registers = await Register.find()
-      .populate("userId", "name email role")
+      .populate("userId", "name email role")   
+      .sort({ createdAt: -1 })                 
       .skip(skip)
       .limit(limit);
 
@@ -137,19 +132,22 @@ export const getRegisters = async (req, res) => {
   }
 };
 
-/**
- * Get a single register by ID
- */
+//Get a single register by ID
 export const getRegister = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid ID format" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid ID format" });
     }
 
     const register = await Register.findById(id).populate("userId", "name email role");
-    if (!register)
-      return res.status(404).json({ success: false, message: "Register not found" });
+    if (!register) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Register not found" });
+    }
 
     return res.status(200).json({
       success: true,
@@ -161,17 +159,20 @@ export const getRegister = async (req, res) => {
   }
 };
 
-/**
- * Get all registers by OwnerEmail
- */
+
+// Get all registers by OwnerEmail
+ 
 export const getRegistersByEmail = async (req, res) => {
   try {
     const { email } = req.params;
     const registers = await Register.find({ OwnerEmail: email.toLowerCase() })
-      .populate("userId", "name email");
+      .populate("userId", "name email role");
 
     if (!registers.length) {
-      return res.status(404).json({ success: false, message: "No registers found for this email" });
+      return res.status(404).json({
+        success: false,
+        message: "No registers found for this email",
+      });
     }
 
     return res.status(200).json({
@@ -185,18 +186,20 @@ export const getRegistersByEmail = async (req, res) => {
   }
 };
 
-/**
- * Get the latest register by OwnerEmail
- */
+
+//Get the latest register by OwnerEmail
 export const getLatestRegisterByEmail = async (req, res) => {
   try {
     const { email } = req.params;
     const register = await Register.findOne({ OwnerEmail: email.toLowerCase() })
       .sort({ createdAt: -1 })
-      .populate("userId", "name email");
+      .populate("userId", "name email role");
 
     if (!register) {
-      return res.status(404).json({ success: false, message: "No register found for this email" });
+      return res.status(404).json({
+        success: false,
+        message: "No register found for this email",
+      });
     }
 
     return res.status(200).json({
@@ -209,23 +212,26 @@ export const getLatestRegisterByEmail = async (req, res) => {
   }
 };
 
-/**
- * Update a register by ID
- */
+
+//Update a register by ID
 export const updateRegister = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid ID format" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid ID format" });
     }
 
     const updated = await Register.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
-    }).populate("userId", "name email");
+    }).populate("userId", "name email role");
 
     if (!updated) {
-      return res.status(404).json({ success: false, message: "Register not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Register not found" });
     }
 
     return res.status(200).json({
@@ -238,19 +244,22 @@ export const updateRegister = async (req, res) => {
   }
 };
 
-/**
- * Delete a register by ID
- */
+
+//Delete a register by ID
 export const deleteRegister = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid ID format" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid ID format" });
     }
 
     const deleted = await Register.findByIdAndDelete(id);
     if (!deleted) {
-      return res.status(404).json({ success: false, message: "Register not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Register not found" });
     }
 
     return res.status(200).json({

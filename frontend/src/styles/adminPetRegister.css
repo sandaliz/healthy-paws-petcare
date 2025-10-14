@@ -1,7 +1,3 @@
-/* ================================
-   PET REGISTER ADMIN CONTAINER
-   Modern Professional Design
-================================= */
 .apr-container {
   display: flex;
   min-height: 100vh;
@@ -10,9 +6,7 @@
   color: #334155;
 }
 
-/* ================================
-   MAIN CONTENT AREA
-================================= */
+/*MAIN CONTENT AREA */
 .apr-main-content {
   flex: 1;
   margin-left: 280px;
@@ -27,9 +21,7 @@
   overflow-y: auto;
 }
 
-/* ================================
-   HEADER
-================================= */
+/*HEADER */
 .apr-header {
   display: flex;
   justify-content: space-between;
@@ -83,9 +75,7 @@
   margin-top: 4px;
 }
 
-/* ================================
-   CONTROLS
-================================= */
+/*CONTROLS */
 .apr-controls {
   margin-bottom: 24px;
 }
@@ -120,9 +110,7 @@
   font-size: 16px;
 }
 
-/* ================================
-   TABLE CONTAINER
-================================= */
+/* TABLE CONTAINER */
 .apr-table-container {
   background: white;
   border-radius: 12px;
@@ -164,9 +152,7 @@
   background: #f8fafc;
 }
 
-/* ================================
-   TABLE CELL STYLES
-================================= */
+/*TABLE CELL STYLES */
 .apr-pet-info {
   display: flex;
   align-items: center;
@@ -218,9 +204,7 @@
   text-decoration: underline;
 }
 
-/* ================================
-   DELETE BUTTON
-================================= */
+/*DELETE BUTTON*/
 .apr-delete-btn {
   display: inline-flex;
   align-items: center;
@@ -247,9 +231,7 @@
   font-weight: bold;
 }
 
-/* ================================
-   EMPTY STATE
-================================= */
+/*EMPTY STATE */
 .apr-empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -275,9 +257,7 @@
   font-size: 14px;
 }
 
-/* ================================
-   LOADING STATE
-================================= */
+/* LOADING STATE */
 .apr-loading {
   margin-left: 280px;
   font-size: 16px;
@@ -285,9 +265,7 @@
   padding: 40px 20px;
 }
 
-/* ================================
-   RESPONSIVE DESIGN
-================================= */
+/* RESPONSIVE DESIGN */
 @media (max-width: 1200px) {
   .apr-main-content {
     margin-left: 0;
@@ -332,4 +310,37 @@
   .apr-stat-number {
     font-size: 24px;
   }
+}
+/* Add spacing between table and chart */
+.apr-insights {
+  margin-top: 28px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+/* Dropdown styling */
+.apr-dropdown {
+  margin-bottom: 15px;
+}
+
+.apr-dropdown label {
+  font-weight: 600;
+  margin-right: 8px;
+  color: #54413C;
+}
+
+.apr-dropdown select {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.apr-dropdown select:hover {
+  border-color: #54413C;
 }
