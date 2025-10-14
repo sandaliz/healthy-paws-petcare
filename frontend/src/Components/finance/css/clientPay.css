@@ -30,6 +30,11 @@ button, .cta {
   font-size: 16px;
   font-weight: 600;
 } */
+.finance-scope {
+  background: linear-gradient(180deg, #FFFBEA 0%, #FFF6D6 100%); 
+  min-height: 100vh;
+  padding: 32px 0;
+}
 
 .finance-scope {
   --brown:#54413C;
@@ -67,6 +72,85 @@ button, .cta {
   font-weight: 600;
 }
 
+.fm-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 20px;           /* pill style */
+  border: 1px solid #fbcb78;      /* matches your peach/yellow theme */
+  background: #ffea99;            /* soft pale yellow (cornsilk) */
+  color: #54413C;                 /* brown text (matches finance palette) */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fm-btn-back:hover {
+  background: #fcda76;             /* brighter warm yellow on hover */
+  transform: translateX(-3px);     /* subtle left nudge == "going back" */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.invoice-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.thought-bubble {
+  position: absolute;
+  top: -10px;
+  right: 160px;   /* tweak sideways offset from doggy */
+  max-width: 220px;
+  background: #fff;
+  border: 2px solid #FFD58E;
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.thought-bubble.hide {
+  opacity: 0;
+}
+
+.thought-bubble::after {
+  content: "";
+  position: absolute;
+  right: -10px;
+  top: 20px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border: 2px solid #FFD58E;
+  border-left: none;
+  border-bottom: none;
+  transform: rotate(45deg);
+}
+
+.invoice-dog {
+  width: 120px;           /* adjust size as needed */
+  height: auto;
+  border-radius: 50%;    /* makes it circular */
+  object-fit: cover;     /* neat fit */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: transform 0.25s ease;
+  cursor: pointer;
+}
+
+/* fun hover effect */
+.invoice-dog:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
 /* Layout & Cards */
 .finance-scope .pay-wrap {
   max-width: 960px;
@@ -89,33 +173,89 @@ button, .cta {
   box-shadow:0 2px 10px rgba(0,0,0,.04);
 }
 
+.fm-p-hint {
+  font-size: 0.8rem;
+  color: #8f8b8b;   /* muted grey */
+  margin-top: 4px;
+}
+.fm-p-error {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.coupon-panel.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 /* Sections */
 .finance-scope .section { margin-bottom: var(--space-5); }
 .finance-scope .section:last-child { margin-bottom:0; }
 .finance-scope .section-title { margin-bottom: var(--space-2); }
 
 /* Fields & Inputs */
+
+.charge-line.charge-pill {
+  background: #FFF8DC;
+  border: 1px solid #FFD58E;
+  border-radius: 12px;
+  padding: 12px 16px;         /* more padding */
+  margin-bottom: 20px;        /* spacing below pill before input fields */
+  display: inline-block;
+  font-size: 0.95rem;         /* minimize slightly */
+  font-weight: 600;
+  color: #54413C;
+}
+
+.discount-note {
+  margin-left: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #92400E;
+}
+
 .finance-scope .field { margin: var(--space-2) 0; }
 .finance-scope .field label {
   display:block;
+  font-size: 0.9rem; 
   font-family:'Poppins',sans-serif;
   font-weight:600;
   margin-bottom:6px;
   color: var(--ink);
 }
+/* Make custom input fields look consistent with Stripe Elements */
 .finance-scope .input {
-  width:100%;
-  padding:12px 14px;
-  border:1px solid #cfd3d8;
-  border-radius:10px;
-  font-size:16px;
-  background:#fff;
-  box-sizing:border-box;
+  width: 100%;
+  padding: 14px 16px;           /* more vertical padding (was 12px) */
+  border: 1px solid #cfd3d8;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.4;
+  background: #fff;
+  min-height: 48px;             /* match stripe-control height */
+  box-sizing: border-box;
 }
-.finance-scope .input.input-error,
-.finance-scope .stripe-control.input-error {
-  border-color:#ef4444 !important;
-  background:#fef2f2 !important;
+
+/* On focus: highlight */
+.finance-scope .input:focus {
+  border-color: #FFD58E;        /* match your peach theme */
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 213, 142, 0.3);
+}
+
+/* Error styling already present, keep it */
+.finance-scope .input.input-error {
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+}
+
+.finance-scope .section.choose-method {
+  background: #fefbf5;   /* already defined as --peach-soft */
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #FFD58E;
 }
 
 /* Utility Layout */
@@ -135,11 +275,18 @@ button, .cta {
   transition:all .15s ease;
   color:#333;
 }
+.finance-scope .btn.dark:hover { 
+  background:#54413C;       /* darker black */
+  border-color:#54413C; 
+  transform: translateY(-1px); 
+  box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+}
+
 .finance-scope .btn:hover { background:#f7f7f7; }
 .finance-scope .btn.primary { background:var(--peach); border-color:var(--peach); color:var(--brown);}
 .finance-scope .btn.primary:hover { filter:brightness(0.97);}
 .finance-scope .btn.secondary { background:var(--brown); border-color:var(--brown); color:#fff;}
-.finance-scope .btn.dark { background:#222; border-color:#222; color:#fff;}
+.finance-scope .btn.dark { background:#54413C; border-color:#222; color:#fff;}
 .finance-scope .btn.ghost { background:#fff; border-color:#d8dbe0; color:#333;}
 .finance-scope .btn:disabled { opacity:.6; cursor:not-allowed; }
 
@@ -223,6 +370,11 @@ button, .cta {
 /* Totals */
 .finance-scope .totals{ padding:12px 14px; border-top:1px solid var(--line); background:#fff;}
 .finance-scope .totals-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 0;}
+.finance-scope .totals-row.tax-note {
+  font-size: 0.9rem;
+  color: #6b7280; /* matches your muted color */
+  font-style: italic;
+}
 .finance-scope .totals-row.grand{ border-top:1px solid var(--line); margin-top:6px; padding-top:10px; font-size:18px; font-weight:700; }
 
 /* Panels */
@@ -453,4 +605,11 @@ button, .cta {
 
 .finance-scope .coupon-panel {
   margin-bottom: 24px;  /* or var(--space-4) for consistency */
+}
+
+.discount-note {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #92400E;
+  margin-left: 6px;
 }
