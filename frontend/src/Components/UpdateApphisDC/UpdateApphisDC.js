@@ -202,6 +202,7 @@ function UpdateApphisDC() {
     };
 
     return (
+        <div className="dc-back">
         <div className="appointment-container">
             <form onSubmit={handleSubmit} className="appointment-form">
                 <h2 className="form-title">Update Pet Care Booking</h2>
@@ -433,6 +434,7 @@ function UpdateApphisDC() {
 
                 <button type="submit" className="submit-btn">Update Booking</button>
             </form>
+        </div>
         </div>
     );
 }

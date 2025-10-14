@@ -77,6 +77,7 @@ function UpdateReviews() {
   };
 
   return (
+    <div className="dc-back">
     <div className="appointment-container">
       <form onSubmit={handleSubmit} className="appointment-form">
         <h2 className="form-title">Update Review</h2>
@@ -173,6 +174,7 @@ function UpdateReviews() {
           Update Review
         </button>
       </form>
+    </div>
     </div>
   );
 }

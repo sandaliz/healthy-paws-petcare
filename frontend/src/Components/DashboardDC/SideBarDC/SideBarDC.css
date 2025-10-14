@@ -1,4 +1,4 @@
-.sidebar {
+.sidebar-dc {
   width: 280px;
   background-color: #54413C;
   color: #FFFFFF;
@@ -11,12 +11,12 @@
   font-family: 'Roboto', sans-serif;
 }
 
-.sidebar-header {
+.sidebar-header-dc {
   padding: 24px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sidebar-header h2 {
+.sidebar-header-dc h2 {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 20px;
@@ -24,22 +24,22 @@
   color: #FFFFFF;
 }
 
-.sidebar-nav {
+.sidebar-nav-dc {
   flex: 1;
   padding: 20px 0;
 }
 
-.sidebar-nav ul {
+.sidebar-nav-dc ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.sidebar-nav li {
+.sidebar-nav-dc li {
   margin-bottom: 8px;
 }
 
-.nav-item {
+.nav-item-dc {
   width: 100%;
   background: none;
   border: none;
@@ -55,22 +55,22 @@
   font-weight: 500;
 }
 
-.nav-item:hover {
+.nav-item-dc:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.nav-item.active {
+.nav-item-dc.active {
   background-color: #FFD58E;
   color: #54413C;
   font-weight: 600;
 }
 
-.nav-icon {
+.nav-icon-dc {
   margin-right: 12px;
   font-size: 18px;
 }
 
-.nav-label {
+.nav-label-dc {
   flex: 1;
 }
 
@@ -120,12 +120,12 @@
   margin-top: 4px;
 }
 
-.sidebar-footer {
+.sidebar-footer-dc {
   padding: 20px;
   text-align: center;
 }
 
-.sidebar-footer p {
+.sidebar-footer-dc p {
   margin: 0;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);

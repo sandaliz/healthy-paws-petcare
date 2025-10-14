@@ -12,6 +12,8 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
+import api from "../../../utils/api";  
+import "./AnalyticsDashboardDC.css";
 
 ChartJS.register(
   Title,
@@ -29,17 +31,20 @@ function AnalyticsDashboardDC() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/analytics")
-      .then((res) => res.json())
-      .then((data) => {
-        setAnalytics(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+    const fetchAnalytics = async () => {
+      try {
+        const res = await api.get("/api/analytics");
+        console.log("Analytics response:", res.data);
+        setAnalytics(res.data);
+      } catch (err) {
         console.error("Failed to load analytics:", err);
-        setAnalytics(null); // fallback to default
+        setAnalytics(null);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchAnalytics();
   }, []);
 
   // Fallback empty data
@@ -48,7 +53,9 @@ function AnalyticsDashboardDC() {
     appointments: { pending: 0, upcoming: 0, completed: 0, rejected: 0, cancelled: 0 },
     services: { grooming: 0, walking: 0, both: 0, none: 0 },
     daycareUsage: Array.from({ length: 7 }, (_, i) => ({
-      date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+      date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0],
       count: 0,
     })),
   };
@@ -119,63 +126,68 @@ function AnalyticsDashboardDC() {
   };
 
   return (
-    <div className="analytics-dashboard" style={{ padding: "20px" }}>
-      <h2>Analytics Dashboard</h2>
+  <div className="analytics-dashboard-dc">
+    <h2>Analytics Dashboard</h2>
 
-      {loading && <p>Loading analytics...</p>}
+    {loading && <p className="loading-text">Loading analytics...</p>}
 
-      <div
-        className="charts-grid"
-        style={{
-          display: "grid",
-          gap: "20px",
-          gridTemplateColumns: "1fr 1fr",
-        }}
-      >
-        {/* Reviews */}
-        <div
-          className="chart-card"
-          style={{ padding: "20px", border: "1px solid #ddd", borderRadius: "8px", height: "300px" }}
-        >
-          <h3>Reviews Sentiment</h3>
-          <Doughnut data={reviewsData} />
-        </div>
+    <div className="charts-grid-dc">
+      {/* Reviews */}
+      <div className="chart-card-dc">
+        <h3>Reviews Sentiment</h3>
+          <Doughnut 
+            data={reviewsData} 
+            options={{
+              plugins: {
+                legend: {
+                  position: "right", 
+                },
+              },
+              maintainAspectRatio: false,
+            }} 
+          />
+      </div>
 
-        {/* Appointments */}
-        <div
-          className="chart-card"
-          style={{ padding: "20px", border: "1px solid #ddd", borderRadius: "8px", height: "300px" }}
-        >
-          <h3>Appointments Status</h3>
-          <Pie data={appointmentsData} />
-        </div>
+      {/* Appointments */}
+      <div className="chart-card-dc">
+        <h3>Appointments Status</h3>
+          <Pie 
+            data={appointmentsData} 
+            options={{
+              plugins: {
+                legend: {
+                  position: "right",
+                },
+              },
+              maintainAspectRatio: false,
+            }} 
+          />
+      </div>
 
-        {/* Services */}
-        <div
-          className="chart-card"
-          style={{ padding: "20px", border: "1px solid #ddd", borderRadius: "8px", height: "300px" }}
-        >
-          <h3>Services Breakdown</h3>
-          <Pie data={servicesData} />
-        </div>
+      {/* Services */}
+      <div className="chart-card-dc">
+        <h3>Services Breakdown</h3>
+          <Pie 
+            data={servicesData} 
+            options={{
+              plugins: {
+                legend: {
+                  position: "right",
+                },
+              },
+              maintainAspectRatio: false,
+            }} 
+          />
+      </div>
 
-        {/* Daycare Usage */}
-        <div
-          className="chart-card"
-          style={{
-            gridColumn: "span 2",
-            padding: "20px",
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            height: "350px",
-          }}
-        >
-          <h3>Daycare Usage (Last 7 Days)</h3>
-          <Line data={daycareData} />
-        </div>
+      {/* Daycare Usage */}
+      <div className="chart-card full-width-dc">
+        <h3>Daycare Usage (Last 7 Days)</h3>
+        <Line data={daycareData} />
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default AnalyticsDashboardDC;

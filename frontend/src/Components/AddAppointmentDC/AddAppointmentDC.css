@@ -41,8 +41,16 @@
 }
 
 .appointment-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
     position: relative;
     z-index: 1; /* above the overlay */
+    
+    line-height: 1.5;
+    color: #333;
+    background-color: #FFFFFF;
+    min-height: 100vh;
 }
 
 .appointment-form {

@@ -19,6 +19,7 @@ import prescriptionRoutes from "./Routes/prescriptionRoutes.js";
 import { sendPrescriptionEmail } from "./Controllers/emailController.js";
 import checkoutRoutes from "./Routes/checkoutRoutes.js";
 import shippingRoutes from "./Routes/shipping.js";
+
 import careRoutes from "./Routes/CareRoutes.js";
 import reviewRouter from "./Routes/ReviewsRoutes.js";
 import dailyLogsRouter from "./Routes/DailyLogsRoutes.js";
@@ -27,6 +28,9 @@ import emergencyRoutes from "./Routes/EmergencyRoutes.js";
 import reminderRoutes from "./Routes/ReminderRoutes.js";
 import analyticsRoutes from "./Routes/AnalyticsRoutes.js";
 import { scheduleReminderEmails } from "./services/ReminderScheduler.js";
+import vaccineRoutes from "./Routes/VaccineRoutes.js";
+import './Services/VaccineReminderCron.js';
+
 import appointmentRoutes from "./Routes/appointmentRoutes.js";
 import eventRoutes from "./Routes/eventRoutes.js";
 import questionRoutes from "./Routes/quesionRoutes.js";
@@ -94,7 +98,7 @@ app.use("/careCustomers", careRoutes);
 app.use("/reviews", reviewRouter);
 app.use("/dailyLogs", dailyLogsRouter);
 app.use("/checkinout", checkInOutRouter);
-
+app.use("/api/vaccines", vaccineRoutes); 
 // Emergencies, reminders, appointments
 app.use("/api/emergencies", emergencyRoutes);
 app.use("/api/reminders", reminderRoutes);

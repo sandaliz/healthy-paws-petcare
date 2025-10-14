@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-//import axios from 'axios';
 import api from '../../utils/api';
-import AppointmentDC from '../AppointmentDC/appointmentDC';
+import AppointmentCardsContainer from '../AppointmentDC/AppointmentCardsContainer'; // Import the container
 
-const URL = "http://localhost:5001/careCustomers";
 
 
 function AppointmentDCs() {
@@ -27,22 +25,23 @@ function AppointmentDCs() {
     });
   }, []);
 
-  
-  const handleDelete = (id) => {
-    setCareCustomers((prev) => prev.filter((cust) => cust._id !== id));
+  // CHANGED: Updated to handle status changes (cancelled appointments)
+  const handleStatusChange = (appointmentId, newStatus) => {
+    setCareCustomers((prev) => prev.filter((cust) => cust._id !== appointmentId));
   };
 
   return (
-    <div>
-      {careCustomers && careCustomers.length > 0 ? (
-        careCustomers.map((careCustomer) => (
-          <div key={careCustomer._id}>
-            <AppointmentDC careCustomer={careCustomer} onDelete={handleDelete} />
-          </div>
-        ))
-      ) : (
-        <p>No appointments found.</p>
-      )}
+    <div className="appointment-history-page-dc">
+      {/* ADDED: Page title */}
+      <div className="page-header-dc">
+        <h1 className="page-title-dc">Appointment History</h1>
+        <p className="page-subtitle-dc">View and manage all your pet care appointments</p>
+      </div>
+      
+      <AppointmentCardsContainer 
+        appointments={careCustomers} 
+        onStatusChange={handleStatusChange} 
+      />
     </div>
   );
 }

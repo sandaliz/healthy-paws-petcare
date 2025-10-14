@@ -70,7 +70,11 @@ import AddReviews from "./Components/AddReviews/AddReviews";
 import UpdateReviews from "./Components/UpdateReviews/UpdateReviews";
 import StarRating from "./Components/StarRating/StarRating";
 import AppointmentDisplayDC from "./Components/AppointmentDisplayDC/AppointmentDisplayDC";
+import AppHisDetailsDC from "./Components/AppHisDetailsDC/AppHisDetailsDC";
+import AppointmentCardsContainer from "./Components/AppointmentDC/AppointmentCardsContainer";
+import AppointmentHistoryPageDC from "./Components/AppointmentHistoryPageDC/AppointmentHistoryPageDC";
 import DailyLogsPet from "./Components/DailyLogsPet/DailyLogsPet";
+import VaccinePlanPage from "./Components/VaccinePlanPage/VaccinePlanPage";
 
 // ---------------- Dashboard & nested pages (Daycare) ----------------
 import DashboardDC from "./Components/DashboardDC/DashboardDC/DashboardDC";
@@ -83,6 +87,8 @@ import DailyLogs from "./Components/DashboardDC/DailyLogs/DailyLogs";
 import EmergencyPage from "./Components/DashboardDC/EmergencyPage/EmergencyPage";
 import AppointmentDetailsDC from "./Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC";
 import ReviewsDC from "./Components/DashboardDC/ReviewsDC/ReviewsDC";
+
+
 import DoctorDashboard from "./pages/doctor_dashboard/DoctorDashboard";
 import UserHome from "./pages/user-dashboard/UserHome/UserHome";
 import UserAppointments from "./pages/user-dashboard/UserAppontments/UserAppointments";
@@ -187,21 +193,25 @@ function App() {
       <Route path="/updatereview/:id" element={<UpdateReviews />} />
       <Route path="/StarRating" element={<StarRating />} />
       <Route path="/appointmentDisplayDC/:id" element={<AppointmentDisplayDC />} />
+      <Route path="/appHisDetailsDC/:id" element={<AppHisDetailsDC />} />
+      <Route path="/appointmentCardsContainer" element={<AppointmentCardsContainer />} />
+      <Route path="/appointmentHistoryPageDC" element={<AppointmentHistoryPageDC />} />
       <Route path="/daycareLogs/:appointmentId" element={<DailyLogsPet />} />
+      <Route path="/vaccine" element={<VaccinePlanPage />} />
 
       {/* -------- Daycare Dashboard (Nested) -------- */}
       <Route path="/dashboardDC/*" element={<DashboardDC />}>
-  <Route index element={<AnalyticsDashboardDC />} />  {/* <-- default page */}
-  <Route path="analyticDC" element={<AnalyticsDashboardDC />}/>
-  <Route path="todaysPets" element={<TodaysPets />} />
-  <Route path="pendingAppointments" element={<PendingAppointments />} />
-  <Route path="upcomingAppointments" element={<UpcomingAppointmentsDC />} />
-  <Route path="appointmentHistory" element={<AppointmentHistory />} />
-  <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
-  <Route path="emergency" element={<EmergencyPage />} />
-  <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
-  <Route path="reviews" element={<ReviewsDC />} />
-</Route>
+        <Route index element={<AnalyticsDashboardDC />} />  {/* <-- default page */}
+        <Route path="analyticDC" element={<AnalyticsDashboardDC />}/>
+        <Route path="todaysPets" element={<TodaysPets />} />
+        <Route path="pendingAppointments" element={<PendingAppointments />} />
+        <Route path="upcomingAppointments" element={<UpcomingAppointmentsDC />} />
+        <Route path="appointmentHistory" element={<AppointmentHistory />} />
+        <Route path="dailyLogs/:appointmentId" element={<DailyLogs />} />
+        <Route path="emergency" element={<EmergencyPage />} />
+        <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
+        <Route path="reviews" element={<ReviewsDC />} />
+      </Route>
 
 
       {/* DOCTOR ROUTES */}

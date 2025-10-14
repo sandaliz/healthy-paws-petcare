@@ -3,7 +3,7 @@ import CareCustomer from "../Model/CareModel.js";
 import Reminder from "../Model/ReminderModel.js";
 import { scheduleReminder } from "../services/ReminderScheduler.js";
 
-// -------------------- Helpers -------------------- //
+
 
 // Format date in IST
 const formatIST = (dateObj) => {
@@ -153,17 +153,27 @@ export const createRemindersForAppointment = async (careCustomer) => {
 export const getAllDetails = async (req, res) => {
   try {
     let query = {};
-    if (!["ADMIN", "SUPER_ADMIN"].includes(req.user.role)) query = { user: req.user.id };
+
+    // Only restrict if it's a normal user (not caretaker, not admin)
+    if (!["ADMIN", "SUPER_ADMIN", "PET_CARE_TAKER"].includes(req.user.role)) {
+      query = { user: req.user.id };
+    }
+
     const careCustomers = await CareCustomer.find(query)
-      .populate("user", "name email")
+      .populate("user", "name email role")
       .sort({ createdAt: -1 });
-    if (!careCustomers.length) return res.status(404).json({ message: "No appointments found" });
+
+    if (!careCustomers.length) {
+      return res.status(404).json({ message: "No appointments found" });
+    }
+
     return res.status(200).json({ careCustomers });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 export const addDetails = async (req, res) => {
   try {
@@ -189,7 +199,7 @@ export const getById = async (req, res) => {
     if (!careCustomer) return res.status(404).json({ message: "Appointment not found" });
     if (
       careCustomer.user._id.toString() !== req.user.id &&
-      !["ADMIN", "SUPER_ADMIN"].includes(req.user.role)
+      !["ADMIN", "SUPER_ADMIN", "PET_CARE_TAKER"].includes(req.user.role)
     ) {
       return res.status(403).json({ message: "Unauthorized" });
     }

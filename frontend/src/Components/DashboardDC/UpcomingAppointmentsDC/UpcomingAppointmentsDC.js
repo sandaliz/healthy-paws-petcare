@@ -6,6 +6,8 @@ import "./UpcomingAppointmentsDC.css";
 
 function UpcomingAppointmentsDC() {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,13 +16,17 @@ function UpcomingAppointmentsDC() {
 
   const fetchUpcomingAppointments = async () => {
     try {
+      setLoading(true);
+      setError(null);
       const res = await api.get("/careCustomers/status/Approved");
       if (res.data && res.data.careCustomers) {
         setUpcomingAppointments(res.data.careCustomers);
       }
     } catch (err) {
       console.error("Error fetching upcoming appointments:", err);
-      alert(err.response?.data?.message || "Failed to fetch upcoming appointments");
+      setError(err.response?.data?.message || "Failed to fetch upcoming appointments");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,6 +60,32 @@ function UpcomingAppointmentsDC() {
     });
   };
 
+  const formatDateSL = (dateStr) => {
+    if (!dateStr) return "-";
+    return new Date(dateStr).toLocaleDateString("en-GB", { timeZone: "Asia/Colombo" });
+  };
+
+  if (loading) {
+    return (
+      <div className="uaDC-container">
+        <div className="uaDC-loading"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="uaDC-container">
+        <div className="uaDC-message error">
+          <p>Error: {error}</p>
+          <button onClick={fetchUpcomingAppointments} className="uaDC-btn uaDC-btn-view">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="uaDC-container">
       <h2 className="uaDC-title">Upcoming Appointments</h2>
@@ -64,9 +96,11 @@ function UpcomingAppointmentsDC() {
               <div className="uaDC-info">
                 <strong>Owner:</strong> {appt.ownerName} |{" "}
                 <strong>Pet:</strong> {appt.petName} |{" "}
-                <strong>Date:</strong>{" "}
-                {new Date(appt.dateStay).toLocaleDateString("en-GB")} |{" "}
-                <strong>Status:</strong> {appt.status}
+                <strong>Date:</strong> {formatDateSL(appt.dateStay)} |{" "}
+                <strong>Status:</strong>{" "}
+                <span className={`uaDC-status ${appt.status?.toLowerCase()}`}>
+                  {appt.status}
+                </span>
               </div>
               <div className="uaDC-actions">
                 <button
@@ -86,7 +120,7 @@ function UpcomingAppointmentsDC() {
           ))}
         </ul>
       ) : (
-        <p className="uaDC-empty">No upcoming appointments.</p>
+        <p className="uaDC-empty">No upcoming appointments found. All approved appointments are checked in! 🎉</p>
       )}
     </div>
   );

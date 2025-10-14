@@ -170,7 +170,7 @@ const sendRequest = async () => {
         agree: Boolean(inputs.agree)
     });
 
-    return res.data; // ✅ return the created appointment
+    return res.data; 
 };
 
     return (
