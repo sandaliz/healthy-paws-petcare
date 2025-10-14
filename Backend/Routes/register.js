@@ -1,4 +1,3 @@
-// Routes/register.js
 import express from "express";
 const router = express.Router();
 
@@ -12,13 +11,35 @@ import {
   deleteRegister,
 } from "../Controllers/registerController.js";
 
+import Register from "../Model/Register.js"; 
 import { registerValidationRules, validateRegister } from "../middleware/registerValidation.js";
-// import { protect } from "../middleware/auth.js"; // ✅ Uncomment if you have JWT auth
 
-// Registration Routes
+//graphs 
+router.get("/stats/registrations", async (req, res) => {
+  try {
+    const { type = "daily" } = req.query;
+
+    let groupBy;
+    if (type === "monthly") {
+      groupBy = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };//month
+    } else if (type === "weekly") {
+      groupBy = { $dateToString: { format: "%Y-%U", date: "$createdAt" } }; // Week
+    } else {
+      groupBy = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }; // Daily
+    }
+
+    const stats = await Register.aggregate([
+      { $group: { _id: groupBy, count: { $sum: 1 } } },
+      { $sort: { _id: 1 } },
+    ]);
+
+    res.json({ success: true, data: stats });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 // POST create register
-// router.post("/", protect, registerValidationRules(), validateRegister, createRegister);
-router.post("/", registerValidationRules(), validateRegister, createRegister); // if no auth yet
+router.post("/", registerValidationRules(), validateRegister, createRegister);
 
 // GET all registers
 router.get("/", getRegisters);

@@ -28,7 +28,7 @@ const ResetVerifyOtp = () => {
     }
   }, [showAutoScan, countdown]);
 
-  // Auto-submit when OTP is fully filled
+  // Auto-submit
   useEffect(() => {
     const otpValue = otp.join("");
     if (otpValue.length === 6 && otp.every((digit) => digit !== "")) {
@@ -39,7 +39,7 @@ const ResetVerifyOtp = () => {
 
   const handleChange = (e, index) => {
     const value = e.target.value;
-    if (/^\d?$/.test(value)) {  // ✅ only digits allowed, 1 char max
+    if (/^\d?$/.test(value)) {  
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);

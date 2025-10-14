@@ -24,7 +24,7 @@ const RegisterOwner = ({ user }) => {
     }
   }, [user?.email]);
 
-  // 🔹 Enhanced handleChange with phone validation
+  // Enhanced handleChange with phone validation
   const handleChange = (e) => {
     const { name, value } = e.target;
 
