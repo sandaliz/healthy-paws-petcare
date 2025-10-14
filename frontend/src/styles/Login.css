@@ -1,6 +1,6 @@
-/* ---------- Login Page Wrapper ---------- */
+/* Login Page Wrapperr */
 .login-page-wrapper {
-  background: #FFD58E !important; /* Soft Peach background only for login */
+  background: #FFD58E !important; 
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -8,7 +8,7 @@
   justify-content: center;
 }
 
-/* ---------- Doodle Panel ---------- */
+/*  Doodle Panel  */
 .doodle-panel {
   border-radius: 24px;
   padding: 3rem;
@@ -24,7 +24,7 @@
   box-shadow: 0 15px 40px rgba(0,0,0,0.25);
 }
 
-/* ---------- Layout ---------- */
+/*  Layout  */
 .login-content {
   display: flex;
   align-items: center;
@@ -33,7 +33,7 @@
   width: 100%;
 }
 
-/* ---------- Image Circle ---------- */
+/* Image Circle  */
 .image-circle {
   width: 350px;
   height: 350px;
@@ -51,7 +51,7 @@
   object-fit: cover;
 }
 
-/* ---------- Login Card ---------- */
+/*  Login Card  */
 .login-card {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(15px);
@@ -82,7 +82,7 @@
   margin-bottom: 1.5rem;
 }
 
-/* ---------- Error Box ---------- */
+/*  Error Box */
 .error-box {
   display: flex;
   align-items: center;
@@ -97,7 +97,7 @@
 }
 .error-icon { width: 18px; height: 18px; }
 
-/* ---------- Form Inputs ---------- */
+/*  Form Inputs */
 .form { display: flex; flex-direction: column; gap: 1.2rem; }
 
 .login-input {
@@ -123,7 +123,7 @@
 .input-error { border-color: red !important; }
 .error-text { font-size: 0.8rem; color: red; margin-top: 0.3rem; }
 
-/* ---------- Links & Buttons ---------- */
+/*  Links & Buttons  */
 .form-links { text-align: right; margin-bottom: 0.5rem; }
 .link {
   font-size: 0.9rem;
@@ -169,7 +169,7 @@
 }
 .signup-link:hover { color: #2D2D2D; text-decoration: underline; }
 
-/* ---------- Input Wrapper Icons ---------- */
+/*  Input Wrapper Icons  */
 .login-input-wrapper {
   position: relative;
   display: flex;
@@ -202,7 +202,7 @@
 .login-eye-toggle:hover { color: #54413C; }
 .login-eye-toggle svg { width: 22px; height: 22px; }
 
-/* ---------- Responsive ---------- */
+/*  Responsive  */
 @media (max-width: 900px) {
   .login-content { flex-direction: column; text-align: center; gap: 2rem; }
   .image-circle { width: 220px; height: 220px; }

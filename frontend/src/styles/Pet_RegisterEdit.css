@@ -1,11 +1,11 @@
-/* ===== Reset for Registration Edit Component Only ===== */
+/* Reset for Registration Edit Component Only  */
 .registration-edit-page * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ===== Registration Edit Page Layout ===== */
+/* Registration Edit Page Layout */
 .registration-edit-page {
   min-height: 100vh;
   display: flex;
@@ -38,7 +38,7 @@
   animation: registrationEditFadeInUp 0.6s ease-out;
 }
 
-/* ===== Typography ===== */
+/* Typography  */
 .registration-edit-header h2 {
   font-size: 28px;
   font-weight: 700;
@@ -57,7 +57,7 @@
   text-align: center;
 }
 
-/* ===== Form Sections ===== */
+/* Form Sections */
 .registration-edit-section {
   background: #f8f9fa;
   border-radius: 12px;
@@ -77,7 +77,7 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* ===== Form Grid ===== */
+/* Form Grid  */
 .registration-edit-form {
   display: flex;
   flex-direction: column;
@@ -103,7 +103,7 @@
   margin-left: 2px;
 }
 
-/* ===== Form Inputs ===== */
+/*Form Inputs */
 .registration-form-input {
   padding: 12px 14px;
   border: 2px solid #e5e7eb;
@@ -130,7 +130,7 @@
   color: #9ca3af;
 }
 
-/* ===== Select and Textarea ===== */
+/*Select and Textarea  */
 .registration-form-select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
@@ -145,7 +145,7 @@
   font-family: inherit;
 }
 
-/* ===== Error Text ===== */
+/* Error Text  */
 .registration-error-text {
   color: #dc2626;
   font-size: 13px;
@@ -153,7 +153,7 @@
   font-weight: 500;
 }
 
-/* ===== Action Buttons ===== */
+/* Action Buttons  */
 .registration-edit-actions {
   display: flex;
   gap: 15px;
@@ -196,7 +196,7 @@
   box-shadow: 0 4px 12px rgba(84, 65, 60, 0.3);
 }
 
-/* ===== Loading State ===== */
+/* Loading Stat */
 .registration-loading {
   display: flex;
   align-items: center;
@@ -206,7 +206,7 @@
   color: #666;
 }
 
-/* ===== Responsive Design ===== */
+/* Responsive Design */
 @media (max-width: 768px) {
   .registration-edit-page {
     padding: 15px;
@@ -274,7 +274,7 @@
   }
 }
 
-/* ===== Animation ===== */
+/* Animation */
 @keyframes registrationEditFadeInUp {
   from {
     opacity: 0;

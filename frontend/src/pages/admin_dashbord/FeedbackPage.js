@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -25,19 +25,35 @@ const FeedbackPage = () => {
   const [stats, setStats] = useState(null);
   const [report, setReport] = useState(null);
   const [readFeedbacks, setReadFeedbacks] = useState({});
-  const [reportType, setReportType] = useState("all"); // <-- added for report options
+  const [reportType, setReportType] = useState("all");
 
-  // Fetch feedbacks
-  const fetchFeedbacks = async () => {
-    try {
-      const res = await axios.get("http://localhost:5001/api/feedback");
-      if (res.data.success) setFeedbacks(res.data.data);
-    } catch (error) {
-      console.error("Error fetching feedbacks:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(10);
+
+  // Wrap fetchFeedbacks in useCallback so it's stable
+  const fetchFeedbacks = useCallback(
+    async (pageNum = 1) => {
+      try {
+        setLoading(true);
+        const res = await axios.get("http://localhost:5001/api/feedback", {
+          params: { page: pageNum, limit }
+        });
+
+        if (res.data.success) {
+          setFeedbacks(res.data.data);
+          setPage(res.data.page);
+          setTotalPages(res.data.pages);
+        }
+      } catch (error) {
+        console.error("Error fetching feedbacks:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [limit] 
+  );
 
   // Fetch stats
   const fetchStats = async () => {
@@ -59,17 +75,19 @@ const FeedbackPage = () => {
     }
   };
 
+  // useEffect deps include fetchFeedbacks safely now
   useEffect(() => {
-    fetchFeedbacks();
+    fetchFeedbacks(1);
     fetchStats();
     fetchReport();
-  }, []);
+  }, [fetchFeedbacks]);
 
   const deleteFeedback = async (id) => {
     if (!window.confirm("Are you sure you want to delete this feedback?")) return;
     try {
       await axios.delete(`http://localhost:5001/api/feedback/${id}`);
-      setFeedbacks(feedbacks.filter((f) => f._id !== id));
+      // Refresh current page after deletion
+      fetchFeedbacks(page);
       fetchStats();
       fetchReport();
     } catch (error) {
@@ -98,15 +116,7 @@ const FeedbackPage = () => {
 
   const pieOptions = {
     plugins: {
-      legend: { 
-        position: "bottom",
-        labels: {
-          font: {
-            family: "'Poppins', sans-serif",
-            size: 12
-          }
-        }
-      },
+      legend: { position: "bottom" },
       datalabels: {
         formatter: (value, context) => {
           const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -116,14 +126,14 @@ const FeedbackPage = () => {
         font: { weight: "bold", size: 12, family: "'Poppins', sans-serif" },
       },
     },
-    maintainAspectRatio: true, // important for keeping circular
+    maintainAspectRatio: true,
   };
 
-  // PDF Builder
+  // PDF Builder (unchanged)
   const buildPDF = (type = "all") => {
     const doc = new jsPDF("p", "mm", "a4");
 
-    // --- Header ---
+    // Header
     doc.setFillColor(84, 65, 60);
     doc.rect(0, 0, 210, 40, "F");
     doc.addImage(logo, "PNG", 15, 5, 25, 25);
@@ -141,7 +151,6 @@ const FeedbackPage = () => {
     doc.setFontSize(12);
     doc.setTextColor(20);
 
-    // Totals + Chart only for ALL
     if (type === "all") {
       doc.text(`Total Feedbacks: ${report.counts.total}`, 15, y);
       y += 8;
@@ -153,12 +162,11 @@ const FeedbackPage = () => {
       const chartCanvas = document.querySelector("canvas");
       if (chartCanvas) {
         const chartImg = chartCanvas.toDataURL("image/png", 1.0);
-        doc.addImage(chartImg, "PNG", 55, y, 120, 120); // ⭕ square size = perfect circle
+        doc.addImage(chartImg, "PNG", 55, y, 120, 120);
         y += 130;
       }
     }
 
-    // Good feedbacks
     if (type === "all" || type === "good") {
       doc.setTextColor(0, 100, 0);
       doc.text("Good Feedbacks", 15, y);
@@ -176,7 +184,6 @@ const FeedbackPage = () => {
       y = doc.lastAutoTable.finalY + 10;
     }
 
-    // Bad feedbacks
     if (type === "all" || type === "bad") {
       doc.setTextColor(150, 0, 0);
       doc.text("Bad Feedbacks", 15, y);
@@ -221,7 +228,9 @@ const FeedbackPage = () => {
       <main className="admin-feedback-main">
         <div className="feedback-header">
           <h2>Customer Feedback</h2>
-          <p className="feedback-subtitle">Insights into customer experience, satisfaction trends, and service quality</p>
+          <p className="feedback-subtitle">
+            Insights into customer experience, satisfaction trends, and service quality
+          </p>
         </div>
 
         {loading ? (
@@ -275,6 +284,25 @@ const FeedbackPage = () => {
                 ))}
               </tbody>
             </table>
+
+            {/*Pagination Controls */}
+            <div className="pagination-controls">
+              <button 
+                disabled={page === 1}
+                onClick={() => fetchFeedbacks(page - 1)}
+              >
+                ◀ Previous
+              </button>
+
+              <span> Page {page} of {totalPages} </span>
+
+              <button 
+                disabled={page === totalPages}
+                onClick={() => fetchFeedbacks(page + 1)}
+              >
+                Next ▶
+              </button>
+            </div>
           </div>
         )}
 
@@ -288,7 +316,7 @@ const FeedbackPage = () => {
               <div className="stats-summary">
                 <div className="stat-item">
                   <span className="stat-label">Total Feedbacks</span>
-                  <span className="stat-value">{stats.totalRatings}</span>
+                  <span className="stat-value">{stats.totalFeedbacks}</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-label">Positive</span>

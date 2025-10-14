@@ -1,4 +1,3 @@
-// middleware/registerValidation.js
 import { body, validationResult } from "express-validator";
 
 const emailNormalizeOptions = {
@@ -23,13 +22,13 @@ export const registerValidationRules = () => {
       .isLength({ max: 50 })
       .withMessage("Owner name must be ≤ 50 characters"),
 
-    // ✅ Modern email regex
+    //Modern email regex
     body("OwnerEmail")
       .matches(/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/)
       .withMessage("Please enter a valid email address")
       .normalizeEmail(emailNormalizeOptions),
 
-    // ✅ Phones: exactly 10 digits
+    // Phones: exactly 10 digits
     body("OwnerPhone")
       .matches(/^\d{10}$/)
       .withMessage("Phone number must be exactly 10 digits"),
@@ -42,7 +41,7 @@ export const registerValidationRules = () => {
       .notEmpty()
       .withMessage("Owner address is required"),
 
-    // ✅ Pet fields
+    // Pet fields
     body("PetName").notEmpty().withMessage("Pet name is required"),
 
     body("PetSpecies")
