@@ -215,24 +215,6 @@
   filter: grayscale(60%);
 }
 
-/* ---------- Buttons ---------- */
-.coupon-card .btn {
-  margin-top: 14px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  background: #f7c368;
-  color: #fff;
-  font-weight: 600;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-.coupon-card .btn:hover:not(:disabled) {
-  background: #f7c368;
-  transform: translateY(-2px);
-}
-.coupon-card .btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
   text-shadow: 0 0 10px rgba(250,204,21,0.7);
 }
 .loyalty-bar {
@@ -359,14 +341,15 @@
   margin-top: 14px;
   padding: 8px 14px;
   border-radius: 8px;
-  background: #f7c368;
+  background: #54413C;
   color: #fff;
   font-weight: 600;
   transition: background 0.2s ease, transform 0.2s ease;
 }
 .coupon-card .btn:hover:not(:disabled) {
-  background: #f7c368;
+  background: #584742;
   transform: translateY(-2px);
+  cursor: pointer;
 }
 .coupon-card .btn:disabled {
   opacity: 0.55;

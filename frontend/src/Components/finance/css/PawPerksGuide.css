@@ -1,0 +1,486 @@
+.pawperks-header {
+  margin-bottom: 2rem;
+  position: relative;
+  text-align: center;
+}
+
+.pawperks-header-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pawperks-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #5a3e2b;
+  margin: 0;
+}
+
+.pawguide-info-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 3.4rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #222;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: all 0.25s ease;
+}
+.pawguide-info-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateY(-50%) scale(1.1);
+  color: #f97316;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+.pawguide-info-btn:active {
+  transform: translateY(-50%) scale(0.95);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* modal backdrop */
+/* ===== OVERHAULED TREASURE MAP MODAL ===== */
+
+/* Modal backdrop */
+.pawguide-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 2rem;
+}
+
+/* Treasure map modal box — now taller, scrollable vertically if needed */
+.pawguide-map {
+  background: radial-gradient(circle at 30% 30%, #fdf6e3, #f3e5ab);
+  border: 6px double #8b4513;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  width: 90vw;
+  max-width: 1400px;
+  height: 85vh;
+  position: relative;
+  font-family: 'Caveat', cursive, 'Poppins', sans-serif;
+  animation: pawguide-unroll 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform-origin: top center;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    inset 0 0 30px rgba(139, 69, 19, 0.1);
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+.pawguide-map::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+@keyframes pawguide-unroll {
+  0% { transform: scaleY(0.1) rotateX(80deg); opacity: 0; }
+  60% { transform: scaleY(1.02) rotateX(-5deg); opacity: 0.95; }
+  100% { transform: scaleY(1) rotateX(0deg); opacity: 1; }
+}
+
+/* Close button - treasure chest style */
+.pawguide-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 3.2rem;
+  font-weight: 900;
+  border: none;
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #fff;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+.pawguide-close:hover {
+  background: linear-gradient(135deg, #ffd700, #daa520);
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+.pawguide-close:active {
+  transform: scale(0.95) rotate(0deg);
+}
+
+/* Title - bigger, bolder, treasure-worthy */
+.pawguide-title {
+  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin: 2rem 0 3rem;
+  color: #5d4037;
+  text-shadow: 2px 2px 0 #f5e6ca, 4px 4px 0 rgba(0, 0, 0, 0.1);
+  letter-spacing: 1px;
+  position: relative;
+}
+.pawguide-title::before {
+  content: "";
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+}
+.pawguide-title::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+}
+
+/* Horizontal trail map — now centered vertically in scrollable container */
+.pawguide-map-canvas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: fit-content;
+  min-height: 100%;
+  gap: 6rem;
+  padding: 6rem 4rem;
+  margin: 0 auto;
+}
+
+/* Path styling — thicker, more adventurous */
+.pawguide-path {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+.pawguide-path path {
+  stroke: #8b4513;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 12, 20;
+  animation: dashmove 20s linear infinite;
+}
+@keyframes dashmove {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -120; }
+}
+
+/* Tier spots — NOW MUCH LARGER, CARD-LIKE, RICH STYLING */
+.pawguide-tier-spot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 320px;
+  height: 420px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23ffffff" opacity="0.7"/><path d="M0,0 L100,0 L100,100 L0,100 Z" stroke="%23e0cda7" stroke-width="2" fill="none"/></svg>');
+  background-size: 100px 100px;
+  border: 4px solid;
+  border-radius: 24px;
+  padding: 1.5rem;
+  text-align: center;
+  z-index: 10;
+  box-shadow:
+    inset 0 0 20px rgba(0, 0, 0, 0.08),
+    0 12px 30px rgba(0, 0, 0, 0.25);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+.pawguide-tier-spot::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+.pawguide-tier-spot:hover {
+  transform: scale(1.05) translateY(-10px) rotate(-1deg);
+  box-shadow:
+    inset 0 0 25px rgba(0, 0, 0, 0.1),
+    0 18px 40px rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+.pawguide-tier-spot:active {
+  transform: scale(0.98);
+}
+
+/* Tier Icon — Bigger, playful */
+.pawguide-tier-icon {
+  font-size: 4.5rem;
+  margin-bottom: 0.5rem;
+  z-index: 2;
+  filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.2));
+}
+
+/* Tier Name — Bold, large */
+.pawguide-tier-name {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0.5rem 0;
+  color: #4e342e;
+  z-index: 2;
+}
+
+/* Threshold — Clear goal indicator */
+.pawguide-threshold {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #5d4037;
+  background: rgba(255, 248, 225, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  margin: 1rem 0;
+  z-index: 2;
+  border: 1px dashed #d7ccc8;
+}
+
+/* Story — Readable, scrollable if long */
+.pawguide-story {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-style: normal;
+  color: #3e2723;
+  margin: 1.5rem 0 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  border: 1px solid #efebe9;
+  min-height: 100px;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 2;
+}
+
+/* X Mark for final tier — Treasure! */
+.pawguide-xmark {
+  margin-top: 1.5rem;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #b71c1c;
+  text-shadow: 2px 2px 0 #ffebee, 4px 4px 4px rgba(0, 0, 0, 0.3);
+  animation: pulseRed 2s infinite;
+  z-index: 2;
+}
+
+@keyframes pulseRed {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Footer hint — now styled as a scroll */
+.pawguide-footer-hint {
+  text-align: center;
+  font-size: 1rem;
+  color: #5d4037;
+  margin-top: 4rem;
+  padding: 1.5rem 2rem;
+  background: rgba(255, 248, 225, 0.6);
+  border: 2px dotted #d7ccc8;
+  border-radius: 12px;
+  font-style: italic;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== RESPONSIVE TWEAKS ===== */
+@media (max-width: 1024px) {
+  .pawguide-tier-spot {
+    min-width: 280px;
+    height: 380px;
+  }
+  .pawguide-tier-icon { font-size: 3.8rem; }
+  .pawguide-tier-name { font-size: 1.5rem; }
+  .pawguide-threshold { font-size: 1rem; }
+  .pawguide-map-canvas { gap: 4rem; padding: 4rem 2rem; }
+}
+
+@media (max-width: 768px) {
+  .pawguide-map {
+    width: 95vw;
+    height: 90vh;
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+  .pawguide-title {
+    font-size: 2rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .pawguide-tier-spot {
+    min-width: 240px;
+    height: 340px;
+    padding: 1rem;
+  }
+  .pawguide-tier-icon { font-size: 3.2rem; }
+  .pawguide-tier-name { font-size: 1.3rem; }
+  .pawguide-threshold { font-size: 0.95rem; }
+  .pawguide-story { font-size: 0.95rem; min-height: 80px; }
+  .pawguide-map-canvas { gap: 3rem; padding: 3rem 1.5rem; }
+  .pawguide-close {
+    width: 60px;
+    height: 60px;
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pawguide-tier-spot {
+    min-width: 220px;
+    height: 320px;
+  }
+  .pawguide-tier-name { font-size: 1.2rem; }
+  .pawguide-map-canvas { gap: 2.5rem; padding: 2.5rem 1rem; }
+}
+
+/* Loading & Empty States */
+.loading-skeleton, .skeleton-card {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+.skeleton-bar {
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+}
+.skeleton-text {
+  height: 16px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  width: 60%;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.notice-card, .empty-state {
+  text-align: center;
+  padding: 2rem;
+  background: #fff8e1;
+  border: 2px dashed #fbbf24;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  font-weight: 600;
+  color: #78350f;
+}
+
+.error-banner {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border-left: 4px solid #b91c1c;
+}
+
+/* Coupon enhancements */
+.source-link {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+.source-link a {
+  color: #f97316;
+  text-decoration: none;
+}
+.source-link a:hover {
+  text-decoration: underline;
+}
+
+.forecast-hint {
+  font-size: 0.85rem;
+  color: #059669;
+  font-style: italic;
+  margin-top: 0.25rem;
+}
+
+.celebratory {
+  color: #d97706;
+  font-weight: 700;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.how-to-earn {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+/* Modal footer hint */
+.pawguide-footer-hint {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #7c5e10;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 2px dotted #7c5e10;
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+  .pawguide-map {
+    width: 90vw;
+    height: 80vh;
+    padding: 1rem;
+  }
+  .pawguide-map-canvas {
+    min-width: 1200px;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+  }
+  .pawguide-tier-spot {
+    min-width: 160px;
+    padding: 0.75rem;
+  }
+  .pawguide-tier-icon { font-size: 1.8rem; }
+  .pawguide-title { font-size: 1.3rem; }
+  .pawguide-close {
+    width: 50px;
+    height: 50px;
+    font-size: 3rem;
+  }
+}

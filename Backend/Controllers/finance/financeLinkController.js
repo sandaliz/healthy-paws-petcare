@@ -70,6 +70,21 @@ export const createInvoiceFromAppointment = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
+    // ✅ First: Check if invoice already exists for this appointment
+    let invoice = await Invoice.findOne({ linkedAppointment: appointmentId });
+
+    if (invoice) {
+      if (invoice.status === "Paid") {
+        return res.status(400).json({ message: "This appointment is already paid", invoice });
+      }
+      if (invoice.status === "Refunded") {
+        return res.status(400).json({ message: "This appointment has been refunded", invoice });
+      }
+      // Reuse existing Pending/Overdue invoice
+      return res.status(200).json({ message: "Invoice already exists for appointment", invoice });
+    }
+
+    // Otherwise, generate a fresh invoice
     const feeMap = {
       VACCINE: 4000,
       SURGERY: 10000,
@@ -88,24 +103,24 @@ export const createInvoiceFromAppointment = async (req, res) => {
     ];
 
     const subtotal = amount;
-    const tax = toMoney(subtotal * 0.08);
-    const total = toMoney(subtotal + tax);
+    const tax = +(subtotal * 0.08).toFixed(2);
+    const total = subtotal + tax;
     const dueDate = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
 
-    const invoice = new Invoice({
+    invoice = new Invoice({
       invoiceID: generateInvoiceID(),
-      userID: userId,   
+      userID: userId,
       lineItems,
       subtotal,
       tax,
       total,
       status: "Pending",
       dueDate,
-      linkedAppointment: appointment._id,  // optional: lets you trace back
+      linkedAppointment: appointment._id,
     });
 
     await invoice.save();
-    res.status(201).json({ message: "Invoice created from appointment", invoice });
+    return res.status(201).json({ message: "Invoice created from appointment", invoice });
   } catch (err) {
     console.error("createInvoiceFromAppointment error:", err);
     res.status(500).json({ message: err?.message || "Server error" });
@@ -121,7 +136,18 @@ export const createInvoiceFromDaycare = async (req, res) => {
     const care = await CareCustomer.findById(careId).populate("user", "name email");
     if (!care) return res.status(404).json({ message: "Daycare booking not found" });
 
-    // Simple flat nightly fee (customize with grooming/walking extras)
+    // Check if an invoice already exists for this daycare booking
+    let invoice = await Invoice.findOne({ linkedDaycare: careId });
+    if (invoice) {
+      if (invoice.status === "Paid") {
+        return res.status(400).json({ message: "This daycare booking is already paid", invoice });
+      }
+      if (invoice.status === "Refunded") {
+        return res.status(400).json({ message: "This daycare booking has been refunded", invoice });
+      }
+      return res.status(200).json({ message: "Invoice already exists for daycare booking", invoice });
+    }
+
     const nightlyRate = 3000;
     let subtotal = care.nightsStay * nightlyRate;
 
@@ -133,7 +159,7 @@ export const createInvoiceFromDaycare = async (req, res) => {
         description: `Daycare for ${care.petName} (${care.nightsStay} nights)`,
         quantity: care.nightsStay,
         unitPrice: nightlyRate,
-        total: care.nightsStay * nightlyRate
+        total: care.nightsStay * nightlyRate,
       },
     ];
 
@@ -147,7 +173,8 @@ export const createInvoiceFromDaycare = async (req, res) => {
     const total = subtotal + tax;
     const dueDate = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
 
-    const invoice = new Invoice({
+    // Create new invoice
+    invoice = new Invoice({
       invoiceID: `INV-${Date.now()}`,
       userID,
       lineItems,
@@ -156,13 +183,13 @@ export const createInvoiceFromDaycare = async (req, res) => {
       total,
       status: "Pending",
       dueDate,
-      linkedDaycare: care._id, // so we can always trace booking
+      linkedDaycare: care._id,  
     });
 
     await invoice.save();
-    res.status(201).json({ message: "Invoice created for daycare", invoice });
+    return res.status(201).json({ message: "Invoice created for daycare", invoice });
   } catch (err) {
-    console.error("createInvoiceFromDaycare error", err);
+    console.error("createInvoiceFromDaycare error:", err);
     res.status(500).json({ message: err.message || "Server error" });
   }
 };

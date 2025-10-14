@@ -32,7 +32,9 @@ export const getCoupons = async (req, res) => {
     const filter = {};
     if (scope && scope !== "ALL") filter.scope = scope;
     if (userId) filter.ownerUserID = userId;
-    const coupons = await Coupon.find(filter).sort({ createdAt: -1 });
+    const coupons = await Coupon.find(filter)
+  .sort({ createdAt: -1 })
+  .populate("ownerUserID", "name email"); // only bring back name+email
     res.json({ coupons });
   } catch (err) {
     console.error("getCoupons error:", err);

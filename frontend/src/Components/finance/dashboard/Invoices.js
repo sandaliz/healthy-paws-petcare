@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { api } from '../../finance/services/financeApi';
+import { api } from '../services/financeApi';
 import Modal from './components/Modal';
 import Tag from './components/Tag';
 import Skeleton from './components/Skeleton';
 import {
   Plus, Search, Filter, MoreVertical, Pencil, Trash2, Eye, ExternalLink, Copy, ChevronLeft, ChevronRight
 } from 'lucide-react';
-import '../css/dashboard.css';
+import '../css/dashboard/invoices.css';
+import { toNum, round2, fmtDate, fmtLKR } from '../utils/financeFormatters'
 
 const STATUS_OPTIONS = ['All', 'Pending', 'Overdue', 'Cancelled', 'Paid', 'Refunded'];
 const ALLOWED_STATUS_UPDATE = ['Pending', 'Overdue', 'Cancelled'];
@@ -109,9 +110,9 @@ export default function Invoices() {
       <Toaster position="top-right" />
       <div className="page-head">
         <h2>Invoices</h2>
-        <div className="row">
+        <div className="rf-head-actions">
           <button className="fm-btn" onClick={load}><Filter size={16} /> Refresh</button>
-          <button className="fm-btn fm-btn-primary" onClick={() => setCreateOpen(true)}><Plus size={16} /> New Invoice</button>
+          <button className="fm-btn-back" onClick={() => setCreateOpen(true)}><Plus size={16} /> New Invoice</button>
         </div>
       </div>
 
@@ -366,7 +367,7 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
         </table>
       </div>
 
-      <div className="row end inv-totals-actions">
+      <div className="pm-actions">
         <button className="fm-btn fm-btn-ghost" onClick={onClose}>Cancel</button>
         <button className="fm-btn fm-btn-primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Create'}</button>
       </div>
@@ -536,17 +537,4 @@ function StatusModal({ open, onClose, invoice, onUpdate }) {
       </div>
     </Modal>
   );
-}
-
-/* utils */
-function toNum(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
-function round2(n) { return Math.round((Number(n) || 0) * 100) / 100; }
-function fmtLKR(n) {
-  try { return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(Number(n) || 0); }
-  catch { return `LKR ${Number(n || 0).toFixed(2)}`; }
-}
-function fmtDate(d) {
-  if (!d) return '-';
-  try { return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
-  catch { return String(d); }
 }

@@ -30,7 +30,7 @@ import RegisterEdit from "./pages/Register_pet/RegisterEdit";
 
 // ---------------- Chatbot & Profile ----------------
 import Chatbot from "./Components/Chatbot";
-import ProfilePage from "./Components/finance/ProfilePage";
+import ProfilePage from "./Components/finance/client/ProfilePage";
 
 // ---------------- Admin Panel ----------------
 import FeedbackPage from "./pages/admin_dashbord/FeedbackPage";
@@ -92,9 +92,9 @@ import UserQuesions from "./pages/user-dashboard/UserQuesions/UserQuesions";
 // ---------------- Finance ----------------
 import CouponWall from "./Components/finance/CouponWall";
 import ClientPay from "./Components/finance/client/offline/ClientPay";
-import OnlinePay from "./Components/finance/OnlinePay";
-import PaySuccess from "./Components/finance/PaySuccess";
-import PaymentSummary from "./Components/finance/PaymentSummary";
+import OnlinePay from "./Components/finance/client/online/OnlinePay";
+import PaySuccess from "./Components/finance/client/PaySuccess";
+import PaymentSummary from "./Components/finance/client/PaymentSummary";
 import DashboardApp from "./Components/finance/dashboard/DashboardApp";
 
 function App() {

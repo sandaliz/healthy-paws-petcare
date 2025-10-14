@@ -1,4 +1,3 @@
-// components/OfflinePaymentModal.jsx
 import React, { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { api } from '../../services/financeApi';

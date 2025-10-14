@@ -1,0 +1,178 @@
+/* Sidebar container */
+.sidebar {
+  background: #54413C;
+  color: #fff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+/* Brand block */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.sidebar-logo {
+  width: 34px;
+  height: 34px;
+  background: #FFD58E;
+  color: #54413C;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  transition: transform 0.2s ease;
+}
+.sidebar-logo:hover {
+  transform: scale(1.1);
+}
+.sidebar-title {
+  font-weight: 700;
+  font-size: large;
+}
+
+/* Navigation links */
+.sidebar-nav {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.sidebar-nav-link {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.sidebar-nav-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.sidebar-nav-link.active {
+  background: linear-gradient(135deg, #FFD58E 0%, #ffc64f 100%);
+  color: #54413C;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 2px rgba(84, 65, 60, 0.2);
+}
+
+/* Special Feature */
+.sidebar-special {
+  margin-top: auto;
+  margin-bottom: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
+}
+.sidebar-forecast-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+  color: #064e3b !important;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.sidebar-forecast-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
+}
+
+/* Logout area */
+.sidebar-logout {
+  margin-top: 0;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  margin-bottom: 15px;
+}
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: #FCA5A5;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.sidebar-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+}
+
+/* Modal internal notice styles (light integration) */
+.sidebar-notice {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #FECACA;
+  background: #FEF2F2;
+  color: #7F1D1D;
+}
+.sidebar-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+.sidebar-btn-cancel {
+  background: #FFF8EA;
+  border: 1px solid #FFD58E;
+  color: #54413C;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.sidebar-btn-cancel:hover {
+  background: #ffedbd;
+}
+.sidebar-btn-logout {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* Responsive tweaks */
+@media (max-width: 860px) {
+  .sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    height: auto;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  .sidebar-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .sidebar-special, .sidebar-logout {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-title { display: none; }
+}

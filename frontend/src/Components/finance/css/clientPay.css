@@ -258,6 +258,7 @@ button, .cta {
   border: 1px solid #FFD58E;
 }
 
+
 /* Utility Layout */
 .finance-scope .row { display:flex; gap:10px; align-items:center; }
 .finance-scope .row.wrap { flex-wrap:wrap; }
@@ -612,4 +613,89 @@ button, .cta {
   font-weight: 500;
   color: #92400E;
   margin-left: 6px;
+}
+
+/* =========================================
+   Finance Module - Button Beautification
+   Unique prefix: fm-btn-*
+   ========================================= */
+
+.finance-scope .fm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;                /* for icons/text */
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;   /* in case used as <a> */
+  user-select: none;
+}
+
+.finance-scope .fm-btn:disabled {
+  opacity: 0.55;
+  pointer-events: none;
+  transform: none !important;
+}
+
+/* Primary (peach brand) */
+.finance-scope .fm-btn-primary {
+  background: linear-gradient(135deg, #FFD58E, #FEC260);
+  color: #54413C;
+  box-shadow: 0 3px 7px rgba(253, 172, 76, 0.35);
+}
+.finance-scope .fm-btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+}
+
+/* Secondary (brown strong) */
+.finance-scope .fm-btn-secondary {
+  background: #54413C;
+  color: #fff;
+  box-shadow: 0 3px 7px rgba(40, 30, 25, 0.3);
+}
+.finance-scope .fm-btn-secondary:hover {
+  background: #3a2e2a;
+  transform: translateY(-2px);
+}
+
+/* Ghost (minimal outline) */
+.finance-scope .fm-btn-ghost {
+  background: #fff;
+  border: 1px solid #d8dbe0;
+  color: #333;
+}
+.finance-scope .fm-btn-ghost:hover {
+  background: #fafafa;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Danger (optional if you want for Refunds Cancel etc.) */
+.finance-scope .fm-btn-danger {
+  background: #EF4444;
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(191, 25, 25, 0.25);
+}
+.finance-scope .fm-btn-danger:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+/* Refund Viewer Button - subtle blue ghost style */
+.finance-scope .fm-btn-refundview {
+  background: #f0f8ff;            /* very light blue */
+  border: 1px solid #93c5fd;      /* blue border */
+  color: #1d4ed8;                 /* deep blue text */
+}
+.finance-scope .fm-btn-refundview:hover {
+  background: #dbeafe;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
 }

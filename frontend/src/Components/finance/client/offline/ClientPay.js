@@ -40,6 +40,8 @@ export default function ClientPay() {
     return () => { cancelled = true; }
   }, [invoiceId]);
 
+  console.log(invoice)
+
   // Dog tip auto-hide logic
   useEffect(() => {
     if (!showDogTip) return;
@@ -127,7 +129,7 @@ function InvoiceSummary({ invoice, showDogTip, setShowDogTip }) {
           onClick={() => setShowDogTip(true)}
         />
         {showDogTip && (
-          <div className="thought-bubble">🐾 Check PawPerks in Profile for offers!</div>
+          <div className="thought-bubble">🐾 Check PawPerks in your profile for exciting offers!</div>
         )}
       </div>
 
@@ -179,7 +181,7 @@ function InvoiceSummary({ invoice, showDogTip, setShowDogTip }) {
           </div>
           <div className="totals-row grand">
             <span>Amount Due</span>
-            <span className="mono">{fmtLKR(total)}</span>
+            <span className="mono">{fmtLKR(invoice.total)}</span>
           </div>
         </div>
       </div>

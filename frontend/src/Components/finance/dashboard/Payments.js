@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { api } from '../../finance/services/financeApi';
+import { api } from '../services/financeApi';
 import Modal from './components/Modal';
 import Tag from './components/Tag';
 import Skeleton from './components/Skeleton';
@@ -8,6 +8,7 @@ import {
   Search, RefreshCcw, CheckCircle2, Eye, Copy, ChevronLeft, ChevronRight, ExternalLink
 } from 'lucide-react';
 import '../css/dashboard.css';
+import { fmtDate, fmtLKR } from '../utils/financeFormatters'
 
 const METHOD_OPTIONS = ['All', 'Cash', 'Card', 'BankTransfer', 'Stripe'];
 const STATUS_OPTIONS = ['All', 'Pending', 'Completed', 'Failed', 'Refunded'];
@@ -54,7 +55,6 @@ export default function Payments() {
         return pid.includes(q) || inv.includes(q) || owner.includes(q) || email.includes(q);
       });
     }
-    // sort: pending offline first, then newest by date
     return arr.sort((a, b) => {
       const aNeedConfirm = a.status === 'Pending' && a.method !== 'Stripe';
       const bNeedConfirm = b.status === 'Pending' && b.method !== 'Stripe';
@@ -89,6 +89,18 @@ export default function Payments() {
     }
   };
 
+  const viewInvoice = async (invoiceRef) => {
+    try {
+      const id = typeof invoiceRef === 'string' ? invoiceRef : invoiceRef?._id;
+      const res = await api.get(`/invoice/${id}`);
+      const invoice = res.data?.invoice || res.invoice || res;
+      if (!invoice) throw new Error("No invoice returned");
+      setInvoiceView(invoice);
+    } catch (e) {
+      toast.error('Failed to load invoice details');
+    }
+  };
+
   return (
     <div>
       <Toaster position="top-right" />
@@ -100,38 +112,34 @@ export default function Payments() {
       </div>
 
       <div className="pm-filters">
-        {/* Search */}
-        <div className="pm-search">
-          <Search size={16}/>
-          <input
-            className="pm-search-input"
-            placeholder="Search by payment, invoice, name, email"
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          />
+        <div className="filters-left">
+          <div className="pm-search">
+            <Search size={16} />
+            <input
+              className="pm-search-input"
+              placeholder="Search by payment, invoice, name, email"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            />
+          </div>
+          <div className="pm-filter">
+            <label>Method:</label>
+            <select value={method} onChange={e => { setMethod(e.target.value); setPage(1); }}>
+              {METHOD_OPTIONS.map(m => <option key={m}>{m}</option>)}
+            </select>
+          </div>
+          <div className="pm-filter">
+            <label>Status:</label>
+            <select value={status} onChange={e => { setStatus(e.target.value); setPage(1); }}>
+              {STATUS_OPTIONS.map(s => <option key={s}>{s}</option>)}
+            </select>
+          </div>
         </div>
 
-        {/* Method */}
-        <div className="pm-filter">
-          <label>Method:</label>
-          <select value={method} onChange={e=>{ setMethod(e.target.value); setPage(1); }}>
-            {METHOD_OPTIONS.map(m=><option key={m}>{m}</option>)}
-          </select>
-        </div>
-
-        {/* Status */}
-        <div className="pm-filter">
-          <label>Status:</label>
-          <select value={status} onChange={e=>{ setStatus(e.target.value); setPage(1); }}>
-            {STATUS_OPTIONS.map(s=><option key={s}>{s}</option>)}
-          </select>
-        </div>
-
-        {/* Exclude toggle */}
         <div className="exclude-toggle">
           <span>Exclude failed</span>
-          <div className={`toggle-radio ${excludeFailed?'on':'off'}`}
-            onClick={()=>{ setExcludeFailed(!excludeFailed); setPage(1);} }>
+          <div className={`toggle-radio ${excludeFailed ? 'on' : 'off'}`}
+            onClick={() => { setExcludeFailed(!excludeFailed); setPage(1); }}>
             <div className="circle"></div>
           </div>
         </div>
@@ -152,10 +160,10 @@ export default function Payments() {
                 </tr>
               </thead>
               <tbody>
-                {pageItems.length===0 && (
+                {pageItems.length === 0 && (
                   <tr><td colSpan={6} className="muted">No payments found</td></tr>
                 )}
-                {pageItems.map(p=>(
+                {pageItems.map(p => (
                   <tr key={p._id}>
                     <td className="mono">{p.invoiceID?.invoiceID || '-'}</td>
                     <td>
@@ -164,16 +172,19 @@ export default function Payments() {
                         <div className="email">{p.userID?.email || p.invoiceID?.userID?.email || '-'}</div>
                       </div>
                     </td>
-                    <td><MethodPill method={p.method}/></td>
+                    <td><MethodPill method={p.method} /></td>
                     <td className="mono">{fmtLKR(p.amount)}</td>
-                    <td><Tag status={p.status}/></td>
+                    <td><Tag status={p.status} /></td>
                     <td className="right">
-                      <div className="row end">
-                        <button className="fm-btn fm-btn-ghost" onClick={()=>setView(p)}><Eye size={16}/></button>
-                        <button className="fm-btn fm-btn-ghost" onClick={()=>copyInvoiceLink(p.invoiceID?._id)}><Copy size={16}/></button>
-                        {p.status==='Pending' && p.method!=='Stripe' && (
-                          <button className="fm-btn pm-btn-confirm" onClick={()=>setConfirmPay(p)}>
-                            <CheckCircle2 size={16}/> Confirm
+                      <div className="pm-actions">
+                        <button className="fm-btn fm-btn-ghost" onClick={() => setView(p)}><Eye size={16} /></button>
+                        <button className="fm-btn fm-btn-ghost" onClick={() => copyInvoiceLink(p.invoiceID?._id)}><Copy size={16} /></button>
+                        {p.status === 'Pending' && p.method !== 'Stripe' && (
+                          <button
+                            className="billing-confirm-btn"
+                            onClick={() => setConfirmPay(p)}
+                          >
+                            <CheckCircle2 size={16} /> Confirm
                           </button>
                         )}
                       </div>
@@ -184,56 +195,65 @@ export default function Payments() {
             </table>
 
             <div className="fm-pagination">
-              <button className="fm-btn fm-btn-ghost" onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>
-                <ChevronLeft size={16}/> Prev</button>
+              <button className="fm-btn fm-btn-ghost" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
+                <ChevronLeft size={16} /> Prev</button>
               <div>Page {page} of {totalPages}</div>
-              <button className="fm-btn fm-btn-ghost" onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page===totalPages}>
-                Next <ChevronRight size={16}/></button>
+              <button className="fm-btn fm-btn-ghost" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
+                Next <ChevronRight size={16} /></button>
             </div>
           </>
         )}
       </div>
 
-      {view && <PaymentModal p={view} onClose={()=>setView(null)} onViewInvoice={inv=>setInvoiceView(inv)} />}
-      {invoiceView && <InvoiceViewModal invoice={invoiceView} onClose={()=>setInvoiceView(null)} />}
-      {confirmPay && <ConfirmModal onClose={()=>setConfirmPay(null)} onConfirm={()=>confirmOffline(confirmPay)}/>}
+      {view && (
+        <PaymentModal
+          p={view}
+          onClose={() => setView(null)}
+          onViewInvoice={viewInvoice}
+        />
+      )}
+
+      {invoiceView && (
+        <InvoiceModal
+          open
+          onClose={() => setInvoiceView(null)}
+          invoice={invoiceView}
+        />
+      )}
+
+      {confirmPay && <ConfirmModal onClose={() => setConfirmPay(null)} onConfirm={() => confirmOffline(confirmPay)} />}
     </div>
   )
 }
 
-/* Payment Modal (unchanged) */
 function PaymentModal({ p, onClose, onViewInvoice }) {
   return (
     <Modal open onClose={onClose} title={`Payment ${p.paymentID}`}>
       <div className="summary vlist">
         <div className="kv"><span>Owner</span><b>{p.userID?.name}</b></div>
         <div className="kv"><span>Email</span><b>{p.userID?.email}</b></div>
-        <div className="kv"><span>Method</span><b><MethodPill method={p.method}/></b></div>
-        <div className="kv"><span>Status</span><b><Tag status={p.status}/></b></div>
+        <div className="kv"><span>Method</span><b><MethodPill method={p.method} /></b></div>
+        <div className="kv"><span>Status</span><b><Tag status={p.status} /></b></div>
         <div className="kv"><span>Amount</span><b>{fmtLKR(p.amount)}</b></div>
         <div className="kv"><span>Invoice</span><b>{p.invoiceID?.invoiceID}</b></div>
       </div>
-      <div className="row end pm-modal-actions">
-        <button className="fm-btn" onClick={()=>onViewInvoice(p.invoiceID)}>
-          <ExternalLink size={16}/> View Invoice</button>
+      <div className="pm-actions">
+        <button className="fm-btn" onClick={() => onViewInvoice(p.invoiceID)}>
+          <ExternalLink size={16} /> View Invoice
+        </button>
         <button className="fm-btn fm-btn-ghost" onClick={onClose}>Close</button>
       </div>
     </Modal>
   )
 }
 
-/* Invoice View Reuse */
-function InvoiceViewModal({ invoice, onClose }) {
-  if (!invoice) return null;
-
-  const subtotal = (invoice.lineItems || []).reduce(
-    (s, li) => s + (Number(li.total) || (Number(li.quantity) * Number(li.unitPrice) || 0)), 0
-  );
+function InvoiceModal({ open, onClose, invoice }) {
+  const subtotal = Number(invoice.subtotal || 0);
   const tax = Number(invoice.tax || 0);
-  const total = Number(invoice.total || (subtotal + tax));
+  const total = Number(invoice.total || 0);
 
   return (
-    <Modal open onClose={onClose} title={`Invoice ${invoice.invoiceID || invoice._id}`}>
+    <Modal open={open} onClose={onClose} title={`Invoice ${invoice.invoiceID || invoice._id}`}>
       <div className="summary vlist">
         <div className="kv"><span>Owner</span><b>{invoice.userID?.name || '-'}</b></div>
         <div className="kv"><span>Email</span><b>{invoice.userID?.email || '-'}</b></div>
@@ -248,7 +268,7 @@ function InvoiceViewModal({ invoice, onClose }) {
             <li className="item-row" key={i}>
               <div className="item-title">{li.description}</div>
               <div className="item-meta">{li.quantity} × {fmtLKR(li.unitPrice)}</div>
-              <div className="item-amount">{fmtLKR(li.total || li.quantity * li.unitPrice)}</div>
+              <div className="item-amount">{fmtLKR(li.total)}</div>
             </li>
           ))}
         </ul>
@@ -264,12 +284,11 @@ function InvoiceViewModal({ invoice, onClose }) {
         </div>
       </div>
 
-      <div className="row end inv-view-actions">
+      <div className="pm-actions">
         <button className="fm-btn fm-btn-primary" onClick={() => {
           const url = `${window.location.origin}/pay/online?invoice=${invoice._id}`;
           navigator.clipboard.writeText(url).then(() => toast.success('Client payment link copied'));
-        }}>
-          <Copy size={16} /> Copy client link</button>
+        }}><Copy size={16} /> Copy client link</button>
         <button className="fm-btn fm-btn-ghost" onClick={onClose}>Close</button>
       </div>
     </Modal>
@@ -280,24 +299,20 @@ function ConfirmModal({ onClose, onConfirm }) {
   return (
     <Modal open onClose={onClose} title="Confirm offline payment">
       <div>Mark this payment as Completed?</div>
-      <div className="row end pm-confirm-actions">
+      <div className="pm-actions">
         <button className="fm-btn fm-btn-ghost" onClick={onClose}>Cancel</button>
-        <button className="fm-btn pm-btn-confirm" onClick={onConfirm}>Confirm</button>
+        <button className="billing-confirm-btn" onClick={onConfirm}>Confirm</button>
       </div>
     </Modal>
   )
 }
 
-function MethodPill({method}) {
-  const m=(method||'').toLowerCase()
-  let cls='method-pill'
-  if(m==='cash') cls+=' cash'
-  if(m==='card') cls+=' card'
-  if(m==='banktransfer') cls+=' bank'
-  if(m==='stripe') cls+=' stripe'
+function MethodPill({ method }) {
+  const m = (method || '').toLowerCase()
+  let cls = 'method-pill'
+  if (m === 'cash') cls += ' cash'
+  if (m === 'card') cls += ' card'
+  if (m === 'banktransfer') cls += ' bank'
+  if (m === 'stripe') cls += ' stripe'
   return <span className={cls}>{method}</span>
 }
-
-/* utils */
-function fmtLKR(n){try{return new Intl.NumberFormat('en-LK',{style:'currency',currency:'LKR'}).format(Number(n)||0)}catch{return `LKR ${Number(n||0).toFixed(2)}`} }
-function fmtDate(d){if(!d) return '-'; try{return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}catch{return String(d)}}

@@ -54,3 +54,8 @@ salarySchema.statics.generateMonthlyReport = async function (month, year) {
 };
 
 export default mongoose.model("Salary", salarySchema);
+
+salarySchema.index(
+  { employeeID: 1, month: 1, year: 1 },
+  { unique: true, message: "Salary for this employee for the given month already exists." }
+);

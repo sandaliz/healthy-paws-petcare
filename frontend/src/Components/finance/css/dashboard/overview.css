@@ -1,0 +1,59 @@
+
+.ov-page { padding:24px; font-family:Poppins,sans-serif; color:#2d2d2d; }
+
+/* Header */
+.ov-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.ov-title { font-size:22px; font-weight:700; color:#54413C; }
+.ov-btn-export {
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  border:1px solid #1e40af;
+  color:#fff;
+  padding:8px 16px;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.ov-btn-export:hover { background:linear-gradient(135deg,#1d4ed8,#1e3a8a); transform:translateY(-1px); }
+
+/* KPIs grid */
+.ov-grid-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:20px; }
+.ov-card-kpi { position:relative; border:1px solid #eee; border-radius:14px; padding:18px; background:#fff; box-shadow:0 3px 10px rgba(0,0,0,0.05); }
+.ov-card-kpi:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); transition:transform .2s,box-shadow .2s; }
+.ov-kpi-icon { position:absolute; top:14px; right:14px; width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff; }
+.ov-kpi-icon.revenue{background:#22C55E;} .ov-kpi-icon.invoices{background:#6B7280;}
+.ov-kpi-icon.payments{background:#2563EB;} .ov-kpi-icon.customers{background:#F59E0B;}
+
+/* Chart layout */
+.ov-grid-charts { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:18px; }
+.ov-chart { border:1px solid #eee; border-radius:14px; background:#fff; padding:16px; box-shadow:0 2px 6px rgba(0,0,0,0.04); }
+.ov-chart-head { margin-bottom:6px; } .ov-chart-head h3 { font-size:15px; font-weight:700; color:#54413C; margin:0 0 6px; }
+
+/* Panels */
+.ov-panel { border:1px solid #eee; border-radius:14px; background:#fff; padding:16px; box-shadow:0 2px 6px rgba(0,0,0,0.04); }
+.ov-panel-title { font-weight:700; font-size:15px; color:#54413C; margin-bottom:8px; }
+
+/* Tables */
+.ov-table { width:100%; border-collapse:collapse; font-size:14px; }
+.ov-table th, .ov-table td { border-bottom:1px dashed #e5e7eb; padding:10px 12px; text-align:left; }
+.ov-table th.right, .ov-table td.right { text-align:right; font-weight:600; }
+.ov-table thead th { background:#FFF6E4; color:#54413C; font-weight:700; }
+.ov-table tbody tr:hover { background:#fffaf4; }
+
+/* Recent Activities */
+.ov-activities { list-style:none; margin:0; padding:0; }
+.ov-act-item { display:flex; gap:10px; align-items:center; border-bottom:1px dashed #eee; padding:8px 0; }
+.ov-act-item:last-child { border-bottom:none; }
+.ov-act-icon { font-size:18px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#ffeec2; }
+.ov-act-msg { font-size:14px; color:#2d2d2d; }
+
+/* Notifications list */
+.ov-notifs { list-style:none; margin:0; padding:0; }
+.ov-notifs li { padding:6px 0; border-bottom:1px dashed #eee; color:#374151; font-size:14px; }
+.ov-notifs li:last-child { border-bottom:none; }
+
+/* Responsiveness */
+@media(max-width:768px){
+  .ov-grid-charts{grid-template-columns:1fr;}
+  .ov-grid-kpis{grid-template-columns:1fr;}
+}

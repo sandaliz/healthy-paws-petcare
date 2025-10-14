@@ -8,6 +8,7 @@ import Refunds from './Refunds';
 import Coupons from './Coupons';
 import Loyalty from './Loyalty';
 import Salaries from './Salaries';
+import Forecast from './Forecast';
 import '../css/dashboard.css';
 
 export default function DashboardApp() {
@@ -30,6 +31,7 @@ export default function DashboardApp() {
             <Route path="/coupons" element={<Coupons />} />
             <Route path="/loyalty" element={<Loyalty />} />
             <Route path="/salaries" element={<Salaries />} />
+              <Route path="/forecast" element={<Forecast />} />
           </Routes>
         </div>
       </main>

@@ -1,6 +1,8 @@
 // routes/financeRoutes.js
 import express from "express";
 const router = express.Router();
+import { getForecast } from "../../Controllers/finance/forecastController.js";
+
 
 import {
   createInvoice,
@@ -34,7 +36,9 @@ import {
   createSalary,
   getSalaries,
   updateSalary,
-  deleteSalary
+  deleteSalary,
+  getSalarySummary,
+  generatePayrollByRole
 } from "../../Controllers/finance/salaryController.js";
 
 import {
@@ -89,6 +93,8 @@ router.post("/salary", createSalary);
 router.get("/salaries", getSalaries);
 router.put("/salary/:id", updateSalary);
 router.delete("/salary/:id", deleteSalary);
+router.post("/salary/generate", generatePayrollByRole);
+router.get("/salary/summary", getSalarySummary);
 
 // ========== LOYALTY ==========
 router.get("/loyalty/:userID", getUserLoyalty);    // Pet owner fetch loyalty
@@ -110,6 +116,9 @@ router.post("/invoice/daycare", createInvoiceFromDaycare);
 
 // ========== DASHBOARD ==========
 router.get("/financial-dashboard", getFinancialManagerDashboard);
+
+router.get("/forecast", getForecast);
+
 
 export default router;
 
