@@ -98,3 +98,23 @@
   cursor: not-allowed;
 }
 
+
+
+/* Error messages */
+.error {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 3px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Loader */
+.inline-loader {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  justify-content: center;
+  color: #555;
+  font-size: 14px;
+}

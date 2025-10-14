@@ -69,3 +69,35 @@
   color: #4B352D;
   font-weight: 600;
 }
+
+/* Logout section anchored at bottom */
+.logout-section {
+  padding: 20px;
+  border-top: 1px solid #374151; /* subtle divider */
+}
+
+/* Logout button styling */
+.logout-btn {
+  width: 100%;
+  padding: 12px;
+  background: #ef4444; /* red */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease-in-out;
+}
+
+.logout-btn:hover {
+  background: #dc2626; /* darker red */
+}
+
+.logout-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
