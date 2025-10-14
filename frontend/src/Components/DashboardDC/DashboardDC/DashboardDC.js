@@ -10,6 +10,7 @@ function DashboardDC() {
   const path = location.pathname.split('/')[2] || 'dashboard';
   const activeTab = (() => {
     switch (path) {
+      case 'analyticDC': return 'analyticDC';
       case 'todaysPets': return 'todaysPets';
       case 'pendingAppointments': return 'pending';
       case 'upcomingAppointments': return 'upcoming';
@@ -21,6 +22,7 @@ function DashboardDC() {
 
   const handleSetActiveTab = (tab) => {
     switch (tab) {
+      case 'analyticDC': navigate('/dashboardDC/analyticDC'); break;
       case 'todaysPets': navigate('/dashboardDC/todaysPets'); break;
       case 'pending': navigate('/dashboardDC/pendingAppointments'); break;
       case 'upcoming': navigate('/dashboardDC/upcomingAppointments'); break;
