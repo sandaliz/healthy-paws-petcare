@@ -2,7 +2,7 @@
 export function toNum(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
 
 export function fmt(n) {
-  return new Intl.NumberFormat('en-LK',{ style:'currency',currency:'LKR'}).format(Number(n)||0);
+  return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(Number(n) || 0);
 }
 
 export function fmtLKR(n) {

@@ -31,7 +31,7 @@ export default function DashboardApp() {
             <Route path="/coupons" element={<Coupons />} />
             <Route path="/loyalty" element={<Loyalty />} />
             <Route path="/salaries" element={<Salaries />} />
-              <Route path="/forecast" element={<Forecast />} />
+            <Route path="/forecast" element={<Forecast />} />
           </Routes>
         </div>
       </main>

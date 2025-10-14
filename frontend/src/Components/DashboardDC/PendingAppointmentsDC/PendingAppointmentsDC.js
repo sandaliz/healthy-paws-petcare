@@ -6,6 +6,8 @@ import "./PendingAppointmentsDC.css";
 
 function PendingAppointments({ onHistoryUpdate }) {
   const [pendingAppointments, setPendingAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,6 +17,8 @@ function PendingAppointments({ onHistoryUpdate }) {
   // Fetch all pending appointments
   const fetchPendingAppointments = async () => {
     try {
+      setLoading(true);
+      setError(null);
       const res = await api.get("/careCustomers");
       if (res.data && res.data.careCustomers) {
         const filtered = res.data.careCustomers.filter(
@@ -24,7 +28,9 @@ function PendingAppointments({ onHistoryUpdate }) {
       }
     } catch (err) {
       console.error("Error fetching pending appointments:", err);
-      alert(err.response?.data?.message || "Failed to fetch appointments");
+      setError(err.response?.data?.message || "Failed to fetch appointments");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,6 +81,27 @@ function PendingAppointments({ onHistoryUpdate }) {
     return new Date(dateStr).toLocaleDateString("en-GB", { timeZone: "Asia/Colombo" });
   };
 
+  if (loading) {
+    return (
+      <div className="pending-container">
+        <div className="pending-loading"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="pending-container">
+        <div className="pending-message error">
+          <p>Error: {error}</p>
+          <button onClick={fetchPendingAppointments} className="DC-btn-view">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="pending-container">
       <h2>Pending Appointments</h2>
@@ -87,14 +114,14 @@ function PendingAppointments({ onHistoryUpdate }) {
                 <strong>Pet:</strong> {appt.petName} |{" "}
                 <strong>Stay Date:</strong> {formatDateSL(appt.dateStay)}
               </div>
-              <div className="action-btns">
-                <button className="btn-view" onClick={() => viewDetails(appt._id)}>
+              <div className="DC-action-btns">
+                <button className="DC-btn-view" onClick={() => viewDetails(appt._id)}>
                   View
                 </button>
-                <button className="btn-approve" onClick={() => approveHandler(appt._id)}>
+                <button className="DC-btn-approve" onClick={() => approveHandler(appt._id)}>
                   Approve
                 </button>
-                <button className="btn-reject" onClick={() => rejectHandler(appt)}>
+                <button className="DC-btn-reject" onClick={() => rejectHandler(appt)}>
                   Reject
                 </button>
               </div>
@@ -102,7 +129,7 @@ function PendingAppointments({ onHistoryUpdate }) {
           ))}
         </ul>
       ) : (
-        <p>No pending appointments found.</p>
+        <p>No pending appointments found. All appointments have been processed! ✅</p>
       )}
     </div>
   );

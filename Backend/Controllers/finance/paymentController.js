@@ -310,7 +310,11 @@ export const confirmOfflinePayment = async (req, res) => {
         const userId = payment.invoiceID.userID._id || payment.invoiceID.userID;
         let loyalty = await Loyalty.findOne({ userID: userId });
         if (!loyalty) {
+<<<<<<< HEAD
           loyalty = await Loyalty.create({ userID: userId, points: 0, tier: "Puppy Pal" });
+=======
+          loyalty = await Loyalty.create({ userID: userId, points: 0, tier: "Bronze" });
+>>>>>>> upstream/patch-1
         }
         await loyalty.addPoints(payment.amount);
       } catch (e) {

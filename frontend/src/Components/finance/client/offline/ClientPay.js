@@ -46,7 +46,7 @@ export default function ClientPay() {
   useEffect(() => {
     if (!showDogTip) return;
     const clickOutside = e => {
-      if (!e.target.closest('.invoice-dog') && !e.target.closest('.thought-bubble')) 
+      if (!e.target.closest('.invoice-dog') && !e.target.closest('.thought-bubble'))
         setShowDogTip(false);
     };
     const timer = setTimeout(() => setShowDogTip(false), 5000);
@@ -98,10 +98,10 @@ export default function ClientPay() {
         </div>
 
         {showOfflineModal && (
-          <OfflinePaymentModal 
-            invoice={invoice} 
-            ownerId={ownerId} 
-            onClose={() => setShowOfflineModal(false)} 
+          <OfflinePaymentModal
+            invoice={invoice}
+            ownerId={ownerId}
+            onClose={() => setShowOfflineModal(false)}
             onSuccess={(paymentId) => nav(`/pay/summary?user=${ownerId}&new=${paymentId}`)}
           />
         )}

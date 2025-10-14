@@ -6,6 +6,8 @@ import "./TodaysPets.css";
 
 function TodaysPets() {
   const [checkedInPets, setCheckedInPets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,18 +16,22 @@ function TodaysPets() {
 
   const fetchCheckedInPets = async () => {
     try {
-      const res = await api.get("/checkinout/current"); // check your backend route
+      setLoading(true);
+      setError(null);
+      const res = await api.get("/checkinout/current");
       if (res.data && res.data.checkedInPets) {
         setCheckedInPets(res.data.checkedInPets);
       }
     } catch (err) {
       console.error("Error fetching checked-in pets:", err);
-      alert(err.response?.data?.message || "Failed to fetch checked-in pets");
+      setError(err.response?.data?.message || "Failed to fetch checked-in pets");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCheckOut = async (checkInOutId) => {
-    if (!window.confirm("Check out this pet?")) return;
+    if (!window.confirm("Are you sure you want to check out this pet?")) return;
 
     try {
       const res = await api.put(`/checkinout/checkout/${checkInOutId}`);
@@ -65,6 +71,27 @@ function TodaysPets() {
       hour12: false,
     });
   };
+
+  if (loading) {
+    return (
+      <div className="tp-container">
+        <div className="tp-loading"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="tp-container">
+        <div className="tp-error">
+          <p>Error: {error}</p>
+          <button onClick={fetchCheckedInPets} className="tp-btn tp-btn-retry">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="tp-container">
@@ -125,7 +152,7 @@ function TodaysPets() {
           </tbody>
         </table>
       ) : (
-        <p>No pets checked in today.</p>
+        <p>No pets checked in today. All pets are happily at home! 🏡</p>
       )}
     </div>
   );

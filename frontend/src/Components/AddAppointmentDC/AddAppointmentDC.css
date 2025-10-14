@@ -1,376 +1,384 @@
 /* AddAppointmentDC.css */
 
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Poppins:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Poppins:wght@400;500;600;700&display=swap");
 
 .dc-back {
-    /* Full page */
-    min-height: 100vh;
-    width: 100%;
-    
-    /* Background image */
-    background-image: url('../../../public/images/dc-dog.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    
-    /* Optional overlay for better contrast */
-    position: relative;
+  /* Full page */
+  min-height: 100vh;
+  width: 100%;
+
+  /* Background image */
+  background-image: url("../../../public/images/dc-dog.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Optional overlay for better contrast */
+  position: relative;
 }
 
 .dc-back::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    
-    /* Frosted glass overlay effect */
-    background: rgba(255, 255, 255, 0.15); /* semi-transparent */
-    backdrop-filter: blur(1px); /* frosted glass */
-    -webkit-backdrop-filter: blur(10px); /* for Safari */
-    
-    /* Optional subtle gradient for depth */
-    background: linear-gradient(
-        rgba(255, 255, 255, 0.15), 
-        rgba(255, 255, 255, 0.05)
-    );
-    
-    z-index: 0;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* Frosted glass overlay effect */
+  background: rgba(255, 255, 255, 0.15); /* semi-transparent */
+  backdrop-filter: blur(1px); /* frosted glass */
+  -webkit-backdrop-filter: blur(10px); /* for Safari */
+
+  /* Optional subtle gradient for depth */
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
+
+  z-index: 0;
 }
 
 .appointment-container {
-    position: relative;
-    z-index: 1; /* above the overlay */
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1; /* above the overlay */
+
+  line-height: 1.5;
+  color: #333;
+  background-color: #ffffff;
+  min-height: 100vh;
 }
 
 .appointment-form {
-    background: #FFFFFF;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(84, 65, 60, 0.1);
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(84, 65, 60, 0.1);
 }
 
 .form-title {
-    text-align: center;
-    color: #54413C;
-    font-family: 'Poppins', sans-serif;
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 30px;
+  text-align: center;
+  color: #54413c;
+  font-family: "Poppins", sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
 }
 
 .form-section {
-    margin-bottom: 30px;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border-left: 4px solid #54413C;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #54413c;
 }
 
 .section-title {
-    color: #54413C;
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 20px;
+  color: #54413c;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
 .input-group {
-    margin-bottom: 20px;
-    position: relative;
+  margin-bottom: 20px;
+  position: relative;
 }
 
 .input-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    color: #2D2D2D;
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  color: #2d2d2d;
 }
 
 .input-group input,
 .input-group select,
 .input-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .input-group input:focus,
 .input-group select:focus,
 .input-group textarea:focus {
-    outline: none;
-    border-color: #54413C;
-    box-shadow: 0 0 0 3px rgba(84, 65, 60, 0.1);
+  outline: none;
+  border-color: #54413c;
+  box-shadow: 0 0 0 3px rgba(84, 65, 60, 0.1);
 }
 
 .input-group textarea {
-    min-height: 100px;
-    resize: vertical;
+  min-height: 100px;
+  resize: vertical;
 }
 
 .instruction {
-    display: block;
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
-    font-style: italic;
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
 }
 
 /* Error Styling */
 .error-input {
-    border: 2px solid #dc3545 !important;
-    background-color: #fff8f8;
+  border: 2px solid #dc3545 !important;
+  background-color: #fff8f8;
 }
 
 .error-input:focus {
-    border-color: #dc3545 !important;
-    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
 }
 
 .error-message {
-    color: #dc3545;
-    font-size: 14px;
-    margin-top: 5px;
-    display: block;
-    font-weight: 500;
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+  font-weight: 500;
 }
 
 .input-group .error-message + .instruction {
-    margin-top: 3px;
+  margin-top: 3px;
 }
 
 /* Checkbox Styling */
 .checkbox-group {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .checkbox-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    color: #2D2D2D;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  color: #2d2d2d;
 }
 
 .checkbox-label input[type="checkbox"] {
-    margin-right: 10px;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 
 .checkbox-group.agreement {
-    background: #FFD58E;
-    padding: 15px;
-    border-radius: 6px;
-    border: 1px solid #e0bb7a;
+  background: #ffd58e;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #e0bb7a;
 }
 
 .checkbox-group.agreement .checkbox-label {
-    font-weight: 600;
-    color: #54413C;
+  font-weight: 600;
+  color: #54413c;
 }
 
 /* Submit Button */
 .submit-btn {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, #54413C, #6a524a);
-    color: #FFFFFF;
-    border: none;
-    border-radius: 8px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 20px;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #54413c, #6a524a);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
 }
 
 .submit-btn:hover {
-    background: linear-gradient(135deg, #6a524a, #54413C);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(84, 65, 60, 0.3);
+  background: linear-gradient(135deg, #6a524a, #54413c);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(84, 65, 60, 0.3);
 }
 
 .submit-btn:active {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 .submit-btn:disabled {
-    background: #cccccc;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Highlight elements */
 .input-group input:focus,
 .input-group select:focus,
 .input-group textarea:focus {
-    border-color: #FFD58E;
+  border-color: #ffd58e;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .appointment-container {
-        padding: 10px;
-    }
-    
-    .appointment-form {
-        padding: 20px;
-    }
-    
-    .form-title {
-        font-size: 24px;
-    }
-    
-    .form-section {
-        padding: 15px;
-    }
-    
-    .input-group input,
-    .input-group select,
-    .input-group textarea {
-        padding: 10px;
-        font-size: 14px;
-    }
-    
-    .submit-btn {
-        padding: 14px;
-        font-size: 16px;
-    }
+  .appointment-container {
+    padding: 10px;
+  }
+
+  .appointment-form {
+    padding: 20px;
+  }
+
+  .form-title {
+    font-size: 24px;
+  }
+
+  .form-section {
+    padding: 15px;
+  }
+
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    padding: 14px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 480px) {
-    .appointment-form {
-        padding: 15px;
-    }
-    
-    .form-title {
-        font-size: 22px;
-    }
-    
-    .section-title {
-        font-size: 18px;
-    }
-    
-    .input-group {
-        margin-bottom: 15px;
-    }
+  .appointment-form {
+    padding: 15px;
+  }
+
+  .form-title {
+    font-size: 22px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .input-group {
+    margin-bottom: 15px;
+  }
 }
 
 /* Date and Time Input Styling */
 .input-group input[type="date"],
 .input-group input[type="time"] {
-    padding: 11px;
+  padding: 11px;
 }
 
 /* Number Input Styling */
 .input-group input[type="number"] {
-    padding: 11px;
+  padding: 11px;
 }
 
 /* Text Input Styling */
 .input-group input[type="text"] {
-    padding: 11px;
+  padding: 11px;
 }
 
 /* Select Dropdown Styling */
 .input-group select {
-    background: #FFFFFF;
-    cursor: pointer;
+  background: #ffffff;
+  cursor: pointer;
 }
 
 /* Focus states for accessibility */
 .input-group input:focus-visible,
 .input-group select:focus-visible,
 .input-group textarea:focus-visible {
-    outline: 2px solid #FFD58E;
-    outline-offset: 2px;
+  outline: 2px solid #ffd58e;
+  outline-offset: 2px;
 }
 
 /* Required field indicator */
 .input-group label:after {
-    content: " *";
-    color: #dc3545;
+  content: " *";
+  color: #dc3545;
 }
 
 /* Optional field indicator */
 .input-group:has(input:not([required])) label:after,
 .input-group:has(select:not([required])) label:after,
 .input-group:has(textarea:not([required])) label:after {
-    content: " (Optional)";
-    color: #666;
-    font-weight: normal;
+  content: " (Optional)";
+  color: #666;
+  font-weight: normal;
 }
 
 /* Additional styling for better visual hierarchy */
 .form-section:last-of-type {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 /* Custom scrollbar for textarea */
 .input-group textarea::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .input-group textarea::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+  background: #f1f1f1;
+  border-radius: 4px;
 }
 
 .input-group textarea::-webkit-scrollbar-thumb {
-    background: #54413C;
-    border-radius: 4px;
+  background: #54413c;
+  border-radius: 4px;
 }
 
 .input-group textarea::-webkit-scrollbar-thumb:hover {
-    background: #6a524a;
+  background: #6a524a;
 }
 
 /* Success message styling */
 .success-message {
-    color: #28a745;
-    font-size: 14px;
-    margin-top: 5px;
-    display: block;
-    font-weight: 500;
+  color: #28a745;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+  font-weight: 500;
 }
 
 /* Loading state */
 .loading {
-    opacity: 0.7;
-    pointer-events: none;
+  opacity: 0.7;
+  pointer-events: none;
 }
 
 .submit-error {
-    background: #ffebee;
-    border: 1px solid #ffcdd2;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    color: #c62828;
-    font-weight: 500;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: #c62828;
+  font-weight: 500;
 }
 
 .submit-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 input:disabled,
 select:disabled,
 textarea:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  opacity: 0.7;
+  cursor: not-allowed;
 }

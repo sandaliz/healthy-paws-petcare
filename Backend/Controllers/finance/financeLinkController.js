@@ -64,7 +64,7 @@ export const createInvoiceFromAppointment = async (req, res) => {
     }
 
     const appointment = await Appointment.findById(appointmentId)
-      .populate("user", "name email");  
+      .populate("user", "name email");
 
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
@@ -183,7 +183,7 @@ export const createInvoiceFromDaycare = async (req, res) => {
       total,
       status: "Pending",
       dueDate,
-      linkedDaycare: care._id,  
+      linkedDaycare: care._id,
     });
 
     await invoice.save();

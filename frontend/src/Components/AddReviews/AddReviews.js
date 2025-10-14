@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import api from '../../utils/api';
-import './AddReviews.css'; 
-import StarRating from "../StarRating/StarRating"; 
+import './AddReviews.css';
+import StarRating from "../StarRating/StarRating";
 
 function AddReviews() {
   const history = useNavigate();
@@ -69,104 +69,106 @@ function AddReviews() {
   };
 
   return (
-    <div className="appointment-container">
-      <form onSubmit={handleSubmit} className="appointment-form">
-        <h2 className="form-title">Add a Review</h2>
+    <div className="dc-back">
+      <div className="appointment-container">
+        <form onSubmit={handleSubmit} className="appointment-form">
+          <h2 className="form-title">Add a Review</h2>
 
-        {/* Owner + Pet Info */}
-        <div className="form-section">
-          <div className="input-group">
-            <label>Owner Name </label>
-            <input
-              type="text"
-              name="ownerName"
-              placeholder="Enter owner's name"
-              value={inputs.ownerName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <label>Pet Name </label>
-            <input
-              type="text"
-              name="petName"
-              placeholder="Enter pet's name"
-              value={inputs.petName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <label>Species </label>
-            <select
-              name="species"
-              value={inputs.species}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Species</option>
-              <option value="dog">Dog</option>
-              <option value="cat">Cat</option>
-              
-            </select>
-          </div>
-        </div>
-
-        {/* Services */}
-        <div className="form-section">
-          <div className="checkbox-group">
-            <label className="checkbox-label">
+          {/* Owner + Pet Info */}
+          <div className="form-section">
+            <div className="input-group">
+              <label>Owner Name </label>
               <input
-                type="checkbox"
-                name="grooming"
-                checked={inputs.grooming}
+                type="text"
+                name="ownerName"
+                placeholder="Enter owner's name"
+                value={inputs.ownerName}
                 onChange={handleChange}
+                required
               />
-              <span>Grooming Service</span>
-            </label>
-          </div>
+            </div>
 
-          <div className="checkbox-group">
-            <label className="checkbox-label">
+            <div className="input-group">
+              <label>Pet Name </label>
               <input
-                type="checkbox"
-                name="walking"
-                checked={inputs.walking}
+                type="text"
+                name="petName"
+                placeholder="Enter pet's name"
+                value={inputs.petName}
                 onChange={handleChange}
+                required
               />
-              <span>Walking Service</span>
-            </label>
+            </div>
+
+            <div className="input-group">
+              <label>Species </label>
+              <select
+                name="species"
+                value={inputs.species}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Species</option>
+                <option value="dog">Dog</option>
+                <option value="cat">Cat</option>
+
+              </select>
+            </div>
           </div>
-        </div>
 
-        {/* Rating & Comment */}
-        <div className="form-section">
-          <div className="input-group">
-            <label>Rating  </label>
-            <StarRating rating={inputs.rating} setRating={handleRatingChange} />
+          {/* Services */}
+          <div className="form-section">
+            <div className="checkbox-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  name="grooming"
+                  checked={inputs.grooming}
+                  onChange={handleChange}
+                />
+                <span>Grooming Service</span>
+              </label>
+            </div>
+
+            <div className="checkbox-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  name="walking"
+                  checked={inputs.walking}
+                  onChange={handleChange}
+                />
+                <span>Walking Service</span>
+              </label>
+            </div>
           </div>
 
-          
-          <div className="input-group">
-            <label>Comment </label>
-            <textarea
-              name="comment"
-              placeholder="Write your feedback..."
-              value={inputs.comment}
-              onChange={handleChange}
-              required
-            ></textarea>
+          {/* Rating & Comment */}
+          <div className="form-section">
+            <div className="input-group">
+              <label>Rating  </label>
+              <StarRating rating={inputs.rating} setRating={handleRatingChange} />
+            </div>
+
+
+            <div className="input-group">
+              <label>Comment </label>
+              <textarea
+                name="comment"
+                placeholder="Write your feedback..."
+                value={inputs.comment}
+                onChange={handleChange}
+                required
+              ></textarea>
+            </div>
           </div>
-        </div>
 
 
-        <button type="submit" className="submit-btn">
-          Submit Review
-        </button>
-      </form>
+          <button type="submit" className="submit-btn">
+            Submit Review
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

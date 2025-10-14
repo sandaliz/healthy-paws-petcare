@@ -19,9 +19,14 @@ function AppointmentDCHistory() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [monthFilter, setMonthFilter] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchHistory = async () => {
     try {
+      setLoading(true);
+      setError(null);
+
       // Multiple API calls: completed, rejected, cancelled
       const [cioRes, rejectedRes, cancelledRes] = await Promise.all([
         api.get("/checkInOut/history"), // Completed
@@ -63,8 +68,26 @@ function AppointmentDCHistory() {
       setHistory([...cioHistory, ...rejectedCancelled]);
     } catch (err) {
       console.error("Error fetching history:", err);
+      setError("Failed to load appointment history");
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this record?")) return;
+
+    try {
+      await api.delete(`/careCustomers/${id}`);
+      setHistory((prev) => prev.filter((rec) => rec._id !== id));
+      setFiltered((prev) => prev.filter((rec) => rec._id !== id));
+      alert("Record deleted successfully!");
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert(err.response?.data?.message || "Failed to delete record");
+    }
+  };
+
 
   const applyFilters = useCallback(() => {
     let data = [...history];
@@ -101,42 +124,82 @@ function AppointmentDCHistory() {
   useEffect(() => { applyFilters(); }, [applyFilters]);
 
   const exportToExcel = () => {
-    const ws = utils.json_to_sheet(
-      filtered.map((rec) => ({
-        Owner: rec.ownerName,
-        Pet: rec.petName,
-        Status: rec.status,
-        "Check-In": formatDateTimeSL(rec.checkInTime),
-        "Check-Out": formatDateTimeSL(rec.checkOutTime),
-        Services: rec.services.join(", ") || "-"
-      }))
-    );
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "AppointmentHistory");
-    writeFile(wb, "AppointmentHistory.xlsx");
+    try {
+      const ws = utils.json_to_sheet(
+        filtered.map((rec) => ({
+          Owner: rec.ownerName,
+          Pet: rec.petName,
+          Status: rec.status,
+          "Check-In": formatDateTimeSL(rec.checkInTime),
+          "Check-Out": formatDateTimeSL(rec.checkOutTime),
+          Services: rec.services.join(", ") || "-"
+        }))
+      );
+      const wb = utils.book_new();
+      utils.book_append_sheet(wb, ws, "AppointmentHistory");
+      writeFile(wb, "AppointmentHistory.xlsx");
+      alert("Excel file downloaded successfully!");
+    } catch (err) {
+      console.error("Excel export error:", err);
+      alert("Error exporting to Excel");
+    }
   };
 
   const exportToPDF = () => {
-    const doc = new jsPDF();
-    doc.text("Appointment History Report", 14, 16);
-    autoTable(doc, {
-      startY: 22,
-      head: [["Owner", "Pet", "Status", "Check-In", "Check-Out", "Services"]],
-      body: filtered.map((rec) => [
-        rec.ownerName,
-        rec.petName,
-        rec.status,
-        formatDateTimeSL(rec.checkInTime),
-        formatDateTimeSL(rec.checkOutTime),
-        rec.services.join(", ") || "-"
-      ])
-    });
-    doc.save("AppointmentHistory.pdf");
+    try {
+      const doc = new jsPDF();
+      doc.text("Appointment History Report", 14, 16);
+      autoTable(doc, {
+        startY: 22,
+        head: [["Owner", "Pet", "Status", "Check-In", "Check-Out", "Services"]],
+        body: filtered.map((rec) => [
+          rec.ownerName,
+          rec.petName,
+          rec.status,
+          formatDateTimeSL(rec.checkInTime),
+          formatDateTimeSL(rec.checkOutTime),
+          rec.services.join(", ") || "-"
+        ]),
+        styles: {
+          fontSize: 8,
+          cellPadding: 3,
+        },
+        headStyles: {
+          fillColor: [84, 65, 60],
+          textColor: 255
+        }
+      });
+      doc.save("AppointmentHistory.pdf");
+      alert("PDF file downloaded successfully!");
+    } catch (err) {
+      console.error("PDF export error:", err);
+      alert("Error exporting to PDF");
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="Ahistory-container">
+        <div className="Ahistory-loading"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="Ahistory-container">
+        <div className="Ahistory-error">
+          <p>{error}</p>
+          <button onClick={fetchHistory}>Try Again</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="Ahistory-container">
       <h2>Appointment History</h2>
+
       <div className="history-controls">
         <input
           type="text"
@@ -145,7 +208,7 @@ function AppointmentDCHistory() {
           onChange={(e) => setSearch(e.target.value)}
         />
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-          <option value="All">All</option>
+          <option value="All">All Status</option>
           <option value="Completed">Completed</option>
           <option value="Cancelled">Cancelled</option>
           <option value="Rejected">Rejected</option>
@@ -154,9 +217,12 @@ function AppointmentDCHistory() {
           type="month"
           value={monthFilter}
           onChange={(e) => setMonthFilter(e.target.value)}
+          placeholder="Filter by month"
         />
-        <button onClick={exportToExcel}>Export Excel</button>
-        <button onClick={exportToPDF}>Export PDF</button>
+        <div className="export-buttons">
+          <button onClick={exportToExcel}>Export Excel</button>
+          <button onClick={exportToPDF}>Export PDF</button>
+        </div>
       </div>
 
       {filtered.length > 0 ? (
@@ -169,6 +235,7 @@ function AppointmentDCHistory() {
               <th>Check-In</th>
               <th>Check-Out</th>
               <th>Services</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -184,12 +251,20 @@ function AppointmentDCHistory() {
                 <td>{formatDateTimeSL(rec.checkInTime)}</td>
                 <td>{formatDateTimeSL(rec.checkOutTime)}</td>
                 <td>{rec.services.length > 0 ? rec.services.join(", ") : "-"}</td>
+                <td>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(rec._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <p>No appointment history found.</p>
+        <p>No appointment history found matching your filters.</p>
       )}
     </div>
   );

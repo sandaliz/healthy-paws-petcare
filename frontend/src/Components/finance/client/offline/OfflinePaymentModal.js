@@ -124,11 +124,10 @@ export default function OfflinePaymentModal({ invoice, ownerId, onClose, onSucce
 
             <div className="f-offline-promo">
               <input
-                className={`input ${
-                  couponCode.trim() && !COUPON_REGEX.test(couponCode.trim())
+                className={`input ${couponCode.trim() && !COUPON_REGEX.test(couponCode.trim())
                     ? 'input-error'
                     : ''
-                }`}
+                  }`}
                 placeholder="Have a promo code?"
                 value={couponCode}
                 onChange={e => setCouponCode(e.target.value)}

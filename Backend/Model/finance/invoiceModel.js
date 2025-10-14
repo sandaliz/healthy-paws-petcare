@@ -17,17 +17,17 @@ const invoiceSchema = new mongoose.Schema(
     tax: { type: Number, required: true },
     total: { type: Number, required: true },
 
-    status: { 
-      type: String, 
-      enum: ["Pending", "Paid", "Overdue", "Cancelled", "Refunded"], 
-      default: "Pending" 
+    status: {
+      type: String,
+      enum: ["Pending", "Paid", "Overdue", "Cancelled", "Refunded"],
+      default: "Pending"
     },
     dueDate: { type: Date, required: true },
 
     // 🔗 Traceability to originating business object
     linkedAppointment: { type: mongoose.Schema.Types.ObjectId, ref: "Appointment", index: true },
-    linkedCart:        { type: mongoose.Schema.Types.ObjectId, ref: "Cart", index: true },
-    linkedDaycare:     { type: mongoose.Schema.Types.ObjectId, ref: "CareCustomer", index: true },
+    linkedCart: { type: mongoose.Schema.Types.ObjectId, ref: "Cart", index: true },
+    linkedDaycare: { type: mongoose.Schema.Types.ObjectId, ref: "CareCustomer", index: true },
   },
   { timestamps: true }
 );
