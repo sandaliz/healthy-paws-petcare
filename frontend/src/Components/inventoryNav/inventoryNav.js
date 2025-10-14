@@ -1,6 +1,5 @@
-import React from 'react';
-import './inventoryNav.css';
-import { Link, useLocation } from 'react-router-dom';
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   FaBoxes, 
   FaBell, 
@@ -8,17 +7,25 @@ import {
   FaChartBar, 
   FaStore, 
   FaTruck 
-} from 'react-icons/fa';
+} from "react-icons/fa";
+import "./inventoryNav.css";
 
 function InventoryNav() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   const navItems = [
     { path: "/product", label: "Product Catalogue", icon: <FaBoxes /> },
     { path: "/alerts", label: "Notification & Alerts", icon: <FaBell /> },
     { path: "/prescription-list", label: "Prescription Management", icon: <FaPrescriptionBottle /> },
     { path: "/insights", label: "Insights", icon: <FaChartBar /> },
-    { path: "/shipping-logs", label: "Shipping Logs", icon: <FaTruck /> }, 
+    { path: "/shipping-logs", label: "Shipping Logs", icon: <FaTruck /> },
     { path: "/store", label: "Go to Pet Store", icon: <FaStore /> },
   ];
 
@@ -26,8 +33,7 @@ function InventoryNav() {
     <div className="inventory-nav-container">
       {/* Sidebar header/logo */}
       <div className="nav-header">
-        <span role="img" aria-label="paw"></span>
-        <h2>Healthy Paws</h2>
+        <h2>Inventory Dashboard</h2>
       </div>
 
       {/* Nav items */}
@@ -44,6 +50,13 @@ function InventoryNav() {
           </li>
         ))}
       </ul>
+
+      {/* Logout button only */}
+      <div className="logout-section">
+        <button onClick={handleLogout} className="logout-btn">
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

@@ -164,13 +164,13 @@ function Alerts() {
                       </td>
                       <td>
                         {alert.type === "lowStock" && (
-                          <span className="low-stock-alert">⚠️ Low Stock</span>
+                          <span className="low-stock-alert"> Low Stock</span>
                         )}
                         {alert.type === "expired" && (
-                          <span className="expired-alert">❌ Expired</span>
+                          <span className="expired-alert"> Expired</span>
                         )}
                         {alert.type === "expiringSoon" && (
-                          <span className="soon-expire-alert">⏳ Expiring Soon</span>
+                          <span className="soon-expire-alert"> Expiring Soon</span>
                         )}
                       </td>
                     </tr>
