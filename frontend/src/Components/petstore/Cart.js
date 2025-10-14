@@ -5,12 +5,12 @@ import "./Cart.css";
 import InvoiceModal from "../finance/InvoiceModal";
 
 function Cart() {
-  const { id } = useParams(); // if prescription
-  const [user, setUser] = useState(null); // logged-in user
+  const { id } = useParams(); 
+  const [user, setUser] = useState(null);
   const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem("cart")) || []);
   const [prescription, setPrescription] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [paymentOption, setPaymentOption] = useState("payNow"); // payNow or payOnline
+  const [paymentOption, setPaymentOption] = useState("payNow"); 
   const [shippingDetails, setShippingDetails] = useState({
     fullName: "",
     lastName: "",
@@ -19,13 +19,16 @@ function Cart() {
     phone: ""
   });
 
-  // 🔹 NEW state for invoice popup
+
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [latestInvoice, setLatestInvoice] = useState(null);
 
+
+  const [errors, setErrors] = useState({});
+
   const navigate = useNavigate();
 
-  // Load user from localStorage
+  // Load user 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -33,7 +36,7 @@ function Cart() {
     }
   }, []);
 
-  // Load prescription if ID is in route
+  // Load prescription 
   useEffect(() => {
     if (id) {
       axios
@@ -64,6 +67,34 @@ function Cart() {
   const delivery = (prescription ? prescription.items.length : cart.length) > 0 ? 150 : 0;
   const total = subtotal + delivery;
 
+  // ------------------ VALIDATION FUNCTION ------------------
+  const validateShippingDetails = () => {
+    let newErrors = {};
+
+    if (!shippingDetails.fullName.trim()) {
+      newErrors.fullName = "Full Name is required";
+    }
+    if (!shippingDetails.lastName.trim()) {
+      newErrors.lastName = "Last Name is required";
+    }
+    if (!shippingDetails.address.trim()) {
+      newErrors.address = "Address is required";
+    }
+    if (!shippingDetails.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(shippingDetails.email)) {
+      newErrors.email = "Invalid email format";
+    }
+    if (!shippingDetails.phone.trim()) {
+      newErrors.phone = "Phone is required";
+    } else if (!/^\d{10}$/.test(shippingDetails.phone)) {
+      newErrors.phone = "Phone must be 10 digits";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; 
+  };
+
   const placeOrder = async () => {
     try {
       if (!user?._id) {
@@ -73,12 +104,19 @@ function Cart() {
       }
       setLoading(true);
 
+  
+      if (paymentOption === "payOnline" && !validateShippingDetails()) {
+        alert("Please fix the errors in the form.");
+        setLoading(false);
+        return;
+      }
+
       if (prescription) {
-        // ======================
+  
         // 🔹 PRESCRIPTION CHECKOUT
-        // ======================
+  
         await axios.put(`http://localhost:5001/prescriptions/${prescription._id}`, {
-          status: "pending", //let Finance control
+          status: "pending", 
         });
 
         const cartRes = await axios.post("http://localhost:5001/checkout", {
@@ -118,7 +156,7 @@ function Cart() {
         } else {
           const offlineRes = await axios.post("http://localhost:5001/api/finance/payment/offline", {
             invoiceID: invoice._id,
-            method: "Cash",   
+            method: "Cash",
           });
 
           const offlinePayment = offlineRes.data.payment;
@@ -129,9 +167,9 @@ function Cart() {
         }
 
       } else {
-        // ======================
-        // 🔹 NORMAL CART CHECKOUT
-        // ======================
+
+        //  NORMAL CART CHECKOUT
+
         const cartResponse = await axios.post("http://localhost:5001/checkout", {
           userId: user._id,
           items: cart.map((item) => ({
@@ -172,13 +210,12 @@ function Cart() {
         } else {
           const offlineRes = await axios.post("http://localhost:5001/api/finance/payment/offline", {
             invoiceID: invoice._id,
-            method: "Cash", // or "Card"/"BankTransfer" if you want to extend UI
+            method: "Cash", 
           });
 
           const offlinePayment = offlineRes.data.payment;
           console.log("Offline payment created in DB:", offlinePayment);
 
-          // Then show invoice modal
           setLatestInvoice(invoice);
           setShowInvoiceModal(true);
           localStorage.removeItem("cart");
@@ -284,6 +321,8 @@ function Cart() {
                         setShippingDetails({ ...shippingDetails, fullName: e.target.value })
                       }
                     />
+                    {errors.fullName && <p className="error">{errors.fullName}</p>}
+
                     <input
                       type="text"
                       placeholder="Last Name"
@@ -292,6 +331,8 @@ function Cart() {
                         setShippingDetails({ ...shippingDetails, lastName: e.target.value })
                       }
                     />
+                    {errors.lastName && <p className="error">{errors.lastName}</p>}
+
                     <input
                       type="text"
                       placeholder="Address"
@@ -300,6 +341,8 @@ function Cart() {
                         setShippingDetails({ ...shippingDetails, address: e.target.value })
                       }
                     />
+                    {errors.address && <p className="error">{errors.address}</p>}
+
                     <input
                       type="email"
                       placeholder="Email"
@@ -308,6 +351,8 @@ function Cart() {
                         setShippingDetails({ ...shippingDetails, email: e.target.value })
                       }
                     />
+                    {errors.email && <p className="error">{errors.email}</p>}
+
                     <input
                       type="tel"
                       placeholder="Phone"
@@ -316,6 +361,7 @@ function Cart() {
                         setShippingDetails({ ...shippingDetails, phone: e.target.value })
                       }
                     />
+                    {errors.phone && <p className="error">{errors.phone}</p>}
                   </div>
                 )}
 
@@ -332,7 +378,6 @@ function Cart() {
         )}
       </div>
 
-      {/* Show Modal */}
       {showInvoiceModal && latestInvoice && (
         <InvoiceModal
           invoice={latestInvoice}

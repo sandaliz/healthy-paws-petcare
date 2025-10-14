@@ -10,7 +10,7 @@ function Products() {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true); // ✅ loading state
+  const [loading, setLoading] = useState(true); // loading state
   const productsPerPage = 7;
 
   const navigate = useNavigate();
@@ -20,22 +20,22 @@ function Products() {
     setLoading(true);
     axios.get(URL)
       .then(res => {
-        console.log("Fetched products:", res.data); // debug log
-        setProducts(res.data);  // ✅ backend returns array directly
+        console.log("Fetched products:", res.a); // debug log
+        setProducts(res.data);  // backend returns array directly
         setCurrentPage(1);
       })
       .catch(err => console.log("Error fetching products:", err))
       .finally(() => setLoading(false));
   }, [location]);
 
-  // ✅ Filter products with search
+  //  Filter products with search
   const filteredProducts = products.filter((p) =>
     Object.values(p).some((field) =>
       field && field.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
-  // ✅ Pagination logic
+  //  Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -107,7 +107,7 @@ function Products() {
         </table>
       </div>
 
-      {/* ✅ Pagination Controls */}
+      {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="pagination">
           <button 
