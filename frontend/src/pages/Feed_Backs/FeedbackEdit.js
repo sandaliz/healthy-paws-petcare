@@ -1,4 +1,3 @@
-// src/pages/FeedbackEdit.js
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -25,6 +24,7 @@ const FeedbackEdit = () => {
   const [errors, setErrors] = useState({});
   const [initialMessage] = useState(location.state?.message || "");
 
+  //Fetch one Feedback
   useEffect(() => {
     const fetchOne = async () => {
       try {
@@ -72,7 +72,7 @@ const FeedbackEdit = () => {
       await axios.put(`http://localhost:5001/api/feedback/${id}`, formData);
       toast.success("Feedback updated successfully!");
       setTimeout(() => {
-        // ✅ Redirect back to feedback form for new submission
+        //Redirect back to feedback form for new submission
         navigate("/feedback", { state: { message: "Feedback updated successfully! You can now submit a new feedback." } });
       }, 1000);
     } catch (e) {
@@ -88,7 +88,7 @@ const FeedbackEdit = () => {
       await axios.delete(`http://localhost:5001/api/feedback/${id}`);
       toast.success("Feedback deleted successfully!");
       setTimeout(() => {
-        // ✅ Redirect back to feedback form for new submission
+        //  feedback form
         navigate("/feedback", { state: { message: "Feedback deleted successfully! You can now submit a new feedback." } });
       }, 1000);
     } catch {

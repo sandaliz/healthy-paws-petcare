@@ -28,7 +28,7 @@ const NewPassword = () => {
     }
   }, [email, otp, navigate]);
 
-  // ✅ Password Requirement Checks
+  // Password Requirement Checks
   const requirements = [
     { label: '8–12 characters minimum', test: /^.{8,12}$/ },
     { label: 'One uppercase letter (A–Z)', test: /[A-Z]/ },
@@ -102,7 +102,7 @@ const NewPassword = () => {
               </div>
             </div>
 
-            {/* ✅ Password Requirements Live Update */}
+            {/* Password Requirements Update */}
             <ul className="password-requirements">
               {validRequirements.map((req, index) => (
                 <li key={index} className={req.valid ? "valid" : "invalid"}>

@@ -71,8 +71,6 @@ export const checkFeedbackOwnership = async (req, res, next) => {
       });
     }
     
-    // For simplicity, we're using email to verify ownership
-    // In a real app, you'd use authentication with user IDs
     if (feedback.email !== req.body.email) {
       return res.status(403).json({
         success: false,

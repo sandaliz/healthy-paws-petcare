@@ -1,8 +1,7 @@
-// feedbackController.js (corrected)
 import Feedback from "../Model/Feedback.js";
-import transporter from "../config/nodemailer.js"; // Import the transporter
+import transporter from "../config/nodemailer.js"; 
 
-// @desc    Create new feedback
+// Create new feedback
 export const createFeedback = async (req, res) => {
   try {
     const { petOwnerName, petName, email, message, rating } = req.body;
@@ -32,13 +31,13 @@ export const createFeedback = async (req, res) => {
       `,
     };
 
-    // Send email with better error handling
+    // Send email
     try {
       await transporter.sendMail(mailOptions);
       console.log(`✅ Confirmation email sent to: ${email}`);
     } catch (emailError) {
       console.error("❌ Email sending failed:", emailError);
-      // Don't fail the request if email fails, just log it
+      
     }
 
     res.status(201).json({ 
@@ -56,7 +55,7 @@ export const createFeedback = async (req, res) => {
   }
 };
 
-// Keep all your other controller functions the same...
+// getAllFeedbacks
 export const getFeedbacks = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -73,6 +72,7 @@ export const getFeedbacks = async (req, res) => {
   }
 };
 
+//getFeedback with id
 export const getFeedback = async (req, res) => {
   try {
     const feedback = await Feedback.findById(req.params.id);
@@ -84,6 +84,7 @@ export const getFeedback = async (req, res) => {
   }
 };
 
+//Update the Feedbacks 
 export const updateFeedback = async (req, res) => {
   try {
     const { petOwnerName, petName, email, message, rating } = req.body;
@@ -100,6 +101,7 @@ export const updateFeedback = async (req, res) => {
   }
 };
 
+//deleteFeedback
 export const deleteFeedback = async (req, res) => {
   try {
     const feedback = await Feedback.findByIdAndDelete(req.params.id);
@@ -111,6 +113,7 @@ export const deleteFeedback = async (req, res) => {
   }
 };
 
+//Get tha avarage star rating
 export const getAverageRating = async (req, res) => {
   try {
     const stats = await Feedback.aggregate([
@@ -149,6 +152,7 @@ export const getAverageRating = async (req, res) => {
   }
 };
 
+//getFeedbackReport
 export const getFeedbackReport = async (req, res) => {
   try {
     const good = await Feedback.find({ rating: { $gte: 3 } }).sort({ createdAt: -1 });
@@ -166,6 +170,7 @@ export const getFeedbackReport = async (req, res) => {
   }
 };
 
+//getFeedbacksByEmail
 export const getFeedbacksByEmail = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
