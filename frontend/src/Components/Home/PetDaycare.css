@@ -79,8 +79,8 @@
   display: inline-block;
 }
 
-/* LIQUID GLASS CTA BUTTON - Improved, peach theme preserved */
-.glass-btn {
+/* LIQUID GLASS CTA BUTTON - Scoped to daycare section */
+.daycare-section .glass-btn {
   position: relative;
   padding: 0.9rem 2rem;
   border-radius: 50px;
@@ -88,32 +88,32 @@
   font-size: 1rem;
   cursor: pointer;
   overflow: hidden;
-  color: #54413C; /* Keep brown text for good contrast */
-  border: 1px solid rgba(255, 213, 142, 0.9); /* Peach border */
+  color: #54413C;
+  border: 2px solid rgba(255, 213, 142, 0.9);
 
   /* Peachy liquid-glass effect */
   background: linear-gradient(
     135deg,
     rgba(255, 213, 142, 0.9) 0%,
-    rgba(255, 213, 142, 0.65) 100%
+    rgba(255, 213, 142, 0.7) 100%
   );
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
   box-shadow: 
-    inset 1px 1px 2px rgba(255, 255, 255, 0.6),  /* subtle inner shine */
-    0 6px 15px rgba(0, 0, 0, 0.15);             /* soft drop shadow */
+    inset 1px 1px 2px rgba(255, 255, 255, 0.5),
+    0 6px 15px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
 }
 
-.glass-btn:hover {
+.daycare-section .glass-btn:hover {
   background: linear-gradient(
     135deg,
     #FFD58E 0%, 
-    rgba(255, 213, 142, 0.8) 100%
+    rgba(255, 213, 142, 0.85) 100%
   );
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-2px) scale(1.03);
   box-shadow: 
-    inset 1px 1px 3px rgba(255, 255, 255, 0.7),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.6),
     0 8px 18px rgba(0, 0, 0, 0.2); 
 }

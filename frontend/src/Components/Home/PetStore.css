@@ -1,3 +1,140 @@
+/* ========== PET STORE SECTION STYLES ========== */
+.petstore-section {
+  background: linear-gradient(135deg, #ffffff 0%, #fdf6ed 100%);
+  padding: 4rem 6%;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* LEFT SIDE - Image */
+.petstore-left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-pet-img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* RIGHT SIDE - Content */
+.petstore-right {
+  flex: 1;
+  color: #54413C;
+}
+
+.petstore-right h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.3;
+  color: #2d2d2d;
+}
+
+.highlight-text {
+  color: #FFD58E;
+  font-weight: 800;
+}
+
+.petstore-right p {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  color: #54413C;
+  opacity: 0.9;
+}
+
+/* Buttons Container */
+.petstore-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Glass Button Styles */
+.petstore-buttons .glass-btn {
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #2d2d2d;
+  border: 2px solid rgba(255, 213, 142, 0.5);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.petstore-buttons .glass-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Highlight (Shop Now) Button */
+.petstore-buttons .glass-btn.highlight {
+  background: linear-gradient(135deg, rgba(255, 213, 142, 0.9) 0%, rgba(255, 213, 142, 0.7) 100%);
+  border: 2px solid rgba(255, 213, 142, 0.9);
+  color: #54413C;
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.5), 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.petstore-buttons .glass-btn.highlight:hover {
+  background: linear-gradient(135deg, #FFD58E 0%, rgba(255, 213, 142, 0.85) 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.6), 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .petstore-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .petstore-left {
+    order: 1;
+  }
+
+  .petstore-right {
+    order: 2;
+  }
+
+  .petstore-buttons {
+    justify-content: center;
+  }
+
+  .petstore-right h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .petstore-right h2 {
+    font-size: 1.7rem;
+  }
+
+  .petstore-buttons .glass-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ========== PRODUCT PAGE STYLES ========== */
+
 /* 🔎 Search + Filters Container */
 .ps-search-container {
   display: flex;
