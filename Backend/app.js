@@ -25,6 +25,7 @@ import dailyLogsRouter from "./Routes/DailyLogsRoutes.js";
 import checkInOutRouter from "./Routes/CheckInOutRoutes.js";
 import emergencyRoutes from "./Routes/EmergencyRoutes.js";
 import reminderRoutes from "./Routes/ReminderRoutes.js";
+import analyticsRoutes from "./Routes/AnalyticsRoutes.js";
 import { scheduleReminderEmails } from "./services/ReminderScheduler.js";
 import appointmentRoutes from "./Routes/appointmentRoutes.js";
 import eventRoutes from "./Routes/eventRoutes.js";
@@ -82,7 +83,7 @@ app.post("/send-prescription", sendPrescriptionEmail);
 app.use("/checkout", checkoutRoutes);
 app.use("/shipping", shippingRoutes);
 
-// Static for daily logs
+// Daycare APIs
 app.use(
   "/uploads/dailylogs",
   express.static(path.join(__dirname, "uploads/dailylogs"))
@@ -97,6 +98,10 @@ app.use("/checkinout", checkInOutRouter);
 // Emergencies, reminders, appointments
 app.use("/api/emergencies", emergencyRoutes);
 app.use("/api/reminders", reminderRoutes);
+app.use("/api/analytics", analyticsRoutes);
+scheduleReminderEmails();
+
+//appointment APIs
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/questions", questionRoutes);

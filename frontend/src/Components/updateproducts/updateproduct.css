@@ -94,3 +94,45 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.input-error {
+  border: 2px solid red;
+  background-color: #ffe6e6;
+}
+
+.error-text {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.warning-text {
+  color: orange;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  display: block;
+  font-weight: 500;
+}
+
+/* Loader styles */
+.center-loader {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.loader-circle {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ccc;
+  border-top: 3px solid #333;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

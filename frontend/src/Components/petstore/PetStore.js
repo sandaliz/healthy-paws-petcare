@@ -11,8 +11,11 @@ function PetStore() {
     () => JSON.parse(localStorage.getItem("cart")) || []
   );
   const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState("all"); 
+  const [sortOption, setSortOption] = useState("default"); 
   const navigate = useNavigate();
 
+  // Fetch products 
   useEffect(() => {
     axios
       .get(URL)
@@ -35,7 +38,7 @@ function PetStore() {
       if (updatedCart[index].quantity < product.currantStock) {
         updatedCart[index].quantity++;
       } else {
-        alert("❌ Not enough stock available!");
+        alert("Not enough stock available!");
         return;
       }
     } else {
@@ -46,9 +49,25 @@ function PetStore() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const filteredProducts = products.filter((p) =>
+  // Apply filters
+  let filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
   );
+
+  if (category !== "all") {
+    filteredProducts = filteredProducts.filter(
+      (p) => p.category?.toLowerCase() === category.toLowerCase()
+    );
+  }
+
+  //  Apply sorting
+  if (sortOption === "priceLow") {
+    filteredProducts.sort((a, b) => a.cost - b.cost);
+  } else if (sortOption === "priceHigh") {
+    filteredProducts.sort((a, b) => b.cost - a.cost);
+  } else if (sortOption === "stockHigh") {
+    filteredProducts.sort((a, b) => b.currantStock - a.currantStock);
+  }
 
   return (
     <div className="ps-container">
@@ -72,12 +91,20 @@ function PetStore() {
         <div className="ps-hero-content">
           <h2>Celebrate Pet-titude this September</h2>
           <p>From bedding to treats and toys, we've got all the must-haves.</p>
-          <button className="ps-hero-cta">Shop now</button>
+          <button
+            className="ps-hero-cta"
+            onClick={() =>
+              document
+                .querySelector(".ps-product-cards")
+                .scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            Shop now
+          </button>
         </div>
       </div>
 
-      
-
+      {/* Search + Filters + Sorting */}
       <div className="ps-search-container">
         <input
           type="text"
@@ -86,6 +113,29 @@ function PetStore() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+
+        <select
+          className="ps-filter-dropdown"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="all">All Categories</option>
+          <option value="food">Food</option>
+          <option value="toy">Toys</option>
+          <option value="Grooming">Grooming</option>
+          <option value="Equipment">Equipment</option>
+        </select>
+
+        <select
+          className="ps-sort-dropdown"
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+        >
+          <option value="default">Sort By</option>
+          <option value="priceLow">Price: Low to High</option>
+          <option value="priceHigh">Price: High to Low</option>
+          <option value="stockHigh">Stock: High to Low</option>
+        </select>
       </div>
 
       <div className="ps-product-cards">
@@ -99,6 +149,7 @@ function PetStore() {
                 )}
               </div>
               <h3>{p.name}</h3>
+              <p>Category: {p.category}</p>
               <p>In Stock: {p.currantStock}</p>
               <p>Price: LKR {p.cost}</p>
               <button
@@ -110,7 +161,7 @@ function PetStore() {
             </div>
           ))
         ) : (
-          <p className="ps-no-results">❌ No products found!</p>
+          <p className="ps-no-results">c No products found!</p>
         )}
       </div>
     </div>

@@ -3,10 +3,9 @@ import './SideBarDC.css';
 
 function SideBarDC({ activeTab, setActiveTab, todaysPetsCount, pendingAppointmentsCount }) {
   const menuItems = [
+    { id: 'analyticDC', label: `Overview`},
     { id: 'todaysPets', label: `Today's Pets (${todaysPetsCount})` },
-    
     { id: 'history', label: 'Appointment History' },
-    
     { id: 'pending', label: `Pending Appointments (${pendingAppointmentsCount})` },
     { id: 'upcoming', label: 'Upcoming Appointments' },
     { id: 'reviews', label: 'Reviews' },

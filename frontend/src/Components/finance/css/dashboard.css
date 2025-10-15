@@ -39,8 +39,82 @@
   font-weight: 800;
 }
 
+.fm-brand-link {
+  text-decoration: none;   /* no underline */
+  color: inherit;          /* keep original coloring */
+  cursor: pointer;         /* hand cursor to show it's clickable */
+  padding: 6px 4px;        /* give it a bigger click/tap area */
+}
+
+/* hover effect just on the paw logo for subtle feedback */
+.fm-brand-link .fm-logo {
+  transition: transform 0.2s ease;
+}
+
+.fm-brand-link:hover .fm-logo {
+  transform: scale(1.1);
+}
+
+/* Neutralize clickable link look just for the fm-brand */
+.fm-no-link {
+  text-decoration: none;    /* remove underline */
+  color: inherit;           /* inherit sidebar text color */
+  cursor: default;          /* don't show hand pointer */
+  display: flex;            /* preserve flex layout */
+  align-items: center;
+  gap: 10px;
+}
+
+.fm-no-link:hover,
+.fm-no-link:focus,
+.fm-no-link:active {
+  text-decoration: none; 
+  color: inherit;          
+}
+
+/* container sticks logout to bottom */
+.fm-logout-area {
+  margin-top: auto; /* pushes to the very bottom of sidebar */
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255,255,255,0.2);
+  margin-bottom: 15px;
+}
+
+/* logout button styled like nav links but with red theme */
+.fm-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: #FCA5A5; /* soft red */
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.fm-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.15); /* light red hover */
+  color: #EF4444; /* stronger red */
+}
+
+/* when logging out, fade the whole shell */
+.fm-logging-out .fm-shell {
+  opacity: 1;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fm-logging-out .fm-shell {
+  opacity: 0;
+  transform: translateY(10px); /* slight downward fade */
+}
+
 .fm-title {
   font-weight: 700;
+  font-size: large;
 }
 
 .fm-nav {

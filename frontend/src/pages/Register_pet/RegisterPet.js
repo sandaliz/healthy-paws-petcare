@@ -85,14 +85,14 @@ const RegisterPet = () => {
     <main className="register-page">
       <ToastContainer />
 
-      {/* ✅ background image */}
+      {/* background image */}
       <img
         src={require("../../assets/registration_bg.png")}
         alt="background"
         className="register-bg-image"
       />
 
-      {/* ✅ overlay card */}
+      {/* overlay card */}
       <div className="register-form-overlay">
         <div className="glass-header">
           <h2>Pet Information</h2>

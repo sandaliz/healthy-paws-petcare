@@ -1,7 +1,6 @@
-// Controllers/productController.js
 import Product from "../Model/productModel.js";
 
-// 🔹 Get all products
+// Get all products
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -10,26 +9,22 @@ export const getAllProducts = async (req, res) => {
     console.error("Error fetching products:", err);
     res.status(500).json({ error: "Server error" });
   }
-};
+}; 
 
-// 🔹 Get single product by ID
+// Get single product by ID
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
     const product = await Product.findById(id);
-
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
+    if (!product) return res.status(404).json({ error: "Product not found" });
     res.json(product);
   } catch (err) {
-    console.error("Error fetching product by ID:", err);
+    console.error("Error fetching product:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
 
-// 🔹 Add new product
+// Add new product
 export const addProducts = async (req, res) => {
   try {
     const { id, name, expirationDate, cost, currantStock, minimumThreshold, category, productStatus } = req.body;
@@ -55,7 +50,7 @@ export const addProducts = async (req, res) => {
   }
 };
 
-// 🔹 Update product
+// Update product
 export const updateProducts = async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,7 +58,6 @@ export const updateProducts = async (req, res) => {
     if (req.file) updates.imageUrl = req.file.path;
 
     const updatedProduct = await Product.findByIdAndUpdate(id, updates, { new: true });
-
     if (!updatedProduct) return res.status(404).json({ error: "Product not found" });
 
     res.json({ message: "Product updated successfully", product: updatedProduct });
@@ -73,13 +67,12 @@ export const updateProducts = async (req, res) => {
   }
 };
 
-// 🔹 Delete product
+// Delete product
 export const deleteProducts = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedProduct = await Product.findByIdAndDelete(id);
     if (!deletedProduct) return res.status(404).json({ error: "Product not found" });
-
     res.json({ message: "Product deleted successfully" });
   } catch (err) {
     console.error("Error deleting product:", err);

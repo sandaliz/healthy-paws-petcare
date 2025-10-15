@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../Model/userModel.js";
 import transporter from "../config/nodemailer.js";
 
-// ---------- Helper: generate JWT token ----------
+// ---------- generate JWT token ----------
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, email: user.email, role: user.role },
@@ -37,7 +37,7 @@ export const register = async (req, res) => {
         .json({ success: false, message: "User already exists" });
     }
 
-    // Default role for public signups
+    // Default role 
     let assignedRole = "USER";
 
     // Only SUPER_ADMIN can assign a custom role
@@ -61,7 +61,7 @@ export const register = async (req, res) => {
 
     const token = generateToken(user);
 
-    // Set cookie if request is not from API
+    // Set cookie 
     if (!req.headers.authorization) {
       res.cookie("token", token, {
         httpOnly: true,
@@ -71,10 +71,10 @@ export const register = async (req, res) => {
       });
     }
 
-    // 📧 Send welcome/confirmation email
+    // Send welcome email
     try {
       await transporter.sendMail({
-        from: process.env.SENDER_EMAIL, // must be verified sender in Brevo or your SMTP config
+        from: process.env.SENDER_EMAIL, 
         to: email,
         subject: "🎉 Welcome to Pet Care Management System!",
         html: `
@@ -91,7 +91,7 @@ export const register = async (req, res) => {
       console.log(`📧 Registration email sent to: ${email}`);
     } catch (emailErr) {
       console.error("❌ Failed to send registration email:", emailErr.message);
-      // We don’t fail registration if email fails — user still gets created
+     
     }
 
     return res.status(201).json({
@@ -171,7 +171,7 @@ export const login = async (req, res) => {
         message = "Welcome Pet Care Taker! Redirecting to Pet Care Taker Dashboard";
         break;
       case "FINANCE_MANAGER":
-        redirectUrl = "/finance-dashboard";
+        redirectUrl = "/fm";
         message = "Welcome Finance Manager! Redirecting to Finance Dashboard";
         break;
     }
@@ -245,7 +245,7 @@ export const isAuthenticated = async (req, res) => {
         .json({ success: false, message: "Not authenticated" });
     }
 
-    // ✅ Always fetch the latest user record for accurate active status
+    // Always fetch the latest user record for accurate active status
     const dbUser = await User.findById(req.user.id).select("-password");
     if (!dbUser) {
       return res
@@ -339,7 +339,7 @@ export const editUser = async (req, res) => {
       });
     }
 
-    // Prevent editing SUPER_ADMIN users (except maybe the current user)
+    // Prevent editing SUPER_ADMIN users
     if (user.role === "SUPER_ADMIN" && userId !== req.user.id) {
       return res.status(403).json({ 
         success: false, 
@@ -641,7 +641,7 @@ export const createStaff = async (req, res) => {
     
     await user.save();
 
-    // Send welcome email (optional)
+    // Send welcome email 
     try {
       await transporter.sendMail({
         from: process.env.SENDER_EMAIL,

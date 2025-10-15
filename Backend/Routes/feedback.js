@@ -8,14 +8,14 @@ import {
   deleteFeedback,
   getAverageRating,
   getFeedbacksByEmail,
-  getFeedbackReport,   // ✅ NEW
+  getFeedbackReport,   
 } from "../Controllers/feedbackController.js";
 import { feedbackValidationRules, validate } from "../middleware/validation.js";
 
 router.post("/", feedbackValidationRules(), validate, createFeedback);
 router.get("/", getFeedbacks);
 router.get("/stats/average-rating", getAverageRating);
-router.get("/report", getFeedbackReport);  // ✅ New report route
+router.get("/report", getFeedbackReport);  
 router.get("/user/:email", getFeedbacksByEmail);
 router.get("/:id", getFeedback);
 
