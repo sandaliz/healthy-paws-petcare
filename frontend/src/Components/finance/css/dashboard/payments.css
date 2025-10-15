@@ -1,0 +1,376 @@
+/* =========================================================
+   BILLING/FINANCE DASHBOARD — PAYMENTS PAGE (Scoped CSS)
+   All selectors start with .bf-payments- to ensure isolation
+========================================================= */
+
+/* ✅ Page Header */
+.bf-payments-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* Refresh button row (inside header) */
+.bf-payments-head .bf-payments-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ✅ Filters bar */
+.bf-payments-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.bf-payments-filters-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bf-payments-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.bf-payments-search-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  font-family: Poppins, sans-serif;
+  padding: 6px 0;
+  color: #54413c;
+}
+
+.bf-payments-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #54413c;
+}
+
+.bf-payments-filter select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+}
+
+/* ✅ Exclude toggle */
+.bf-payments-exclude {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #54413c;
+}
+
+.bf-payments-toggle {
+  width: 70px;
+  height: 28px;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.bf-payments-toggle .circle {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  transition: all 0.25s ease;
+}
+
+.bf-payments-toggle.on {
+  background: #22c55e;
+}
+
+.bf-payments-toggle.on .circle {
+  left: 45px;
+}
+
+.bf-payments-toggle.on::after {
+  content: "ON";
+  position: absolute;
+  left: 12px;
+}
+
+.bf-payments-toggle.off {
+  background: #9ca3af;
+}
+
+.bf-payments-toggle.off::after {
+  content: "OFF";
+  position: absolute;
+  right: 12px;
+}
+
+/* ✅ Table area */
+.bf-payments-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.bf-payments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bf-payments-table th,
+.bf-payments-table td {
+  border-bottom: 1px dashed #e5e7eb;
+  padding: 14px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.bf-payments-table thead th {
+  background: #ffe1a5;
+  font-weight: 700;
+  color: #54413c;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bf-payments-table tbody tr:hover {
+  background: #fffaf4;
+}
+
+.bf-payments-cell-right {
+  text-align: right;
+}
+
+.bf-payments-muted {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* ✅ Customer cells */
+.bf-payments-owner-name {
+  font-weight: 600;
+}
+
+.bf-payments-owner-email {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.bf-payments-mono {
+  font-family: ui-monospace, monospace;
+}
+
+/* ✅ Buttons */
+.bf-payments-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #cfd3d8;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.bf-payments-btn:hover {
+  background: #f7f7f7;
+}
+
+.bf-payments-btn-primary {
+  background: #ffd58e;
+  border-color: #ffd58e;
+  color: #54413c;
+}
+
+.bf-payments-btn-ghost {
+  background: #e3ebf4;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.bf-payments-btn-ghost:hover {
+  background: #989a9f;
+  color: #111827;
+}
+
+/* Confirm button */
+.bf-payments-btn-confirm {
+  background: #3b82f6;
+  border: 1px solid #1e3a8a;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.bf-payments-btn-confirm:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Row of action buttons */
+.bf-payments-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ✅ Pagination */
+.bf-payments-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+/* ✅ Method Pills */
+.bf-payments-method-pill {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
+  background: #e5e7eb;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.bf-payments-method-pill.cash {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.bf-payments-method-pill.card {
+  background: #ede9fe;
+  color: #4c1d95;
+}
+
+.bf-payments-method-pill.bank {
+  background: #dcfce7;
+  color: #065f46;
+}
+
+.bf-payments-method-pill.stripe {
+  background: #f5f3ff;
+  color: #6d28d9;
+}
+
+/* ✅ Modal content (Payment + Invoice) */
+.bf-payments-summary {
+  margin: 8px 0;
+}
+
+.bf-payments-summary .bf-payments-kv {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.bf-payments-summary .bf-payments-kv:last-child {
+  border-bottom: none;
+}
+
+/* Invoice Items Container */
+.bf-payments-items-card {
+  margin-top: 10px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.bf-payments-items-header {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  background: #fff6e4;
+  color: #54413c;
+  font-weight: 700;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.bf-payments-items-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bf-payments-item-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  padding: 10px;
+  border-bottom: 1px dashed #eee;
+}
+
+.bf-payments-item-row:last-child {
+  border-bottom: none;
+}
+
+.bf-payments-item-title {
+  font-weight: 600;
+}
+
+.bf-payments-item-meta {
+  color: #666;
+  font-size: 13px;
+}
+
+.bf-payments-item-amount {
+  font-weight: 700;
+}
+
+.bf-payments-totals {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0;
+}
+
+.bf-payments-totals-table {
+  border-collapse: collapse;
+  min-width: 360px;
+}
+
+.bf-payments-totals-table td {
+  padding: 6px 8px;
+}
+
+.bf-payments-totals-num {
+  text-align: right;
+}
+
+.bf-payments-totals-em td {
+  font-weight: 700;
+}

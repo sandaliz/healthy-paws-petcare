@@ -7,6 +7,7 @@ import Stripe from "stripe";
 import mongoose from "mongoose";
 import { sendPaymentEmail } from "../../config/finance/email.js";
 import { v4 as uuidv4 } from "uuid";
+import crypto from "crypto"; 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET);
 
@@ -549,6 +550,222 @@ export const confirmStripePayment = async (req, res) => {
   }
 };
 
+/* ============================================================================
+ * PAYHERE – Step 1  (generate order & return form data to the client)
+ * ==========================================================================*/
+export const createPayHerePayment = async (req, res) => {
+  try {
+    const { invoiceID, userID, currency = "LKR", couponId, couponCode } = req.body;
+
+    if (!invoiceID || !userID) {
+      return res.status(400).json({ message: "invoiceID and userID required" });
+    }
+
+    const invoice = await Invoice.findById(invoiceID);
+    if (!invoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    const open = await ensureInvoiceOpenForPayment(invoice);
+    if (!open.canPay) {
+      return res.status(400).json({ message: `Invoice already ${open.reason}` });
+    }
+
+    // ----- discount / coupon -------------------------------------------------
+    const canonicalOwnerId = invoice.userID;
+    let coupon = null;
+    if (couponId || couponCode) {
+      coupon = await resolveCouponForPayment({ couponId, couponCode, userID: canonicalOwnerId });
+    }
+    const discount    = computeDiscount(coupon, Number(invoice.total));
+    const finalAmount = Math.max(0, +(Number(invoice.total) - discount).toFixed(2));
+    if (finalAmount <= 0) {
+      return res.status(400).json({ message: "Final amount is zero after discount" });
+    }
+
+    // ----- create DB record --------------------------------------------------
+    const payment = new Payment({
+      paymentID : `PAY-${uuidv4()}`,
+      invoiceID,
+      userID    : canonicalOwnerId,
+      method    : "PayHere",
+      amount    : finalAmount,
+      currency  : currency.toUpperCase(),
+      status    : "Pending",
+      couponId  : coupon ? coupon._id : undefined,
+      discount,
+    });
+    await payment.save();
+
+    // ----- build payload for payhere.js -------------------------------------
+    const phPayload = {
+      merchant_id: process.env.PAYHERE_MERCHANT_ID,
+      return_url : process.env.PAYHERE_RETURN_URL,
+      cancel_url : process.env.PAYHERE_CANCEL_URL,
+      notify_url : process.env.PAYHERE_NOTIFY_URL,
+      order_id   : payment._id.toString(),                     // internal DB _id
+      items      : `Invoice ${invoice.invoiceID || invoiceID}`,
+      amount     : finalAmount.toFixed(2),
+      currency   : currency.toUpperCase(),
+
+      // optional customer details (nice for the sandbox UI)
+      first_name : req.body.firstName || "Customer",
+      last_name  : req.body.lastName  || "",
+      email      : req.body.email     || "test@example.com",
+      phone      : req.body.phone     || "0000000000",
+      address    : req.body.address   || "N/A",
+      city       : req.body.city      || "Colombo",
+      country    : req.body.country   || "Sri Lanka",
+    };
+
+    // sandbox works without signature; add one for live later
+    return res.json({ payHereForm: phPayload, paymentDbId: payment._id });
+  } catch (err) {
+    console.error("createPayHerePayment error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ============================================================================
+ * PAYHERE – Step 2  (IPN / server-to-server callback)
+ * ==========================================================================*/
+export const handlePayHereIPN = async (req, res) => {
+  try {
+    const {
+      order_id,
+      payment_id,
+      payhere_amount,
+      payhere_currency,
+      status_code,
+      md5sig,
+      status_message,
+    } = req.body; // PayHere posts x-www-form-urlencoded
+
+    // ---------- signature check --------------------------------------------
+    const calcSig = crypto
+      .createHash("md5")
+      .update(
+        process.env.PAYHERE_MERCHANT_ID +
+          order_id +
+          payment_id +
+          payhere_amount +
+          payhere_currency +
+          status_code +
+          crypto.createHash("md5").update(process.env.PAYHERE_MERCHANT_SECRET).digest("hex")
+      )
+      .digest("hex")
+      .toUpperCase();
+
+    if (calcSig !== md5sig) {
+      console.warn("PayHere signature mismatch", order_id);
+      return res.status(400).send("Invalid signature");
+    }
+
+    const payment = await Payment.findById(order_id)
+      .populate("invoiceID")
+      .populate("couponId");
+    if (!payment) {
+      return res.status(404).send("Order not found");
+    }
+
+    if (status_code === "2") {
+      // SUCCESS
+      if (payment.status !== "Completed") {
+        payment.status        = "Completed";
+        payment.payhereOrderId = payment_id;
+        payment.payhereStatus  = "SUCCESS";
+        await payment.save();
+        await completePostPaymentFlow({ payment });
+      }
+    } else {
+      // FAILED / VOID / REFUNDED / etc.
+      payment.status        = "Failed";
+      payment.payhereOrderId = payment_id;
+      payment.payhereStatus  = status_message || "FAILED";
+      await payment.save();
+    }
+
+    return res.send("OK");
+  } catch (err) {
+    console.error("handlePayHereIPN error:", err);
+    return res.status(500).send("Error");
+  }
+};
+
+/* ============================================================================
+ * (Optional) front-end return URL
+ * ==========================================================================*/
+export const payHereReturnCapture = async (_req, res) => {
+  // Front-end already knows how to show a success page;
+  // IPN will finalise the record.
+  res.redirect(`${process.env.CLIENT_URL}/pay/success`);
+};
+
+/* ============================================================================
+ * Helper: tasks common to any successful payment
+ * ==========================================================================*/
+async function completePostPaymentFlow({ payment }) {
+  // 1. coupon usage audit --------------------------------
+  if (payment.couponId) {
+    try {
+      const c = await Coupon.findById(payment.couponId);
+      if (c) {
+        if (c.scope === "ISSUED") {
+          await c.markIssuedUsed();
+          if (c.parentId) {
+            await Coupon.findByIdAndUpdate(c.parentId, { $inc: { usedCount: 1 } });
+          }
+        } else if (c.scope === "GLOBAL") {
+          await c.incrementUsage();
+        }
+      }
+    } catch (e) {
+      console.warn("Coupon update error", e);
+    }
+  }
+
+  // 2. mark invoice as paid ------------------------------
+  if (payment.invoiceID) {
+    const invoice = await Invoice.findById(payment.invoiceID._id).populate("userID", "name email");
+    if (invoice) {
+      invoice.status = "Paid";
+      await invoice.save();
+
+      // cancel other pending payments for same invoice
+      await cancelOtherPendingPayments(invoice._id, payment._id);
+
+      // 3. send receipt email -----------------------------
+      const owner   = await resolveOwnerDoc({ invoice, payment });
+      const toEmail = owner?.email;
+      if (toEmail && !payment.receiptEmailSentAt) {
+        await sendPaymentEmail({
+          to        : toEmail,
+          invoice,
+          payment,
+          ownerName : owner?.name,
+          ownerEmail: owner?.email,
+        });
+        payment.receiptEmailSentAt = new Date();
+        await payment.save();
+      }
+    }
+  }
+
+  // 4. add loyalty points --------------------------------
+  if (payment.invoiceID?.userID) {
+    try {
+      const uid     = payment.invoiceID.userID._id || payment.invoiceID.userID;
+      let loyalty   = await Loyalty.findOne({ userID: uid });
+      if (!loyalty) {
+        loyalty = await Loyalty.create({ userID: uid, points: 0, tier: "Puppy Pal" });
+      }
+      await loyalty.addPoints(payment.amount);
+    } catch (e) {
+      console.error("Loyalty add error", e);
+    }
+  }
+}
+
 export const getAllPayments = async (req, res) => {
   try {
     const filter = {};
@@ -577,3 +794,4 @@ export const getAllPayments = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+

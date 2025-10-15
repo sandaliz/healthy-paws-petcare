@@ -9,7 +9,7 @@ import Coupons from './Coupons';
 import Loyalty from './Loyalty';
 import Salaries from './Salaries';
 import Forecast from './Forecast';
-import '../css/dashboard.css';
+import '../css/dashboard/dashboardApp.css';
 
 export default function DashboardApp() {
   return (
