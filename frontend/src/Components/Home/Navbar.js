@@ -28,7 +28,7 @@ const Navbar = () => {
 
       {/* Center Links */}
       <ul className="nav-links">
-        <li><a href="#home">Home</a></li>
+        <li><a href="/home">Home</a></li>
         <li><a href="/register/owner">Register</a></li>
         <li><a href="/vaccine">Vaccine Plan</a></li>
         <li><a href="/feedback">Feedbacks</a></li>

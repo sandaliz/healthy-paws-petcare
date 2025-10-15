@@ -7,8 +7,8 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  height: 10px; /* was 20px → now enough space for icons/buttons */
-  padding: 0 20px; /* extra breathing room */
+  padding: 1rem 2rem; /* Proper padding for navbar */
+  min-height: 70px; /* Minimum height to ensure proper spacing */
 }
 
 .logo {

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './daycare.css';
+import Navbar from '../Home/Navbar';
 
 function Daycare() {
   return (
+    <>
+      <Navbar />
     <div className="dc-container">
       {/* Hero */}
       <section className="dc-hero">
@@ -108,6 +111,7 @@ function Daycare() {
         <p>Open: Mon – Sat, 8:00 AM – 7:00 PM</p>
       </section>
     </div>
+    </>
   );
 }
 

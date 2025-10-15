@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import StarRating from "../../Components/StarRating";
 import assets from "../../assets/assets";
 import '../../styles/feedback.css'
+import Navbar from '../../Components/Home/Navbar'
 
 const FeedbackForm = () => {
   const navigate = useNavigate();
@@ -112,6 +113,8 @@ const FeedbackForm = () => {
   };
 
   return (
+     <>
+      <Navbar />
     <div className="feedback-fullpage">
       {/* Toast messages (success/failure) */}
       <ToastContainer position="top-center" autoClose={3000} />
@@ -224,6 +227,7 @@ const FeedbackForm = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./PetStore.css";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../Home/Navbar";
 
 const URL = "http://localhost:5001/products";
 
@@ -70,6 +71,8 @@ function PetStore() {
   }
 
   return (
+        <>
+      <Navbar />
     <div className="ps-container">
       <div className="ps-header">
         <h1>Healthy Paws Pet Store</h1>
@@ -165,6 +168,7 @@ function PetStore() {
         )}
       </div>
     </div>
+    </>
   );
 }
 

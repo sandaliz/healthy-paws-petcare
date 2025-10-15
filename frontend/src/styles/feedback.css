@@ -182,50 +182,50 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* Submit Button with Colors */
-.submit-btn {
-  background: linear-gradient(135deg, #54413C 0%, #6D5D57 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 16px 24px;
-  font-size: 1.1rem;
+/* Glass Button Styles (matching home page) */
+.glass-btn {
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
   font-weight: 600;
-  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
   cursor: pointer;
+  color: #2d2d2d;
+  border: 2px solid rgba(255, 213, 142, 0.5);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  text-decoration: none;
   margin-top: 20px;
-  position: relative;
-  overflow: hidden;
+  font-family: "Poppins", sans-serif;
 }
 
-.submit-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
+.glass-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-.submit-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #FFD58E 0%, #FFE4B5 100%);
+/* Highlight (Submit) Button */
+.glass-btn.highlight {
+  background: linear-gradient(135deg, rgba(255, 213, 142, 0.9) 0%, rgba(255, 213, 142, 0.7) 100%);
+  border: 2px solid rgba(255, 213, 142, 0.9);
   color: #54413C;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(255, 213, 142, 0.4);
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.5), 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-.submit-btn:hover:not(:disabled)::before {
-  left: 100%;
+.glass-btn.highlight:hover:not(:disabled) {
+  background: linear-gradient(135deg, #FFD58E 0%, rgba(255, 213, 142, 0.85) 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.6), 0 8px 18px rgba(0, 0, 0, 0.2);
 }
 
-.submit-btn:active:not(:disabled) {
+.glass-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.submit-btn:disabled {
+.glass-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
@@ -381,7 +381,7 @@
   }
 }
 
-/* Loading Animation for Submit Button */
+/* Loading Animation for Button */
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -394,14 +394,14 @@
   }
 }
 
-.submit-btn:disabled {
+.glass-btn:disabled {
   animation: pulse 1.5s infinite;
 }
 
 /* Focus States for Accessibility */
 .form-group input:focus-visible,
 .form-group textarea:focus-visible,
-.submit-btn:focus-visible {
+.glass-btn:focus-visible {
   outline: 2px solid #54413C;
   outline-offset: 2px;
 }

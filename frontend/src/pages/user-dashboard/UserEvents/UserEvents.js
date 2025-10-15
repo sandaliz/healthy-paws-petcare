@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getEvents } from "../../../apis/eventApi";
 import "./UserEvents.css";
+import Navbar from "../../../Components/Home/Navbar";
+
 
 const UserEvents = () => {
   const [events, setEvents] = useState([]);
@@ -67,6 +69,8 @@ const UserEvents = () => {
   }
 
   return (
+          <>
+        <Navbar />
     <div>
       <div className="events-container">
         <div className="events-header">
@@ -159,6 +163,7 @@ const UserEvents = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
