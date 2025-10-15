@@ -262,7 +262,7 @@ const UserAppointments = () => {
                   {appointment.status}
                 </span>
               </div>
-              <div className="appointment-details">
+              <div className="appointment-details-po">
                 <p>
                   <strong>Appointment Id:</strong> {appointment.appointmentId}
                 </p>

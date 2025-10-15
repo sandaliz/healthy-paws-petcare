@@ -164,12 +164,12 @@
   color: #0c5460;
 }
 
-.appointment-details {
+.appointment-details-po {
   display: grid;
   gap: 12px;
 }
 
-.appointment-details p {
+.appointment-details-po p {
   margin: 0;
   color: #666;
   font-size: 14px;
@@ -178,7 +178,7 @@
   gap: 8px;
 }
 
-.appointment-details p strong {
+.appointment-details-po p strong {
   color: #333;
   font-weight: 600;
   min-width: 120px;
