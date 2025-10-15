@@ -90,7 +90,6 @@ import AppointmentDetailsDC from "./Components/DashboardDC/AppointmentDetailsDC/
 import ReviewsDC from "./Components/DashboardDC/ReviewsDC/ReviewsDC";
 
 // ---------------- Finance ----------------
-import CouponWall from "./Components/finance/CouponWall";
 import ClientPay from "./Components/finance/client/offline/ClientPay";
 import OnlinePay from "./Components/finance/client/online/OnlinePay";
 import PaySuccess from "./Components/finance/client/PaySuccess";
@@ -218,7 +217,7 @@ function App() {
       <Route path="/pay/success" element={<PaySuccess />} />
       <Route path="/pay/summary" element={<PaymentSummary />} />
       <Route path="/fm/*" element={<DashboardApp />} />
-      <Route path="/coupon-wall" element={<CouponWall />} />
+      
     </Routes>
   );
 }
