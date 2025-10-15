@@ -32,6 +32,9 @@ const UserAppointments = () => {
     appointmentTime: "",
   });
   const [formErrors, setFormErrors] = useState({});
+  const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
+  const [loadingPrescription, setLoadingPrescription] = useState(false);
 
   useEffect(() => {
     fetchAppointments();
@@ -142,6 +145,25 @@ const UserAppointments = () => {
       appointmentTime: "",
     });
     setFormErrors({});
+  };
+
+  const handleViewPrescription = async (appointment) => {
+    try {
+      setLoadingPrescription(true);
+      const response = await api.get(`/prescriptions/appointment/${appointment._id}`);
+      setSelectedPrescriptions(response.data || []);
+      setShowPrescriptionModal(true);
+    } catch (err) {
+      console.error("Error fetching prescriptions:", err);
+      setError("Failed to load prescriptions");
+    } finally {
+      setLoadingPrescription(false);
+    }
+  };
+
+  const closePrescriptionModal = () => {
+    setShowPrescriptionModal(false);
+    setSelectedPrescriptions([]);
   };
 
   const handlePayment = async (appointment) => {
@@ -287,15 +309,70 @@ const UserAppointments = () => {
                     : "Pay"}
                 </button>
                 <button
-                  className="btn-delete"
-                  onClick={() => {}}
+                  className="btn-edit"
+                  onClick={() => handleViewPrescription(appointment)}
+                  disabled={loadingPrescription}
                 >
-                  Prescription
+                  {loadingPrescription ? "Loading..." : "Prescription"}
                 </button>
               </div>
             </div>
           ))}
         </div>
+        {showPrescriptionModal && (
+          <div className="modal-overlay" onClick={closePrescriptionModal}>
+            <div className="modal prescription-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <button className="modal-close" onClick={closePrescriptionModal}>
+                  &times;
+                </button>
+              </div>
+              <div className="prescription-content">
+                {selectedPrescriptions.length > 0 ? (
+                  selectedPrescriptions.map((prescription, index) => (
+                    <div key={prescription._id} className="prescription-card">
+                      <div className="prescription-header">
+                        <h4>Prescription #{index + 1}</h4>
+                        <span className={`prescription-status ${prescription.status}`}>
+                          {prescription.status.toUpperCase()}
+                        </span>
+                      </div>
+                      
+                      <div className="prescription-info">
+                        <p><strong>Date:</strong> {new Date(prescription.createdAt).toLocaleString()}</p>
+                        <p><strong>Owner Email:</strong> {prescription.ownerEmail}</p>
+                      </div>
+
+                      <div className="prescription-items">
+                        <h5>Prescribed Medicines:</h5>
+                        <table className="prescription-table">
+                          <thead>
+                            <tr>
+                              <th>Medicine</th>
+                              <th>Quantity</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {prescription.items.map((item, idx) => (
+                              <tr key={idx}>
+                                <td>{item.productName}</td>
+                                <td>{item.quantity}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-prescription">
+                    <p>📋 No prescriptions found for this appointment.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {showModal && (
           <div className="modal-overlay">

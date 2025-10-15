@@ -13,7 +13,7 @@ const UserQuesions = () => {
   const [error, setError] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState({ question: "" });
+  const [currentQuestion, setCurrentQuestion] = useState({ question: "", category: "" });
   const [formError, setFormError] = useState("");
   
   // Get user from localStorage
@@ -128,15 +128,15 @@ const UserQuesions = () => {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      maxWidth: '500px',
+      maxWidth: '900px',
       width: '90%',
       padding: '0',
-      border: '1px solid #f0e6d2',
-      borderRadius: '8px',
-      boxShadow: '0 10px 30px rgba(84, 65, 60, 0.2)',
+      border: 'none',
+      borderRadius: '12px',
+      boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
     },
     overlay: {
-      backgroundColor: 'rgba(84, 65, 60, 0.6)',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       zIndex: 1000,
     }
   };
@@ -159,48 +159,48 @@ const UserQuesions = () => {
         
         {error && <div className="error-message">{error}</div>}
         
-        {loading && <div className="loading">Loading...</div>}
-        
         {!loading && questions.length === 0 && (
           <div className="no-questions">No questions found. Be the first to ask a question!</div>
         )}
         
         {!loading && questions.length > 0 && (
           <div className="questions-grid">
-            {questions.map((q) => (
+            {questions.map((q, index) => (
               <div className="question-card" key={q._id}>
                 <div className="question-card-header">
-                  <h3>{q.question}</h3>
-                  {user && user._id === q.user?._id && (
-                    <div className="question-actions">
-                      <button 
-                        className="btn-edit" 
-                        onClick={() => openEditModal(q)}
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        className="btn-delete" 
-                        onClick={() => handleDeleteQuestion(q._id)}
-                      >
-                        Delete
-                      </button>
+                  <div className="user-info">
+                    <div className="user-avatar">
+                      {(q.user?.name || "Anonymous").charAt(0).toUpperCase()}
                     </div>
-                  )}
+                    <div className="user-details">
+                      <p className="user-name">{q.user?.name || "Anonymous"}</p>
+                      <p className="question-date">{new Date(q.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="question-card-body">
-                  <div className="answer-section">
-                    <h4>Answer:</h4>
-                    {q.answer ? (
-                      <p className="answer-text">{q.answer}</p>
-                    ) : (
-                      <p className="no-answer">Not answered yet</p>
-                    )}
-                  </div>
-                  <div className="question-meta">
-                    <p>Asked by: <span>{q.user?.name || "Unknown"}</span></p>
-                    <p>Date: <span>{new Date(q.createdAt).toLocaleDateString()}</span></p>
-                  </div>
+                  <h3>{q.question.length > 60 ? q.question.substring(0, 60) : q.question}</h3>
+                  <p className="question-description">
+                    {q.answer || "Hi does Gleneagles hospital KL have this service? Thanks"}
+                  </p>
+                  {user && user._id === q.user?._id && (
+                    <div className="question-footer">
+                      <div className="question-actions">
+                        <button 
+                          className="btn-edit" 
+                          onClick={() => openEditModal(q)}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          className="btn-delete" 
+                          onClick={() => handleDeleteQuestion(q._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -214,41 +214,54 @@ const UserQuesions = () => {
           style={customModalStyles}
           contentLabel="Ask a Question"
         >
-          <div className="modal-header">
-            <h3>Ask a Question</h3>
-            <button className="modal-close" onClick={() => setShowCreateModal(false)}>×</button>
+          <div className="ask-vet-modal">
+            <button className="modal-close-btn" onClick={() => setShowCreateModal(false)}>×</button>
+            <div className="ask-vet-content">
+              <div className="ask-vet-form-section">
+                <h2 className="ask-vet-title">Ask a vet</h2>
+                <p className="ask-vet-description">
+                  Ask a vet a question at your convenience! Knowing that each expert is a 
+                  veterinarian and has been screened and vetted prior to being invited to 
+                  consult with you.
+                </p>
+                
+                <form onSubmit={handleCreateQuestion}>
+                  <div className="form-group-vet">
+                    <label htmlFor="question">Enter your message</label>
+                    <textarea
+                      id="question"
+                      placeholder="My dog is not eating food what to do next?"
+                      value={currentQuestion.question}
+                      onChange={(e) => setCurrentQuestion({ ...currentQuestion, question: e.target.value })}
+                      className={formError ? "question-textarea error" : "question-textarea"}
+                      rows="5"
+                      required
+                    />
+                    {formError && <span className="error-text">{formError}</span>}
+                  </div>
+
+                  <p className="powered-by">Powered by <strong>The Vet Experts</strong></p>
+
+                  <button 
+                    type="submit" 
+                    className="ask-now-btn"
+                    disabled={loading}
+                  >
+                    {loading ? "Submitting..." : "Ask now"}
+                  </button>
+                </form>
+              </div>
+
+              <div className="ask-vet-illustration">
+                <div className="illustration-image">
+                  <img 
+                    src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=500&h=500&fit=crop" 
+                    alt="Veterinarian with pets" 
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <form className="question-form" onSubmit={handleCreateQuestion}>
-            <div className="form-group">
-              <label htmlFor="question">Your Question</label>
-              <textarea
-                id="question"
-                placeholder="Type your question here..."
-                value={currentQuestion.question}
-                onChange={(e) => setCurrentQuestion({ ...currentQuestion, question: e.target.value })}
-                className={formError ? "error" : ""}
-                required
-              />
-              {formError && <span className="error-text">{formError}</span>}
-              <small>Your question should be between 10 and 500 characters.</small>
-            </div>
-            <div className="form-actions">
-              <button 
-                type="button" 
-                className="btn-secondary" 
-                onClick={() => setShowCreateModal(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                type="submit" 
-                className="btn-primary" 
-                disabled={loading}
-              >
-                {loading ? "Submitting..." : "Submit Question"}
-              </button>
-            </div>
-          </form>
         </Modal>
         
         {/* Edit Question Modal */}

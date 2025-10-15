@@ -1,19 +1,23 @@
 .appointments-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px 20px;
 }
 
 .appointments-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .appointments-header h2 {
   margin: 0;
-  color: #54413c; /* Dark brown instead of #333 */
+  color: #333;
+  font-size: 28px;
+  font-weight: 700;
 }
 
 .header-actions {
@@ -35,43 +39,26 @@
 }
 
 .btn-primary {
-  background-color: #ffd58e; /* Soft peach */
+  background-color: #E1C16E;
+  color: white;
+  border-radius: 8px;
 }
 
 .btn-primary:hover {
-  background-color: #ffe0a8; /* Lighter peach */
+  background-color: #d4b45e;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(196, 160, 19, 0.2);
+  box-shadow: 0 4px 12px rgba(225, 193, 110, 0.3);
 }
 
 .btn-secondary {
-  background-color: #f0e6d2; /* Warm light beige */
+  background-color: #6c757d;
+  color: white;
+  border-radius: 8px;
 }
 
 .btn-secondary:hover {
-  background-color: #e6d8b8; /* Slightly darker beige */
-}
-
-.btn-edit {
-  background-color: #d4edda; /* Light green (kept for semantic meaning) */
-  color: #388e3c; /* Green text */
-  font-size: 14px;
-  padding: 8px 16px;
-}
-
-.btn-edit:hover {
-  background-color: #c3e6cb;
-}
-
-.btn-delete {
-  background-color: #f8d7da; /* Light red (kept for semantic meaning) */
-  color: #721c24; /* Red text */
-  font-size: 14px;
-  padding: 8px 16px;
-}
-
-.btn-delete:hover {
-  background-color: #f1b0b7;
+  background-color: #5a6268;
+  transform: translateY(-2px);
 }
 
 .loading {
@@ -94,67 +81,116 @@
 
 .appointments-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
 }
 
 .appointment-card {
   background: #fff;
-  border: 1px solid #f0e6d2; /* Warm light border */
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(84, 65, 60, 0.08); /* Warmer shadow */
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.appointment-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #E1C16E;
+}
+
+.appointment-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
 .appointment-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .appointment-header h3 {
   margin: 0;
-  color: #54413c; /* Dark brown instead of #333 */
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.appointment-header h3::before {
+  content: '🐾';
+  font-size: 18px;
 }
 
 .status {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .status.pending {
-  background-color: #fff9e6; /* Warm light yellow */
-  color: #c4a013; /* Golden brown */
+  background-color: #fff3cd;
+  color: #856404;
 }
 
 .status.confirmed {
-  background-color: #e8f5e8; /* Light green (kept for semantic meaning) */
-  color: #388e3c;
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .status.cancelled {
-  background-color: #f8d7da; /* Light red (kept for semantic meaning) */
+  background-color: #f8d7da;
   color: #721c24;
 }
 
 .status.completed {
-  background-color: #e6f2ff; /* Light blue (kept for semantic meaning) */
-  color: #004085;
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.appointment-details {
+  display: grid;
+  gap: 12px;
 }
 
 .appointment-details p {
-  margin: 8px 0;
-  color: #8a756c; /* Warm gray-brown instead of #666 */
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.appointment-details p strong {
+  color: #333;
+  font-weight: 600;
+  min-width: 120px;
 }
 
 .appointment-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  flex-wrap: wrap;
 }
 
 .modal-overlay {
@@ -286,18 +322,18 @@
 }
 /* Search input styling */
 .search-input {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 14px;
   outline: none;
   transition: all 0.2s ease;
-  margin-right: 10px;
+  min-width: 250px;
 }
 
 .search-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+  border-color: #E1C16E;
+  box-shadow: 0 0 0 3px rgba(225, 193, 110, 0.1);
 }
 
 /* To keep header actions aligned nicely */
@@ -312,4 +348,140 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* Prescription Modal Styles */
+.prescription-modal {
+  max-width: 800px;
+}
+
+.prescription-content {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.prescription-card {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.prescription-card:last-child {
+  margin-bottom: 0;
+}
+
+.prescription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #E1C16E;
+}
+
+.prescription-header h4 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.prescription-status {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.prescription-status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.prescription-status.paid {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.prescription-info {
+  margin-bottom: 20px;
+}
+
+.prescription-info p {
+  margin: 8px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.prescription-info strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.prescription-items h5 {
+  margin: 0 0 12px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.prescription-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.prescription-table thead {
+  background: #E1C16E;
+  color: white;
+}
+
+.prescription-table th,
+.prescription-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.prescription-table th {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.prescription-table td {
+  font-size: 14px;
+  color: #333;
+}
+
+.prescription-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.prescription-table tfoot {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.prescription-table tfoot td {
+  border-bottom: none;
+  padding: 14px 12px;
+  font-size: 15px;
+}
+
+.no-prescription {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.no-prescription p {
+  font-size: 16px;
+  margin: 0;
 }
