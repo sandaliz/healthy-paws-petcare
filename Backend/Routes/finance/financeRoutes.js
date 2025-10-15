@@ -18,9 +18,6 @@ import {
   confirmOfflinePayment,
   createStripePayment,
   confirmStripePayment,
-  createPayHerePayment,
-  handlePayHereIPN,
-  payHereReturnCapture,
   getAllPayments
 } from "../../Controllers/finance/paymentController.js";
 
@@ -79,10 +76,6 @@ router.post("/payment/offline", processOfflinePayment);
 router.put("/payment/offline/confirm/:id", confirmOfflinePayment);
 router.post("/payment/stripe", createStripePayment);
 router.post("/payment/stripe/confirm", confirmStripePayment);
-router.post("/payment/payhere", createPayHerePayment);
-router.post("/payment/payhere/ipn", handlePayHereIPN);
-router.post("/payment/payhere/return", payHereReturnCapture);
-
 router.get("/payments", getAllPayments);
 
 // ========== COUPONS ==========

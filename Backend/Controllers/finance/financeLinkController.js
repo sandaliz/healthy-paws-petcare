@@ -70,7 +70,7 @@ export const createInvoiceFromAppointment = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    // ✅ First: Check if invoice already exists for this appointment
+    // First: Check if invoice already exists for this appointment
     let invoice = await Invoice.findOne({ linkedAppointment: appointmentId });
 
     if (invoice) {

@@ -9,11 +9,7 @@ const paymentSchema = new mongoose.Schema(
 
     method: {
       type: String,
-      method: {
-        type: String,
-        enum: ["Cash", "Card", "BankTransfer", "Stripe", "PayHere"],
-        required: true,
-      },
+      enum: ["Cash", "Card", "BankTransfer", "Stripe"],
       required: true,
     },
 
@@ -28,11 +24,6 @@ const paymentSchema = new mongoose.Schema(
     // Stripe metadata
     stripePaymentIntentId: { type: String },
     stripeChargeId: { type: String },
-
-    // PayHere metadata
-  payhereOrderId:   { type: String },        // PH reference returned to you
-  payhereStatus:    { type: String },        // e.g. SUCCESS, FAILED
-
 
     // Coupon audit
     couponId: { type: mongoose.Schema.Types.ObjectId, ref: "Coupon" },
