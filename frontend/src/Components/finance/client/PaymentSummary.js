@@ -332,9 +332,20 @@ export default function PaymentSummary() {
               <p><b>Due Date:</b> {fmtDate(invoice.dueDate)}</p>
               <p><b>Owner:</b> {invoice.userID?.name} ({invoice.userID?.email})</p>
               <h4>Items</h4>
+              <div className="invoice-items-head">
+                <span>Description</span>
+                <span>Qty</span>
+                <span>Rate</span>
+                <span>Total</span>
+              </div>
               <ul>
                 {(invoice.lineItems || []).map((li, i) => (
-                  <li key={i}>{li.description} — {li.quantity} × {fmtLKR(li.unitPrice)} = <b>{fmtLKR(li.total)}</b></li>
+                  <li key={i}>
+                    <span className="inv-desc">{li.description}</span>
+                    <span className="inv-qty">{li.quantity}</span>
+                    <span className="inv-rate">{fmtLKR(li.unitPrice)}</span>
+                    <span className="inv-total">{fmtLKR(li.total)}</span>
+                  </li>
                 ))}
               </ul>
               <p><b>Total:</b> {fmtLKR(invoice.total)}</p>

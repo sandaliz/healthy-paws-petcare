@@ -19,6 +19,7 @@ import {
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import '../css/dashboard/salaries.css'
+import { ResponsiveContainer, AreaChart, Area } from 'recharts'
 
 export default function Salaries() {
   const [rows, setRows] = useState([])
@@ -49,6 +50,30 @@ export default function Salaries() {
   }
 
   useEffect(() => { load() }, [])
+
+  const kpi = useMemo(() => {
+    const now = new Date()
+    let pending = 0, paid = 0, payroll7d = 0
+    const dayMap = {}
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now)
+      d.setDate(now.getDate() - i)
+      dayMap[d.toISOString().slice(0, 10)] = 0
+    }
+    ;(rows || []).forEach(s => {
+      const st = (s.status || '').toLowerCase()
+      if (st === 'pending') pending++
+      if (st === 'paid') paid++
+      const created = (s.createdAt || '').slice(0, 10)
+      if (created in dayMap) {
+        const net = Number(s.baseSalary || 0) + Number(s.allowances || 0) - Number(s.deductions || 0)
+        dayMap[created] += net
+        payroll7d += net
+      }
+    })
+    const series = Object.entries(dayMap).map(([date, v]) => ({ date, v }))
+    return { pending, paid, payroll7d, series }
+  }, [rows])
 
   const filtered = useMemo(() => {
     let arr = rows || []
@@ -128,7 +153,6 @@ export default function Salaries() {
       <Toaster position="top-right" />
 
       <div className="salaries-head">
-        <h2>Salaries</h2>
         <div className="salaries-head-actions">
           <button className="sal-btn sal-btn-refresh" onClick={load}>
             <RefreshCcw size={16} /> Refresh
@@ -184,6 +208,28 @@ export default function Salaries() {
               <option value="PET_CARE_TAKER">Pet Care Taker</option>
               <option value="FINANCE_MANAGER">Finance Manager</option>
             </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="fm-kpis">
+        <div className="fm-kpi">
+          <div className="title">Pending</div>
+          <div className="value">{kpi.pending}</div>
+        </div>
+        <div className="fm-kpi">
+          <div className="title">Paid</div>
+          <div className="value">{kpi.paid}</div>
+        </div>
+        <div className="fm-kpi">
+          <div className="title">Payroll (7d)</div>
+          <div className="value">{fmtLKR(kpi.payroll7d)}</div>
+          <div className="spark">
+            <ResponsiveContainer width="100%" height={40}>
+              <AreaChart data={kpi.series} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                <Area type="monotone" dataKey="v" stroke="#54413C" fill="#FFEBC6" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

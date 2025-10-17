@@ -326,6 +326,7 @@ import "../css/ProfilePage.css";
 import PromotionTab from "./PromotionTab";
 import PaymentSummary from "./PaymentSummary";
 import banner from "../images/profile_banner.jpg";
+import { User, Receipt, Sparkles } from "lucide-react";
 
 const BASE_URL = "http://localhost:5001";
 
@@ -385,91 +386,121 @@ export default function ProfilePage() {
 
   return (
     <div className="profileU-wrapper">
-      {/* --- COVER --- */}
-      <div className="profileU-banner">
-        <img src={banner} alt="cover" className="profileU-bannerImg" />
-        <img
-          src={user.avatarUrl || assets.profile}
-          alt="avatar"
-          className="profileU-avatar"
-        />
-        <div className="profileU-basic">
-          <h1>{user.name}</h1>
-          <p className="profileU-role">Pet Owner</p>
-          <button
-            onClick={() => setEditMode((m) => !m)}
-            className="profileU-editBtn"
-          >
-            {editMode ? "Cancel" : "Edit Profile"}
-          </button>
-        </div>
-      </div>
-
-      {/* --- TABS --- */}
-      <div className="profileU-tabs">
-        {["profile", "ledger", "promotion"].map((t) => (
-          <div
-            key={t}
-            className={`profileU-tab ${activeTab === t ? "active" : ""}`}
-            onClick={() => setActiveTab(t)}
-          >
-            {t === "profile" && "Profile Info"}
-            {t === "ledger" && "PayLog"}
-            {t === "promotion" && "PawPerks"}
+      <div className="profileU-shell">
+        {/* Sidebar */}
+        <aside className="profileU-side">
+          <div className="profileU-sideHeader">
+            <img
+              src={user.avatarUrl || assets.profile}
+              alt="avatar"
+              className="profileU-sideAvatar"
+            />
+            <div className="profileU-sideName">{user.name}</div>
           </div>
-        ))}
-      </div>
+          <nav className="profileU-nav">
+            <button
+              className={`profileU-navLink ${activeTab === "profile" ? "active" : ""}`}
+              onClick={() => setActiveTab("profile")}
+            >
+              <User size={22} /> <span>Profile</span>
+            </button>
+            <button
+              className={`profileU-navLink ${activeTab === "ledger" ? "active" : ""}`}
+              onClick={() => setActiveTab("ledger")}
+            >
+              <Receipt size={22} /> <span>PayLog</span>
+            </button>
+            <button
+              className={`profileU-navLink ${activeTab === "promotion" ? "active" : ""}`}
+              onClick={() => setActiveTab("promotion")}
+            >
+              <Sparkles size={22} /> <span>PawPerks</span>
+            </button>
+          </nav>
+        </aside>
 
-      {/* --- CONTENT --- */}
-      <div className="profileU-content">
-        {activeTab === "profile" && (
-          <div className="profileU-card">
-            <h2>Your Details</h2>
-            <div className="profileU-grid">
-              {[
-                "name",
-                "email",
-                "OwnerName",
-                "OwnerPhone",
-                "EmergencyContact",
-                "OwnerAddress",
-                "PetName",
-              ].map((f) => (
-                <div key={f} className="profileU-field">
-                  <label>
-                    {labelIcon(f)} {f}
-                  </label>
-                  {!editMode ? (
-                    <p>{formData[f] || "–"}</p>
-                  ) : (
-                    <input
-                      name={f}
-                      value={formData[f] || ""}
-                      onChange={change}
-                    />
-                  )}
+        {/* Main */}
+        <main className="profileU-main">
+          {activeTab === "profile" && (
+            <>
+              <div className="profileU-banner">
+                <img src={banner} alt="cover" className="profileU-bannerImg" />
+                <img
+                  src={user.avatarUrl || assets.profile}
+                  alt="avatar"
+                  className="profileU-avatar"
+                />
+                <div className="profileU-basic">
+                  <h1>{user.name}</h1>
+                  <p className="profileU-role">Pet Owner</p>
                 </div>
-              ))}
-            </div>
-
-            <div className="profileU-btnRow">
-              {editMode && (
-                <button className="profileU-saveBtn" onClick={save}>
-                  Save Changes
+                <button
+                  onClick={() => setEditMode((m) => !m)}
+                  className="profileU-editBtn"
+                >
+                  {editMode ? "Cancel" : "Edit Profile"}
                 </button>
-              )}
-              <button
-                className="profileU-logout"
-                onClick={() => setShowModal(true)}
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        )}
+              </div>
 
-        {activeTab === "ledger" && <PaymentSummary />}
-        {activeTab === "promotion" && <PromotionTab userId={user._id} />}
+              <div className="profileU-content">
+                <div className="profileU-card">
+                  <h2>Your Details</h2>
+                  <div className="profileU-grid">
+                    {[
+                      "name",
+                      "email",
+                      "OwnerName",
+                      "OwnerPhone",
+                      "EmergencyContact",
+                      "OwnerAddress",
+                      "PetName",
+                    ].map((f) => (
+                      <div key={f} className="profileU-field">
+                        <label>
+                          {labelIcon(f)} {f}
+                        </label>
+                        {!editMode ? (
+                          <p>{formData[f] || "–"}</p>
+                        ) : (
+                          <input
+                            name={f}
+                            value={formData[f] || ""}
+                            onChange={change}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="profileU-btnRow">
+                    {editMode && (
+                      <button className="profileU-saveBtn" onClick={save}>
+                        Save Changes
+                      </button>
+                    )}
+                    <button
+                      className="profileU-logout"
+                      onClick={() => setShowModal(true)}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === "ledger" && (
+            <div className="profileU-full">
+              <PaymentSummary />
+            </div>
+          )}
+          {activeTab === "promotion" && (
+            <div className="profileU-full pawperks-full">
+              <PromotionTab userId={user._id} />
+            </div>
+          )}
+        </main>
       </div>
 
       {/* --- LOGOUT MODAL --- */}

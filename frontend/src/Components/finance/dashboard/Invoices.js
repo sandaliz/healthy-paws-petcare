@@ -7,6 +7,7 @@ import Skeleton from './components/Skeleton';
 import {
   Plus, Search, Filter, MoreVertical, Pencil, Trash2, Eye, ExternalLink, Copy, ChevronLeft, ChevronRight
 } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 import '../css/dashboard/invoices.css';
 import { toNum, round2, fmtDate, fmtLKR } from '../utils/financeFormatters'
 
@@ -27,8 +28,34 @@ export default function Invoices() {
   const [edit, setEdit] = useState(null);
   const [statusEdit, setStatusEdit] = useState(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [deleteInv, setDeleteInv] = useState(null);
 
   const [openMenu, setOpenMenu] = useState(null);
+
+  const kpi = useMemo(() => {
+    const now = new Date();
+    let pending = 0, overdue = 0, revenue7d = 0;
+    const dayMap = {};
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      dayMap[key] = 0;
+    }
+    (invoices || []).forEach(i => {
+      const st = i.status;
+      if (st === 'Pending') pending++;
+      if (st === 'Overdue') overdue++;
+      const created = (i.createdAt || '').slice(0,10);
+      if (i.status === 'Paid' && created in dayMap) {
+        const amt = Number(i.total || 0);
+        dayMap[created] += amt;
+        revenue7d += amt;
+      }
+    });
+    const series = Object.entries(dayMap).map(([date, v]) => ({ date, v }));
+    return { pending, overdue, revenue7d, series };
+  }, [invoices]);
 
   const load = async () => {
     try {
@@ -65,13 +92,14 @@ export default function Invoices() {
     return filtered.slice(start, start + PAGE_SIZE);
   }, [filtered, page]);
 
-  const onDelete = async (id) => {
+  
+
+  const deleteInvoiceConfirmed = async (id) => {
     const inv = invoices.find(i => i._id === id);
-    if (!inv) return toast.error("Invoice not found");
+    if (!inv) return toast.error('Invoice not found');
     if (['Paid', 'Refunded'].includes(inv.status)) {
       return toast.error(`Cannot delete invoice because it is ${inv.status}.`);
     }
-    if (!window.confirm('Are you sure you want to delete this invoice?')) return;
     try {
       await api.delete(`/invoice/${id}`);
       toast.success('Invoice deleted');
@@ -108,9 +136,8 @@ export default function Invoices() {
   return (
     <div>
       <Toaster position="top-right" />
-      <div className="page-head">
-        <h2>Invoices</h2>
-        <div className="rf-head-actions">
+      <div className="inv-head">
+        <div className="inv-head-actions">
           <button className="fm-btn" onClick={load}><Filter size={16} /> Refresh</button>
           <button className="fm-btn-back" onClick={() => setCreateOpen(true)}><Plus size={16} /> New Invoice</button>
         </div>
@@ -137,6 +164,28 @@ export default function Invoices() {
             >
               {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="fm-kpis">
+        <div className="fm-kpi">
+          <div className="title">Pending</div>
+          <div className="value">{kpi.pending}</div>
+        </div>
+        <div className="fm-kpi">
+          <div className="title">Overdue</div>
+          <div className="value">{kpi.overdue}</div>
+        </div>
+        <div className="fm-kpi">
+          <div className="title">Revenue (7d)</div>
+          <div className="value">{fmtLKR(kpi.revenue7d)}</div>
+          <div className="spark">
+            <ResponsiveContainer width="100%" height={40}>
+              <AreaChart data={kpi.series} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                <Area type="monotone" dataKey="v" stroke="#54413C" fill="#FFEBC6" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
@@ -223,7 +272,7 @@ export default function Invoices() {
                                     if (['Paid', 'Refunded'].includes(inv.status)) {
                                       return toast.error(`Cannot delete a ${inv.status} invoice`);
                                     }
-                                    onDelete(inv._id);
+                                    setDeleteInv(inv);
                                   }}
                                 >
                                   <Trash2 size={14} /> Delete
@@ -285,6 +334,18 @@ export default function Invoices() {
           onUpdate={onUpdateStatus}
         />
       )}
+
+      {deleteInv && (
+        <DeleteInvoiceModal
+          open={!!deleteInv}
+          onClose={() => setDeleteInv(null)}
+          invoice={deleteInv}
+          onDelete={async () => {
+            await deleteInvoiceConfirmed(deleteInv._id);
+            setDeleteInv(null);
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -292,6 +353,11 @@ export default function Invoices() {
 /* Create Invoice */
 function CreateInvoiceModal({ open, onClose, onCreated }) {
   const [userID, setUserID] = useState('');
+  const [userQuery, setUserQuery] = useState('');
+  const [resolvedUser, setResolvedUser] = useState(null);
+  const [resolving, setResolving] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [openSuggest, setOpenSuggest] = useState(false);
   const [items, setItems] = useState([{ description: '', quantity: 1, unitPrice: 0 }]);
   const [busy, setBusy] = useState(false);
 
@@ -329,8 +395,68 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
     }
   };
 
+  // Debounced typeahead search against /api/finance/users/search
+  useEffect(() => {
+    let alive = true;
+    if (!userQuery || userQuery.trim().length < 2) {
+      setSuggestions([]);
+      setOpenSuggest(false);
+      return () => { alive = false; };
+    }
+    const id = setTimeout(async () => {
+      try {
+        setResolving(true);
+        const data = await api.get(`/users/search?q=${encodeURIComponent(userQuery.trim())}`);
+        if (!alive) return;
+        setSuggestions(data.users || []);
+        setOpenSuggest(true);
+      } catch (e) {
+        if (!alive) return;
+        setSuggestions([]);
+        setOpenSuggest(false);
+      } finally {
+        if (alive) setResolving(false);
+      }
+    }, 300);
+    return () => { alive = false; clearTimeout(id); };
+  }, [userQuery]);
+
+  const selectUser = (u) => {
+    setResolvedUser(u);
+    setUserID(u._id);
+    setUserQuery(`${u.name || ''} (${u.email || ''})`);
+    setOpenSuggest(false);
+    toast.success('User selected');
+  };
+
   return (
     <Modal open={open} onClose={onClose} title="New Invoice">
+      <div className="field bf-inv-lookup">
+        <label>User name/email (lookup)</label>
+        <input
+          className="input"
+          value={userQuery}
+          onChange={e => setUserQuery(e.target.value)}
+          placeholder="e.g. owner@example.com or Jane"
+          onFocus={() => { if (suggestions.length) setOpenSuggest(true); }}
+        />
+        {openSuggest && suggestions.length > 0 && (
+          <div className="bf-inv-suggestions">
+            {suggestions.map(u => (
+              <div key={u._id} className="itm" onMouseDown={() => selectUser(u)}>
+                <div className="name">{u.name || '-'}</div>
+                <div className="email">{u.email || ''}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {resolving && <div className="muted" style={{ marginTop: 6 }}>Searching…</div>}
+        {resolvedUser && (
+          <div className="notice" style={{ marginTop: '8px' }}>
+            Selected: <b>{resolvedUser.name || resolvedUser.email}</b> — <span className="mono">{resolvedUser._id}</span>
+          </div>
+        )}
+      </div>
       <div className="field">
         <label>User Register Mongo _id</label>
         <input className="input" value={userID} onChange={e => setUserID(e.target.value)} placeholder="e.g. 66f..." />
@@ -353,7 +479,7 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
           );
         })}
         <div className="row end inv-add-item">
-          <button className="fm-btn fm-btn-btn" onClick={addItem}><Plus size={16} /> Add item</button>
+          <button className="fm-btn fm-btn-primary" onClick={addItem}><Plus size={16} /> Add item</button>
         </div>
       </div>
 
@@ -367,7 +493,7 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
         </table>
       </div>
 
-      <div className="pm-actions">
+      <div className="row end">
         <button className="fm-btn fm-btn-ghost" onClick={onClose}>Cancel</button>
         <button className="fm-btn fm-btn-primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Create'}</button>
       </div>
@@ -493,7 +619,7 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
         })}
         {!restricted && (
           <div className="row end inv-add-item">
-            <button className="fm-btn fm-btn-btn" onClick={addItem}><Plus size={16} /> Add item</button>
+            <button className="fm-btn fm-btn-primary" onClick={addItem}><Plus size={16} /> Add item</button>
           </div>
         )}
       </div>
@@ -519,6 +645,18 @@ function EditInvoiceModal({ open, onClose, invoice, onSaved }) {
 /* Status picker modal */
 function StatusModal({ open, onClose, invoice, onUpdate }) {
   const [next, setNext] = useState(() => ALLOWED_STATUS_UPDATE.includes(invoice.status) ? invoice.status : 'Pending');
+  const [busy, setBusy] = useState(false);
+
+  const handleUpdate = async () => {
+    try {
+      setBusy(true);
+      const ret = onUpdate?.(invoice._id, next);
+      if (ret && typeof ret.then === 'function') await ret;
+      onClose?.();
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
     <Modal open={open} onClose={onClose} title={`Set status — ${invoice.invoiceID || invoice._id}`}>
@@ -532,8 +670,35 @@ function StatusModal({ open, onClose, invoice, onUpdate }) {
         Paid and Refunded are set via payment/refund flows only.
       </div>
       <div className="row end inv-status-actions">
-        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Cancel</button>
-        <button className="fm-btn fm-btn-primary" onClick={() => onUpdate(invoice._id, next)}>Update</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
+        <button className="fm-btn fm-btn-primary" onClick={handleUpdate} disabled={busy}>{busy ? 'Updating…' : 'Update'}</button>
+      </div>
+    </Modal>
+  );
+}
+
+/* Delete confirm modal */
+function DeleteInvoiceModal({ open, onClose, invoice, onDelete }) {
+  const [busy, setBusy] = useState(false);
+  if (!invoice) return null;
+  const handleDelete = async () => {
+    try {
+      setBusy(true);
+      const ret = onDelete?.();
+      if (ret && typeof ret.then === 'function') await ret;
+      onClose?.();
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Modal open={open} onClose={onClose} title="Delete Invoice">
+      <div className="notice inv-edit-notice">
+        Are you sure you want to delete invoice <b>{invoice.invoiceID || invoice._id}</b>? This action cannot be undone.
+      </div>
+      <div className="row end inv-status-actions">
+        <button className="fm-btn fm-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
+        <button className="fm-btn fm-btn-danger" onClick={handleDelete} disabled={busy}>{busy ? 'Deleting…' : 'Delete'}</button>
       </div>
     </Modal>
   );

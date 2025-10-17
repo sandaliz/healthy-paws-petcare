@@ -5,8 +5,8 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import Card from './components/Card';
-import { TrendingUp } from 'lucide-react';
 import { fmt } from '../utils/financeFormatters';
+import '../css/dashboard/forecast.css';
 
 export default function Forecast() {
   const [forecast, setForecast] = useState(null);
@@ -57,9 +57,6 @@ export default function Forecast() {
 
   return (
     <div className="forecast-page">
-      <div className="page-head">
-        <h2><TrendingUp size={22} /> Income Forecasting</h2>
-      </div>
 
       <div className="forecast-kpis">
         <Card className="kpi" title="Projected 3-Month Revenue"

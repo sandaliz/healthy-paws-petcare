@@ -26,6 +26,16 @@
 //   const [view, setView] = useState(null);
 //   const [invoiceView, setInvoiceView] = useState(null);
 //   const [confirmPay, setConfirmPay] = useState(null);
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
+import { api } from '../services/financeApi';
+import Modal from './components/Modal';
+import Tag from './components/Tag';
+import Skeleton from './components/Skeleton';
+import { Search, RefreshCcw, CheckCircle2, Eye, Copy, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area } from 'recharts';
+import '../css/dashboard/payments.css';
+import { fmtDate, fmtLKR } from '../utils/financeFormatters';
 
 //   const load = async () => {
 //     try {
@@ -317,17 +327,7 @@
 //   return <span className={cls}>{method}</span>
 // }
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { Toaster, toast } from 'react-hot-toast';
-import { api } from '../services/financeApi';
-import Modal from './components/Modal';
-import Tag from './components/Tag';
-import Skeleton from './components/Skeleton';
-import {
-  Search, RefreshCcw, CheckCircle2, Eye, Copy, ChevronLeft, ChevronRight, ExternalLink
-} from 'lucide-react';
-import '../css/dashboard/payments.css';
-import { fmtDate, fmtLKR } from '../utils/financeFormatters';
+// removed duplicate import block
 
 const METHOD_OPTIONS = ['All', 'Cash', 'Card', 'BankTransfer', 'Stripe'];
 const STATUS_OPTIONS = ['All', 'Pending', 'Completed', 'Failed', 'Refunded'];
@@ -346,7 +346,7 @@ export default function Payments() {
   const [invoiceView, setInvoiceView] = useState(null);
   const [confirmPay, setConfirmPay] = useState(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       setLoading(true);
       const params = excludeFailed ? '?excludeFailed=1' : '';
@@ -357,9 +357,34 @@ export default function Payments() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [excludeFailed]);
 
-  useEffect(() => { load(); }, [excludeFailed]);
+  useEffect(() => { load(); }, [load]);
+
+  const kpi = useMemo(() => {
+    const now = new Date();
+    let pending = 0, completed = 0, revenue7d = 0;
+    const dayMap = {};
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      dayMap[d.toISOString().slice(0, 10)] = 0;
+    }
+    (payments || []).forEach(p => {
+      if (p.status === 'Pending') pending++;
+      if (p.status === 'Completed') {
+        completed++;
+        const created = (p.createdAt || '').slice(0, 10);
+        if (created in dayMap) {
+          const amt = Number(p.amount || 0);
+          dayMap[created] += amt;
+          revenue7d += amt;
+        }
+      }
+    });
+    const series = Object.entries(dayMap).map(([date, v]) => ({ date, v }));
+    return { pending, completed, revenue7d, series };
+  }, [payments]);
 
   const filtered = useMemo(() => {
     let arr = payments || [];
@@ -428,9 +453,8 @@ export default function Payments() {
       <Toaster position="top-right" />
 
       <div className="bf-payments-head">
-        <h2>Payments</h2>
         <div className="bf-payments-row">
-          <button className="bf-payments-btn" onClick={load}>
+          <button className="fm-btn" onClick={load}>
             <RefreshCcw size={16} /> Refresh
           </button>
         </div>
@@ -472,10 +496,32 @@ export default function Payments() {
         </div>
       </div>
 
+      <div className="fm-kpis">
+        <div className="fm-kpi">
+          <div className="title">Pending</div>
+          <div className="value">{kpi.pending}</div>
+        </div>
+        <div className="fm-kpi">
+          <div className="title">Completed</div>
+          <div className="value">{kpi.completed}</div>
+        </div>
+        <div className="fm-kpi">
+          <div className="title">Revenue (7d)</div>
+          <div className="value">{fmtLKR(kpi.revenue7d)}</div>
+          <div className="spark">
+            <ResponsiveContainer width="100%" height={40}>
+              <AreaChart data={kpi.series} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                <Area type="monotone" dataKey="v" stroke="#54413C" fill="#FFEBC6" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
       <div className="bf-payments-card">
         {loading ? <Skeleton rows={8} /> : (
           <>
-            <table className="bf-payments-table">
+            <table className="fm-table">
               <thead>
                 <tr>
                   <th>Invoice</th>
@@ -483,16 +529,16 @@ export default function Payments() {
                   <th>Method</th>
                   <th>Amount</th>
                   <th>Status</th>
-                  <th className="bf-payments-cell-right">Actions</th>
+                  <th className="right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {pageItems.length === 0 && (
-                  <tr><td colSpan={6} className="bf-payments-muted">No payments found</td></tr>
+                  <tr><td colSpan={6} className="muted">No payments found</td></tr>
                 )}
                 {pageItems.map(p => (
                   <tr key={p._id}>
-                    <td className="bf-payments-mono">{p.invoiceID?.invoiceID || '-'}</td>
+                    <td className="mono">{p.invoiceID?.invoiceID || '-'}</td>
                     <td>
                       <div>
                         <div className="bf-payments-owner-name">{p.userID?.name || p.invoiceID?.userID?.name || '-'}</div>
@@ -500,15 +546,15 @@ export default function Payments() {
                       </div>
                     </td>
                     <td><MethodPill method={p.method} /></td>
-                    <td className="bf-payments-mono">{fmtLKR(p.amount)}</td>
+                    <td className="mono">{fmtLKR(p.amount)}</td>
                     <td><Tag status={p.status} /></td>
-                    <td className="bf-payments-cell-right">
+                    <td className="right">
                       <div className="bf-payments-actions">
-                        <button className="bf-payments-btn-ghost" onClick={() => setView(p)}><Eye size={16} /></button>
-                        <button className="bf-payments-btn-ghost" onClick={() => copyInvoiceLink(p.invoiceID?._id)}><Copy size={16} /></button>
+                        <button className="fm-btn fm-btn-ghost" onClick={() => setView(p)}><Eye size={16} /></button>
+                        <button className="fm-btn fm-btn-ghost" onClick={() => copyInvoiceLink(p.invoiceID?._id)}><Copy size={16} /></button>
                         {p.status === 'Pending' && p.method !== 'Stripe' && (
                           <button
-                            className="bf-payments-btn-confirm"
+                            className="fm-btn fm-btn-success"
                             onClick={() => setConfirmPay(p)}
                           >
                             <CheckCircle2 size={16} /> Confirm
@@ -523,7 +569,7 @@ export default function Payments() {
 
             <div className="bf-payments-pagination">
               <button
-                className="bf-payments-btn-ghost"
+                className="fm-btn fm-btn-ghost"
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
               >
@@ -531,7 +577,7 @@ export default function Payments() {
               </button>
               <div>Page {page} of {totalPages}</div>
               <button
-                className="bf-payments-btn-ghost"
+                className="fm-btn fm-btn-ghost"
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
               >
@@ -583,10 +629,10 @@ function PaymentModal({ p, onClose, onViewInvoice }) {
       </div>
 
       <div className="bf-payments-actions">
-        <button className="bf-payments-btn" onClick={() => onViewInvoice(p.invoiceID)}>
+        <button className="fm-btn fm-btn-primary" onClick={() => onViewInvoice(p.invoiceID)}>
           <ExternalLink size={16} /> View Invoice
         </button>
-        <button className="bf-payments-btn-ghost" onClick={onClose}>Close</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Close</button>
       </div>
     </Modal>
   );
@@ -631,7 +677,7 @@ function InvoiceModal({ open, onClose, invoice }) {
 
       <div className="bf-payments-actions">
         <button
-          className="bf-payments-btn-primary"
+          className="fm-btn fm-btn-primary"
           onClick={() => {
             const url = `${window.location.origin}/pay/online?invoice=${invoice._id}`;
             navigator.clipboard.writeText(url).then(() => toast.success('Client payment link copied'));
@@ -639,19 +685,30 @@ function InvoiceModal({ open, onClose, invoice }) {
         >
           <Copy size={16} /> Copy client link
         </button>
-        <button className="bf-payments-btn-ghost" onClick={onClose}>Close</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose}>Close</button>
       </div>
     </Modal>
   );
 }
 
 function ConfirmModal({ onClose, onConfirm }) {
+  const [busy, setBusy] = useState(false);
+  const handleConfirm = async () => {
+    try {
+      setBusy(true);
+      const ret = onConfirm?.();
+      if (ret && typeof ret.then === 'function') await ret;
+      onClose?.();
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <Modal open onClose={onClose} title="Confirm offline payment">
       <div>Mark this payment as Completed?</div>
       <div className="bf-payments-actions">
-        <button className="bf-payments-btn-ghost" onClick={onClose}>Cancel</button>
-        <button className="bf-payments-btn-confirm" onClick={onConfirm}>Confirm</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
+        <button className="fm-btn fm-btn-success" onClick={handleConfirm} disabled={busy}>{busy ? 'Confirming…' : 'Confirm'}</button>
       </div>
     </Modal>
   );

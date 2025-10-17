@@ -2,10 +2,11 @@ import React, { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { api } from '../../services/financeApi';
 import { fmtDate, fmtLKR, toNum } from '../../utils/financeFormatters';
+import '../../css/clientPay.css';
 
 const COUPON_REGEX = /^[A-Za-z0-9._-]{3,32}$/;
 
-export default function OfflinePaymentModal({ invoice, ownerId, onClose, onSuccess }) {
+export default function OfflinePaymentModal({ invoice, ownerId, onClose, onSuccess, hideSubtitle = false, subtitle }) {
   const [couponCode, setCouponCode] = useState('');
   const [coupon, setCoupon] = useState({ id: null, discount: 0 });
   const [loadingCoupons, setLoadingCoupons] = useState(false);
@@ -16,6 +17,8 @@ export default function OfflinePaymentModal({ invoice, ownerId, onClose, onSucce
 
   const subtotal = useMemo(() => computeInvoiceTotal(invoice), [invoice]);
   const amountAfterDiscount = Math.max(0, subtotal - (coupon.discount || 0));
+  const isCartInvoice = invoice && !invoice.linkedAppointment && !invoice.linkedDaycare;
+  const shouldHideSubtitle = hideSubtitle || !!isCartInvoice;
 
   const handleApplyCode = async () => {
     try {
@@ -63,10 +66,13 @@ export default function OfflinePaymentModal({ invoice, ownerId, onClose, onSucce
     <div className="f-offline-modal">
       <div className="f-offline-modal-box">
         <h3>Confirm Offline Payment</h3>
-        <p className="muted offline-msg">
-          This will create a <b>pending payment</b>. Please pay at reception
-          {invoice ? ` before ${fmtDate(invoice.dueDate)}` : ''}.
-        </p>
+        {!shouldHideSubtitle && (
+          <p className="muted offline-msg">
+            {subtitle ?? (
+              <>This will create a <b>pending payment</b>. Please pay at reception{invoice ? ` before ${fmtDate(invoice.dueDate)}` : ''}.</>
+            )}
+          </p>
+        )}
 
         <div className="f-offline-coupon-toggle">
           <label>

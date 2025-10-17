@@ -3,8 +3,8 @@
 /* ---------- Layout & Structure ---------- */
 .salaries-page {
   padding: 20px;
-  background: #fffdf9;
-  font-family: Poppins, sans-serif;
+  background: transparent;
+  font-family: 'Roboto', sans-serif;
   color: #2D2D2D;
 }
 
@@ -12,7 +12,7 @@
 .salaries-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 16px;
 }
 
@@ -36,7 +36,7 @@
   padding: 8px 12px;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 16px;
   cursor: pointer;
   border: 1px solid transparent;
   transition: background 0.2s ease, color 0.2s ease;
@@ -105,6 +105,13 @@
   align-items: center;
   margin-bottom: 14px;
   gap: 10px;
+}
+
+.salaries-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
 }
 
 .salaries-filters {

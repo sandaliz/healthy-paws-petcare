@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Cart.css";
 import InvoiceModal from "../finance/client/InvoiceModal";
+import OfflinePaymentModal from "../finance/client/offline/OfflinePaymentModal";
 
 function Cart() {
   const { id } = useParams(); 
@@ -22,6 +23,7 @@ function Cart() {
 
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [latestInvoice, setLatestInvoice] = useState(null);
+  const [showOfflineModal, setShowOfflineModal] = useState(false);
 
 
   const [errors, setErrors] = useState({});
@@ -154,16 +156,8 @@ function Cart() {
           });
           navigate(`/pay/online?invoice=${invoice._id}`);
         } else {
-          const offlineRes = await axios.post("http://localhost:5001/api/finance/payment/offline", {
-            invoiceID: invoice._id,
-            method: "Cash",
-          });
-
-          const offlinePayment = offlineRes.data.payment;
-          console.log("Prescription offline payment created:", offlinePayment);
-
           setLatestInvoice(invoice);
-          setShowInvoiceModal(true);
+          setShowOfflineModal(true);
         }
 
       } else {
@@ -208,18 +202,8 @@ function Cart() {
           setCart([]);
           navigate(`/pay/online?invoice=${invoice._id}`);
         } else {
-          const offlineRes = await axios.post("http://localhost:5001/api/finance/payment/offline", {
-            invoiceID: invoice._id,
-            method: "Cash", 
-          });
-
-          const offlinePayment = offlineRes.data.payment;
-          console.log("Offline payment created in DB:", offlinePayment);
-
           setLatestInvoice(invoice);
-          setShowInvoiceModal(true);
-          localStorage.removeItem("cart");
-          setCart([]);
+          setShowOfflineModal(true);
         }
       }
     } catch (err) {
@@ -382,6 +366,22 @@ function Cart() {
         <InvoiceModal
           invoice={latestInvoice}
           onClose={() => setShowInvoiceModal(false)}
+        />
+      )}
+
+      {showOfflineModal && latestInvoice && (
+        <OfflinePaymentModal
+          invoice={latestInvoice}
+          ownerId={user?._id}
+          onClose={() => setShowOfflineModal(false)}
+          onSuccess={() => {
+            setShowOfflineModal(false);
+            setShowInvoiceModal(true);
+            if (!prescription) {
+              localStorage.removeItem("cart");
+              setCart([]);
+            }
+          }}
         />
       )}
     </>

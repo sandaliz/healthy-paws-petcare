@@ -2,7 +2,7 @@
 .rf-head {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 18px;
 }
 
@@ -65,49 +65,6 @@
   font-size: 14px;
 }
 
-/* ==== Table structure ==== */
-.fm-card {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 14px;
-  padding: 16px;
-}
-
-.fm-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.fm-table th,
-.fm-table td {
-  border-bottom: 1px dashed #E5E7EB;
-  padding: 14px 12px;
-  text-align: left;
-  vertical-align: top;
-}
-
-.fm-table thead th {
-  background: #ffe1a5;
-  font-weight: 700;
-  color: #54413C;
-  border-bottom: 1px solid #E5E7EB;
-}
-
-.fm-table tbody tr:hover {
-  background: #fffaf4;
-}
-
-.fm-table .right {
-  text-align: right;
-}
-
-/* Empty state */
-.fm-table td.muted {
-  font-size: 13px;
-  color: #6B7280;
-  text-align: center;
-}
-
 /* Owner column styling */
 .owner .name {
   font-weight: 600;
@@ -152,100 +109,9 @@
 }
 
 /* ==== Pagination ==== */
-.fm-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 14px;
-}
 
-.fm-pagination button {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #cfd3d8;
-  background: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all .15s ease;
-}
 
-.fm-pagination button:hover {
-  background: #f7f7f7;
-}
-
-/* ==== Buttons: Approve / Reject / Submit / Cancel ==== */
-.rf-approve-btn {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  border: 1px solid #14532d;
-  color: #fff;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-  transition: all 0.2s ease;
-}
-.rf-approve-btn:hover {
-  background: linear-gradient(135deg, #15803d, #166534);
-  transform: translateY(-1px);
-}
-
-.rf-reject-btn {
-  background: #f87171;
-  border: 1px solid #b91c1c;
-  color: #fff;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.rf-reject-btn:hover {
-  background: #dc2626;
-}
-
-.rf-submit-btn {
-  background: #2563eb;
-  border: 1px solid #1d4ed8;
-  color: #fff;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.rf-submit-btn:hover {
-  background: #1e40af;
-}
-
-.rf-cancel-btn {
-  background: transparent;
-  border: 1px solid #d1d5db;
-  color: #374151;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-.rf-cancel-btn:hover {
-  background: #f3f4f6;
-}
+/* buttons now use shared .fm-btn variants */
 
 /* Grouped button rows */
 .rf-create-actions,
@@ -314,42 +180,7 @@
 }
 
 /* ==== Utility small tweaks ==== */
-.fm-btn-ghost {
-  background: #e3ebf4;
-  border: 1px solid #d1d5db;
-  color: #374151;
-  transition: background 0.2s ease, color 0.2s ease;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.fm-btn-ghost:hover {
-  background: #989a9f;
-  color: #111827;
-}
 
-.fm-btn-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border-radius: 20px;           /* pill style */
-  border: 1px solid #fbcb78;      /* matches your peach/yellow theme */
-  background: #ffea99;            /* soft pale yellow (cornsilk) */
-  color: #54413C;                 /* brown text (matches finance palette) */
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.fm-btn-back:hover {
-  background: #fcda76;             /* brighter warm yellow on hover */
-  transform: translateX(-3px);     /* subtle left nudge == "going back" */
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-}
 
 
 /* ==== Responsive adjustments ==== */
@@ -432,4 +263,35 @@
 
 .fm-modal-body {
   padding: 20px 24px 24px;
+}
+
+/* Skeleton shimmer */
+.skeleton { display:grid; gap:8px; }
+.skeleton-row {
+  height:14px;
+  background:linear-gradient(90deg,#f3f4f6,#e5e7eb,#f3f4f6);
+  background-size:200% 100%;
+  animation:sk 1s linear infinite;
+  border-radius:6px;
+}
+@keyframes sk {
+  0% { background-position:200% 0; }
+  100% { background-position:-200% 0; }
+}
+
+/* ==== Refunds table actions (compact buttons) ==== */
+.rf-actions .fm-btn {
+  padding: 10px 14px;
+  font-size: 16px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.rf-actions .fm-btn svg { width: 16px; height: 16px; }
+.rf-actions .fm-btn-ghost { padding: 10px 14px; }
+.rf-actions .fm-btn-success,
+.rf-actions .fm-btn-danger {
+  min-width: unset;
+  justify-content: center;
 }
