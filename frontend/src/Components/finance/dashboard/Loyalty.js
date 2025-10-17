@@ -105,7 +105,6 @@ export default function Loyalty() {
       <Toaster position="top-right" />
 
       <div className="loy-head">
-        <h2 className="loy-title">Loyalty Accounts</h2>
         <button className="loy-btn" onClick={load}>
           <RefreshCcw size={16} /> Refresh
         </button>

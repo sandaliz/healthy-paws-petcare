@@ -58,7 +58,7 @@ export default function ClientPay() {
   }, [showDogTip]);
 
   return (
-    <div className="finance-scope">
+    <div className="finance-scope cp-bg cp-full">
       <div className="pay-wrap">
         <Toaster position="top-right" />
 
@@ -74,19 +74,19 @@ export default function ClientPay() {
         {authError && <p className="error">{authError}</p>}
         {!authLoading && !ownerId && <p className="notice">Please log in to continue.</p>}
 
-        <div className="card">
+        <div className="cp-card">
           {loadingInv && !invoice && <p className="muted">Loading invoice…</p>}
           {invoiceError && <p className="error">{invoiceError}</p>}
           {invoice && <InvoiceSummary invoice={invoice} showDogTip={showDogTip} setShowDogTip={setShowDogTip} />}
 
           {invoice && (
-            <div className="section choose-method">
-              <h2>Choose your method</h2>
-              <div className="row wrap">
-                <button className="btn primary" onClick={() => setShowOfflineModal(true)}>
+            <div className="cp-section cp-choose-method">
+              <h2 className="cp-section-title">Choose your method</h2>
+              <div className="cp-row cp-wrap cp-end">
+                <button className="cp-btn cp-btn-primary" onClick={() => setShowOfflineModal(true)}>
                   Pay at Counter (Offline)
                 </button>
-                <button className="btn dark" onClick={() => {
+                <button className="cp-btn cp-btn-dark" onClick={() => {
                   const qp = new URLSearchParams({ invoice: invoice._id });
                   nav(`/pay/online?${qp.toString()}`);
                 }}>
@@ -117,10 +117,28 @@ function InvoiceSummary({ invoice, showDogTip, setShowDogTip }) {
     return sum + (li.total != null ? toNum(li.total) : qty * rate);
   }, 0);
 
+  // Determine display status (treat past-due unpaid as Overdue)
+  const rawStatus = String(invoice.status || '').trim();
+  const normalized = rawStatus.toLowerCase();
+  const isFinalized = /paid|refunded|cancelled/.test(normalized);
+  let isOverdue = false;
+  try {
+    if (!isFinalized && invoice.dueDate) {
+      const due = new Date(invoice.dueDate);
+      const today = new Date();
+      // zero time for date-only comparison
+      due.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      isOverdue = due < today;
+    }
+  } catch {}
+  const displayStatus = isOverdue ? 'Overdue' : (rawStatus || 'Pending');
+  const pillClass = isOverdue ? 'overdue' : normalized;
+
   return (
-    <div className="section">
+    <div className="cp-section">
       <div className="invoice-header">
-        <h2 className="section-title">Invoice Summary</h2>
+        <h2 className="cp-section-title">Invoice Summary</h2>
         <img
           src={doggie}
           alt="dog"
@@ -133,53 +151,53 @@ function InvoiceSummary({ invoice, showDogTip, setShowDogTip }) {
         )}
       </div>
 
-      <div className="summary-grid">
-        <div className="summary-item">
-          <span className="label">Invoice</span>
-          <span className="value mono">{invoice.invoiceID || invoice._id}</span>
+      <div className="cp-summary-grid">
+        <div className="cp-summary-item">
+          <span className="cp-label">Invoice</span>
+          <span className="cp-value mono">{invoice.invoiceID || invoice._id}</span>
         </div>
-        <div className="summary-item">
-          <span className="label">Status</span>
-          <span className={`status-pill ${String(invoice.status).toLowerCase()}`}>{invoice.status}</span>
+        <div className="cp-summary-item">
+          <span className="cp-label">Status</span>
+          <span className={`status-pill ${pillClass}`}>{displayStatus}</span>
         </div>
-        <div className="summary-item">
-          <span className="label">Due Date</span>
-          <span className="value">{fmtDate(invoice.dueDate)}</span>
+        <div className="cp-summary-item">
+          <span className="cp-label">Due Date</span>
+          <span className="cp-value">{fmtDate(invoice.dueDate)}</span>
         </div>
       </div>
 
-      <div className="items-wrap">
-        <div className="items-header">
+      <div className="cp-items-wrap">
+        <div className="cp-items-header">
           <div>Description</div>
           <div>Qty</div>
           <div>Rate</div>
-          <div className="right">Line Total</div>
+          <div className="cp-right">Line Total</div>
         </div>
-        <div className="items-body">
+        <div className="cp-items-body">
           {(invoice.lineItems || []).map((li, i) => {
             const qty = toNum(li.quantity);
             const unit = toNum(li.unitPrice);
             const lineTotal = li.total != null ? toNum(li.total) : qty * unit;
             return (
-              <div className="items-row" key={i}>
-                <div className="desc">{li.description}</div>
+              <div className="cp-items-row" key={i}>
+                <div className="cp-desc">{li.description}</div>
                 <div>{qty}</div>
                 <div>{fmtLKR(unit)}</div>
-                <div className="right bold">{fmtLKR(lineTotal)}</div>
+                <div className="cp-right cp-bold">{fmtLKR(lineTotal)}</div>
               </div>
             );
           })}
         </div>
-        <div className="totals">
-          <div className="totals-row tax-note">
+        <div className="cp-totals">
+          <div className="cp-totals-row cp-tax-note">
             <span>+ Tax (8%)</span>
             <span className="mono">{fmtLKR(invoice?.tax ?? total * 0.08)}</span>
           </div>
-          <div className="totals-row">
+          <div className="cp-totals-row">
             <span>Subtotal</span>
             <span className="mono">{fmtLKR(total)}</span>
           </div>
-          <div className="totals-row grand">
+          <div className="cp-totals-row cp-grand">
             <span>Amount Due</span>
             <span className="mono">{fmtLKR(invoice.total)}</span>
           </div>

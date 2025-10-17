@@ -1,11 +1,24 @@
 /* PawPerks main shell with flat background color */
 .pawperks-shell {
   position: relative;
-  min-height: 100%;
-  padding: 30px;
+  min-height: 100vh;            /* fill viewport height */
+  width: 100%;
+  padding: 24px 24px 24px 56px; /* larger left gutter to avoid crowding against sidebar */
+  margin: 0;                    /* align exactly within profileU-full (pawperks-full has no padding) */
+  box-sizing: border-box;
   font-family: "Poppins", sans-serif;
   color: #333;
-  background: #fed58e; /* soft light neutral bg */
+  background: #fed58e !important; /* restore previous yellow */
+}
+
+/* Mask the profile peach background on PawPerks page only */
+.profileU-full.pawperks-full {
+  background: #fed58e !important; /* match PawPerks shell */
+  padding: 0;                      /* avoid extra gaps revealing underlying bg */
+}
+
+@media (max-width: 768px) {
+  .pawperks-shell { padding: 16px; }
 }
 
 /* ---------- Header ---------- */

@@ -1,22 +1,96 @@
 /* ========= Refined User Profile ========= */
 .profileU-wrapper {
   font-family: 'Roboto', sans-serif;
-  background: #fff;
+  background: #fff6e4; /* match finance peach */
   color: #333;
   min-height: 100vh;
+  overflow-x: hidden; /* avoid horizontal scroll within finance profile */
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
 }
+
+/* --- Shell with left sidebar --- */
+.profileU-shell {
+  display: block; /* fixed sidebar + margin-left main */
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.profileU-side {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;               /* wider sidebar */
+  background: linear-gradient(180deg, #5b4944 0%, #54413C 100%);
+  border-right: none;
+  padding: 16px 18px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+  overflow-y: auto;           /* allow sidebar to scroll if content is taller */
+  z-index: 10;
+}
+.profileU-sideHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px; /* more gap below name */
+}
+.profileU-sideAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #FFD58E;
+}
+.profileU-sideName {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 1.05rem;
+}
+.profileU-nav { display: grid; gap: 12px; margin-top: 20px; }
+.profileU-navLink {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;         /* bigger touch target */
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;            /* bigger label */
+}
+.profileU-navLink:hover {
+  background: rgba(255,213,142,0.18);
+  border-color: #FFD58E;
+}
+.profileU-navLink.active {
+  background: linear-gradient(135deg, #FFD58E, #fbbf24);
+  color: #54413C;
+  border-color: #f5c46e;
+  box-shadow: inset 0 0 0 2px rgba(84,65,60,0.12);
+}
+/* ensure icons follow link color */
+.profileU-navLink svg { color: currentColor; }
+
+/* Main area */
+.profileU-main { padding-bottom: 40px; overflow-x: hidden; background: transparent; min-height: 100vh; margin-left: 280px; }
 
 /* --- Banner --- */
 .profileU-banner {
   position: relative;
-  height: 260px;
+  height: 340px;
   border-bottom: 4px solid #FFD58E;
+  border-radius: 12px;
+  overflow: visible; /* allow avatar to overlap without clipping */
 }
 .profileU-bannerImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
   filter: brightness(0.8);
+  border-radius: 12px; /* keep rounded corners even with visible overflow */
 }
 
 /* --- Avatar + Basic --- */
@@ -31,6 +105,7 @@
   object-fit: cover;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 2;
 }
 .profileU-basic {
   display: flex;
@@ -59,6 +134,7 @@
   cursor: pointer;
   transition: 0.3s;
 }
+.profileU-banner .profileU-editBtn { position: absolute; right: 16px; bottom: 16px; }
 .profileU-editBtn:hover {
   transform: translateY(-2px);
   background: #FFE1A8;
@@ -94,19 +170,17 @@
 }
 
 /* --- Content --- */
-.profileU-content {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 20px;
-}
+.profileU-content { max-width: 1100px; margin: 24px auto; padding: 20px; margin-top: 90px; }
+.profileU-full { width: 100%; padding: 20px; }
+.pawperks-full { padding: 0; background: #fed58e !important; } /* override profile peach on PawPerks */
 
 /* --- Card --- */
 .profileU-card {
   background: #fff;
-  border: 1px solid #E5E7EB;
+  border: 0 !important; /* remove white border */
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: none; /* remove faint outline */
 }
 .profileU-card h2 {
   font-family: 'Poppins', sans-serif;
@@ -279,6 +353,10 @@
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
+  .profileU-shell { display: block; }
+  .profileU-side { position: static; height: auto; width: auto; }
+  .profileU-main { margin-left: 0; }
+  .profileU-nav { grid-auto-flow: column; overflow-x: auto; }
   .profileU-avatar {
     left: 50%;
     transform: translateX(-50%);
@@ -286,9 +364,10 @@
   }
   .profileU-basic {
     position: static;
-    margin-top: 90px;
+    margin-top: 60px;
     align-items: center;
   }
+  .profileU-content { margin-top: 80px; }
   .profileU-tabs {
     margin-top: 40px;
   }

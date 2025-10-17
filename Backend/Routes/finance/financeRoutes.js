@@ -2,6 +2,7 @@
 import express from "express";
 const router = express.Router();
 import { getForecast } from "../../Controllers/finance/forecastController.js";
+import { searchUsers } from "../../Controllers/finance/userSearchController.js";
 
 
 import {
@@ -118,6 +119,9 @@ router.post("/invoice/daycare", createInvoiceFromDaycare);
 router.get("/financial-dashboard", getFinancialManagerDashboard);
 
 router.get("/forecast", getForecast);
+
+// ========== USERS (finance helper) ==========
+router.get("/users/search", searchUsers);
 
 
 export default router;

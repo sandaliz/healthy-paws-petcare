@@ -7,6 +7,7 @@ import {
   Search, RefreshCcw, CheckCircle2, XCircle, Eye,
   ChevronLeft, ChevronRight, Plus
 } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 import '../css/dashboard/refunds.css';
 import { fmtDate, fmtLKR } from '../utils/financeFormatters'
 
@@ -24,6 +25,29 @@ export default function Refunds() {
   const [rejectModal, setRejectModal] = useState(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [approveModal, setApproveModal] = useState(null);
+
+  const kpi = useMemo(() => {
+    const now = new Date();
+    let pendingCount = 0, approved7d = 0;
+    const dayMap = {};
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      dayMap[d.toISOString().slice(0,10)] = 0;
+    }
+    (items || []).forEach(r => {
+      if (r.status === 'Pending') pendingCount++;
+      const created = (r.createdAt || '').slice(0,10);
+      if (created in dayMap) dayMap[created] += 1;
+      if (r.status === 'Approved') {
+        const processed = (r.processedAt || r.updatedAt || '').slice(0,10);
+        const sixDaysAgo = new Date(now); sixDaysAgo.setDate(now.getDate() - 6);
+        if (processed && new Date(processed) >= sixDaysAgo) approved7d++;
+      }
+    });
+    const series = Object.entries(dayMap).map(([date, v]) => ({ date, v }));
+    return { pendingCount, approved7d, series };
+  }, [items]);
 
   const load = async () => {
     try {
@@ -107,10 +131,9 @@ export default function Refunds() {
     <div>
       <Toaster position="top-right" />
       <div className="rf-head">
-        <h2>Refunds</h2>
         <div className="rf-head-actions">
           <button className="fm-btn"><RefreshCcw size={16} /> Refresh</button>
-          <button className="fm-btn-back"><Plus size={16} /> New Refund Request</button>
+          <button className="fm-btn-back" onClick={() => setCreateOpen(true)}><Plus size={16} /> New Refund Request</button>
         </div>
       </div>
 
@@ -132,6 +155,28 @@ export default function Refunds() {
         </div>
       </div>
 
+      <div className="fm-kpis">
+        <div className="fm-kpi">
+          <div className="title">Pending</div>
+          <div className="value">{kpi.pendingCount}</div>
+        </div>
+        <div className="fm-kpi">
+          <div className="title">Approved (7d)</div>
+          <div className="value">{kpi.approved7d}</div>
+        </div>
+        <div className="fm-kpi">
+          <div className="title">Requests (7d)</div>
+          <div className="value">{kpi.series.reduce((s, x) => s + x.v, 0)}</div>
+          <div className="spark">
+            <ResponsiveContainer width="100%" height={40}>
+              <AreaChart data={kpi.series} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                <Area type="monotone" dataKey="v" stroke="#54413C" fill="#FFEBC6" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
       <div className="fm-card">
         {loading ? <Skeleton rows={8} /> : (
           <>
@@ -142,7 +187,7 @@ export default function Refunds() {
                   <th>Owner</th>
                   <th>Amount</th>
                   <th>Status</th>
-                  <th className="right" style={{ width: "240px" }}>Actions</th>
+                  <th className="right">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -161,17 +206,17 @@ export default function Refunds() {
                     <td className="mono">{fmtLKR(r.amount)}</td>
                     <td><span className={`tag-pill ${r.status?.toLowerCase()}`}>{r.status}</span></td>
                     <td className="right">
-                      <div className="row end">
+                      <div className="row end rf-actions">
                         <button className="fm-btn fm-btn-ghost" onClick={() => setView(r)}><Eye size={16} /></button>
                         {r.status === 'Pending' && (
                           <>
                             <button
-                              className="rf-approve-btn"
+                              className="fm-btn fm-btn-success"
                               onClick={() => setApproveModal(r)}
                             >
                               <CheckCircle2 size={16} /> Approve
                             </button>
-                            <button className="rf-reject-btn" onClick={() => setRejectModal(r)}>
+                            <button className="fm-btn fm-btn-danger" onClick={() => setRejectModal(r)}>
                               <XCircle size={16} /> Reject
                             </button>
                           </>
@@ -197,17 +242,19 @@ export default function Refunds() {
 
       {view && <RefundViewModal open onClose={() => setView(null)} r={view} />}
       {rejectModal && (
-        <RejectModal open onClose={() => setRejectModal(null)} onReject={reason => reject(rejectModal._id, reason)} />
+        <RejectModal
+          open
+          onClose={() => setRejectModal(null)}
+          onReject={reason => reject(rejectModal._id, reason)}
+          r={rejectModal}
+        />
       )}
       {createOpen && <CreateRefundModal open onClose={() => setCreateOpen(false)} onCreate={createRefund} />}
       {approveModal && (
         <ApproveModal
           open
           onClose={() => setApproveModal(null)}
-          onApprove={(id) => {
-            approve(id);
-            setApproveModal(null);
-          }}
+          onApprove={(id) => approve(id)}
           r={approveModal}
         />
       )}
@@ -253,17 +300,35 @@ function RefundViewModal({ open, onClose, r }) {
   );
 }
 
-function RejectModal({ open, onClose, onReject }) {
+function RejectModal({ open, onClose, onReject, r }) {
   const [reason, setReason] = useState('');
+  const [busy, setBusy] = useState(false);
+  const handleReject = async () => {
+    if (!reason?.trim()) return toast.error('Reason required');
+    try {
+      setBusy(true);
+      const ret = onReject?.(reason);
+      if (ret && typeof ret.then === 'function') await ret;
+      onClose?.();
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <Modal open={open} onClose={onClose} title="Reject refund">
+      {r?.reason && (
+        <div className="rf-reason-block">
+          <strong>Original request reason:</strong>
+          <div className="reason-text">{r.reason}</div>
+        </div>
+      )}
       <div className="field">
         <label>Reason</label>
         <textarea className="input" rows={4} value={reason} onChange={e => setReason(e.target.value)} />
       </div>
       <div className="row end rf-reject-actions">
-        <button className="rf-cancel-btn" onClick={onClose}>Cancel</button>
-        <button className="rf-reject-btn" onClick={() => onReject(reason)}>Reject</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
+        <button className="fm-btn fm-btn-danger" onClick={handleReject} disabled={busy}>{busy ? 'Rejecting…' : 'Reject'}</button>
       </div>
     </Modal>
   )
@@ -271,7 +336,18 @@ function RejectModal({ open, onClose, onReject }) {
 
 function CreateRefundModal({ open, onClose, onCreate }) {
   const [form, setForm] = useState({ paymentID: '', reason: '' });
+  const [busy, setBusy] = useState(false);
   const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
+  const handleSubmit = async () => {
+    try {
+      setBusy(true);
+      const ret = onCreate?.(form);
+      if (ret && typeof ret.then === 'function') await ret;
+      onClose?.();
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <Modal open={open} onClose={onClose} title="New Refund Request">
       <div className="field"><label>Payment ID</label>
@@ -279,15 +355,26 @@ function CreateRefundModal({ open, onClose, onCreate }) {
       <div className="field"><label>Reason</label>
         <textarea className="input" rows={3} value={form.reason} onChange={e => set('reason', e.target.value)} /></div>
       <div className="row end rf-create-actions">
-        <button className="rf-cancel-btn" onClick={onClose}>Cancel</button>
-        <button className="rf-submit-btn" onClick={() => onCreate(form)}>Submit</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
+        <button className="fm-btn fm-btn-primary" onClick={handleSubmit} disabled={busy}>{busy ? 'Submitting…' : 'Submit'}</button>
       </div>
     </Modal>
   )
 }
 
 function ApproveModal({ open, onClose, onApprove, r }) {
+  const [busy, setBusy] = useState(false);
   if (!r) return null;
+  const handleApprove = async () => {
+    try {
+      setBusy(true);
+      const ret = onApprove?.(r._id);
+      if (ret && typeof ret.then === 'function') await ret;
+      onClose?.();
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <Modal open={open} onClose={onClose} title="Approve Refund Request">
       <div className="summary vlist">
@@ -312,8 +399,8 @@ function ApproveModal({ open, onClose, onApprove, r }) {
         Are you sure you want to approve this refund request?
       </div>
       <div className="row end rf-view-actions" style={{ marginTop: '12px' }}>
-        <button className="rf-cancel-btn" onClick={onClose}>Cancel</button>
-        <button className="rf-approve-btn" onClick={() => onApprove(r._id)}>Approve</button>
+        <button className="fm-btn fm-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
+        <button className="fm-btn fm-btn-success" onClick={handleApprove} disabled={busy}>{busy ? 'Approving…' : 'Approve'}</button>
       </div>
     </Modal>
   );

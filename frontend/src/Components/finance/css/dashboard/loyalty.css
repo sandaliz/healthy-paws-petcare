@@ -1,7 +1,7 @@
 /* ==== LOYALTY PAGE STYLES (fully scoped & consistent) ==== */
 
 .loy-page {
-  font-family: Poppins, sans-serif;
+  font-family: 'Roboto', sans-serif;
   color: #54413C;
 }
 
@@ -15,7 +15,7 @@
   justify-content: center;
   gap: 6px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 16px;
   border-radius: 8px;
   padding: 8px 14px;
   cursor: pointer;
@@ -76,7 +76,7 @@
 .loy-page .loy-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 16px;
 }
 .loy-page .loy-title {

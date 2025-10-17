@@ -146,7 +146,7 @@ export default function OnlinePay() {
   const invoiceBlocked = invoice && ["Paid", "Refunded", "Cancelled"].includes(String(invoice.status));
 
   return (
-    <div className="finance-scope">
+    <div className="finance-scope op-bg op-full">
       <div className="pay-wrap">
         <Toaster position="top-right" />
         <div className="page-header">
@@ -157,7 +157,7 @@ export default function OnlinePay() {
           <button className="fm-btn-back" onClick={() => navigate(-1)}>Back to Payment Options</button>
         </div>
 
-        <div className="card">
+        <div className="op-card">
           {!process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY && (
             <div className="notice error notice-stripe-missing">
               Stripe key missing. Set REACT_APP_STRIPE_PUBLISHABLE_KEY

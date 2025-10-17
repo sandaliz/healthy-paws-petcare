@@ -7,7 +7,7 @@
 .bf-payments-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 16px;
 }
 
@@ -32,10 +32,11 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  flex: 1;
 }
 
 .bf-payments-search {
-  flex: 1;
+  flex: 2 1 50%;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -70,6 +71,13 @@
   border-radius: 8px;
   background: #fff;
   font-size: 14px;
+  min-width: 150px;
+}
+
+@media (max-width: 920px) {
+  .bf-payments-filters { flex-wrap: wrap; row-gap: 10px; }
+  .bf-payments-filters-left { flex-wrap: wrap; }
+  .bf-payments-search { flex: 1 1 100%; }
 }
 
 /* ✅ Exclude toggle */
@@ -140,38 +148,7 @@
   padding: 16px;
 }
 
-.bf-payments-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.bf-payments-table th,
-.bf-payments-table td {
-  border-bottom: 1px dashed #e5e7eb;
-  padding: 14px 12px;
-  text-align: left;
-  vertical-align: top;
-}
-
-.bf-payments-table thead th {
-  background: #ffe1a5;
-  font-weight: 700;
-  color: #54413c;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.bf-payments-table tbody tr:hover {
-  background: #fffaf4;
-}
-
-.bf-payments-cell-right {
-  text-align: right;
-}
-
-.bf-payments-muted {
-  color: #9ca3af;
-  font-size: 13px;
-}
+/* table uses shared .fm-table, .mono and .muted */
 
 /* ✅ Customer cells */
 .bf-payments-owner-name {
@@ -188,56 +165,7 @@
 }
 
 /* ✅ Buttons */
-.bf-payments-btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #cfd3d8;
-  background: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.15s ease;
-}
-
-.bf-payments-btn:hover {
-  background: #f7f7f7;
-}
-
-.bf-payments-btn-primary {
-  background: #ffd58e;
-  border-color: #ffd58e;
-  color: #54413c;
-}
-
-.bf-payments-btn-ghost {
-  background: #e3ebf4;
-  border-color: #d1d5db;
-  color: #374151;
-}
-
-.bf-payments-btn-ghost:hover {
-  background: #989a9f;
-  color: #111827;
-}
-
-/* Confirm button */
-.bf-payments-btn-confirm {
-  background: #3b82f6;
-  border: 1px solid #1e3a8a;
-  color: #fff;
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
-}
-
-.bf-payments-btn-confirm:hover {
-  background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-}
+/* buttons now use shared .fm-btn variants */
 
 /* Row of action buttons */
 .bf-payments-actions {
@@ -253,6 +181,19 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 14px;
+}
+
+.skeleton { display:grid; gap:8px; }
+.skeleton-row {
+  height:14px;
+  background:linear-gradient(90deg,#f3f4f6,#e5e7eb,#f3f4f6);
+  background-size:200% 100%;
+  animation:sk 1s linear infinite;
+  border-radius:6px;
+}
+@keyframes sk {
+  0% { background-position:200% 0; }
+  100% { background-position:-200% 0; }
 }
 
 /* ✅ Method Pills */

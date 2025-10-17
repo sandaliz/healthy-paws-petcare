@@ -10,7 +10,7 @@ import Modal from './components/Modal';
 const link = ({ isActive }) => `fm-nav-link ${isActive ? 'active' : ''}`;
 
 export default function Sidebar() {
-  const [user, setUser] = useState(null);
+  const [, setUser] = useState(null);
   const [logoutModal, setLogoutModal] = useState(false);
   const navigate = useNavigate();
 
@@ -79,7 +79,7 @@ export default function Sidebar() {
         <Modal open={logoutModal} onClose={() => setLogoutModal(false)} title="Confirm Logout">
           <div className="notice error">⚠️ Are you sure you want to logout?</div>
           <div className="row end delete-coupon-actions">
-            <button className="loyalty-btn-ghost" onClick={() => setLogoutModal(false)}>Cancel</button>
+            <button className="fm-btn fm-btn-ghost" onClick={() => setLogoutModal(false)}>Cancel</button>
             <button className="fm-logout-btn" onClick={handleLogout}>
               <LogOut size={16} /> Logout
             </button>
