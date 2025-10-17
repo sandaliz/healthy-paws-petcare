@@ -9,7 +9,7 @@ const EmergencyPage = () => {
   const [treatment, setTreatment] = useState("");
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
-  const navigate = useNavigate();
+
 
   // ✅ Always call hooks
   useEffect(() => {
