@@ -87,3 +87,35 @@ export const handleEmergencyAction = async (req, res) => {
     return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+/**
+ * Get emergency history by appointment ID
+ * @route GET /api/emergencies/history/:appointmentID
+ */
+export const getEmergencyHistoryById = async (req, res) => {
+  try {
+    const { appointmentID } = req.params;
+
+    if (!appointmentID) {
+      return res.status(400).json({ message: "Missing appointment ID" });
+    }
+
+    // Find all emergencies for this appointment
+    const history = await Emergency.find({ pet: appointmentID })
+      .populate("pet", "petName ownerName email") // optional: show details
+      .sort({ createdAt: -1 });
+
+    if (!history || history.length === 0) {
+      return res.status(404).json({ message: "No emergency history found for this appointment" });
+    }
+
+    return res.status(200).json({
+      message: "Emergency history retrieved successfully",
+      count: history.length,
+      data: history,
+    });
+  } catch (err) {
+    console.error("❌ Error fetching emergency history:", err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
