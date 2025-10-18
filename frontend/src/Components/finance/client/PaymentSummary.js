@@ -4,6 +4,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import { api } from '../services/financeApi';
 import useAuthUser from '../hooks/useAuthUser';
 import Modal from '../dashboard/components/Modal';
+import Navbar from '../../Home/Navbar'
 import '../css/clientPay.css';
 import { fmtLKR, fmtDate, fmtDateTime } from '../utils/financeFormatters';
 
@@ -286,7 +287,7 @@ export default function PaymentSummary({ embedded = false }) {
     doc.save("Payment_Report.pdf");
   };
 
-  const scopeClasses = embedded ? "finance-scope finance-scope-embedded" : "finance-scope ps-bg ps-full";
+  const scopeClasses = embedded ? "finance-scope finance-scope-embedded" : "finance-scope finance-nav-page ps-bg ps-full";
   const shellClasses = embedded ? "pawledger-shell pawledger-shell--embedded" : "pawledger-shell";
   const invoiceTotals = useMemo(
     () => deriveInvoiceTotals(invoice, payments),
@@ -295,13 +296,16 @@ export default function PaymentSummary({ embedded = false }) {
   const { subtotal: invSubtotal, tax: invTax, discount: invDiscount, total: invTotal } = invoiceTotals;
 
   return (
+    <>
+    <div className="finance-nav-shell">
+      {!embedded && <Navbar />}
     <div className={scopeClasses}>
       <div className={shellClasses}>
         <Toaster position="top-right" />
         <div className="page-header">
           <div>
             <h1>Your Payment Ledger</h1>
-            <p className="muted">Track your invoices, payments & refunds in style.</p>
+            <p className="muted">Track your invoices, payments & refunds here.</p>
           </div>
           <div className="row">
             <button className="fm-btn fm-btn-primary" onClick={handleGenerateReport}>
@@ -517,6 +521,8 @@ export default function PaymentSummary({ embedded = false }) {
         </div>
       </div>
     </div>
+    </div>
+    </>
   );
 }
 

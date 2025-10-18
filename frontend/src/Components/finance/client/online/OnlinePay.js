@@ -12,6 +12,7 @@ import {
 } from '@stripe/react-stripe-js';
 import { api } from '../../services/financeApi';
 import useAuthUser from "../../hooks/useAuthUser";
+import Navbar from "../../../Home/Navbar"
 import '../../css/clientPay.css';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '');
@@ -146,6 +147,9 @@ export default function OnlinePay() {
   const invoiceBlocked = invoice && ["Paid", "Refunded", "Cancelled"].includes(String(invoice.status));
 
   return (
+      <>
+      <div className="finance-nav-shell">
+      <Navbar />
     <div className="finance-scope op-bg op-full">
       <div className="pay-wrap">
         <Toaster position="top-right" />
@@ -382,6 +386,8 @@ export default function OnlinePay() {
         </div>
       </div>
     </div>
+    </div>
+    </>
   );
 }
 
