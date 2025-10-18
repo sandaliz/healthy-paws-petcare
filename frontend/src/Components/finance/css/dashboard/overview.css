@@ -44,7 +44,6 @@
   cursor: not-allowed;
   filter: grayscale(0.2);
 }
-
 /* ======= New Controls (timeframe + export section toggles) ======= */
 .bf-overview-controls {
   display: flex;

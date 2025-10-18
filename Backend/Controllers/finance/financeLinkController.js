@@ -13,7 +13,7 @@ const generateInvoiceID = () => {
 
 const toMoney = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 
-// 🔹 Create Invoice From Cart
+// Create Invoice From Cart
 export const createInvoiceFromCart = async (req, res) => {
   try {
     const { cartId, userId } = req.body;

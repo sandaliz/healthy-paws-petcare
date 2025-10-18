@@ -50,16 +50,30 @@ export default function PromotionTab() {
 
   const isExpired = (expiry) => new Date(expiry) < new Date();
 
+  const getCouponStatus = (coupon) => {
+    // Priority: Used > Expired > Revoked > Available
+    if (coupon.status === "Used") return "used";
+    if (coupon.status === "Expired") return "expired";
+    if (coupon.status === "Revoked") return "expired"; // Treat revoked as expired for UI
+    if (isExpired(coupon.expiryDate)) return "expired";
+    if (coupon.scope === "GLOBAL" && coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) return "used";
+    return "available";
+  };
+
   const sortedMyCoupons = [...myCoupons].sort((a, b) => {
-    const aExpired = isExpired(a.expiryDate) || a.status !== "Available";
-    const bExpired = isExpired(b.expiryDate) || b.status !== "Available";
-    return aExpired === bExpired ? 0 : aExpired ? 1 : -1;
+    const aStatus = getCouponStatus(a);
+    const bStatus = getCouponStatus(b);
+    // Sort: available first, then used, then expired
+    const statusOrder = { available: 0, used: 1, expired: 2 };
+    return statusOrder[aStatus] - statusOrder[bStatus];
   });
 
   const sortedGlobalCoupons = [...globalCoupons].sort((a, b) => {
-    const aExpired = isExpired(a.expiryDate) || (a.usageLimit > 0 && a.usedCount >= a.usageLimit);
-    const bExpired = isExpired(b.expiryDate) || (b.usageLimit > 0 && b.usedCount >= b.usageLimit);
-    return aExpired === bExpired ? 0 : aExpired ? 1 : -1;
+    const aStatus = getCouponStatus(a);
+    const bStatus = getCouponStatus(b);
+    // Sort: available first, then used, then expired
+    const statusOrder = { available: 0, used: 1, expired: 2 };
+    return statusOrder[aStatus] - statusOrder[bStatus];
   });
 
   return (
@@ -105,10 +119,9 @@ export default function PromotionTab() {
         ) : (
           <div className="coupon-grid">
             {sortedMyCoupons.map((c) => {
-              const expired = isExpired(c.expiryDate);
-              const used = c.status !== "Available";
+              const status = getCouponStatus(c);
               return (
-                <div className={`coupon-card ${expired ? "expired" : used ? "claimed" : "active"}`} key={c.couponId}>
+                <div className={`coupon-card ${status === "available" ? "active" : status === "used" ? "claimed" : "expired"}`} key={c.couponId}>
                   <div className="code">{c.code}</div>
                   <div className="discount">
                     {c.discountType === "Percentage" ? `${c.discountValue}% OFF` : `LKR ${c.discountValue} OFF`}
@@ -126,15 +139,15 @@ export default function PromotionTab() {
         <h3> Claim New Offers!</h3>
         <div className="coupon-grid">
           {sortedGlobalCoupons.map((c) => {
-            const expired = isExpired(c.expiryDate);
-            const exhausted = c.usageLimit > 0 && c.usedCount >= c.usageLimit;
+            const status = getCouponStatus(c);
+            const canClaim = status === "available";
             return (
-              <div className={`coupon-card ${expired ? "expired" : exhausted ? "claimed" : "active"}`} key={c._id}>
+              <div className={`coupon-card ${status === "available" ? "active" : status === "used" ? "claimed" : "expired"}`} key={c._id}>
                 <div className="code">{c.code}</div>
                 <div className="discount">{c.discountType === "Percentage" ? `${c.discountValue}%` : `LKR ${c.discountValue}`}</div>
                 <div className="meta">Min {fmtLKR(c.minInvoiceAmount)} • Expires {fmtDate(c.expiryDate)}</div>
-                <button className="btn secondary" disabled={expired || exhausted} onClick={() => handleClaim(c)}>
-                  {expired ? "Expired" : exhausted ? "Claimed" : "Claim"}
+                <button className="fm-btn fm-btn-secondary" disabled={!canClaim} onClick={() => handleClaim(c)}>
+                  {status === "expired" ? "Expired" : status === "used" ? "Claimed" : "Claim"}
                 </button>
               </div>
             );

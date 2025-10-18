@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
 import { api } from '../services/financeApi';
 import useAuthUser from '../hooks/useAuthUser';
@@ -22,16 +22,70 @@ const PALETTE = {
   BankTransfer: "#f97316"
 };
 
-export default function PaymentSummary() {
-  const nav = useNavigate();
+function deriveInvoiceTotals(inv, paymentRecords = [], fallbackDiscount = null) {
+  if (!inv) return {
+    subtotal: 0,
+    tax: 0,
+    discount: 0,
+    total: 0,
+    source: 'invoice'
+  };
+
+  const baseSubtotal = inv.subtotal ?? null;
+  const baseTax = inv.tax ?? null;
+  const baseDiscount = inv.discountAmount ?? inv.discount ?? null;
+  const baseTotal = inv.total ?? null;
+
+  if (baseSubtotal != null && baseTax != null && baseTotal != null) {
+    return {
+      subtotal: Number(baseSubtotal) || 0,
+      tax: Number(baseTax) || 0,
+      discount: Number(baseDiscount) || 0,
+      total: Number(baseTotal) || 0,
+      source: 'invoice'
+    };
+  }
+
+  const matchedPayment = paymentRecords.find(p => {
+    const pid = p.invoiceID;
+    if (!pid) return false;
+    return String(pid._id || pid) === String(inv._id || inv.invoiceID);
+  });
+
+  const paymentAmount = matchedPayment?.amount != null ? Number(matchedPayment.amount) : null;
+  const paymentDiscount = matchedPayment?.discount != null ? Number(matchedPayment.discount) : null;
+  const discountToUse = paymentDiscount ?? fallbackDiscount ?? 0;
+  const subtotal = baseSubtotal != null
+    ? Number(baseSubtotal)
+    : paymentAmount != null
+      ? Math.max(0, Number(paymentAmount) + Number(inv.tax || 0) + discountToUse)
+      : (Number(inv.total) || 0);
+  const tax = baseTax != null
+    ? Number(baseTax)
+    : Number(inv.tax || 0);
+  const total = baseTotal != null
+    ? Number(baseTotal)
+    : paymentAmount != null
+      ? Number(paymentAmount)
+      : Math.max(0, subtotal - discountToUse + tax);
+
+  return {
+    subtotal,
+    tax,
+    discount: discountToUse,
+    total,
+    source: paymentAmount != null ? 'payment' : 'fallback'
+  };
+}
+
+export default function PaymentSummary({ embedded = false }) {
   const [params] = useSearchParams();
   const newPaymentId = params.get('new') || '';
-  const { user: authUser, loading: authLoading, error: authError } = useAuthUser();
+  const { user: authUser } = useAuthUser();
   const userId = authUser?._id;
 
   const [payments, setPayments] = useState([]);
   const [refunds, setRefunds] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   // MODAL states
   const [viewInvId, setViewInvId] = useState(null);
@@ -50,7 +104,6 @@ export default function PaymentSummary() {
     if (!userId) return;
     (async () => {
       try {
-        setLoading(true);
         const [pays, reqs] = await Promise.all([
           api.get(`/payments?userId=${userId}`),
           api.get(`/refunds?userId=${userId}`)
@@ -59,8 +112,6 @@ export default function PaymentSummary() {
         setRefunds((reqs?.requests || []).filter(r => r.userID?._id === userId));
       } catch (e) {
         toast.error(e.message || 'Failed to load your PawLedger');
-      } finally {
-        setLoading(false);
       }
     })();
   }, [userId]);
@@ -77,10 +128,6 @@ export default function PaymentSummary() {
     return m;
   }, [refunds]);
 
-  const highlighted = useMemo(
-    () => payments.find(p => p._id === newPaymentId) || null,
-    [payments, newPaymentId]
-  );
   const others = useMemo(
     () => payments.filter(p => p._id !== newPaymentId)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
@@ -239,9 +286,17 @@ export default function PaymentSummary() {
     doc.save("Payment_Report.pdf");
   };
 
+  const scopeClasses = embedded ? "finance-scope finance-scope-embedded" : "finance-scope ps-bg ps-full";
+  const shellClasses = embedded ? "pawledger-shell pawledger-shell--embedded" : "pawledger-shell";
+  const invoiceTotals = useMemo(
+    () => deriveInvoiceTotals(invoice, payments),
+    [invoice, payments]
+  );
+  const { subtotal: invSubtotal, tax: invTax, discount: invDiscount, total: invTotal } = invoiceTotals;
+
   return (
-    <div className="finance-scope">
-      <div className="pawledger-shell">
+    <div className={scopeClasses}>
+      <div className={shellClasses}>
         <Toaster position="top-right" />
         <div className="page-header">
           <div>
@@ -348,7 +403,26 @@ export default function PaymentSummary() {
                   </li>
                 ))}
               </ul>
-              <p><b>Total:</b> {fmtLKR(invoice.total)}</p>
+              <div className="invoice-summary-grid">
+                <div>
+                  <span>Subtotal</span>
+                  <span>{fmtLKR(invSubtotal)}</span>
+                </div>
+                <div>
+                  <span>Tax</span>
+                  <span>{fmtLKR(invTax)}</span>
+                </div>
+                {invDiscount > 0 && (
+                  <div className="discount-row">
+                    <span>Discount</span>
+                    <span>- {fmtLKR(invDiscount)}</span>
+                  </div>
+                )}
+                <div className="grand-total">
+                  <span>Total</span>
+                  <span>{fmtLKR(invTotal)}</span>
+                </div>
+              </div>
             </div>
           )}
         </Modal>

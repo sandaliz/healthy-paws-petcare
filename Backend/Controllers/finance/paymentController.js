@@ -146,7 +146,7 @@ async function cancelOtherPendingPayments(invoiceId, keepPaymentId) {
 }
 
 /**
- * ✅ Updated resolveOwnerDoc to use User model and "name/email"
+ * Updated resolveOwnerDoc to use User model and "name/email"
  */
 async function resolveOwnerDoc({ invoice, payment }) {
   if (invoice?.userID && typeof invoice.userID === "object" && (invoice.userID.name || invoice.userID.email)) {
@@ -312,8 +312,6 @@ export const confirmOfflinePayment = async (req, res) => {
         if (!loyalty) {
           loyalty = await Loyalty.create({ userID: userId, points: 0, tier: "Puppy Pal" });
         }
-        await loyalty.addPoints(payment.amount);
-
         await loyalty.addPoints(payment.amount);
       } catch (e) {
         console.error("Loyalty add error", e);
@@ -540,6 +538,19 @@ export const confirmStripePayment = async (req, res) => {
       }
 
       await cancelOtherPendingPayments(invoice._id, payment._id);
+    }
+
+    if (invoice?.userID) {
+      try {
+        const userId = invoice.userID._id || invoice.userID;
+        let loyalty = await Loyalty.findOne({ userID: userId });
+        if (!loyalty) {
+          loyalty = await Loyalty.create({ userID: userId, points: 0, tier: "Puppy Pal" });
+        }
+        await loyalty.addPoints(payment.amount);
+      } catch (e) {
+        console.error("Loyalty add error", e);
+      }
     }
 
     res.json({ message: "Stripe payment confirmed and invoice marked as Paid", payment });

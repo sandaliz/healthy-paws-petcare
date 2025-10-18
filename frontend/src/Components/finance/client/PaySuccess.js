@@ -66,7 +66,7 @@ export default function PaySuccess() {
   const couponCode = payment?.couponId?.code || null;
 
   return (
-    <div className="finance-scope">
+    <div className="finance-scope ps-bg ps-full">
       <div className="pay-wrap">
         <div className="card">
           <div className="success-hero">

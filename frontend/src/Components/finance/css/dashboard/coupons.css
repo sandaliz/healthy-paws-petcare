@@ -106,7 +106,6 @@
   position: relative;
 }
 .cp-highlight-count::before {
-  content: '🏆';
   position: absolute;
   left: 10px;
   top: 50%;
@@ -156,6 +155,19 @@
 .coupon-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.cp-card-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.cp-card-status-note {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
 }
 
 .coupon-code {
@@ -242,6 +254,11 @@
   background: #FEE2E2;
   color: #7F1D1D;
   border-color: #FCA5A5;
+}
+.tag-pill.amber {
+  background: #FEF3C7;
+  color: #92400E;
+  border-color: #FCD34D;
 }
 .tag-pill.gray {
   background: #E5E7EB;

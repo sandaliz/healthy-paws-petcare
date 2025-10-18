@@ -239,7 +239,7 @@ export default function PaymentSummary() {
   };
 
   return (
-    <div className="finance-scope">
+    <div className="finance-scope ps-bg ps-full">
     <div className="pawledger-shell">
       <Toaster position="top-right" />
       <div className="page-header">

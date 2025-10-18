@@ -588,9 +588,9 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess, onPayStateChange
         </div>
       </div>
       <div className="row end pay-actions">
-        <button className="btn ghost" onClick={handleCancelClick}>Cancel</button>
+        <button className="fm-btn fm-btn-ghost" onClick={handleCancelClick}>Cancel</button>
         <button
-          className="btn secondary"
+          className="fm-btn fm-btn-secondary"
           onClick={pay}
           disabled={!stripe || !elements || paying} 
           title={!formValid ? "Please fill all required details" : ""}
@@ -604,8 +604,8 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess, onPayStateChange
             <h3>Abort Payment?</h3>
             <p>A payment is currently processing. Do you want to abort it?</p>
             <div className="row end">
-              <button className="btn ghost" onClick={() => setShowAbortConfirm(false)}>Keep waiting</button>
-              <button className="btn danger" onClick={() => { setPaying(false); setShowAbortConfirm(false); window.history.back(); }}>
+              <button className="fm-btn fm-btn-ghost" onClick={() => setShowAbortConfirm(false)}>Keep waiting</button>
+              <button className="fm-btn fm-btn-danger" onClick={() => { setPaying(false); setShowAbortConfirm(false); window.history.back(); }}>
                 Abort Payment
               </button>
             </div>

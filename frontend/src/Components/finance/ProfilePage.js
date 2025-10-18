@@ -109,20 +109,21 @@ const ProfilePage = () => {
       <div className="user-profile-container">
         {/* Sidebar */}
         <div className="user-profile-sidebar">
-          <div className="user-sidebar-header">
-            <img src={assets.profile} alt="avatar" className="user-profile-avatar" />
-            <div className="user-basic-info">
-              <h2 className="user-display-name">{user.name}</h2>
-              <p className="user-role">User</p>
-            </div>
-          </div>
+          <button
+            className="user-sidebar-brand"
+            onClick={() => navigate('/')}
+            aria-label="Go to home"
+          >
+            <span className="user-brand-icon">🐾</span>
+            <span className="user-brand-text">Healthy Paws</span>
+          </button>
 
           <div className="user-sidebar-menu">
             <div
               className={`user-menu-item ${activeTab === "profile" ? "user-menu-active" : ""}`}
               onClick={() => setActiveTab("profile")}
             >
-              <span>Profile Information</span>
+              <span>Profile</span>
             </div>
             <div
               className={`user-menu-item ${
@@ -139,6 +140,12 @@ const ProfilePage = () => {
             >
               <span>PawPerks</span>
             </div>
+          </div>
+
+          <div className="user-sidebar-footer">
+            <button className="user-logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         </div>
 
@@ -302,7 +309,7 @@ const ProfilePage = () => {
 
           {activeTab === "ledger" && (
             <div className="user-tab-content">
-              <PaymentSummary />   
+              <PaymentSummary embedded />   
             </div>
           )}
 

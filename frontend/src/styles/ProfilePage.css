@@ -69,6 +69,36 @@
   padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+}
+
+.user-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--user-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+
+.user-sidebar-brand:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.user-brand-icon {
+  font-size: 1.4rem;
+}
+
+.user-brand-text {
+  letter-spacing: 0.03em;
 }
 
 .user-sidebar-header {
@@ -103,7 +133,9 @@
 }
 
 .user-sidebar-menu {
-  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .user-menu-item {

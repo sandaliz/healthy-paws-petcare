@@ -70,6 +70,88 @@ const useDebounceAction = (action, delay = 800) => {
   };
 };
 
+const STATUS_META = {
+  available: { label: "Ready to use", pill: "success", card: "active", order: 0 },
+  blocked: { label: "Blocked", pill: "warn", card: "blocked", order: 1 },
+  claimed: { label: "In your wallet", pill: "muted", card: "claimed", order: 2 },
+  used: { label: "Used", pill: "muted", card: "claimed", order: 2 },
+  exhausted: { label: "Fully claimed", pill: "muted", card: "claimed", order: 2 },
+  expired: { label: "Expired", pill: "danger", card: "expired", order: 3 },
+  revoked: { label: "Revoked", pill: "danger", card: "expired", order: 3 },
+};
+
+const getStatusMeta = (key) => STATUS_META[key] || STATUS_META.available;
+
+const normalizeCouponState = (coupon) => {
+  const derivedRaw = coupon?.derivedStatus || coupon?.status || "Available";
+  const derived = String(derivedRaw).toLowerCase();
+  const expiresAt = coupon?.expiryDate ? new Date(coupon.expiryDate) : null;
+  const expired = coupon?.expired ?? (expiresAt ? expiresAt < new Date() : false);
+  const meetsInvoiceRequirement = coupon?.meetsInvoiceRequirement;
+  const blockedReason =
+    coupon?.blockedReason || (meetsInvoiceRequirement === false ? "Invoice minimum not met" : null);
+  let key = derived;
+  if (derived === "available" && (blockedReason || coupon?.readyToUse === false)) {
+    key = "blocked";
+  }
+  if (derived === "available" && coupon?.canApplyNow === false) {
+    key = "blocked";
+  }
+  const meta = getStatusMeta(key);
+  return {
+    key,
+    meta,
+    expired,
+    blockedReason,
+    derivedRaw,
+  };
+};
+
+const getGlobalCouponState = (coupon, walletCoupons) => {
+  const expired = new Date(coupon.expiryDate) < new Date();
+  const exhausted = coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit;
+  const alreadyClaimed = walletCoupons.some((c) => (c.parentTemplateId || c.parentId) === coupon._id);
+  let key = "available";
+  let blockedReason = null;
+  if (expired) {
+    key = "expired";
+  } else if (exhausted) {
+    key = "exhausted";
+    blockedReason = "All claimed";
+  } else if (alreadyClaimed) {
+    key = "claimed";
+  }
+  return {
+    key,
+    meta: getStatusMeta(key),
+    expired,
+    exhausted,
+    alreadyClaimed,
+    blockedReason,
+  };
+};
+
+const couponOrder = (c, now, state) => {
+  const metaOrder = state.meta.order ?? 9;
+  const expiresAt = c.expiryDate ? new Date(c.expiryDate) : null;
+  const expiryTime = expiresAt ? expiresAt.getTime() : Infinity;
+  return metaOrder * 1e13 + (expiryTime || Infinity) - now.getTime();
+};
+
+const sortCoupons = (list, stateGetter = normalizeCouponState) => {
+  const now = new Date();
+  return [...list].sort((a, b) => {
+    const stateA = stateGetter(a);
+    const stateB = stateGetter(b);
+    const orderA = couponOrder(a, now, stateA);
+    const orderB = couponOrder(b, now, stateB);
+    if (orderA !== orderB) return orderA - orderB;
+    const dateA = new Date(a.createdAt || a.expiryDate || 0);
+    const dateB = new Date(b.createdAt || b.expiryDate || 0);
+    return dateB - dateA;
+  });
+};
+
 export default function PromotionTab() {
   const { user: authUser, loading: authLoading, error: authError } = useAuthUser();
   const ownerId = authUser?._id;
@@ -90,6 +172,12 @@ export default function PromotionTab() {
         status: "Available",
         code: tpl.code + "-TEMP",
         _id: "temp-" + Date.now(),
+        parentTemplateId: tpl._id,
+        derivedStatus: "Available",
+        readyToUse: true,
+        canApplyNow: true,
+        blockedReason: null,
+        createdAt: new Date().toISOString(),
       };
       setMyCoupons(prev => [...prev, optimisticCoupon]);
 
@@ -97,7 +185,7 @@ export default function PromotionTab() {
       
       toast.success(res.alreadyClaimed ? "Already in your wallet 💼" : "Coupon claimed! 🎉");
 
-      const uRes = await api.get(`/coupon/user-available?userId=${ownerId}`);
+      const uRes = await api.get(`/coupon/user-available?userId=${ownerId}&mode=wallet`);
       setMyCoupons(uRes.coupons || []);
     } catch (err) {
       toast.error(err.message || "Failed to claim coupon");
@@ -105,35 +193,8 @@ export default function PromotionTab() {
     }
   });
 
-  const isExpired = (expiry) => new Date(expiry) < new Date();
-
-  const couponOrder = (c, now) => {
-    const expired = isExpired(c.expiryDate);
-    const inactive = c.status !== "Available";
-    if (expired) return 3; // Expired last
-    if (inactive) return 2; // Used/claimed middle
-    return 1; // Active first
-  };
-
-  const sortedMyCoupons = [...myCoupons].sort((a, b) => {
-    const now = new Date();
-    const orderA = couponOrder(a, now);
-    const orderB = couponOrder(b, now);
-    if (orderA !== orderB) return orderA - orderB;
-    const dateA = new Date(a.createdAt || a.expiryDate || 0);
-    const dateB = new Date(b.createdAt || b.expiryDate || 0);
-    return dateB - dateA;
-  });
-
-  const sortedGlobalCoupons = [...globalCoupons].sort((a, b) => {
-    const now = new Date();
-    const orderA = couponOrder(a, now);
-    const orderB = couponOrder(b, now);
-    if (orderA !== orderB) return orderA - orderB;
-    const dateA = new Date(a.createdAt || a.expiryDate || 0);
-    const dateB = new Date(b.createdAt || b.expiryDate || 0);
-    return dateB - dateA;
-  });
+  const sortedMyCoupons = sortCoupons(myCoupons);
+  const sortedGlobalCoupons = sortCoupons(globalCoupons, (coupon) => getGlobalCouponState(coupon, myCoupons));
 
   useEffect(() => {
     if (!ownerId) {
@@ -145,7 +206,7 @@ export default function PromotionTab() {
       try {
         const lRes = await api.get(`/loyalty/${ownerId}`);
         setLoyalty(lRes.loyalty || null);
-        const uRes = await api.get(`/coupon/user-available?userId=${ownerId}`);
+        const uRes = await api.get(`/coupon/user-available?userId=${ownerId}&mode=wallet`);
         setMyCoupons(uRes.coupons || []);
         const gRes = await api.get(`/coupons?scope=GLOBAL`);
         setGlobalCoupons(gRes.coupons || []);
@@ -234,32 +295,85 @@ export default function PromotionTab() {
 
       {/* --- My Coupons --- */}
       <section className="pawperks-section">
-        <h3>My Coupons</h3>
-        {sortedMyCoupons.length === 0 && !loading ? (
-          <div className="empty-state">
-            <div>No active coupons yet!</div>
-            <div>Grab some exciting offers below!</div>
+        <h3>My Wallet</h3>
+        <p className="pawperks-section-subtext">
+          Claimed coupons appear here. They can be applied during checkout on both online and offline payments.
+        </p>
+        {loading && myCoupons.length === 0 ? (
+          <div className="coupon-grid">
+            {[...Array(3)].map((_, idx) => (
+              <div className="coupon-card skeleton" key={idx}>
+                <div className="pawperks-status-row">
+                  <span className="pawperks-status-pill pawperks-status-pill--muted">Loading…</span>
+                </div>
+                <div className="pawperks-card-top">
+                  <div className="code skeleton-text"></div>
+                  <div className="discount skeleton-text"></div>
+                </div>
+                <div className="pawperks-card-divider" aria-hidden="true"></div>
+                <div className="pawperks-card-meta">
+                  <span className="meta-item">
+                    <span className="meta-label">Min Spend</span>
+                    <span className="meta-value skeleton-text"></span>
+                  </span>
+                  <span className="meta-item">
+                    <span className="meta-label">Expires</span>
+                    <span className="meta-value skeleton-text"></span>
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="coupon-grid">
             {sortedMyCoupons.map((c) => {
-              const expired = isExpired(c.expiryDate);
-              const used = c.status !== "Available";
+              const state = normalizeCouponState(c);
               return (
                 <div
-                  className={`coupon-card ${expired ? "expired" : used ? "claimed" : "active"}`}
+                  className={`coupon-card ${state.meta.card}`}
                   key={c._id || c.couponId}
                   tabIndex={0}
-                  aria-label={`Coupon ${c.code}, ${expired ? 'expired' : used ? 'already used' : 'active'}, expires ${fmtDate(c.expiryDate)}`}
+                  aria-label={`Coupon ${c.code}, ${state.meta.label}, expires ${fmtDate(c.expiryDate)}`}
                 >
-                  <div className="code">{c.code}</div>
-                  <div className="discount">
-                    {c.discountType === "Percentage"
-                      ? `${c.discountValue}% OFF`
-                      : `${fmtLKR(c.discountValue)} OFF`}
+                  <div className="pawperks-status-row">
+                    <span className={`pawperks-status-pill pawperks-status-pill--${state.meta.pill}`}>
+                      {state.meta.label}
+                    </span>
+                    {state.blockedReason && state.blockedReason !== state.meta.label && (
+                      <span className="pawperks-status-pill pawperks-status-pill--muted">
+                        {state.blockedReason}
+                      </span>
+                    )}
                   </div>
-                  <div className="meta">
-                    Min {fmtLKR(c.minInvoiceAmount)} • Expires {fmtDate(c.expiryDate)}
+                  <div className="pawperks-card-top">
+                    <div className="code">{c.code}</div>
+                    <div className="discount">
+                      {c.discountType === "Percentage"
+                        ? `${c.discountValue}% OFF`
+                        : `${fmtLKR(c.discountValue)} OFF`}
+                    </div>
+                  </div>
+                  <div className="pawperks-card-divider" aria-hidden="true"></div>
+                  <div className="pawperks-card-meta">
+                    <span className="meta-item">
+                      <span className="meta-label">Min Spend</span>
+                      <span className="meta-value">{fmtLKR(c.minInvoiceAmount)}</span>
+                    </span>
+                    <span className="meta-item">
+                      <span className="meta-label">Expires</span>
+                      <span className="meta-value">{fmtDate(c.expiryDate)}</span>
+                    </span>
+                  </div>
+                  {c.description && (
+                    <div className="pawperks-card-description">{c.description}</div>
+                  )}
+                  <div className="pawperks-card-foot">
+                    {state.key === "used" && c.usedAt && (
+                      <span className="pawperks-card-note">Used on {fmtDate(c.usedAt)}</span>
+                    )}
+                    {state.key === "expired" && (
+                      <span className="pawperks-card-note">Expired on {fmtDate(c.expiryDate)}</span>
+                    )}
                   </div>
                   {c.invoiceID && (
                     <div className="source-link">
@@ -284,23 +398,57 @@ export default function PromotionTab() {
         ) : (
           <div className="coupon-grid">
             {sortedGlobalCoupons.map((c) => {
-              const expired = isExpired(c.expiryDate);
-              const exhausted = c.usageLimit > 0 && c.usedCount >= c.usageLimit;
-              const disabled = expired || exhausted;
+              const state = getGlobalCouponState(c, myCoupons);
+              const disabled = state.key !== "available";
+              const slotsLeft = c.usageLimit > 0 ? Math.max(c.usageLimit - c.usedCount, 0) : null;
               return (
                 <div
-                  className={`coupon-card ${expired ? "expired" : exhausted ? "claimed" : "active"}`}
+                  className={`coupon-card ${state.meta.card}`}
                   key={c._id}
                   tabIndex={0}
                 >
-                  <div className="code">{c.code}</div>
-                  <div className="discount">
-                    {c.discountType === "Percentage"
-                      ? `${c.discountValue}% OFF`
-                      : `${fmtLKR(c.discountValue)} OFF`}
+                  <div className="pawperks-status-row">
+                    <span className={`pawperks-status-pill pawperks-status-pill--${state.meta.pill}`}>
+                      {state.meta.label}
+                    </span>
+                    {state.blockedReason && state.blockedReason !== state.meta.label && (
+                      <span className="pawperks-status-pill pawperks-status-pill--muted">
+                        {state.blockedReason}
+                      </span>
+                    )}
                   </div>
-                  <div className="meta">
-                    Min {fmtLKR(c.minInvoiceAmount)} • Expires {fmtDate(c.expiryDate)}
+                  <div className="pawperks-card-top">
+                    <div className="code">{c.code}</div>
+                    <div className="discount">
+                      {c.discountType === "Percentage"
+                        ? `${c.discountValue}% OFF`
+                        : `${fmtLKR(c.discountValue)} OFF`}
+                    </div>
+                  </div>
+                  <div className="pawperks-card-divider" aria-hidden="true"></div>
+                  <div className="pawperks-card-meta">
+                    <span className="meta-item">
+                      <span className="meta-label">Min Spend</span>
+                      <span className="meta-value">{fmtLKR(c.minInvoiceAmount)}</span>
+                    </span>
+                    <span className="meta-item">
+                      <span className="meta-label">Expires</span>
+                      <span className="meta-value">{fmtDate(c.expiryDate)}</span>
+                    </span>
+                    {slotsLeft != null && (
+                      <span className="meta-item">
+                        <span className="meta-label">Claims Left</span>
+                        <span className="meta-value">{slotsLeft}</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="pawperks-card-foot">
+                    {slotsLeft != null && (
+                      <span className="pawperks-card-note">{slotsLeft} of {c.usageLimit} left</span>
+                    )}
+                    {state.key === "exhausted" && (
+                      <span className="pawperks-card-note">Claimed {c.usedCount} times</span>
+                    )}
                   </div>
                   <button
                     className="btn secondary"
@@ -308,7 +456,13 @@ export default function PromotionTab() {
                     onClick={() => handleClaim(c)}
                     aria-label={disabled ? "Coupon not available" : `Claim coupon ${c.code}`}
                   >
-                    {expired ? "Expired" : exhausted ? "Claimed" : "Claim"}
+                    {state.key === "available"
+                      ? "Claim"
+                      : state.key === "claimed"
+                        ? "In Wallet"
+                        : state.key === "exhausted"
+                          ? "Fully Claimed"
+                          : "Expired"}
                   </button>
                 </div>
               );

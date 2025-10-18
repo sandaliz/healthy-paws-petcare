@@ -14,7 +14,7 @@ export default function InvoiceModal({ invoice }) {
         <div className="invmodal-hero">
           <div className="invmodal-badge">✔️</div>
           <h2 className="invmodal-title">Order Placed!</h2>
-          {/* 🔑 updated subtitle here */}
+          {/*  updated subtitle here */}
           <p className="invmodal-subtitle">
             Here are your invoice details.<br />
             <strong>⚠️ Payment will be collected on delivery.</strong>

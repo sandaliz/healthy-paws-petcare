@@ -70,7 +70,7 @@ export const getUserLoyalty = async (req, res) => {
     let loyalty = await Loyalty.findOne({ userID });
     // if user never had loyalty record, create baseline
     if (!loyalty) {
-      loyalty = await Loyalty.create({ userID, points: 0, tier: "Bronze" });
+      loyalty = await Loyalty.create({ userID, points: 0, tier: "Puppy Pal" });
     }
 
     res.json({ loyalty });
