@@ -4,15 +4,43 @@ import { api } from '../services/financeApi';
 import Card from './components/Card';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, AreaChart, Area
+  AreaChart, Area
 } from 'recharts';
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend as ChartLegend } from 'chart.js';
 import { FileText, BarChart2, CreditCard, Users } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import '../css/dashboard/overview.css';
 import { fmt } from '../utils/financeFormatters';
 
-const COLORS = ['#54413C', '#FFD58E', '#9CA3AF', '#22C55E', '#EF4444'];
+const METHOD_COLORS = ['#54413C', '#FFD58E', '#E07A5F', '#81B29A', '#F2CC8F'];
+
+const centerTextPlugin = {
+  id: 'paymentMethodsCenterLabel',
+  afterDraw(chart) {
+    const centerText = chart?.options?.plugins?.centerText;
+    if (!centerText) return;
+
+    const { ctx, chartArea } = chart;
+    const { left, right, top, bottom } = chartArea;
+    const centerX = (left + right) / 2;
+    const centerY = (top + bottom) / 2;
+    const { title, value } = centerText;
+
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#6B7280';
+    ctx.font = '600 12px Poppins';
+    if (title) ctx.fillText(title, centerX, centerY - 6);
+    ctx.fillStyle = '#111827';
+    ctx.font = '700 20px Poppins';
+    ctx.fillText(value, centerX, centerY + 18);
+    ctx.restore();
+  },
+};
+
+ChartJS.register(ArcElement, ChartTooltip, ChartLegend, centerTextPlugin);
 
 export default function Overview() {
   const [summary, setSummary] = useState(null);
@@ -119,6 +147,47 @@ export default function Overview() {
 
   const revenueSeries = buildSeries(payments, Number(timeframe));
   const methodBreakdown = breakdown(payments, Number(timeframe));
+
+  const paymentMethodsChart = useMemo(() => {
+    if (!methodBreakdown.length) {
+      return { data: { labels: [], datasets: [] }, options: {} };
+    }
+
+    const total = methodBreakdown.reduce((acc, entry) => acc + entry.value, 0);
+
+    return {
+      data: {
+        labels: methodBreakdown.map((entry) => entry.name),
+        datasets: [
+          {
+            data: methodBreakdown.map((entry) => entry.value),
+            backgroundColor: METHOD_COLORS,
+            borderColor: '#FFFFFF',
+            borderWidth: 2,
+            hoverOffset: 8,
+          },
+        ],
+      },
+      options: {
+        cutout: '65%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.label}: ${ctx.formattedValue}`,
+            },
+            backgroundColor: 'rgba(84, 65, 60, 0.92)',
+            titleFont: { family: 'Poppins', weight: '600' },
+            bodyFont: { family: 'Poppins' },
+          },
+          centerText: {
+            title: 'Completed',
+            value: String(total),
+          },
+        },
+      },
+    };
+  }, [methodBreakdown]);
 
   const deltas = useMemo(() => {
     const days = Number(timeframe) || 30;
@@ -412,25 +481,29 @@ export default function Overview() {
           </ResponsiveContainer>
         </div>
 
-        <div className={`bf-overview-chart ${exportOpts.methods ? '' : 'bf-excluded'}`} ref={payMethodsRef}>
-          <div className="bf-overview-chart-head">
-            <div className="bf-overview-chart-title">Payment Methods</div>
-            <div className="bf-overview-chart-legend">
-              {methodBreakdown.map((m, i) => (
-                <span key={i} className="bf-overview-legend-item">
-                  <span className="bf-overview-legend-color" style={{ background: COLORS[i % COLORS.length] }} />{m.name}
-                </span>
-              ))}
+        <div className={`bf-overview-chart bf-overview-chart--methods ${exportOpts.methods ? '' : 'bf-excluded'}`} ref={payMethodsRef}>
+          <div className="bf-overview-chart-title">Payment Methods</div>
+          {methodBreakdown.length === 0 ? (
+            <div className="bf-overview-chart-empty">No completed payments in this window.</div>
+          ) : (
+            <div className="bf-overview-methods">
+              <div className="bf-overview-methods-doughnut">
+                <Doughnut
+                  data={paymentMethodsChart.data}
+                  options={paymentMethodsChart.options}
+                />
+              </div>
+              <ul className="bf-overview-methods-legend">
+                {methodBreakdown.map((m, idx) => (
+                  <li key={m.name}>
+                    <span className="color" style={{ backgroundColor: METHOD_COLORS[idx % METHOD_COLORS.length] }} />
+                    <span className="method-name">{m.name}</span>
+                    <span className="method-value">{m.value}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-          <ResponsiveContainer width="100%" height={260}>
-            <PieChart>
-              <Pie data={methodBreakdown} dataKey="value" nameKey="name" outerRadius={84} label>
-                {methodBreakdown.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          )}
         </div>
 
         <div className={`bf-overview-panel ${exportOpts.topCustomers ? '' : 'bf-excluded'}`}>

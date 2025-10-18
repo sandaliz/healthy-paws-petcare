@@ -1,4 +1,5 @@
 import { loadDashboardEntities } from "../../Services/finance/financeDataService.js";
+import Salary from "../../Model/finance/salaryModel.js";
 
 export const getFinancialManagerDashboard = async (req, res) => {
   try {
@@ -54,11 +55,22 @@ export const getFinancialManagerDashboard = async (req, res) => {
       };
     });
 
+    const salaries = await Salary.aggregate([
+      { $match: { status: "Paid" } },
+      {
+        $group: {
+          _id: "$status",
+          total: { $sum: "$netSalary" },
+        },
+      },
+    ]);
+
     res.json({
       totalRevenue,
       totalUsers: dashboard.length,
       totalInvoices: invoices.length,
       totalPayments: payments.length,
+      totalSalaries: salaries[0]?.total || 0,
       dashboard,
       warnings,
     });

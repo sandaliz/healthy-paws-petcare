@@ -144,7 +144,7 @@ export const getSalarySummary = async (req, res) => {
     if (year) match.year = Number(year)
 
     const agg = await Salary.aggregate([
-      { $match: match },
+      { $match: { ...match, status: "Paid" } },
       { $group: { _id: "$status", total: { $sum: "$netSalary" }, count: { $sum: 1 } } }
     ])
     let summary = { Paid: { total: 0, count: 0 }, Pending: { total: 0, count: 0 } }
