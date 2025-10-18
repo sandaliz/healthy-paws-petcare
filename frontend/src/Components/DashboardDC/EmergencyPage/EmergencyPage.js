@@ -1,5 +1,4 @@
-// src/Components/DashboardDC/TodaysPets/EmergencyPage.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../../utils/api";
 import "./EmergencyPage.css";
@@ -8,7 +7,27 @@ const EmergencyPage = () => {
   const { state } = useLocation();
   const appointment = state?.appointment;
   const [treatment, setTreatment] = useState("");
-  const navigate = useNavigate();
+  const [history, setHistory] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
+
+  // ✅ Always call hooks
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (!appointment?._id) return; // handle missing appointment
+
+      try {
+        setLoadingHistory(true);
+        const res = await api.get(`/api/emergencies/history/${appointment._id}`);
+        setHistory(res.data.data || []);
+      } catch (err) {
+        console.error("Failed to fetch emergency history:", err);
+      } finally {
+        setLoadingHistory(false);
+      }
+    };
+    fetchHistory();
+  }, [appointment]);
 
   if (!appointment) {
     return <p>No appointment data found.</p>;
@@ -22,19 +41,18 @@ const EmergencyPage = () => {
         emergencyAction: actionType,
       };
 
-      // ✅ fixed endpoint path
       const res = await api.post("/api/emergencies/send", payload);
 
       if (res.status === 200) {
         alert("Emergency reported successfully!");
-        navigate("/dashboardDC/todaysPets");
+        setTreatment("");
+        // Refresh history
+        const updatedHistory = await api.get(`/api/emergencies/history/${appointment._id}`);
+        setHistory(updatedHistory.data.data || []);
       }
     } catch (err) {
       console.error("Failed to report emergency:", err);
-      alert(
-        err.response?.data?.message ||
-          "Failed to report emergency. Check console."
-      );
+      alert(err.response?.data?.message || "Failed to report emergency. Check console.");
     }
   };
 
@@ -43,8 +61,8 @@ const EmergencyPage = () => {
       <h2>Report Emergency for {appointment.petName}</h2>
       <p>
         <strong>Owner:</strong> {appointment.ownerName} <br />
-        <strong>Email:</strong> {appointment.email} <br />
-        <strong>Emergency Action:</strong> {appointment.emergencyAction}
+        <strong>Species:</strong> {appointment.species} <br />
+        <strong>Email:</strong> {appointment.email}
       </p>
 
       <div className="emergency-actions">
@@ -68,6 +86,36 @@ const EmergencyPage = () => {
             Authorize Treatment
           </button>
         </div>
+      </div>
+
+      <div className="emergency-history">
+        <h3>📜 Emergency History</h3>
+        {loadingHistory ? (
+          <p>Loading history...</p>
+        ) : history.length === 0 ? (
+          <p>No emergency records found for this pet.</p>
+        ) : (
+          <table className="history-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Action</th>
+                <th>Treatment Given</th>
+                <th>Email Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.map((record) => (
+                <tr key={record._id}>
+                  <td>{new Date(record.createdAt).toLocaleString()}</td>
+                  <td>{record.actionTaken}</td>
+                  <td>{record.treatmentGiven || "—"}</td>
+                  <td>{record.emailStatus || "N/A"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
