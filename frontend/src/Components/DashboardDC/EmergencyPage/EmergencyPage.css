@@ -1,0 +1,242 @@
+/* EmergencyPage.css */
+.emergency-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.emergency-page h2 {
+    color: #dc3545;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #dc3545;
+    padding-bottom: 10px;
+}
+
+.emergency-page p {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.emergency-page strong {
+    color: #495057;
+}
+
+.emergency-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.emergency-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.emergency-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.emergency-btn.contact-owner {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-start;
+}
+
+.emergency-btn.contact-owner:hover {
+    background-color: #0056b3;
+}
+
+.authorize-treatment-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.authorize-treatment-section textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.authorize-treatment-section textarea:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.emergency-btn.authorize-treatment {
+    background-color: #28a745;
+    color: white;
+    align-self: flex-end;
+}
+
+.emergency-btn.authorize-treatment:hover {
+    background-color: #1e7e34;
+}
+
+.emergency-btn.authorize-treatment:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.emergency-btn.authorize-treatment:disabled:hover {
+    box-shadow: none;
+    transform: none;
+}
+
+.emergency-history {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.emergency-history h3 {
+    color: #495057;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.emergency-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.emergency-history-table th,
+.emergency-history-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.emergency-history-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.emergency-history-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.emergency-history-table td {
+    color: #6c757d;
+}
+
+/* Loading and empty states */
+.emergency-history p {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    background-color: transparent;
+    box-shadow: none;
+    padding: 40px 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .emergency-page {
+        padding: 15px;
+    }
+
+    .emergency-page h2 {
+        font-size: 1.5rem;
+    }
+
+    .emergency-actions {
+        gap: 20px;
+    }
+
+    .authorize-treatment-section {
+        padding: 15px;
+    }
+
+    .emergency-history {
+        padding: 15px;
+    }
+
+    .emergency-history-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .emergency-history-table th,
+    .emergency-history-table td {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+
+    .emergency-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .emergency-page {
+        padding: 10px;
+    }
+
+    .emergency-page h2 {
+        font-size: 1.3rem;
+    }
+
+    .emergency-actions {
+        gap: 15px;
+    }
+
+    .authorize-treatment-section textarea {
+        min-height: 100px;
+    }
+}
+
+/* Animation for new records */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.emergency-history-table tr {
+    animation: fadeIn 0.3s ease;
+}

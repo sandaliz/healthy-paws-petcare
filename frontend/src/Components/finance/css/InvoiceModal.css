@@ -1,0 +1,106 @@
+.invmodal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.invmodal-box {
+  background: #fff;
+  border-radius: 18px;
+  padding: 26px;
+  width: 95%;
+  max-width: 640px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.15);
+  animation: invmodal-fadeIn .3s ease;
+}
+
+@keyframes invmodal-fadeIn {
+  from { opacity:0; transform: translateY(10px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+.invmodal-hero { text-align: center; margin-bottom: 20px; }
+.invmodal-badge {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: #E8F5E9;
+  color: #15803D;
+  display: flex;
+  align-items:center;
+  justify-content:center;
+  margin: 0 auto 12px;
+  font-size: 36px;
+  border: 2px solid #CDE7D1;
+}
+.invmodal-title { margin:0; font-size: 24px; color:#222; }
+.invmodal-subtitle { color:#666; }
+
+.invmodal-details,
+.invmodal-summary {
+  border:1px solid #eee;
+  border-radius: 12px;
+  margin-bottom:18px;
+  padding:12px 16px;
+  background:#fafafa;
+}
+
+.invmodal-row {
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  padding:6px 0;
+  border-bottom:1px dashed #e4e4e4;
+}
+.invmodal-row:last-child { border-bottom:none; }
+.invmodal-row.grand { font-weight:bold; font-size:18px; }
+
+.invmodal-label { color:#666; }
+.invmodal-value { font-weight:600; color:#111; }
+
+.invmodal-pill {
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
+}
+.invmodal-pill.pending { background:#FEF9C3; color:#713F12; }
+.invmodal-pill.paid { background:#DCFCE7; color:#065F46; }
+.invmodal-pill.refunded { background:#E0E7FF; color:#3730A3; }
+.invmodal-pill.cancelled { background:#FCDCDC; color:#7F1D1D; }
+
+.invmodal-items-title { margin-bottom:8px; }
+.invmodal-table {
+  width:100%;
+  border-collapse: collapse;
+}
+.invmodal-table th, .invmodal-table td {
+  border-bottom:1px solid #eee;
+  padding:8px;
+  text-align:left;
+  font-size:14px;
+}
+.invmodal-table th { font-weight:600; background:#fafafa; }
+.invmodal-right { text-align:right; }
+
+.invmodal-footer {
+  display:flex;
+  justify-content: flex-end;
+  gap:12px;
+  margin-top:20px;
+}
+.invmodal-btn {
+  padding:10px 18px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-weight:600;
+  cursor:pointer;
+}
+.invmodal-btn.primary {
+  background:#FFD58E; border-color:#FFD58E; color:#54413C;
+}
+.invmodal-btn.primary:hover { filter:brightness(0.95); }
+.invmodal-btn.ghost { background:#fff; border-color:#ccc; }

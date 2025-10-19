@@ -1,0 +1,151 @@
+/* ==== FORECAST PAGE (scoped) ==== */
+
+.forecast-page {
+  font-family: Poppins, sans-serif;
+  color: #54413c;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Header */
+.forecast-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.forecast-head h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.forecast-sub {
+  margin: 6px 0 0 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.forecast-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.forecast-tag {
+  background: rgba(84, 65, 60, 0.08);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #54413c;
+  font-weight: 500;
+}
+
+.forecast-tag--accent {
+  background: rgba(22, 163, 74, 0.12);
+  color: #166534;
+}
+
+/* KPI cards */
+.forecast-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 992px) {
+  .forecast-kpis {
+    grid-template-columns: 1fr;
+  }
+}
+
+.forecast-kpis .kpi {
+  background: linear-gradient(135deg,#ffffff 0%,#fff9f2 100%);
+  border: 1px solid #f0e6d6;
+  border-radius: 16px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* Chart card */
+.forecast-chart {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.forecast-chart-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.forecast-chart-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #54413c;
+  margin: 0;
+}
+
+.forecast-caption {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.forecast-chart-canvas {
+  width: 100%;
+  height: 420px;
+}
+
+/* Table wrapper */
+.forecast-table {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.forecast-table h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #54413c;
+  margin: 0 0 10px 0;
+}
+
+/* Profit coloring */
+.forecast-table .pos { color: #15803d; font-weight: 700; }
+.forecast-table .neg { color: #b91c1c; font-weight: 700; }
+
+/* Shared finance table styling (scoped by usage on this page) */
+.fm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.fm-table th,
+.fm-table td {
+  border-bottom: 1px dashed #e5e7eb;
+  padding: 12px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.fm-table thead th {
+  background: #ffe1a5;
+  font-weight: 700;
+  color: #54413c;
+  border-bottom: 1px solid #e5e7eb;
+}
+.fm-table tbody tr:hover {
+  background: #fffaf4;
+}

@@ -1,14 +1,28 @@
-import React from 'react'
+import React from "react";
+import Navbar from "./Navbar";
+import Hero from "./Hero";
+import PetStore from "./PetStore";
+import PetDaycare from "./PetDaycare";
+import Awareness from "./Awareness";
+import About from "./About";
+import Footer from "./Footer";
+import ChatbotButton from "./ChatbotButton"; // ✅ Import chatbot button
 
-function home() {
+import "./home.css";
+
+const Home = () => {
   return (
-    <div>
-      <h1>Welcome to Pet Care</h1>
-        <p>Your one-stop solution for all pet care needs.</p>
-        <h2>Balla</h2>
-        <h3>LOL</h3>
+    <div className="home-page">
+      <Navbar />
+      <Hero />
+      <PetStore />
+      <PetDaycare />
+      <Awareness />
+      <About />
+      <Footer />
+      <ChatbotButton />
     </div>
-  )
-}
+  );
+};
 
-export default home
+export default Home;

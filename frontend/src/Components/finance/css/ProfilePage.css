@@ -1,0 +1,469 @@
+/* ========= Refined User Profile ========= */
+.profileU-wrapper {
+  font-family: 'Roboto', sans-serif;
+  background: #fff6e4; /* match finance peach */
+  color: #333;
+  min-height: 100vh;
+  overflow-x: hidden; /* avoid horizontal scroll within finance profile */
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+}
+
+/* --- Shell with left sidebar --- */
+.profileU-shell {
+  display: block; /* fixed sidebar + margin-left main */
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.profileU-side {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;               /* wider sidebar */
+  background: linear-gradient(180deg, #5b4944 0%, #54413C 100%);
+  border-right: none;
+  padding: 16px 18px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+  overflow-y: auto;           /* allow sidebar to scroll if content is taller */
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.client-finance-sidebar-brand {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  background: transparent;
+  border: none;
+}
+.client-finance-sidebar-brand:hover .client-finance-sidebar-logo {
+  transform: scale(1.1);
+}
+.client-finance-sidebar-logo {
+  width: 34px;
+  height: 34px;
+  background: #FFD58E;
+  color: #54413C;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+.client-finance-sidebar-title {
+  font-weight: 700;
+  font-size: large;
+}
+.client-finance-sidebar-divider {
+  height: 8px;
+}
+.profileU-nav { display: grid; gap: 12px; margin-top: 20px; }
+.profileU-navLink {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;         /* bigger touch target */
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;            /* bigger label */
+}
+.profileU-navLink:hover {
+  background: rgba(255,213,142,0.18);
+  border-color: #FFD58E;
+}
+.profileU-navLink.active {
+  background: linear-gradient(135deg, #FFD58E, #fbbf24);
+  color: #54413C;
+  border-color: #f5c46e;
+  box-shadow: inset 0 0 0 2px rgba(84,65,60,0.12);
+}
+/* ensure icons follow link color */
+.profileU-navLink svg { color: currentColor; }
+
+/* Main area */
+.profileU-main { padding-bottom: 40px; overflow-x: hidden; background: transparent; min-height: 100vh; margin-left: 280px; }
+
+/* --- Banner --- */
+.profileU-banner {
+  position: relative;
+  height: 340px;
+  border-bottom: 4px solid #FFD58E;
+  border-radius: 12px;
+  overflow: visible; /* allow avatar to overlap without clipping */
+}
+.profileU-bannerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.8);
+  border-radius: 12px; /* keep rounded corners even with visible overflow */
+}
+
+/* --- Avatar + Basic --- */
+.profileU-avatar {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  position: absolute;
+  bottom: -65px;
+  left: 60px;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+.profileU-basic {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 20px;
+  left: 210px;
+}
+.profileU-basic h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8rem;
+  color: #ffffff;
+}
+.profileU-role {
+  color: #ffec9c;
+  margin-bottom: 8px;
+}
+.profileU-editBtn {
+  background: #FFD58E;
+  color: #54413C;
+  border: 1px solid #FFD58E;
+  border-radius: 25px;
+  padding: 6px 18px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.profileU-banner .profileU-editBtn { position: absolute; right: 16px; bottom: 16px; }
+.profileU-editBtn:hover {
+  transform: translateY(-2px);
+  background: #FFE1A8;
+}
+
+/* --- Tabs --- */
+.profileU-tabs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 100px;
+}
+.profileU-tab {
+  font-family: 'Poppins', sans-serif;
+  padding: 10px 22px;
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: 25px;
+  border: 1px solid #FFD58E;
+  background: #FFF8F0;
+  color: #54413C;
+  transition: 0.3s;
+}
+.profileU-tab:hover {
+  background: #FFD58E;
+}
+.profileU-tab.active {
+  background: #FFD58E;
+  font-weight: 600;
+  color: #2D2D2D;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Content --- */
+.profileU-content { max-width: 1100px; margin: 24px auto; padding: 20px; margin-top: 90px; }
+.profileU-full { width: 100%; padding: 20px; }
+.profileU-ledger {
+  width: 100%;
+  max-width: none;
+  margin: 30px 0 96px;
+  padding: 0 24px;
+}
+.profileU-ledger .pawledger-shell--embedded {
+  max-width: 100%;
+  padding: 0 8px;
+}
+.profileU-ledger .page-header {
+  margin-bottom: 32px;
+  padding: 0 4px;
+}
+.profileU-ledger .page-header h1 {
+  font-size: 2.2rem;
+}
+.profileU-ledger .page-header .muted {
+  font-size: 1.05rem;
+}
+.profileU-ledger .card {
+  margin: 0 4px 30px;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 10px 28px rgba(84, 65, 60, 0.12);
+  padding: 18px 12px 26px;
+}
+.profileU-ledger .pay-wrap {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.profileU-ledger .pawledger-table {
+  width: 100%;
+}
+.profileU-ledger .pawledger-table th:last-child,
+.profileU-ledger .pawledger-table td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+.profileU-ledger .pawledger-table td:last-child .btn {
+  margin-left: 6px;
+}
+.pawperks-full { padding: 0; background: #fed58e !important; } /* override profile peach on PawPerks */
+
+/* --- Card --- */
+.profileU-card {
+  background: #fff;
+  border: 0 !important; /* remove white border */
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: none; /* remove faint outline */
+}
+.profileU-card h2 {
+  font-family: 'Poppins', sans-serif;
+  color: #54413C;
+  margin-bottom: 25px;
+}
+
+/* --- Grid --- */
+.profileU-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+/* --- Info Tiles --- */
+.profileU-field {
+  background: #FFF8F0;
+  border: 1px solid #FFD58E;
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: 0.2s;
+  overflow: hidden;
+}
+.profileU-field:hover {
+  transform: translateY(-3px);
+}
+.profileU-field label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  color: #54413C;
+  margin-bottom: 6px;
+}
+.profileU-field p {
+  font-size: 1rem;
+  color: #2D2D2D;
+  padding-left: 4px;
+  word-break: break-word;
+}
+
+/* --- Edit input fields --- */
+.profileU-field input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #E5E7EB;
+  border-radius: 25px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  background: #fffefc;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+  transition: 0.2s;
+}
+.profileU-field input:focus {
+  border-color: #FFD58E;
+  box-shadow: 0 0 0 3px rgba(255,213,142,0.3),
+              inset 0 2px 4px rgba(0,0,0,0.05);
+  background: #fff;
+}
+
+/* Buttons Row */
+.profileU-btnRow {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.profileU-saveBtn {
+  background: #FFD58E;
+  color: #54413C;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 26px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.profileU-saveBtn:hover {
+  background: #FFE1A8;
+}
+.client-finance-sidebar-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255,255,255,0.2);
+}
+.client-finance-sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: #FCA5A5;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  margin-bottom: 15px;
+}
+.client-finance-sidebar-logout:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+}
+.profileU-logout {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 26px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.profileU-logout:hover {
+  background: #FCA5A5;
+  transform: translateY(-2px);
+}
+
+/* --- Modal --- */
+.profileU-modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.profileU-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 30px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  animation: profileU-pop 0.25s ease-out;
+}
+.profileU-modalIcon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+.profileU-modal h3 {
+  font-family: 'Poppins', sans-serif;
+  color: #54413C;
+  margin-bottom: 8px;
+}
+.profileU-modal p {
+  color: #6B7280;
+  margin-bottom: 25px;
+}
+.profileU-modalActions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.profileU-btnConfirm {
+  background: #FFD58E;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 25px;
+  color: #54413C;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  transition: 0.2s;
+}
+.profileU-btnConfirm:hover {
+  background: #FFE1A8;
+}
+.profileU-btnCancel {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 22px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  transition: 0.2s;
+}
+.profileU-btnCancel:hover {
+  background: #e5e7eb;
+}
+@keyframes profileU-pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .profileU-shell { display: block; }
+  .profileU-side { position: static; height: auto; width: auto; }
+  .profileU-main { margin-left: 0; }
+  .profileU-nav { grid-auto-flow: column; overflow-x: auto; }
+  .profileU-avatar {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -65px;
+  }
+  .profileU-basic {
+    position: static;
+    margin-top: 60px;
+    align-items: center;
+  }
+  .profileU-content { margin-top: 80px; }
+  .profileU-tabs {
+    margin-top: 40px;
+  }
+  .profileU-btnRow {
+    flex-direction: column;
+    align-items: center;
+  }
+}

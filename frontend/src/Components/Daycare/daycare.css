@@ -1,0 +1,230 @@
+/* =================== Daycare Styles =================== */
+
+/* Main Container */
+.dc-container {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #FFFFFF;
+}
+
+/* Headings */
+.dc-container h1,
+.dc-container h2,
+.dc-container h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #2D2D2D;
+}
+
+/* -------------------- Hero Section -------------------- */
+.dc-hero {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.dc-hero-image {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+
+.dc-hero-overlay {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  text-align: left;
+  color: #fff;
+  max-width: 700px;
+  padding: 0 20px;
+}
+
+.dc-hero-overlay h1 {
+  font-size: 52px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+}
+
+.dc-hero-overlay p {
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+/* -------------------- Buttons -------------------- */
+.dc-btn {
+  display: inline-block;
+  padding: 13px 22px;
+  margin: 8px;
+  border-radius: 25px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid rgba(255, 213, 142, 1);
+  background: rgba(255, 213, 142, 0.8);
+  color: #54413C;
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease-in-out;
+}
+
+.dc-btn:hover {
+  background: rgba(255, 213, 142, 0.8);
+  transform: translateY(-2px);
+}
+
+.dc-btn-small {
+  padding: 6px 14px;
+  font-size: 0.9rem;
+}
+
+/* -------------------- Why Choose -------------------- */
+.dc-why {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.dc-why-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.dc-why-item {
+  background: #FFF8F0;
+  border: 1px solid #FFD58E;
+  border-radius: 10px;
+  padding: 15px 25px;
+  font-size: 1.1rem;
+  color: #54413C;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* -------------------- Services -------------------- */
+.dc-services {
+  padding: 50px 20px;
+  background: #FFF;
+  text-align: center;
+}
+
+.dc-service-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.dc-service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.dc-service-card:hover {
+  transform: translateY(-4px);
+}
+
+.dc-service-img {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  object-fit: cover;
+}
+
+.dc-service-card.dc-no-booking {
+  opacity: 0.8;
+  background: #fafafa;
+}
+
+.dc-service-card h3 {
+  margin-bottom: 10px;
+  color: #54413C;
+}
+
+.dc-note {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* -------------------- Booking CTA -------------------- */
+.dc-booking-cta {
+  padding: 60px 20px;
+  background: #FFD58E;
+  text-align: center;
+  border-radius: 10px;
+  color: #54413C;
+}
+
+.dc-booking-cta h2 {
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.dc-booking-cta p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* -------------------- Testimonials -------------------- */
+.dc-testimonials {
+  padding: 50px 20px;
+  background: #f9f9f9;
+  text-align: center;
+}
+
+.dc-testimonial-list {
+  margin-top: 20px;
+}
+
+.dc-testimonial {
+  background: #fff;
+  border-left: 4px solid #54413C;
+  padding: 15px 20px;
+  margin: 10px auto;
+  max-width: 600px;
+  border-radius: 8px;
+  font-style: italic;
+  color: #333;
+}
+
+/* -------------------- Rules -------------------- */
+.dc-rules {
+  padding: 50px 20px;
+}
+
+.dc-rules ul {
+  list-style: disc;
+  margin: 20px auto;
+  max-width: 600px;
+  text-align: left;
+  color: #54413C;
+}
+
+/* -------------------- Contact -------------------- */
+.dc-contact {
+  padding: 50px 20px;
+  background: #f1f1f1;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.dc-contact p {
+  margin: 5px 0;
+  color: #333;
+}

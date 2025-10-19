@@ -1,0 +1,81 @@
+import { loadDashboardEntities } from "../../Services/finance/financeDataService.js";
+import Salary from "../../Model/finance/salaryModel.js";
+
+export const getFinancialManagerDashboard = async (req, res) => {
+  try {
+    const { payments, invoices, loyalties, errors } = await loadDashboardEntities();
+    const warnings = Object.entries(errors)
+      .filter(([, err]) => err)
+      .map(([scope, err]) => ({ scope, message: err?.message || String(err) }));
+
+    const totalRevenue = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+
+    // Group by user
+    const paymentsByUser = {};
+    for (const p of payments) {
+      const uid = p.userID?._id?.toString();
+      if (!uid) continue;
+      (paymentsByUser[uid] ||= []).push(p);
+    }
+
+    const invoicesByUser = {};
+    for (const inv of invoices) {
+      const uid = inv.userID?._id?.toString();
+      if (!uid) continue;
+      (invoicesByUser[uid] ||= []).push(inv);
+    }
+
+    // Union users from invoices, payments, loyalty
+    const userIds = new Set([
+      ...Object.keys(invoicesByUser),
+      ...Object.keys(paymentsByUser),
+      ...loyalties.map(l => l.userID?._id?.toString()).filter(Boolean),
+    ]);
+
+    const dashboard = [...userIds].map((uid) => {
+      const userInvoices = invoicesByUser[uid] || [];
+      const userPayments = paymentsByUser[uid] || [];
+      const loyalty = loyalties.find(l => l.userID?._id?.toString() === uid) || null;
+
+      const user =
+        userInvoices[0]?.userID ||
+        loyalty?.userID ||
+        userPayments.find(p => p.userID?._id?.toString() === uid)?.userID ||
+        null;
+
+      const totalSpent = userInvoices.reduce((s, inv) => s + (inv.total || 0), 0);
+      const totalPaid = userPayments.reduce((s, pay) => s + (pay.amount || 0), 0);
+
+      return {
+        user,
+        loyalty: loyalty ? { points: loyalty.points, tier: loyalty.tier } : null,
+        invoices: { count: userInvoices.length, totalSpent },
+        payments: { count: userPayments.length, totalPaid },
+        balanceDue: Math.max(0, totalSpent - totalPaid),
+      };
+    });
+
+    const salaries = await Salary.aggregate([
+      { $match: { status: "Paid" } },
+      {
+        $group: {
+          _id: "$status",
+          total: { $sum: "$netSalary" },
+        },
+      },
+    ]);
+
+    res.json({
+      totalRevenue,
+      totalUsers: dashboard.length,
+      totalInvoices: invoices.length,
+      totalPayments: payments.length,
+      totalSalaries: salaries[0]?.total || 0,
+      dashboard,
+      warnings,
+    });
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

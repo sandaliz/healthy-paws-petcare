@@ -1,0 +1,240 @@
+/* Two-column layout */
+.cart-page {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+  color: #54413C; 
+}
+
+/* Empty cart styling */
+.empty-cart {
+  text-align: center;
+  margin: auto;
+  padding: 50px;
+  color: #54413C;
+}
+
+/* Left column */
+.cart-items {
+  flex: 2;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.cart-items h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 26px;
+  margin-bottom: 20px;
+  color: #54413C; 
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-item img {
+  width: 100px;
+  height: auto;
+  border-radius: 6px;
+}
+
+.item-info {
+  flex: 2;
+}
+
+.item-info h2 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  font-family: 'Poppins', sans-serif;
+  color: #54413C;
+}
+
+.item-info p {
+  font-size: 14px;
+  color: #7a6e6a;
+}
+
+.delivery-options {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #54413C;
+}
+
+/* Quantity Controls */
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quantity button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #54413C;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.quantity button:hover {
+  background: #FFD58E;
+  color: #54413C;
+}
+
+.quantity input {
+  width: 40px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #54413C;
+}
+
+.price {
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.remove-btn {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: #d9534f; 
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.remove-btn:hover {
+  text-decoration: underline;
+}
+
+/* Right column (summary) */
+.cart-summary {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.cart-summary h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  font-family: 'Poppins', sans-serif;
+  color: #54413C;
+}
+
+.summary-box p {
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+.summary-box hr {
+  margin: 15px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.summary-total {
+  font-size: 18px;
+  font-weight: bold;
+  color: #54413C;
+}
+
+/* Checkout button */
+.checkout-btn {
+  background: #54413C;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+  transition: all 0.2s ease-in-out;
+}
+
+.checkout-btn:hover {
+  background: #FFD58E;
+  color: #54413C;
+}
+
+/* Payment icons */
+.payment-methods {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.payment-methods img {
+  width: 50px;
+  height: auto;
+}
+
+/* ---------- Shipping Form (Pay Online Section) ---------- */
+.shipping-form {
+  margin-top: 20px;
+  background: #FFF8F1; /* subtle background highlight */
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.shipping-form h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #54413C;
+}
+
+/* Grid layout for inputs */
+.shipping-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  color: #54413C;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.shipping-form input:focus {
+  outline: none;
+  border-color: #FFD58E;
+  box-shadow: 0px 0px 3px rgba(255, 213, 142, 0.8);
+}
+
+/* Two-column layout for first/last name and address/email */
+.shipping-form input:nth-child(2),
+.shipping-form input:nth-child(3) {
+  display: inline-block;
+  width: calc(50% - 6px);
+}
+
+.shipping-form input:nth-child(2) {
+  margin-right: 10px;
+}
+.shipping-form input:nth-child(4) {
+  display: inline-block;
+  width: calc(50% - 6px);
+  margin-right: 10px;
+}
+.shipping-form input:nth-child(5) {
+  display: inline-block;
+  width: calc(50% - 6px);
+}

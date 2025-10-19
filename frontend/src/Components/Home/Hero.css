@@ -1,0 +1,81 @@
+.hero-section {
+  position: relative;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2D2D2D;
+  background: url("../../assets/hero.jpg") no-repeat center center/cover;
+  overflow: hidden; /* ensure no gaps */
+}
+
+/* ✅ fix overlay to cover EXACTLY the hero bounds */
+.hero-overlay {
+  position: absolute;   /* cover hero-section fully */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 8%;
+  box-sizing: border-box;
+}
+
+.hero-content {
+  max-width: 100%;
+}
+
+/* Headings */
+.hero-content h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #54413C;
+}
+
+/* Glassmorphism Buttons - Updated to match other sections */
+.hero-section .glass-btn {
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 1rem;
+  color: #2d2d2d;
+  border: 2px solid rgba(255, 213, 142, 0.5);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.hero-section .glass-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Highlight (accent button) - Peach gradient to match other sections */
+.hero-section .glass-btn.highlight {
+  background: linear-gradient(135deg, rgba(255, 213, 142, 0.9) 0%, rgba(255, 213, 142, 0.7) 100%);
+  border: 2px solid rgba(255, 213, 142, 0.9);
+  color: #54413C;
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.5), 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.hero-section .glass-btn.highlight:hover {
+  background: linear-gradient(135deg, #FFD58E 0%, rgba(255, 213, 142, 0.85) 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.6), 0 8px 18px rgba(0, 0, 0, 0.2);
+}

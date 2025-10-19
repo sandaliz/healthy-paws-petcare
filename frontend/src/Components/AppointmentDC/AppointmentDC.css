@@ -1,0 +1,457 @@
+/* src/Components/DashboardDC/AppointmentDC.css */
+
+/* Container for the grid layout */
+.appointment-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Individual card styling */
+.appointment-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(84, 65, 60, 0.1);
+  border: 1px solid rgba(255, 213, 142, 0.2);
+  border-left: 4px solid #ffd58e;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  animation: slideIn 0.6s ease-out;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  min-height: 250px;
+}
+
+.appointment-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.6s;
+}
+
+.appointment-card:hover::before {
+  left: 100%;
+}
+
+.appointment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(84, 65, 60, 0.15);
+  border-left-color: #54413c;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dc-his-header {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f8f5f2;
+  flex-shrink: 0;
+}
+
+.dc-his-header h3 {
+  color: #54413c;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-header-dc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.card-header-dc h3 {
+  color: #54413c;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.pet-name-dc {
+  color: #6b5b55;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #fff9f0 0%, #fff5e6 100%);
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  border: 1px solid #ffd58e;
+}
+
+.card-body-dc {
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.card-body-dc p {
+  color: #5a4a45;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.card-body-dc strong {
+  color: #54413c;
+  font-weight: 600;
+}
+
+/* Status Badges */
+.status-badge-dc {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 0.5rem;
+}
+
+.status-pending {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+}
+
+.status-approved {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+}
+
+.status-rejected {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #991b1b;
+}
+
+.status-cancelled {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: #374151;
+}
+
+.status-completed {
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%);
+  color: #1e40af;
+}
+
+/* Action Buttons */
+.card-actions-dc {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+  flex-shrink: 0;
+}
+
+.btn-view-dc,
+.btn-reschedule-dc,
+.btn-cancel-dc,
+.btn-logs-dc {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.btn-view-dc::before,
+.btn-reschedule-dc::before,
+.btn-cancel-dc::before,
+.btn-logs-dc::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.btn-view-dc:hover::before,
+.btn-reschedule-dc:hover::before,
+.btn-cancel-dc:hover::before,
+.btn-logs-dc:hover::before {
+  left: 100%;
+}
+
+.btn-view-dc {
+  background: linear-gradient(135deg, #54413c 0%, #6b5b55 100%);
+  color: #ffd58e;
+}
+
+.btn-view-dc:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(84, 65, 60, 0.3);
+  color: #ffe8b8;
+}
+
+.btn-reschedule-dc {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.btn-reschedule-dc:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-cancel-dc {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.btn-cancel-dc:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-logs-dc {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+}
+
+.btn-logs-dc:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* Disabled State */
+.btn-reschedule-dc:disabled,
+.btn-cancel-dc:disabled {
+  background: #9ca3af;
+  color: #6b7280;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-reschedule-dc:disabled:hover::before,
+.btn-cancel-dc:disabled:hover::before {
+  left: -100%;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .appointment-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .appointment-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .appointment-card {
+    padding: 1.2rem;
+  }
+
+  .card-header-dc {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .card-header-dc h3 {
+    font-size: 1.1rem;
+  }
+
+  .pet-name-dc {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .card-body-dc p {
+    font-size: 0.9rem;
+  }
+
+  .card-actions-dc {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .btn-view-dc,
+  .btn-reschedule-dc,
+  .btn-cancel-dc,
+  .btn-logs-dc {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .appointment-cards-container {
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+
+  .appointment-card {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .dc-his-header h3 {
+    font-size: 1rem;
+  }
+
+  .card-header-dc h3 {
+    font-size: 1rem;
+  }
+
+  .card-body-dc p {
+    font-size: 0.85rem;
+  }
+
+  .status-badge-dc {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+}
+
+/* Empty State */
+.appointment-cards-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: #6b5b55;
+  background: linear-gradient(135deg, #fff9f0 0%, #fff5e6 100%);
+  border-radius: 16px;
+  border: 2px dashed #ffd58e;
+}
+
+.appointment-cards-empty::before {
+  content: "📅";
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+/* Page Header Styles */
+.appointment-history-page-dc {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.page-header-dc {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+  background: white;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(84, 65, 60, 0.08);
+}
+
+.page-title-dc {
+  color: #54413c;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  position: relative;
+  display: inline-block;
+}
+
+.page-title-dc::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #54413c 0%, #ffd58e 100%);
+  border-radius: 2px;
+}
+
+.page-subtitle-dc {
+  color: #6b5b55;
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Responsive page header */
+@media (max-width: 768px) {
+  .page-header-dc {
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .page-title-dc {
+    font-size: 2rem;
+  }
+
+  .page-subtitle-dc {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title-dc {
+    font-size: 1.8rem;
+  }
+
+  .page-subtitle-dc {
+    font-size: 0.9rem;
+  }
+}
+/* Staggered Animation for Multiple Cards */
+.appointment-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.appointment-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.appointment-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.appointment-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.appointment-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.appointment-card:nth-child(6) {
+  animation-delay: 0.6s;
+}

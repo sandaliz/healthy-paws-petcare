@@ -1,0 +1,185 @@
+/* =================== ReviewsDisplay =================== */
+
+.reviews-page-container {
+  font-family: 'Roboto', sans-serif;
+  background-color: #fff;
+  color: #333;
+  padding: 20px;
+}
+
+/* -------------------- Hero Section -------------------- */
+.reviews-hero {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.reviews-hero-image {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+
+.reviews-hero-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 700px;
+  text-align: center;
+  color: #fff;
+  padding: 0 20px;
+  z-index: 2;
+}
+
+.reviews-hero-overlay h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 3rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+}
+
+.reviews-hero-overlay .motto {
+  font-size: 1.5rem;
+  font-style: italic;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+.reviews-hero-overlay .subtitle {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+.add-review-btn {
+  display: inline-block;
+  background-color: rgba(255, 213, 142, 0.95);
+  color: #54413C;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+
+.add-review-btn:hover {
+  background-color: rgba(255, 213, 142, 1);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* -------------------- Reviews Grid -------------------- */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+  gap: 90px;
+  justify-content: center; /* center grid */
+  margin: 0 auto;
+  max-width: 1300px; /* optional: limit the width */
+}
+
+/* Review Card */
+.review-card {
+  background: #ffffff;
+  border: 1px solid #FFD58E;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  max-width: 360px;
+}
+
+.review-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.review-header {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #54413C;
+  border-bottom: 2px solid #FFD58E;
+  padding-bottom: 6px;
+}
+
+.review-detail {
+  margin: 8px 0;
+  font-size: 0.95rem;
+}
+
+.review-label {
+  font-weight: 600;
+  color: #54413C;
+  margin-right: 6px;
+}
+
+.review-rating {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFD58E;
+}
+
+.review-comment {
+  margin-top: 12px;
+  font-style: italic;
+  color: #333;
+  background: #FFF8F0;
+  padding: 10px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.review-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.re-update-btn,
+.re-delete-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.re-update-btn {
+  background-color: #FFD58E;
+  color: #54413C;
+  border: none;
+}
+
+.re-update-btn:hover {
+  background-color: #e6be7a;
+}
+
+.re-delete-btn {
+  background-color: #54413C;
+  color: #fff;
+  border: none;
+}
+
+.re-delete-btn:hover {
+  background-color: #3d302c;
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 40px;
+  background: #FFF8F0;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  color: #54413C;
+}

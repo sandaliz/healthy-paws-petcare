@@ -1,0 +1,496 @@
+.sad-modern-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
+}
+
+/* HEADER*/
+.sad-modern-header {
+  background: linear-gradient(135deg, #54413C 0%, #3a2d29 100%);
+  border-radius: 16px;
+  padding: 25px 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(84, 65, 60, 0.15);
+}
+
+.sad-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.sad-title-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.sad-modern-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.sad-header-actions-modern {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/*HEADER BUTTON STYLES*/
+.sad-refresh-btn-modern {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sad-refresh-btn-modern:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.sad-refresh-btn-modern:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sad-logout-btn-modern {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  transition: all 0.3s ease;
+}
+
+.sad-logout-btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* ENHANCED ACTION BUTTONS */
+.sad-actions-modern {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sad-action-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 85px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.sad-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.sad-action-btn:hover::before {
+  left: 100%;
+}
+
+.sad-action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.sad-action-btn:active {
+  transform: translateY(-1px);
+}
+
+/* Edit Button  */
+.sad-edit-btn {
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  color: white;
+  border: 2px solid #FF9800;
+}
+
+.sad-edit-btn:hover {
+  background: linear-gradient(135deg, #F57C00 0%, #EF6C00 100%);
+  border-color: #F57C00;
+  box-shadow: 0 6px 16px rgba(245, 124, 0, 0.4);
+}
+
+/* Toggle Active Button */
+.sad-toggle-active {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border: 2px solid #4CAF50;
+}
+
+.sad-toggle-active:hover {
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+  border-color: #45a049;
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+/* Toggle Inactive Button */
+.sad-toggle-inactive {
+  background: linear-gradient(135deg, #FF5252 0%, #ff1744 100%);
+  color: white;
+  border: 2px solid #FF5252;
+}
+
+.sad-toggle-inactive:hover {
+  background: linear-gradient(135deg, #ff1744 0%, #d50000 100%);
+  border-color: #ff1744;
+  box-shadow: 0 6px 16px rgba(255, 82, 82, 0.4);
+}
+
+/* Delete Button */
+.sad-delete-btn {
+  background: linear-gradient(135deg, #D32F2F 0%, #C2185B 100%);
+  color: white;
+  border: 2px solid #D32F2F;
+}
+
+.sad-delete-btn:hover {
+  background: linear-gradient(135deg, #C2185B 0%, #AD1457 100%);
+  border-color: #C2185B;
+  box-shadow: 0 6px 16px rgba(211, 47, 47, 0.4);
+}
+
+/* Save Button */
+.sad-save-btn {
+  background: linear-gradient(135deg, #009688 0%, #00796B 100%);
+  color: white;
+  border: 2px solid #009688;
+}
+
+.sad-save-btn:hover {
+  background: linear-gradient(135deg, #00796B 0%, #00695C 100%);
+  border-color: #00796B;
+  box-shadow: 0 6px 16px rgba(0, 150, 136, 0.4);
+}
+
+/* Cancel Button  */
+.sad-cancel-btn {
+  background: linear-gradient(135deg, #78909C 0%, #546E7A 100%);
+  color: white;
+  border: 2px solid #78909C;
+}
+
+.sad-cancel-btn:hover {
+  background: linear-gradient(135deg, #546E7A 0%, #455A64 100%);
+  border-color: #546E7A;
+  box-shadow: 0 6px 16px rgba(120, 144, 156, 0.4);
+}
+
+/*CARD STYLES */
+.sad-card-modern {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sad-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.sad-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #54413C;
+  margin: 0;
+}
+
+/* FORM STYLES*/
+.sad-form-modern {
+  width: 100%;
+}
+
+.sad-form-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.sad-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sad-input-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #54413C;
+  margin-bottom: 5px;
+}
+
+.sad-input-modern,
+.sad-select-modern {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.sad-input-modern:focus,
+.sad-select-modern:focus {
+  border-color: #54413C;
+  box-shadow: 0 0 0 3px rgba(84, 65, 60, 0.1);
+  outline: none;
+}
+
+.sad-submit-btn-modern {
+  background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+  color: white;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.sad-submit-btn-modern:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+.sad-submit-btn-modern:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* TABLE STYLES */
+.sad-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  background: white;
+}
+
+.sad-table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 800px;
+}
+
+.sad-table-modern th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 18px 20px;
+  text-align: left;
+  font-weight: 600;
+  color: #54413C;
+  border-bottom: 2px solid #e9ecef;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+}
+
+.sad-table-modern td {
+  padding: 18px 20px;
+  border-bottom: 1px solid #f8f9fa;
+  vertical-align: middle;
+}
+
+.sad-table-row-modern:hover {
+  background: rgba(255, 213, 142, 0.08);
+}
+
+/* STATUS AND BADGE STYLES*/
+.sad-status-modern {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sad-status-modern.active {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border: 1px solid #4CAF50;
+}
+
+.sad-status-modern.inactive {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  color: white;
+  border: 1px solid #f44336;
+}
+
+.sad-role-badge {
+  background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+}
+
+.sad-user-name {
+  font-weight: 700;
+  color: #54413C;
+  font-size: 15px;
+}
+
+.sad-user-email {
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* LOADING AND EMPTY STATES*/
+.sad-loading-state,
+.sad-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+  gap: 15px;
+  text-align: center;
+}
+
+.sad-loading-state p,
+.sad-empty-state p {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/*RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .sad-modern-container {
+    padding: 15px;
+  }
+  
+  .sad-header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .sad-header-actions-modern {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .sad-form-grid-modern {
+    grid-template-columns: 1fr;
+  }
+  
+  .sad-card-modern {
+    padding: 20px;
+  }
+  
+  .sad-table-container {
+    border-radius: 8px;
+  }
+  
+  .sad-actions-modern {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .sad-action-btn {
+    width: 100%;
+    padding: 12px;
+    min-width: auto;
+  }
+  
+  .sad-table-modern th,
+  .sad-table-modern td {
+    padding: 12px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sad-modern-title {
+    font-size: 24px;
+  }
+  
+  .sad-header-actions-modern {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .sad-refresh-btn-modern,
+  .sad-logout-btn-modern {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .sad-card-modern {
+    padding: 15px;
+  }
+  
+  .sad-action-btn {
+    font-size: 12px;
+    padding: 10px;
+  }
+}
+
+/* Animation for button interactions */
+@keyframes sad-button-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.sad-action-btn:focus {
+  animation: sad-button-pulse 0.3s ease;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}

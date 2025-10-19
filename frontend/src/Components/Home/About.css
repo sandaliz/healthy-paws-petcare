@@ -1,0 +1,50 @@
+.about-section {
+  position: relative;
+  max-width: 100%;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  /* ✅ full background image */
+  background: url("../../assets/aboutc.jpg") no-repeat center center/cover;
+}
+
+/* overlay tint (optional to keep text readable) */
+.about-overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 248, 238, 0.85);  /* peach/white glass overlay */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4rem 8%;
+}
+
+/* TEXT CONTENT */
+.about-content {
+  max-width: 100%;
+  color: #54413C; /* Dark Brown text */
+}
+
+.about-content h1 {
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.about-content h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #54413C;
+}
+
+.about-content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  opacity: 0.9;
+}

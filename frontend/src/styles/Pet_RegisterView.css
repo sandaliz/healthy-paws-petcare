@@ -1,0 +1,262 @@
+.registration-view-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  padding: 20px;
+}
+
+/* Reset only within registration view page */
+.registration-view-page * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.registration-view-page .registration-view-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.registration-view-page .registration-view-overlay {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  animation: registrationFadeInUp 0.6s ease-out;
+}
+
+/* Typography  */
+.registration-view-page .registration-view-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.registration-view-page .registration-view-header p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 30px;
+  font-weight: 400;
+  text-align: center;
+}
+
+/*  Registration Details Wrapper */
+.registration-view-page .registration-details-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin: 20px 0;
+}
+
+.registration-view-page .registration-info-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.registration-view-page .registration-card-header {
+  background: linear-gradient(135deg, #54413C, #FFD58E);
+  padding: 16px 20px;
+}
+
+.registration-view-page .registration-card-header h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.registration-view-page .registration-card-content {
+  padding: 20px;
+}
+
+.registration-view-page .registration-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.registration-view-page .registration-info-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.registration-view-page .registration-info-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.registration-view-page .registration-field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #54413C;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.registration-view-page .registration-field-value {
+  padding: 10px 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #374151;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+/*  Action Buttons  */
+.registration-view-page .registration-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.registration-view-page .registration-edit-btn,
+.registration-view-page .registration-delete-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.registration-view-page .registration-edit-btn {
+  background: #FFD58E;
+  color: #54413C;
+}
+
+.registration-view-page .registration-edit-btn:hover {
+  background: #e6c07f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 213, 142, 0.3);
+}
+
+.registration-view-page .registration-delete-btn {
+  background: #dc2626;
+  color: white;
+}
+
+.registration-view-page .registration-delete-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/*  Loading State  */
+.registration-view-page .registration-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  font-size: 16px;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .registration-view-page .registration-view-overlay {
+    padding: 30px 24px;
+    border-radius: 16px;
+  }
+
+  .registration-view-page .registration-view-header h2 {
+    font-size: 24px;
+  }
+
+  .registration-view-page .registration-view-header p {
+    font-size: 15px;
+  }
+
+  .registration-view-page .registration-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .registration-view-page .registration-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .registration-view-page .registration-edit-btn,
+  .registration-view-page .registration-delete-btn {
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .registration-view-page .registration-card-header {
+    padding: 14px 16px;
+  }
+  
+  .registration-view-page .registration-card-content {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-view-page .registration-view-overlay {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+
+  .registration-view-page .registration-view-header h2 {
+    font-size: 22px;
+  }
+
+  .registration-view-page .registration-view-header p {
+    font-size: 14px;
+  }
+
+  .registration-view-page .registration-field-value {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  
+  .registration-view-page .registration-edit-btn,
+  .registration-view-page .registration-delete-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-width: 140px;
+  }
+  
+  .registration-view-page .registration-card-header h3 {
+    font-size: 16px;
+  }
+}
+
+/*  Animation  */
+@keyframes registrationFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

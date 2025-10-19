@@ -1,0 +1,66 @@
+/* === Home Page Root === */
+.home-page {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  color: #333;
+  background: #fdfdfd;
+}
+
+/* Headings restricted to Home */
+.home-page h1,
+.home-page h2,
+.home-page h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #2D2D2D;
+}
+
+/* Glassmorphism — scoped reusable */
+.home-page .glass-effect {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 100%;
+}
+
+/* Buttons (home-specific styles) */
+.home-page button {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  transition: 0.2s ease-in-out;
+}
+
+.home-page .btn-highlight {
+  background-color: #FFD58E;
+  color: #2D2D2D;
+}
+
+.home-page .btn-dark {
+  background-color: #54413C;
+  color: white;
+}
+
+.home-page .btn-outline {
+  background: transparent;
+  border: 2px solid #54413C;
+  color: #54413C;
+}
+
+.home-page .btn-primary {
+  background-color: #54413C;
+  color: white;
+}
+
+.home-page button:hover {
+  opacity: 0.85;
+}
