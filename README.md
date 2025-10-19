@@ -18,14 +18,14 @@ The system provides real‑time access for administrators, vets, caretaker
 
 ## 🧩 Modules & Responsibilities
 
-| # | Module | Key Features | Developer |
-|:-:|:--------|:--------------|:-----------|
-| **1** | 🩺 **Appointment Management** | • Online booking / rescheduling / cancellation<br>• Vet schedule control and medical reports (PDF)<br>• Awareness blogs and Ask‑a‑Vet Q&A 
-| **2** | 🏠 **Pet Daycare Management** | • Check‑in / out tracking<br>• Daily caretaker logs and status updates<br>• Emergency alerts and review reports
-| **3** | 💊 **Inventory & Pharmacy Management** | • Medicines & product CRUD<br>• Auto low‑stock / expiry alerts<br>• Vet prescription sync<br>• Stock & sales reporting
-| **4** | 💰 **Billing & Finance Management** | • Auto invoice generation<br>• Stripe online and offline cash payments<br>• Coupon + loyalty point system<br>• Refund requests & approval<br>• Revenue / salary forecasting
-| **5** | 🧑‍💻 **Customer Care & Auth Management** | • Secure login / register / logout<br>• OTP email verification & password reset<br>• Role‑based user access (Admin / Vet / Caretaker / Owner)<br>• Feedback CRUD & sentiment reports<br>• Pet Health Chatbot
-| **6** | 🧠 **Innovative Add‑ons** | • Smart vaccination scheduler with email reminders<br>• Predictive inventory management<br>• Local Stripe‑LKR integration<br>• Pet analytics dashboard for health trends
+| # | Module | Key Features |
+|:-:|:--------|:--------------|
+| **1** | 🩺 **Appointment Management** | • Online booking / rescheduling / cancellation<br>• Vet schedule control and medical reports (PDF)<br>• Awareness blogs and Ask‑a‑Vet Q&A |
+| **2** | 🏠 **Pet Daycare Management** | • Check‑in / out tracking<br>• Daily caretaker logs and status updates<br>• Emergency alerts and review reports|
+| **3** | 💊 **Inventory & Pharmacy Management** | • Medicines & product CRUD<br>• Auto low‑stock / expiry alerts<br>• Vet prescription sync<br>• Stock & sales reporting|
+| **4** | 💰 **Billing & Finance Management** | • Auto invoice generation<br>• Stripe online and offline cash payments<br>• Coupon + loyalty point system<br>• Refund requests & approval<br>• Revenue / income forecasting|
+| **5** | 🧑‍💻 **Customer Care & Auth Management** | • Secure login / register / logout<br>• OTP email verification & password reset<br>• Role‑based user access (Admin / Vet / Caretaker / Owner)<br>• Feedback CRUD & sentiment reports<br>• Pet Health Chatbot|
+| **6** | 🧠 **Innovative Add‑ons** | • Smart vaccination scheduler with email reminders<br>• Predictive inventory management<br>• Local Stripe‑LKR integration<br>• Pet analytics dashboard for health trends|
 
 ---
 
