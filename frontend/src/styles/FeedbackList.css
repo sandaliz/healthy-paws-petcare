@@ -1,20 +1,12 @@
 /* FeedbackList.css */
 .feedback-list-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   min-height: 100vh;
-  width: 100vw;
-  margin: 0;
   background: linear-gradient(135deg, #FFFFFF 0%, #FFD58E 100%);
   font-family: "Roboto", sans-serif;
   padding: 40px 20px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-x: hidden;
 }
 
 .feedback-list-content {
@@ -78,21 +70,13 @@
 
 /* Loading State */
 .feedback-list-loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   min-height: 100vh;
-  width: 100vw;
-  margin: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #FFFFFF 0%, #FFD58E 100%);
   font-family: "Roboto", sans-serif;
-  overflow-x: hidden;
 }
 
 .loading-spinner {

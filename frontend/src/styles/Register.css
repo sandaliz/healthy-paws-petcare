@@ -1,21 +1,14 @@
 /* Page Setup */
 .register-page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   min-height: 100vh;
   width: 100vw;
-  margin: 0;
-  padding: 0;
   background: linear-gradient(180deg, #ffffff 0%, #ffd58e 100%);
   font-family: 'Roboto', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: auto;
-  overflow-x: hidden;
 }
 
 .register-page .register-bg-image {

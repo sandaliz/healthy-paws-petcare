@@ -1,35 +1,19 @@
 .feedback-view-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   min-height: 100vh;
-  width: 100vw;
-  margin: 0;
   background: linear-gradient(180deg, #FFFFFF 0%, #FFD58E 100%);
   font-family: 'Roboto', sans-serif;
   padding: 3rem 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden;
 }
 
 .feedback-view-loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   min-height: 100vh;
-  width: 100vw;
-  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(180deg, #FFFFFF 0%, #FFD58E 100%);
-  overflow-x: hidden;
 }
 
 .feedback-view-loading-text {
