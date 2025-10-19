@@ -20,6 +20,7 @@ const NewPassword = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [formTouched, setFormTouched] = useState(false);
 
   useEffect(() => {
     if (!email || !otp) {
@@ -46,16 +47,34 @@ const NewPassword = () => {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) return toast.error('Passwords do not match!');
-    if (!allValid) return toast.error('Password does not meet requirements!');
+    setFormTouched(true);
+
+    // CLIENT-SIDE VALIDATIONS:
+    if (!newPassword || !confirmPassword) {
+      return toast.error('Please fill in all fields!');
+    }
+
+    if (newPassword !== confirmPassword) {
+      return toast.error('Passwords do not match!');
+    }
+
+    if (!allValid) {
+      return toast.error('Password does not meet the required criteria!');
+    }
+
+    if (!email || !otp) {
+      return toast.error('Invalid or missing reset credentials.');
+    }
 
     setLoading(true);
+
     try {
       const res = await axios.post('http://localhost:5001/api/auth/reset-password', {
         email,
         otp,
         newPassword,
       });
+
       setLoading(false);
       if (res.data.success) {
         toast.success('Password reset successfully! Redirecting...');
@@ -67,10 +86,12 @@ const NewPassword = () => {
     }
   };
 
+  // Helper for inline error display
+  const showInlineError = formTouched && !allValid;
+
   return (
     <div className="new-password-page">
       <div className="new-password-container">
-        
         {/* Left side image */}
         <div className="password-image-container">
           <img
@@ -92,20 +113,25 @@ const NewPassword = () => {
                 placeholder="Enter new password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="input-field"
+                className={`input-field ${showInlineError ? 'input-error' : ''}`}
                 required
               />
-              <div className="toggle-visibility"
+              <div
+                className="toggle-visibility"
                 onClick={() => setShowNewPassword(!showNewPassword)}
               >
-                {showNewPassword ? <AiOutlineEyeInvisible size={22} /> : <AiOutlineEye size={22} />}
+                {showNewPassword ? (
+                  <AiOutlineEyeInvisible size={22} />
+                ) : (
+                  <AiOutlineEye size={22} />
+                )}
               </div>
             </div>
 
-            {/* Password Requirements Update */}
+            {/* Password Requirements */}
             <ul className="password-requirements">
               {validRequirements.map((req, index) => (
-                <li key={index} className={req.valid ? "valid" : "invalid"}>
+                <li key={index} className={req.valid ? 'valid' : 'invalid'}>
                   <input type="checkbox" checked={req.valid} readOnly />
                   <span>{req.label}</span>
                 </li>
@@ -119,17 +145,36 @@ const NewPassword = () => {
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="input-field"
+                className={`input-field ${
+                  formTouched && confirmPassword && confirmPassword !== newPassword
+                    ? 'input-error'
+                    : ''
+                }`}
                 required
               />
-              <div className="toggle-visibility"
+              <div
+                className="toggle-visibility"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? <AiOutlineEyeInvisible size={22} /> : <AiOutlineEye size={22} />}
+                {showConfirmPassword ? (
+                  <AiOutlineEyeInvisible size={22} />
+                ) : (
+                  <AiOutlineEye size={22} />
+                )}
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="submit-button">
+            {/* Inline hint for password mismatch */}
+            {formTouched && confirmPassword && confirmPassword !== newPassword && (
+              <span className="error-text">Passwords do not match</span>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading || !newPassword || !confirmPassword || !allValid}
+              className={`submit-button ${!allValid ? 'disabled' : ''}`}
+            >
               {loading ? 'Resetting...' : 'Reset Password'}
             </button>
           </form>
