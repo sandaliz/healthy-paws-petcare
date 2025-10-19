@@ -4,7 +4,7 @@ A MERN‑based web app for veterinary hospitals to manage appointments, daycare,
 
 ---
 
-### University – Y2S2 IT Project 
+### University – Y2S2 - IT Project 
 #### Team Project
 
 ---
