@@ -44,7 +44,6 @@
   cursor: not-allowed;
   filter: grayscale(0.2);
 }
-
 /* ======= New Controls (timeframe + export section toggles) ======= */
 .bf-overview-controls {
   display: flex;
@@ -282,6 +281,93 @@
   font-weight: 700;
   color: #54413c;
   margin-bottom: 6px;
+}
+
+.bf-overview-chart--methods {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bf-overview-chart-empty {
+  padding: 32px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.bf-overview-methods {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.bf-overview-methods-doughnut {
+  width: 210px;
+  height: 210px;
+  position: relative;
+}
+
+.bf-overview-methods-doughnut canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.bf-overview-methods-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bf-overview-methods-legend li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.bf-overview-methods-legend .color {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.bf-overview-methods-legend .method-name {
+  flex: 0 0 auto;
+}
+
+.bf-overview-methods-legend .method-value {
+  margin-left: auto;
+  font-weight: 700;
+  color: #111827;
+}
+
+@media (max-width: 768px) {
+  .bf-overview-methods {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .bf-overview-methods-doughnut {
+    width: 190px;
+    height: 190px;
+  }
+
+  .bf-overview-methods-legend {
+    width: 100%;
+  }
+
+  .bf-overview-methods-legend li {
+    justify-content: space-between;
+  }
 }
 
 /* Chart head and legend (for pie color squares) */

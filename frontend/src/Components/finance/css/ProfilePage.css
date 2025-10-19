@@ -29,25 +29,48 @@
   box-shadow: 2px 0 8px rgba(0,0,0,0.06);
   overflow-y: auto;           /* allow sidebar to scroll if content is taller */
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.profileU-sideHeader {
+.client-finance-sidebar-brand {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 24px; /* more gap below name */
-}
-.profileU-sideAvatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #FFD58E;
-}
-.profileU-sideName {
+  padding: 6px 4px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  color: #ffffff;
   font-size: 1.05rem;
+  background: transparent;
+  border: none;
+}
+.client-finance-sidebar-brand:hover .client-finance-sidebar-logo {
+  transform: scale(1.1);
+}
+.client-finance-sidebar-logo {
+  width: 34px;
+  height: 34px;
+  background: #FFD58E;
+  color: #54413C;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+.client-finance-sidebar-title {
+  font-weight: 700;
+  font-size: large;
+}
+.client-finance-sidebar-divider {
+  height: 8px;
 }
 .profileU-nav { display: grid; gap: 12px; margin-top: 20px; }
 .profileU-navLink {
@@ -117,10 +140,10 @@
 .profileU-basic h1 {
   font-family: 'Poppins', sans-serif;
   font-size: 1.8rem;
-  color: #2D2D2D;
+  color: #ffffff;
 }
 .profileU-role {
-  color: #6B7280;
+  color: #ffec9c;
   margin-bottom: 8px;
 }
 .profileU-editBtn {
@@ -172,6 +195,50 @@
 /* --- Content --- */
 .profileU-content { max-width: 1100px; margin: 24px auto; padding: 20px; margin-top: 90px; }
 .profileU-full { width: 100%; padding: 20px; }
+.profileU-ledger {
+  width: 100%;
+  max-width: none;
+  margin: 30px 0 96px;
+  padding: 0 24px;
+}
+.profileU-ledger .pawledger-shell--embedded {
+  max-width: 100%;
+  padding: 0 8px;
+}
+.profileU-ledger .page-header {
+  margin-bottom: 32px;
+  padding: 0 4px;
+}
+.profileU-ledger .page-header h1 {
+  font-size: 2.2rem;
+}
+.profileU-ledger .page-header .muted {
+  font-size: 1.05rem;
+}
+.profileU-ledger .card {
+  margin: 0 4px 30px;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 10px 28px rgba(84, 65, 60, 0.12);
+  padding: 18px 12px 26px;
+}
+.profileU-ledger .pay-wrap {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.profileU-ledger .pawledger-table {
+  width: 100%;
+}
+.profileU-ledger .pawledger-table th:last-child,
+.profileU-ledger .pawledger-table td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+.profileU-ledger .pawledger-table td:last-child .btn {
+  margin-left: 6px;
+}
 .pawperks-full { padding: 0; background: #fed58e !important; } /* override profile peach on PawPerks */
 
 /* --- Card --- */
@@ -265,6 +332,30 @@
 }
 .profileU-saveBtn:hover {
   background: #FFE1A8;
+}
+.client-finance-sidebar-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255,255,255,0.2);
+}
+.client-finance-sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: #FCA5A5;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  margin-bottom: 15px;
+}
+.client-finance-sidebar-logout:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
 }
 .profileU-logout {
   background: #FEE2E2;

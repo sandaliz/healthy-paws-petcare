@@ -134,35 +134,80 @@ export const claimCoupon = async (req, res) => {
 
 export const getUserAvailableCoupons = async (req, res) => {
   try {
-    const { userId, invoiceTotal } = req.query;
+    const { userId, invoiceTotal, mode } = req.query;
     if (!userId) return res.status(400).json({ message: "userId required" });
 
-    // cast
     const ownerId = mongoose.isValidObjectId(userId)
       ? new mongoose.Types.ObjectId(String(userId))
       : userId;
 
-    const rows = await Coupon.find({
+    const includeWalletView = String(mode || "").toLowerCase() === "wallet";
+
+    const baseQuery = {
       scope: "ISSUED",
       ownerUserID: ownerId,
-      status: "Available",
-    }).lean();
+    };
+
+    if (!includeWalletView) baseQuery.status = "Available";
+
+    const rows = await Coupon.find(baseQuery).sort({ createdAt: -1 }).lean();
 
     const now = new Date();
-    const coupons = rows
-      .filter(c => now <= new Date(c.expiryDate))
-      .filter(c => (invoiceTotal == null ? true : Number(invoiceTotal) >= (c.minInvoiceAmount || 0)))
-      .map(c => ({
+    const invoiceTotalRaw =
+      invoiceTotal == null || invoiceTotal === ""
+        ? null
+        : Number(invoiceTotal);
+    const invoiceTotalNumber = Number.isFinite(invoiceTotalRaw) ? invoiceTotalRaw : null;
+
+    const processed = rows.map((c) => {
+      const expiresAt = c.expiryDate ? new Date(c.expiryDate) : null;
+      const expired = expiresAt ? expiresAt < now : false;
+      const baseStatus = c.status || "Available";
+      const derivedStatus =
+        expired && baseStatus !== "Used" && baseStatus !== "Revoked"
+          ? "Expired"
+          : baseStatus;
+
+      const minAmount = Number(c.minInvoiceAmount || 0);
+      const meetsInvoiceRequirement =
+        invoiceTotalNumber == null ? null : invoiceTotalNumber >= minAmount;
+
+      const readyToUse = !expired && baseStatus === "Available";
+      const canApplyNow =
+        readyToUse && (meetsInvoiceRequirement == null ? true : meetsInvoiceRequirement);
+
+      let blockedReason = null;
+      if (derivedStatus === "Expired") blockedReason = "Expired";
+      else if (derivedStatus === "Revoked") blockedReason = "Revoked";
+      else if (derivedStatus === "Used") blockedReason = "Used";
+      else if (readyToUse && meetsInvoiceRequirement === false) blockedReason = "Invoice minimum not met";
+
+      return {
         couponId: c._id,
+        parentTemplateId: c.parentId || null,
         code: c.code,
         discountType: c.discountType,
         discountValue: c.discountValue,
-        minInvoiceAmount: c.minInvoiceAmount || 0,
+        minInvoiceAmount: minAmount,
         expiryDate: c.expiryDate,
         description: c.description || "",
         scope: c.scope,
-        status: c.status,
-      }));
+        status: baseStatus,
+        createdAt: c.createdAt,
+        updatedAt: c.updatedAt,
+        usedAt: c.usedAt || null,
+        derivedStatus,
+        expired,
+        readyToUse,
+        meetsInvoiceRequirement,
+        canApplyNow,
+        blockedReason,
+      };
+    });
+
+    const coupons = includeWalletView
+      ? processed
+      : processed.filter((c) => c.canApplyNow);
 
     res.json({ coupons });
   } catch (err) {

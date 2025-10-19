@@ -389,14 +389,15 @@ export default function ProfilePage() {
       <div className="profileU-shell">
         {/* Sidebar */}
         <aside className="profileU-side">
-          <div className="profileU-sideHeader">
-            <img
-              src={user.avatarUrl || assets.profile}
-              alt="avatar"
-              className="profileU-sideAvatar"
-            />
-            <div className="profileU-sideName">{user.name}</div>
-          </div>
+          <button
+            className="client-finance-sidebar-brand"
+            onClick={() => nav('/')}
+            aria-label="Back to home"
+          >
+            <span className="client-finance-sidebar-logo">🐾</span>
+            <span className="client-finance-sidebar-title">Healthy Paws</span>
+          </button>
+          <div className="client-finance-sidebar-divider" aria-hidden="true"></div>
           <nav className="profileU-nav">
             <button
               className={`profileU-navLink ${activeTab === "profile" ? "active" : ""}`}
@@ -417,6 +418,14 @@ export default function ProfilePage() {
               <Sparkles size={22} /> <span>PawPerks</span>
             </button>
           </nav>
+          <div className="client-finance-sidebar-footer">
+            <button
+              className="profileU-logout client-finance-sidebar-logout"
+              onClick={() => setShowModal(true)}
+            >
+              Logout
+            </button>
+          </div>
         </aside>
 
         {/* Main */}
@@ -491,8 +500,8 @@ export default function ProfilePage() {
           )}
 
           {activeTab === "ledger" && (
-            <div className="profileU-full">
-              <PaymentSummary />
+            <div className="profileU-content profileU-ledger">
+              <PaymentSummary embedded />
             </div>
           )}
           {activeTab === "promotion" && (

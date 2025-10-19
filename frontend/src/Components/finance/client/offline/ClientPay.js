@@ -5,6 +5,7 @@ import { api } from '../../services/financeApi';
 import useAuthUser from '../../hooks/useAuthUser';
 import doggie from '../../images/doggie.png';
 import OfflinePaymentModal from './OfflinePaymentModal';
+import Navbar from '../../../Home/Navbar';
 import { fmtDate, fmtLKR, toNum } from '../../utils/financeFormatters';
 
 import '../../css/clientPay.css';
@@ -58,6 +59,9 @@ export default function ClientPay() {
   }, [showDogTip]);
 
   return (
+    <>
+     <div className="finance-nav-shell">
+      <Navbar />
     <div className="finance-scope cp-bg cp-full">
       <div className="pay-wrap">
         <Toaster position="top-right" />
@@ -107,6 +111,8 @@ export default function ClientPay() {
         )}
       </div>
     </div>
+    </div>
+    </>
   );
 }
 

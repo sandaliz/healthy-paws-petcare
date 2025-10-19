@@ -1,15 +1,12 @@
-import Invoice from "../../Model/finance/invoiceModel.js";
-import Payment from "../../Model/finance/paymentModel.js";
-import Loyalty from "../../Model/finance/loyaltyModel.js";
+import { loadDashboardEntities } from "../../Services/finance/financeDataService.js";
+import Salary from "../../Model/finance/salaryModel.js";
 
 export const getFinancialManagerDashboard = async (req, res) => {
   try {
-    const payments = await Payment.find({ status: "Completed" })
-      .populate("userID", "name email");
-    const invoices = await Invoice.find()
-      .populate("userID", "name email");
-    const loyalties = await Loyalty.find()
-      .populate("userID", "name email");
+    const { payments, invoices, loyalties, errors } = await loadDashboardEntities();
+    const warnings = Object.entries(errors)
+      .filter(([, err]) => err)
+      .map(([scope, err]) => ({ scope, message: err?.message || String(err) }));
 
     const totalRevenue = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
 
@@ -58,12 +55,24 @@ export const getFinancialManagerDashboard = async (req, res) => {
       };
     });
 
+    const salaries = await Salary.aggregate([
+      { $match: { status: "Paid" } },
+      {
+        $group: {
+          _id: "$status",
+          total: { $sum: "$netSalary" },
+        },
+      },
+    ]);
+
     res.json({
       totalRevenue,
       totalUsers: dashboard.length,
       totalInvoices: invoices.length,
       totalPayments: payments.length,
+      totalSalaries: salaries[0]?.total || 0,
       dashboard,
+      warnings,
     });
   } catch (err) {
     console.error("Dashboard error:", err);

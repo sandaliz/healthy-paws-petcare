@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/financeApi';
 import useAuthUser from '../hooks/useAuthUser';
+import Navbar from '../../Home/Navbar'
 import '../css/clientPay.css';
 import html2pdf from 'html2pdf.js';
 
@@ -66,7 +67,10 @@ export default function PaySuccess() {
   const couponCode = payment?.couponId?.code || null;
 
   return (
-    <div className="finance-scope">
+    <>
+    <div className="finance-nav-shell">
+      <Navbar />
+    <div className="finance-scope ps-bg ps-full">
       <div className="pay-wrap">
         <div className="card">
           <div className="success-hero">
@@ -197,6 +201,8 @@ export default function PaySuccess() {
         </div>
       </div>
     </div>
+    </div>
+    </>
   );
 }
 

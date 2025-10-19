@@ -51,6 +51,7 @@ import {
 } from "../../Controllers/finance/loyaltyController.js";
 
 import { getFinancialManagerDashboard } from "../../Controllers/finance/dashboardController.js";
+import { getFinanceNotifications } from "../../Controllers/finance/notificationController.js";
 import {
   createRefundRequest,
   getAllRefundRequests,
@@ -117,6 +118,7 @@ router.post("/invoice/daycare", createInvoiceFromDaycare);
 
 // ========== DASHBOARD ==========
 router.get("/financial-dashboard", getFinancialManagerDashboard);
+router.get("/notifications", getFinanceNotifications);
 
 router.get("/forecast", getForecast);
 

@@ -139,6 +139,31 @@ export default function Coupons() {
   const globals = items.filter(c => c.scope === "GLOBAL");
   const clientCoupons = items.filter(c => c.scope === "ISSUED");
 
+  const resolveTemplateStatus = (coupon) => {
+    const now = new Date();
+    const expiry = coupon.expiryDate ? new Date(coupon.expiryDate) : null;
+    const limit = Number(coupon.usageLimit || 0);
+    const used = Number(coupon.usedCount || 0);
+
+    if (expiry && expiry < now) {
+      return { label: 'Expired', tone: 'red', note: `Expired on ${new Date(coupon.expiryDate).toLocaleDateString()}` };
+    }
+
+    if (limit > 0 && used >= limit) {
+      return { label: 'Limit Reached', tone: 'gray', note: `${used}/${limit} used` };
+    }
+
+    if (expiry) {
+      const msLeft = expiry.getTime() - now.getTime();
+      const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+      if (daysLeft <= 5) {
+        return { label: 'Expiring Soon', tone: 'amber', note: `${daysLeft} day${daysLeft === 1 ? '' : 's'} left` };
+      }
+    }
+
+    return { label: 'Active', tone: 'green', note: limit > 0 ? `${Math.max(limit - used, 0)} of ${limit} claims left` : 'Unlimited claims' };
+  };
+
   return (
     <div>
       <Toaster position="top-right" />
@@ -185,8 +210,7 @@ export default function Coupons() {
               <div className="name">{topUser.user?.name || 'Unknown'}</div>
               <div className="email">{topUser.user?.email || ''}</div>
             </div>
-            <div className="cp-highlight-count">
-              * {topUser.count} coupons used
+            <div className="cp-highlight-count">*{topUser.count} coupons used
             </div>
           </div>
         ) : (
@@ -202,6 +226,15 @@ export default function Coupons() {
           {globals.map(c => (
             <Card key={c._id}>
               <div className="coupon-card">
+                {(() => {
+                  const status = resolveTemplateStatus(c);
+                  return (
+                    <div className="cp-card-status-row">
+                      <span className={`tag-pill ${status.tone}`}>{status.label}</span>
+                      {status.note && <span className="cp-card-status-note">{status.note}</span>}
+                    </div>
+                  );
+                })()}
                 <div className="coupon-code">{c.code}</div>
                 <div className="coupon-meta">
                   Type: <b>{c.discountType}</b> • Value: <b>{c.discountValue}</b>
