@@ -4,6 +4,7 @@ import "./ReviewsDisplay.css";
 import { Link } from "react-router-dom";
 import api from "../../utils/api";
 import StarRating from "../StarRating/StarRating";
+import Navbar from '../Home/Navbar';
 
 function ReviewsDisplay({ reviews, onDelete, currentUser }) {
   const handleDelete = async (id) => {
@@ -33,6 +34,8 @@ function ReviewsDisplay({ reviews, onDelete, currentUser }) {
 };
 
   return (
+    <>
+    <Navbar />
     <div className="reviews-page-container">
       {/* Hero Section */}
       <section className="reviews-hero">
@@ -130,6 +133,7 @@ function ReviewsDisplay({ reviews, onDelete, currentUser }) {
         )}
       </div>
     </div>
+    </>
   );
 }
 
