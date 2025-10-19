@@ -6,9 +6,13 @@
   backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
-  padding: 1rem 2rem; /* Proper padding for navbar */
-  min-height: 70px; /* Minimum height to ensure proper spacing */
+  padding: 1rem 2rem;
+  min-height: 70px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .logo {
