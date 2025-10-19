@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import api from "../../utils/api";
 import "./VaccinePlanPage.css";
+import Navbar from '../../Components/Home/Navbar'
+
 
 export default function VaccinePlanPage() {
   const [form, setForm] = useState({
@@ -67,6 +69,8 @@ export default function VaccinePlanPage() {
   }, []);
 
   return (
+    <>
+      <Navbar />
     <div className="vaccine-page-vc p-6 max-w-2xl mx-auto-vc">
       <h1 className="vaccine-title-vc text-xl font-bold mb-4-vc">Generate Vaccine Plan</h1>
       <form onSubmit={handleSubmit} className="vaccine-form-vc space-y-3 mb-6-vc">
@@ -178,5 +182,6 @@ export default function VaccinePlanPage() {
         </div>
       )}
     </div>
+    </>
   );
 }
