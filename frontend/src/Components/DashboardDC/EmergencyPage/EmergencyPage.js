@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import api from "../../../utils/api";
 import "./EmergencyPage.css";
 
@@ -11,7 +11,7 @@ const EmergencyPage = () => {
   const [loadingHistory, setLoadingHistory] = useState(false);
 
 
-  // ✅ Always call hooks
+  // Always call hooks
   useEffect(() => {
     const fetchHistory = async () => {
       if (!appointment?._id) return; // handle missing appointment
@@ -89,13 +89,13 @@ const EmergencyPage = () => {
       </div>
 
       <div className="emergency-history">
-        <h3>📜 Emergency History</h3>
+        <h3> Emergency History</h3>
         {loadingHistory ? (
           <p>Loading history...</p>
         ) : history.length === 0 ? (
           <p>No emergency records found for this pet.</p>
         ) : (
-          <table className="history-table">
+          <table className="emergency-history-table">
             <thead>
               <tr>
                 <th>Date</th>
