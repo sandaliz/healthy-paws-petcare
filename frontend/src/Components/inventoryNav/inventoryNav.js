@@ -33,7 +33,7 @@ function InventoryNav() {
     <div className="inventory-nav-container">
       {/* Sidebar header/logo */}
       <div className="nav-header">
-        <h2>Inventory Dashboard</h2>
+        <h2></h2>
       </div>
 
       {/* Nav items */}
