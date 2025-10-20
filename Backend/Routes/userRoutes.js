@@ -10,7 +10,7 @@ import {
   getStaffUsers, 
   deleteStaffUser, 
   toggleStaffStatus 
-} from "../controllers/authController.js";  
+} from "../Controllers/authcontroller.js";  
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
