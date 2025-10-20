@@ -351,6 +351,8 @@ export default function Invoices() {
 }
 
 /* Create Invoice */
+const OFFLINE_METHODS = ['Cash', 'Card', 'BankTransfer'];
+
 function CreateInvoiceModal({ open, onClose, onCreated }) {
   const [userID, setUserID] = useState('');
   const [userQuery, setUserQuery] = useState('');
@@ -360,6 +362,7 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
   const [openSuggest, setOpenSuggest] = useState(false);
   const [items, setItems] = useState([{ description: '', quantity: 1, unitPrice: 0 }]);
   const [busy, setBusy] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('Cash');
 
   const subtotal = items.reduce((s, it) => s + (toNum(it.quantity) * toNum(it.unitPrice)), 0);
   const tax = round2(subtotal * 0.08);
@@ -375,6 +378,7 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
     if (items.some(it => !it.description.trim())) return toast.error('Each line item needs a description');
     if (items.some(it => it.quantity <= 0)) return toast.error('Quantities must be at least 1');
     if (items.some(it => it.unitPrice <= 0)) return toast.error('Unit price must be greater than 0');
+    if (!OFFLINE_METHODS.includes(paymentMethod)) return toast.error('Select a valid offline payment method');
     if (subtotal <= 0) return toast.error('Invoice total must be greater than 0');
     try {
       setBusy(true);
@@ -384,7 +388,8 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
           description: it.description,
           quantity: toNum(it.quantity),
           unitPrice: toNum(it.unitPrice)
-        }))
+        })),
+        paymentMethod
       });
       toast.success('Invoice created');
       onCreated?.();
@@ -481,6 +486,15 @@ function CreateInvoiceModal({ open, onClose, onCreated }) {
         <div className="row end inv-add-item">
           <button className="fm-btn fm-btn-primary" onClick={addItem}><Plus size={16} /> Add item</button>
         </div>
+      </div>
+
+      <div className="field">
+        <label>Offline payment method</label>
+        <select className="input" value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}>
+          {OFFLINE_METHODS.map(method => (
+            <option key={method} value={method}>{method}</option>
+          ))}
+        </select>
       </div>
 
       <div className="totals-right">

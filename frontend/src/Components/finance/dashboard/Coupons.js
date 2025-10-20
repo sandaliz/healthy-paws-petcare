@@ -193,7 +193,10 @@ export default function Coupons() {
 
       <div className="cp-highlight">
         <div className="cp-highlight-head">
-          <h3>Top Coupon User</h3>
+          <div>
+            <h3>Top Coupon User</h3>
+            <p className="cp-highlight-sub">Leaders based on coupon usage within the selected period.</p>
+          </div>
           <select
             value={timePeriod}
             onChange={(e) => setTimePeriod(e.target.value)}
@@ -206,11 +209,14 @@ export default function Coupons() {
         </div>
         {topUser ? (
           <div className="cp-highlight-body">
-            <div className="owner">
+            <div className="cp-highlight-owner">
+              <div className="badge">Most Active</div>
               <div className="name">{topUser.user?.name || 'Unknown'}</div>
               <div className="email">{topUser.user?.email || ''}</div>
             </div>
-            <div className="cp-highlight-count">*{topUser.count} coupons used
+            <div className="cp-highlight-stats">
+              <span className="cp-highlight-total">{topUser.count}</span>
+              <span className="label">coupons used</span>
             </div>
           </div>
         ) : (
@@ -236,6 +242,7 @@ export default function Coupons() {
                   );
                 })()}
                 <div className="coupon-code">{c.code}</div>
+                <div className="coupon-meta tier">Requires tier: <b>{c.minTier || 'Puppy Pal'}</b></div>
                 <div className="coupon-meta">
                   Type: <b>{c.discountType}</b> • Value: <b>{c.discountValue}</b>
                 </div>
@@ -334,6 +341,7 @@ function CouponModal({ open, onClose, onSave, defaultValue }) {
           ? new Date(defaultValue.expiryDate).toISOString().slice(0, 10)
           : '',
         description: defaultValue.description || '',
+        minTier: defaultValue.minTier || 'Puppy Pal',
       }
       : {
         code: '',
@@ -343,6 +351,7 @@ function CouponModal({ open, onClose, onSave, defaultValue }) {
         usageLimit: 0,
         expiryDate: '',
         description: '',
+        minTier: 'Puppy Pal',
       }
   );
 
@@ -462,6 +471,20 @@ function CouponModal({ open, onClose, onSave, defaultValue }) {
             value={form.description}
             onChange={e => set('description', e.target.value)}
           />
+        </div>
+
+        <div className="coupon-field">
+          <label>Minimum Loyalty Tier</label>
+          <select
+            className="coupon-input"
+            value={form.minTier}
+            onChange={e => set('minTier', e.target.value)}
+          >
+            <option value="Puppy Pal">Puppy Pal</option>
+            <option value="Kitty Champ">Kitty Champ</option>
+            <option value="Guardian Woof">Guardian Woof</option>
+            <option value="Legendary Lion">Legendary Lion</option>
+          </select>
         </div>
       </div>
 

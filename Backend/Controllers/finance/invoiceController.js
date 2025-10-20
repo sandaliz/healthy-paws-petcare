@@ -1,4 +1,6 @@
 import Invoice from "../../Model/finance/invoiceModel.js";
+import Payment from "../../Model/finance/paymentModel.js";
+import { v4 as uuidv4 } from "uuid";
 
 const generateInvoiceID = () => {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
@@ -8,11 +10,17 @@ const generateInvoiceID = () => {
 
 const toMoney = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 
+const OFFLINE_METHODS = ["Cash", "Card", "BankTransfer"];
+
 export const createInvoice = async (req, res) => {
   try {
-    const { userID, lineItems } = req.body;
+    const { userID, lineItems, paymentMethod } = req.body;
     if (!userID || !Array.isArray(lineItems) || lineItems.length === 0) {
       return res.status(400).json({ message: "User ID and at least one line item are required" });
+    }
+
+    if (paymentMethod && !OFFLINE_METHODS.includes(paymentMethod)) {
+      return res.status(400).json({ message: "Invalid payment method. Allowed: Cash, Card, BankTransfer" });
     }
 
     const normalizedItems = lineItems.map((item) => {
@@ -48,9 +56,30 @@ export const createInvoice = async (req, res) => {
     });
 
     await invoice.save();
+
+    let paymentRecord = null;
+    if (paymentMethod) {
+      try {
+        paymentRecord = await Payment.create({
+          paymentID: `PAY-${uuidv4()}`,
+          invoiceID: invoice._id,
+          userID,
+          method: paymentMethod,
+          amount: total,
+          currency: "LKR",
+          status: "Pending",
+        });
+      } catch (err) {
+        console.error("createInvoice payment creation error:", err);
+        await Invoice.findByIdAndDelete(invoice._id);
+        return res.status(500).json({ message: "Invoice creation failed while creating pending payment. Please try again." });
+      }
+    }
+
     res.status(201).json({
       message: "Invoice created. Please pay within 15 days.",
       invoice,
+      payment: paymentRecord,
     });
   } catch (err) {
     console.error("createInvoice error:", err);

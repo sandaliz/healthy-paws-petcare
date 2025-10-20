@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 import Coupon from "../../Model/finance/couponModel.js";
+import Loyalty from "../../Model/finance/loyaltyModel.js";
+
+const TIER_ORDER = ["Puppy Pal", "Kitty Champ", "Guardian Woof", "Legendary Lion"];
+const tierRank = TIER_ORDER.reduce((acc, tier, idx) => ({ ...acc, [tier]: idx }), {});
 
 export const createCoupon = async (req, res) => {
   try {
-    let { code, discountType, discountValue, minInvoiceAmount, usageLimit, expiryDate, description } = req.body;
-    code = String(code || "").trim().toUpperCase();
-    if (!code || !discountType || discountValue == null || !expiryDate) {
-      return res.status(400).json({ message: "Required fields missing" });
-    }
-    const coupon = new Coupon({
+    let {
       code,
       discountType,
       discountValue,
@@ -16,7 +15,29 @@ export const createCoupon = async (req, res) => {
       usageLimit,
       expiryDate,
       description,
+      minTier,
+    } = req.body;
+    code = String(code || "").trim().toUpperCase();
+    if (!code || !discountType || discountValue == null || !expiryDate) {
+      return res.status(400).json({ message: "Code, discount type, discount value and expiry date are required" });
+    }
+
+    const normalizedTier = TIER_ORDER.includes(minTier) ? minTier : "Puppy Pal";
+
+    const payload = {
+      code,
+      discountType,
+      discountValue: Number(discountValue) || 0,
+      minInvoiceAmount: Number(minInvoiceAmount) || 0,
+      usageLimit: Number(usageLimit) || 0,
+      expiryDate,
+      description,
       scope: "GLOBAL",
+      minTier: normalizedTier,
+    };
+
+    const coupon = new Coupon({
+      ...payload,
     });
     await coupon.save();
     res.status(201).json({ message: "Coupon created", coupon });
@@ -46,6 +67,12 @@ export const updateCoupon = async (req, res) => {
   try {
     const body = { ...req.body };
     if (body.code) body.code = String(body.code).trim().toUpperCase();
+    if (body.discountValue != null) body.discountValue = Number(body.discountValue) || 0;
+    if (body.minInvoiceAmount != null) body.minInvoiceAmount = Number(body.minInvoiceAmount) || 0;
+    if (body.usageLimit != null) body.usageLimit = Number(body.usageLimit) || 0;
+    if (body.minTier && !TIER_ORDER.includes(body.minTier)) {
+      body.minTier = "Puppy Pal";
+    }
     const coupon = await Coupon.findByIdAndUpdate(req.params.id, body, { new: true });
     if (!coupon) return res.status(404).json({ message: "Coupon not found" });
     res.json({ message: "Coupon updated", coupon });
@@ -74,7 +101,7 @@ export const validateCoupon = async (req, res) => {
     }
     code = String(code).trim().toUpperCase();
     const coupon = await Coupon.findOne({ code, scope: "GLOBAL" });
-    if (!coupon) return res.status(404).json({ message: "Invalid coupon" });
+    if (!coupon) return res.status(404).json({ message: "Coupon not found" });
     if (!coupon.canApply(Number(invoiceTotal))) {
       return res.status(400).json({ message: "Coupon not applicable" });
     }
@@ -107,6 +134,16 @@ export const claimCoupon = async (req, res) => {
     }
     if (template.usageLimit > 0 && template.usedCount >= template.usageLimit) {
       return res.status(400).json({ message: "Coupon cannot be claimed (exhausted)" });
+    }
+    const loyalty = await Loyalty.findOne({ userID: userObjectId });
+    const userTier = loyalty?.tier || "Puppy Pal";
+    const requiredTier = template.minTier || "Puppy Pal";
+    const userTierRank = tierRank[userTier] ?? 0;
+    const requiredRank = tierRank[requiredTier] ?? 0;
+    if (userTierRank < requiredRank) {
+      return res.status(403).json({
+        message: `This coupon unlocks at ${requiredTier}. Keep earning PawPoints!`,
+      });
     }
     const existing = await Coupon.findOne({
       scope: "ISSUED",
@@ -189,6 +226,7 @@ export const getUserAvailableCoupons = async (req, res) => {
         discountType: c.discountType,
         discountValue: c.discountValue,
         minInvoiceAmount: minAmount,
+        minTier: c.minTier || "Puppy Pal",
         expiryDate: c.expiryDate,
         description: c.description || "",
         scope: c.scope,

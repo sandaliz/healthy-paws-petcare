@@ -14,6 +14,11 @@ const couponSchema = new mongoose.Schema(
     ownerUserID: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
     parentId: { type: mongoose.Schema.Types.ObjectId, ref: "Coupon" },
     status: { type: String, enum: ["Available", "Used", "Expired", "Revoked"], default: "Available" },
+    minTier: {
+      type: String,
+      enum: ["Puppy Pal", "Kitty Champ", "Guardian Woof", "Legendary Lion"],
+      default: "Puppy Pal",
+    },
     usedAt: { type: Date },
   },
   { timestamps: true, collection: "coupons" }
@@ -52,20 +57,32 @@ couponSchema.statics.issueToUser = async function ({ templateId, userID }) {
   if (!template) throw new Error("Template coupon not found");
   const now = new Date();
   if (now > template.expiryDate) throw new Error("Template expired");
-  const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
-  const issuedCode = `${template.code}-${suffix}`;
-  return this.create({
-    code: issuedCode,
-    description: template.description,
-    discountType: template.discountType,
-    discountValue: template.discountValue,
-    minInvoiceAmount: template.minInvoiceAmount,
-    expiryDate: template.expiryDate,
-    scope: "ISSUED",
-    ownerUserID: new mongoose.Types.ObjectId(userID),
-    parentId: template._id,
-    status: "Available",
-  });
+
+  const attempts = 5;
+  for (let i = 0; i < attempts; i++) {
+    const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
+    const issuedCode = `${template.code}-${suffix}`;
+    try {
+      return await this.create({
+        code: issuedCode,
+        description: template.description,
+        discountType: template.discountType,
+        discountValue: template.discountValue,
+        minInvoiceAmount: template.minInvoiceAmount,
+        minTier: template.minTier || "Puppy Pal",
+        expiryDate: template.expiryDate,
+        scope: "ISSUED",
+        ownerUserID: new mongoose.Types.ObjectId(userID),
+        parentId: template._id,
+        status: "Available",
+      });
+    } catch (err) {
+      const isDuplicateKey = err?.code === 11000 && err?.keyPattern?.code;
+      if (!isDuplicateKey || i === attempts - 1) throw err;
+    }
+  }
+
+  throw new Error("Unable to generate unique coupon code");
 };
 
 export default mongoose.model("Coupon", couponSchema);

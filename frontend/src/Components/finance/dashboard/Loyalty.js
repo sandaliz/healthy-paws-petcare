@@ -4,6 +4,7 @@ import { api } from '../services/financeApi';
 import Modal from './components/Modal';
 import Skeleton from './components/Skeleton';
 import { Search, RefreshCcw, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell } from 'recharts';
 import '../css/dashboard/loyalty.css';
 
 const TIERS = [
@@ -19,6 +20,16 @@ const TIER_ORDER = {
   "Guardian Woof": 3,
   "Legendary Lion": 4
 };
+
+const POINTS_RATE = 500;
+const TIER_THRESHOLDS = [
+  { tier: 'Puppy Pal', min: 0, description: 'Starter tier for new owners.' },
+  { tier: 'Kitty Champ', min: 500, description: 'Unlocked at 500 points.' },
+  { tier: 'Guardian Woof', min: 1000, description: 'Unlocked at 1,000 points.' },
+  { tier: 'Legendary Lion', min: 2000, description: 'Unlocked at 2,000 points.' },
+];
+
+const INSIGHT_COLORS = ['#FDBA74', '#F97316', '#EA580C', '#C2410C'];
 
 export default function Loyalty() {
   const [rows, setRows] = useState([]);
@@ -69,6 +80,14 @@ export default function Loyalty() {
     return filtered.slice(start, start + PAGE_SIZE);
   }, [filtered, page]);
 
+  const tierSummary = useMemo(() => {
+    return rows.reduce((acc, row) => {
+      const key = row.tier && TIERS.find(t => t.value === row.tier) ? row.tier : "Puppy Pal";
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+  }, [rows]);
+
   const addPoints = async (userID, amountSpent) => {
     try {
       await api.post('/loyalty/add-points', { userID, amountSpent: Number(amountSpent) });
@@ -109,6 +128,60 @@ export default function Loyalty() {
           <RefreshCcw size={16} /> Refresh
         </button>
       </div>
+
+      <section className="loy-info">
+        <div className="loy-info-card">
+          <h3>Points & Tiers</h3>
+          <p>
+            Finance staff can award <strong>1 loyalty point for every Rs.{POINTS_RATE}</strong> recorded in offline payments.
+            Tiers update automatically when point totals cross the thresholds below.
+          </p>
+          <ul className="loy-threshold-list">
+            {TIER_THRESHOLDS.map(item => (
+              <li key={item.tier}>
+                <div className="tier-name">{item.tier}</div>
+                <div className="tier-meta">{item.min.toLocaleString()} pts • {item.description}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="loy-insight-card">
+          <div className="loy-insight-head">
+            <div>
+              <h3>Loyalty Tier Mix</h3>
+              <p className="loy-insight-sub">Live distribution of owners across PawPerks tiers.</p>
+            </div>
+            <div className="loy-insight-total">
+              {rows.length.toLocaleString()} members
+            </div>
+          </div>
+          <div className="loy-insight-chart">
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={TIERS.map(t => ({ tier: t.label, count: tierSummary[t.value] || 0 }))}>
+                <XAxis dataKey="tier" tickLine={false} axisLine={false} tick={{ fontSize: 12, fontWeight: 600 }} />
+                <Tooltip
+                  cursor={{ fill: 'rgba(84, 65, 60, 0.08)' }}
+                  contentStyle={{ borderRadius: 12, border: '1px solid #f5d287', boxShadow: '0 12px 28px rgba(0,0,0,0.08)' }}
+                />
+                <Bar dataKey="count" radius={[8, 8, 0, 0]}>
+                  {TIERS.map((t, idx) => (
+                    <Cell key={t.value} fill={INSIGHT_COLORS[idx % INSIGHT_COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="loy-insight-legend">
+            {TIERS.map((tier, idx) => (
+              <div key={tier.value} className="loy-insight-pill">
+                <span className="dot" style={{ background: INSIGHT_COLORS[idx % INSIGHT_COLORS.length] }} />
+                <span className="label">{tier.label}</span>
+                <span className="value">{tierSummary[tier.value] || 0}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <div className="loy-toolbar">
         <div className="loy-filters">

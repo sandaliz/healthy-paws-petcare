@@ -56,7 +56,8 @@ import {
   createRefundRequest,
   getAllRefundRequests,
   approveRefund,
-  rejectRefund
+  rejectRefund,
+  recordRefundPayout
 } from "../../Controllers/finance/refundController.js";
 
 import {
@@ -110,6 +111,7 @@ router.post("/refund", createRefundRequest);
 router.get("/refunds", getAllRefundRequests);
 router.put("/refund/approve/:id", approveRefund);
 router.put("/refund/reject/:id", rejectRefund);
+router.put("/refund/payout/:id", recordRefundPayout);
 
 // ========== FINANCE LINKS ==========
 router.post("/invoice/cart", createInvoiceFromCart);

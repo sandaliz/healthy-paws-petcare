@@ -177,7 +177,6 @@
   .sidebar-title { display: none; }
 }
 
-/* ✅ Modal Styles (Missing from CSS separation) */
 .fm-modal {
   position: fixed;
   top: 0;

@@ -9,19 +9,42 @@ import '../css/clientPay.css';
 import { fmtLKR, fmtDate, fmtDateTime } from '../utils/financeFormatters';
 
 import {
-  PieChart, Pie, Cell,
   AreaChart, Area, XAxis, YAxis, Tooltip
 } from 'recharts';
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import html2canvas from "html2canvas";
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend as ChartLegend } from 'chart.js';
 
-const REFUND_WINDOW_DAYS = 7;
-const PALETTE = {
-  Stripe: "#3b82f6",
-  Cash: "#22c55e",
-  BankTransfer: "#f97316"
+const REFUND_WINDOW_DAYS = Number(
+  process.env.REACT_APP_REFUND_WINDOW_DAYS ||
+  process.env.REACT_APP_REFUND_WINDOW ||
+  '7'
+);
+const METHOD_COLORS = ['#54413C', '#FFD58E', '#E07A5F', '#81B29A', '#F2CC8F'];
+
+const centerTextPlugin = {
+  id: 'clientPaymentCenterText',
+  afterDraw(chart) {
+    const cfg = chart?.options?.plugins?.centerText;
+    if (!cfg) return;
+
+    const { ctx, chartArea } = chart;
+    const { left, right, top, bottom } = chartArea;
+    const x = (left + right) / 2;
+    const y = (top + bottom) / 2;
+
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#6B7280';
+    ctx.font = '600 12px Poppins';
+    if (cfg.title) ctx.fillText(cfg.title, x, y - 6);
+    ctx.fillStyle = '#111827';
+    ctx.font = '700 20px Poppins';
+    ctx.fillText(cfg.value, x, y + 18);
+    ctx.restore();
+  },
 };
+
+ChartJS.register(ArcElement, ChartTooltip, ChartLegend, centerTextPlugin);
 
 function deriveInvoiceTotals(inv, paymentRecords = [], fallbackDiscount = null) {
   if (!inv) return {
@@ -112,7 +135,7 @@ export default function PaymentSummary({ embedded = false }) {
         setPayments(pays?.payments || []);
         setRefunds((reqs?.requests || []).filter(r => r.userID?._id === userId));
       } catch (e) {
-        toast.error(e.message || 'Failed to load your PawLedger');
+        toast.error(e?.response?.data?.message || e?.message || 'Failed to load your PawLedger');
       }
     })();
   }, [userId]);
@@ -143,11 +166,57 @@ export default function PaymentSummary({ embedded = false }) {
   const refundRequests = refunds.length;
 
   // Charts Data
-  const methodData = [
-    { name: "Stripe", value: payments.filter(p => p.method === "Stripe").length },
-    { name: "Cash", value: payments.filter(p => p.method === "Cash").length },
-    { name: "BankTransfer", value: payments.filter(p => p.method === "BankTransfer").length }
-  ];
+  const methodBreakdown = useMemo(() => {
+    const counts = payments
+      .filter(p => p.status === 'Completed')
+      .reduce((acc, p) => {
+        const key = p.method || 'Other';
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {});
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [payments]);
+
+  const methodChart = useMemo(() => {
+    if (!methodBreakdown.length) {
+      return { data: { labels: [], datasets: [] }, options: {} };
+    }
+    const total = methodBreakdown.reduce((sum, entry) => sum + entry.value, 0);
+    return {
+      data: {
+        labels: methodBreakdown.map((entry) => entry.name),
+        datasets: [
+          {
+            data: methodBreakdown.map((entry) => entry.value),
+            backgroundColor: methodBreakdown.map((_, idx) => METHOD_COLORS[idx % METHOD_COLORS.length]),
+            borderColor: methodBreakdown.map((_, idx) => METHOD_COLORS[idx % METHOD_COLORS.length]),
+            borderWidth: 1,
+            hoverBorderWidth: 1,
+            hoverOffset: 6,
+            spacing: 0,
+          },
+        ],
+      },
+      options: {
+        cutout: '55%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.label}: ${ctx.formattedValue}`,
+            },
+            backgroundColor: 'rgba(84, 65, 60, 0.92)',
+            titleFont: { family: 'Poppins', weight: '600' },
+            bodyFont: { family: 'Poppins' },
+          },
+          centerText: {
+            title: 'Completed',
+            value: String(total),
+          },
+        },
+      },
+    };
+  }, [methodBreakdown]);
   const paymentTrend = payments.map(p => ({
     date: fmtDate(p.createdAt),
     value: p.status === "Completed" ? p.amount : 0
@@ -161,7 +230,7 @@ export default function PaymentSummary({ embedded = false }) {
       const inv = await api.get(`/invoice/${invoiceMongoId}`);
       setInvoice(inv);
     } catch (e) {
-      toast.error(e.message || 'Failed to load invoice');
+      toast.error(e?.response?.data?.message || e?.message || 'Failed to load invoice');
     } finally {
       setLoadingInv(false);
     }
@@ -203,7 +272,7 @@ export default function PaymentSummary({ embedded = false }) {
       setPayments(pays?.payments || []);
       setRefunds((reqs?.requests || []).filter(r => r.userID?._id === userId));
     } catch (e) {
-      toast.error(e.message || 'Failed to submit refund');
+      toast.error(e?.response?.data?.message || e?.message || 'Failed to submit refund');
     } finally {
       setSubmittingRefund(false);
     }
@@ -211,6 +280,15 @@ export default function PaymentSummary({ embedded = false }) {
 
   // :: PDF Export
   const handleGenerateReport = async () => {
+    const [jsPdfModule, autoTableModule, html2CanvasModule] = await Promise.all([
+      import("jspdf"),
+      import("jspdf-autotable"),
+      import("html2canvas")
+    ]);
+    const jsPDF = jsPdfModule.default;
+    const autoTable = autoTableModule.default;
+    const html2canvas = html2CanvasModule.default;
+
     const doc = new jsPDF();
     doc.setFontSize(20);
     doc.text("Healthy Paws - Payment Report", 14, 20);
@@ -484,39 +562,61 @@ export default function PaymentSummary({ embedded = false }) {
         </Modal>
 
         {/* Hidden Charts for PDF */}
-        <div id="pdf-charts" style={{
-          position: "fixed", top: "-9999px", left: "-9999px",
-          width: "820px", height: "300px", background: "#fff", display: "flex", gap: "20px"
-        }}>
-          <div style={{ width: "400px", textAlign: "center" }}>
-            <h4>Payment Method Breakdown</h4>
-            <PieChart width={380} height={220}>
-              <Pie data={methodData} dataKey="value" nameKey="name" outerRadius={90} label>
-                {methodData.map((entry) => (
-                  <Cell key={entry.name} fill={PALETTE[entry.name]} />
-                ))}
-              </Pie>
-            </PieChart>
-            <div style={{ fontSize: "0.8rem", marginTop: "6px" }}>
-              {Object.entries(PALETTE).map(([method, color]) => (
-                <span key={method} style={{ margin: "0 8px" }}>
-                  <span style={{
-                    display: "inline-block", width: 12, height: 12,
-                    background: color, marginRight: 5
-                  }}></span>
-                  {method}
-                </span>
-              ))}
+        <div
+          id="pdf-charts"
+          style={{
+            position: "fixed",
+            top: "-9999px",
+            left: "-9999px",
+            width: "820px",
+            height: "300px",
+            background: "#fff",
+            display: "flex",
+            gap: "20px",
+            padding: "16px",
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            <h4 style={{ textAlign: "center", marginBottom: "8px" }}>Payment Method Breakdown</h4>
+            <div className="payment-methods-card" style={{ height: "240px" }}>
+              {methodBreakdown.length === 0 ? (
+                <div className="chart-empty">No completed payments yet.</div>
+              ) : (
+                <div className="payment-methods">
+                  <div className="payment-methods-doughnut">
+                    <Doughnut data={methodChart.data} options={methodChart.options} />
+                  </div>
+                  <ul className="payment-methods-legend">
+                    {methodBreakdown.map((entry, idx) => (
+                      <li key={`pdf-${entry.name}`}>
+                        <span
+                          className="color"
+                          style={{ backgroundColor: METHOD_COLORS[idx % METHOD_COLORS.length] }}
+                        />
+                        <span className="name">{entry.name}</span>
+                        <span className="value">{entry.value}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
-          <div style={{ width: "400px", textAlign: "center" }}>
-            <h4>My Payments Over Time</h4>
-            <AreaChart data={paymentTrend} width={380} height={220} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
-              <XAxis dataKey="date" tick={{ fontSize: 9 }} />
-              <YAxis />
-              <Tooltip />
-              <Area type="monotone" dataKey="value" stroke="#3b82f6" fill="#bfdbfe" />
-            </AreaChart>
+          <div style={{ flex: 1 }}>
+            <h4 style={{ textAlign: "center", marginBottom: "8px" }}>My Payments Over Time</h4>
+            <div className="chart-card" style={{ height: "240px" }}>
+              <AreaChart
+                data={paymentTrend}
+                width={360}
+                height={220}
+                margin={{ top: 10, right: 20, left: 0, bottom: 20 }}
+              >
+                <XAxis dataKey="date" tick={{ fontSize: 9 }} />
+                <YAxis />
+                <Tooltip />
+                <Area type="monotone" dataKey="value" stroke="#3b82f6" fill="#bfdbfe" />
+              </AreaChart>
+            </div>
           </div>
         </div>
       </div>

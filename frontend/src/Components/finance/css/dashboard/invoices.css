@@ -1,4 +1,3 @@
-/* ==== Invoices page header (scoped) ==== */
 .inv-head {
   display: flex;
   align-items: flex-start;
@@ -18,10 +17,6 @@
 }
 
 .fm-toolbar { margin-bottom: 12px; }
-
-
-
-/* === Toolbar and Filters === */
 
 .fm-filters {
   display: flex;
