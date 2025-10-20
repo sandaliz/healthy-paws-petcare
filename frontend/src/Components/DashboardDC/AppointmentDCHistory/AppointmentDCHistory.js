@@ -4,6 +4,7 @@ import api from "../../../utils/api";
 import { utils, writeFile } from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
 import "./AppointmentDCHistory.css";
 
 // Format datetime in Sri Lanka timezone
@@ -21,6 +22,7 @@ function AppointmentDCHistory() {
   const [monthFilter, setMonthFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const fetchHistory = async () => {
     try {
@@ -34,19 +36,28 @@ function AppointmentDCHistory() {
         api.get("/careCustomers/status/Cancelled")
       ]);
 
-      const cioHistory = (cioRes.data.history || []).map((rec) => ({
-        _id: rec._id,
-        ownerName: rec.appointment?.ownerName || "-",
-        petName: rec.appointment?.petName || "-",
-        status: rec.appointment?.status || "Completed",
-        checkInTime: rec.checkInTime,
-        checkOutTime: rec.checkOutTime,
-        createdAt: rec.checkInTime,
-        services: [
-          rec.appointment?.grooming ? "Grooming" : null,
-          rec.appointment?.walking ? "Walking" : null
-        ].filter(Boolean)
-      }));
+      const cioHistory = (cioRes.data.history || []).map((rec) => {
+        // Extract appointment ID safely - handle both object and string cases
+        const appointmentId = rec.appointment?._id ||
+                             (typeof rec.appointment === 'string' ? rec.appointment : null) ||
+                             rec.appointment?.id ||
+                             rec.appointment;
+
+        return {
+          _id: rec._id,
+          appointmentId: appointmentId, // Use appointment ID for daily logs and emergency
+          ownerName: rec.appointment?.ownerName || "-",
+          petName: rec.appointment?.petName || "-",
+          status: rec.appointment?.status || "Completed",
+          checkInTime: rec.checkInTime,
+          checkOutTime: rec.checkOutTime,
+          createdAt: rec.checkInTime,
+          services: [
+            rec.appointment?.grooming ? "Grooming" : null,
+            rec.appointment?.walking ? "Walking" : null
+          ].filter(Boolean)
+        };
+      });
 
       const rejectedCancelled = [
         ...(rejectedRes.data.careCustomers || []),
@@ -190,7 +201,7 @@ function AppointmentDCHistory() {
       <div className="Ahistory-container">
         <div className="Ahistory-error">
           <p>{error}</p>
-          <button onClick={fetchHistory}>Try Again</button>
+          <button  onClick={fetchHistory}> Try Again</button>
         </div>
       </div>
     );
@@ -252,8 +263,20 @@ function AppointmentDCHistory() {
                 <td>{formatDateTimeSL(rec.checkOutTime)}</td>
                 <td>{rec.services.length > 0 ? rec.services.join(", ") : "-"}</td>
                 <td>
+                  {rec.status === "Completed" ? (
+                    <>
+                      <button
+                          className="DC-btn-approve"
+                          onClick={() => navigate(`/dashboardDC/dailylog-history/${rec.appointmentId || rec._id}`)}
+                        >
+                        Daily Logs
+                      </button>
+                      
+                    </>
+                  ) : null}
+
                   <button
-                    className="delete-btn"
+                    className="DC-btn-reject"
                     onClick={() => handleDelete(rec._id)}
                   >
                     Delete

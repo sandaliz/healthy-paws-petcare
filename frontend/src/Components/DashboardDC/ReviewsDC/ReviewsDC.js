@@ -1,24 +1,30 @@
 // src/pages/DashboardDC/ReviewsDC.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../../utils/api';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable'; 
+import autoTable from 'jspdf-autotable';
 import './ReviewsDC.css';
 
 function ReviewsDC() {
   const [reviews, setReviews] = useState([]);
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [sentimentFilter, setSentimentFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   // Fetch reviews from backend
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/reviews');
+        setLoading(true);
+        const response = await api.get('/reviews');
         setReviews(response.data.reviews || []);
         setFilteredReviews(response.data.reviews || []);
       } catch (err) {
         console.error('Error fetching reviews:', err);
+        setError('Failed to load reviews');
+      } finally {
+        setLoading(false);
       }
     };
     fetchReviews();
@@ -32,6 +38,22 @@ function ReviewsDC() {
       setFilteredReviews(reviews.filter(r => r.sentiment === sentimentFilter));
     }
   }, [sentimentFilter, reviews]);
+
+  // Delete review
+  const handleDelete = async (reviewId) => {
+    if (!window.confirm('Are you sure you want to delete this review?')) return;
+
+    try {
+      await api.delete(`/reviews/${reviewId}`);
+      // Remove the deleted review from the state
+      const updatedReviews = reviews.filter(review => review._id !== reviewId);
+      setReviews(updatedReviews);
+      alert('Review deleted successfully!');
+    } catch (err) {
+      console.error('Error deleting review:', err);
+      alert(err.response?.data?.message || 'Failed to delete review');
+    }
+  };
 
   // Generate PDF of current reviews
   const generatePDF = () => {
@@ -86,6 +108,19 @@ function ReviewsDC() {
     return stars;
   };
 
+  if (loading) {
+    return <div className="dcd-reviews-container">Loading reviews...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="dcd-reviews-container">
+        <p className="error-message">{error}</p>
+        <button onClick={() => window.location.reload()}>Try Again</button>
+      </div>
+    );
+  }
+
   return (
     <div className="dcd-reviews-container">
       <div className="dcd-reviews-header">
@@ -115,7 +150,16 @@ function ReviewsDC() {
         <div className="dcd-reviews-grid">
           {filteredReviews.map((review) => (
             <div key={review._id} className="dcd-review-card">
-              <h3 className="dcd-review-owner">{review.ownerName}'s Review</h3>
+              <div className="dcd-review-header">
+                <h3 className="dcd-review-owner">{review.ownerName}'s Review</h3>
+                <button
+                  className="dcd-delete-btn"
+                  onClick={() => handleDelete(review._id)}
+                  title="Delete Review"
+                >
+                  🗑️
+                </button>
+              </div>
               <p><strong>Pet:</strong> {review.petName} ({review.species})</p>
               <p><strong>Services:</strong> {review.grooming ? 'Grooming ' : ''}{review.walking ? 'Walking' : ''}</p>
               <p className="dcd-review-rating"><strong>Rating:</strong> {renderStars(review.rating)}</p>

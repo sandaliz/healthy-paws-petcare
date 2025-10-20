@@ -88,6 +88,8 @@ import DailyLogs from "./Components/DashboardDC/DailyLogs/DailyLogs";
 import EmergencyPage from "./Components/DashboardDC/EmergencyPage/EmergencyPage";
 import AppointmentDetailsDC from "./Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC";
 import ReviewsDC from "./Components/DashboardDC/ReviewsDC/ReviewsDC";
+import DailyLogHistory from "./Components/DashboardDC/DailyLogHistory/DailyLogHistory";
+
 
 // ---------------- Finance ----------------
 import ClientPay from "./Components/finance/client/offline/ClientPay";
@@ -189,6 +191,9 @@ function App() {
         <Route path="emergency" element={<EmergencyPage />} />
         <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
         <Route path="reviews" element={<ReviewsDC />} />
+        <Route path="dailylog-history/:appointmentId" element={<DailyLogHistory />} />
+        
+
       </Route>
 
       {/* -------- Doctor Routes -------- */}

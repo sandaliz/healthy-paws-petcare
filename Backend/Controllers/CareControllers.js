@@ -200,14 +200,14 @@ export const addDetails = async (req, res) => {
     await immediateReminder.save();
     scheduleReminder(immediateReminder);
 
-    // 4️⃣ Send response
+    //  Send response
     return res.status(201).json({
       message: "Appointment created successfully & reminders (immediate, 24h, 3h) scheduled",
       careCustomer,
     });
 
   } catch (err) {
-    console.error("❌ Error creating appointment:", err);
+    console.error("Error creating appointment:", err);
     return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
