@@ -118,8 +118,15 @@ export const deleteReview = async (req, res) => {
 
     if (!review) return res.status(404).json({ message: "Review not found" });
 
-    // Only allow deletion if owner exists and matches current user
-    if (!review.owner || review.owner.toString() !== req.user.id) {
+    // Allow deletion if:
+    // 1. User is the owner of the review, OR
+    // 2. User has PET_CARE_TAKER role (for moderation purposes), OR
+    // 3. User has ADMIN or SUPER_ADMIN role (for full management)
+    const isOwner = !review.owner || review.owner.toString() === req.user.id;
+    const isCareTaker = req.user.role === "PET_CARE_TAKER";
+    const isAdmin = req.user.role === "ADMIN" || req.user.role === "SUPER_ADMIN";
+
+    if (!isOwner && !isCareTaker && !isAdmin) {
       return res.status(403).json({ message: "Not authorized to delete this review" });
     }
 

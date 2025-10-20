@@ -62,7 +62,8 @@ const EmergencyPage = () => {
       <p>
         <strong>Owner:</strong> {appointment.ownerName} <br />
         <strong>Species:</strong> {appointment.species} <br />
-        <strong>Email:</strong> {appointment.email}
+        <strong>Email:</strong> {appointment.email} <br />
+        <strong>Emergency Action:</strong> {appointment.emergencyAction}
       </p>
 
       <div className="emergency-actions">

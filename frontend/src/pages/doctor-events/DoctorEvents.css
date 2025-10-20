@@ -13,6 +13,8 @@
 
 .doctor-events {
   padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFE8CC 50%, #FFD58E 100%);
 }
 
 .events-header {
@@ -24,21 +26,29 @@
 
 .events-header h2 {
   margin: 0;
-  color: #333;
+  color: #54413c;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(84, 65, 60, 0.1);
 }
 
 .create-btn {
-  background-color: #3498db;
-  color: white;
+  background: linear-gradient(135deg, #FFD58E 0%, #FFC870 100%);
+  color: #54413c;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 12px 24px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(255, 213, 142, 0.3);
+  transition: all 0.3s ease;
 }
 
 .create-btn:hover {
-  background-color: #2980b9;
+  background: linear-gradient(135deg, #FFC870 0%, #FFB84D 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 213, 142, 0.4);
 }
 
 .search-bar {
@@ -48,10 +58,19 @@
 .search-bar input {
   width: 100%;
   max-width: 400px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  padding: 12px 16px;
+  border: 2px solid #FFD58E;
+  border-radius: 8px;
   font-size: 14px;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 213, 142, 0.2);
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #FFC870;
+  box-shadow: 0 4px 12px rgba(255, 213, 142, 0.3);
 }
 
 .events-table {
@@ -62,9 +81,10 @@
   width: 100%;
   border-collapse: collapse;
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+  box-shadow: 0 4px 16px rgba(84, 65, 60, 0.15);
+  border-radius: 12px;
   overflow: hidden;
+  border: 1px solid #FFE8CC;
 }
 
 .events-table th,
@@ -75,13 +95,17 @@
 }
 
 .events-table th {
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #54413c 0%, #6a534b 100%);
   font-weight: 600;
-  color: #333;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 13px;
 }
 
 .events-table tr:hover {
-  background-color: #f8f9fa;
+  background-color: #FFF9F0;
+  transition: background-color 0.2s ease;
 }
 
 .event-image {
@@ -188,6 +212,38 @@
   border-radius: 5px;
   font-size: 14px;
   box-sizing: border-box;
+}
+
+.form-group input[type="time"] {
+  position: relative;
+  cursor: pointer;
+  min-height: 40px;
+}
+
+/* Ensure the time picker icon is visible and clickable */
+.form-group input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1;
+  filter: invert(0.5);
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.form-group input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  filter: invert(0.3);
+}
+
+/* Firefox support */
+.form-group input[type="time"]::-moz-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1;
+}
+
+/* Ensure the input is clickable */
+.form-group input[type="time"]:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
 }
 
 .form-group textarea {

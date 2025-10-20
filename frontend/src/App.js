@@ -76,6 +76,8 @@ import StarRating from "./Components/StarRating/StarRating";
 import AppointmentDisplayDC from "./Components/AppointmentDisplayDC/AppointmentDisplayDC";
 import DailyLogsPet from "./Components/DailyLogsPet/DailyLogsPet";
 import VaccinePlanPage from "./Components/VaccinePlanPage/VaccinePlanPage";
+import AppHisDetailsDC from "./Components/AppHisDetailsDC/AppHisDetailsDC";
+
 
 // ---------------- Dashboard & nested pages (Daycare) ----------------
 import DashboardDC from "./Components/DashboardDC/DashboardDC/DashboardDC";
@@ -88,6 +90,8 @@ import DailyLogs from "./Components/DashboardDC/DailyLogs/DailyLogs";
 import EmergencyPage from "./Components/DashboardDC/EmergencyPage/EmergencyPage";
 import AppointmentDetailsDC from "./Components/DashboardDC/AppointmentDetailsDC/AppointmentDetailsDC";
 import ReviewsDC from "./Components/DashboardDC/ReviewsDC/ReviewsDC";
+import DailyLogHistory from "./Components/DashboardDC/DailyLogHistory/DailyLogHistory";
+
 
 // ---------------- Finance ----------------
 import ClientPay from "./Components/finance/client/offline/ClientPay";
@@ -176,6 +180,8 @@ function App() {
       <Route path="/appointmentDisplayDC/:id" element={<AppointmentDisplayDC />} />
       <Route path="/daycareLogs/:appointmentId" element={<DailyLogsPet />} />
       <Route path="/vaccine" element={<VaccinePlanPage />} />
+      <Route path="/appHisDetailsDC/:id" element={<AppHisDetailsDC />} />
+
 
       {/* -------- Daycare Dashboard (Nested) -------- */}
       <Route path="/dashboardDC/*" element={<DashboardDC />}>
@@ -189,6 +195,9 @@ function App() {
         <Route path="emergency" element={<EmergencyPage />} />
         <Route path="appointmentDetailsDC/:id" element={<AppointmentDetailsDC />} />
         <Route path="reviews" element={<ReviewsDC />} />
+        <Route path="dailylog-history/:appointmentId" element={<DailyLogHistory />} />
+        
+
       </Route>
 
       {/* -------- Doctor Routes -------- */}

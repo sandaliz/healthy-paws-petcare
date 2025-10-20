@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
 import AppointmentCardsContainer from '../AppointmentDC/AppointmentCardsContainer'; // Import the container
-
+import Navbar from '../Home/Navbar';
 
 
 function AppointmentDCs() {
@@ -31,6 +31,8 @@ function AppointmentDCs() {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="appointment-history-page-dc">
       {/* ADDED: Page title */}
       <div className="page-header-dc">
@@ -43,6 +45,7 @@ function AppointmentDCs() {
         onStatusChange={handleStatusChange}
       />
     </div>
+    </>
   );
 }
 

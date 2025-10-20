@@ -2,7 +2,7 @@
 .doctor-appointments-container {
   padding: 20px;
   font-family: "Arial", sans-serif;
-  background-color: #ffffff; /* White - primary */
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFE8CC 50%, #FFD58E 100%);
   color: #54413c; /* Dark Brown - secondary */
   min-height: 100vh;
 }
@@ -17,6 +17,8 @@
   color: #54413c; /* Dark Brown - secondary */
   margin-bottom: 20px;
   font-size: 2.2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(84, 65, 60, 0.1);
 }
 
 .header-controls {
@@ -30,12 +32,13 @@
 .search-container {
   display: flex;
   align-items: center;
-  background-color: #f9f9f9;
-  border-radius: 5px;
+  background-color: white;
+  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
+  border: 2px solid #FFD58E;
   max-width: 400px;
   flex: 1;
+  box-shadow: 0 2px 8px rgba(255, 213, 142, 0.2);
 }
 
 .search-input {
@@ -73,10 +76,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f5f5f5;
-  padding: 10px 15px;
-  border-radius: 5px;
+  background: white;
+  padding: 12px 18px;
+  border-radius: 8px;
   min-width: 80px;
+  box-shadow: 0 2px 8px rgba(84, 65, 60, 0.1);
+  border: 1px solid #FFE8CC;
 }
 
 .stat-number {
@@ -100,10 +105,11 @@
 }
 
 .appointments-table {
-  background-color: #ffffff; /* White - primary */
-  border-radius: 8px;
+  background-color: white;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(84, 65, 60, 0.15);
+  border: 1px solid #FFE8CC;
 }
 
 .table-header {
@@ -349,21 +355,25 @@
 }
 
 .generate-pdf-button {
-  background-color: #54413c; /* Dark Brown - secondary */
+  background: linear-gradient(135deg, #54413c 0%, #6a534b 100%);
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
+  padding: 12px 20px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 12px rgba(84, 65, 60, 0.3);
 }
 
 .generate-pdf-button:hover {
-  background-color: #6a534b; /* Slightly lighter brown */
+  background: linear-gradient(135deg, #6a534b 0%, #7d6259 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(84, 65, 60, 0.4);
 }
 
 /* Update responsive styles */
