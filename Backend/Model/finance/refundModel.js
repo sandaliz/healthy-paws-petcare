@@ -13,6 +13,11 @@ const refundSchema = new mongoose.Schema(
     // idempotency flags
     approvalEmailSentAt: { type: Date },
     rejectionEmailSentAt: { type: Date },
+
+    payoutStatus: { type: String, enum: ["NotRequired", "Pending", "Paid"], default: "NotRequired" },
+    payoutHandledBy: { type: String },
+    payoutReference: { type: String },
+    payoutCompletedAt: { type: Date },
   },
   { timestamps: true }
 );

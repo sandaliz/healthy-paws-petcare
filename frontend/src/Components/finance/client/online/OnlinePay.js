@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
 import { loadStripe } from '@stripe/stripe-js';
@@ -49,6 +49,8 @@ export default function OnlinePay() {
 
   const [paying, setPaying] = useState(false);
 
+  const autoAppliedRef = useRef('');
+
   useEffect(() => {
     if (!invoiceParam) return;
     let cancelled = false;
@@ -96,29 +98,44 @@ export default function OnlinePay() {
     [totalBeforeDiscount, discount]
   );
 
-  const applyCoupon = async () => {
-    if (!invoice) return toast.error('Invoice not loaded');
-    if (selectedIssuedId) return toast.error('Clear selected wallet coupon first');
-    const code = couponCode.trim();
-    if (!code) return toast.error('Enter code');
-    if (!COUPON_REGEX.test(code)) return toast.error('Use 3–32 characters: letters, numbers, - _ .');
+  const applyCoupon = useCallback(async (overrideCode) => {
+    if (!invoice) {
+      toast.error('Invoice not loaded');
+      return;
+    }
+    if (selectedIssuedId) {
+      toast.error('Clear selected wallet coupon first');
+      return;
+    }
+    const raw = typeof overrideCode === 'string' ? overrideCode : couponCode;
+    const code = raw.trim();
+    if (!code) {
+      toast.error('Enter code');
+      return;
+    }
+    if (!COUPON_REGEX.test(code)) {
+      toast.error('Use 3–32 characters: letters, numbers, - _ .');
+      return;
+    }
     try {
       const resp = await api.post('/coupon/validate', {
         code,
         invoiceTotal: totalBeforeDiscount,
         userID: invoice.userID
       });
+      const normalized = code.toUpperCase();
       setCouponId(resp.couponId);
       setDiscount(Number(resp.discount || 0));
       setSelectedIssuedId('');
-      setAppliedIssuedCode(code.toUpperCase());
+      setAppliedIssuedCode(normalized);
+      setCouponCode(normalized);
       toast.success(`Coupon applied: -${fmtLKR(resp.discount || 0)}`);
     } catch (e) {
       setCouponId(null);
       setDiscount(0);
       toast.error(e.message || 'Coupon not applicable');
     }
-  };
+  }, [couponCode, invoice, selectedIssuedId, totalBeforeDiscount]);
 
   const applyIssued = async (coupon) => {
     if (!invoice) return toast.error('Invoice not loaded');
@@ -141,8 +158,12 @@ export default function OnlinePay() {
   };
 
   useEffect(() => {
-    if (couponParam && invoice && !couponId) applyCoupon();
-  }, [invoice]);
+    if (!couponParam || !invoice || couponId) return;
+    if (autoAppliedRef.current === couponParam) return;
+    autoAppliedRef.current = couponParam;
+    setCouponCode(couponParam);
+    applyCoupon(couponParam);
+  }, [applyCoupon, couponId, couponParam, invoice]);
 
   const invoiceBlocked = invoice && ["Paid", "Refunded", "Cancelled"].includes(String(invoice.status));
 
@@ -245,6 +266,12 @@ export default function OnlinePay() {
                           )}
                         </div>
                       )}
+                      {loadingCoupons && (
+                        <div className="muted">Loading available coupons…</div>
+                      )}
+                      {!loadingCoupons && myCoupons.length === 0 && (
+                        <div className="muted">No coupons available for this invoice.</div>
+                      )}
 
                       <div className="promo-toggle">
                         <button
@@ -270,7 +297,7 @@ export default function OnlinePay() {
                               />
                               <button
                                 className="btn secondary"
-                                onClick={applyCoupon}
+                                onClick={() => applyCoupon()}
                                 disabled={!invoice || invoiceBlocked}
                               >
                                 Apply
@@ -368,7 +395,7 @@ export default function OnlinePay() {
                       <span className="mono">{fmtLKR(invoice?.tax ?? totalBeforeDiscount * 0.08)}</span>
                     </div>
                     <div className="totals-row"><span>Subtotal</span><span className="mono">{fmtLKR(totalBeforeDiscount)}</span></div>
-                    {discount > 0 && <div className="totals-row"><span>Discount</span><span className="mono">- {fmtLKR(discount)}</span></div>}
+                    {discount > 0 && <div className="totals-row"><span>Discount{appliedIssuedCode ? ` (${appliedIssuedCode})` : ''}</span><span className="mono">- {fmtLKR(discount)}</span></div>}
                     <div className="totals-row grand"><span>Amount to Pay</span><span className="mono">{fmtLKR(amountAfterDiscount)}</span></div>
                   </div>
 
@@ -415,7 +442,7 @@ function StripePayBox({ invoice, ownerId, couponId, amountToCharge, onSuccess, o
       }
     })();
     return () => { cancelled = true; };
-  }, [invoice?._id, ownerId, couponId]);
+  }, [couponId, invoice, ownerId]);
 
   const appearance = useMemo(() => ({ appearance: { theme: 'stripe' } }), []);
   if (!process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY) return <div className="muted">Stripe key missing</div>;
@@ -450,7 +477,7 @@ function StripeCard({ clientSecret, amount, invoice, onSuccess, onPayStateChange
     const em = invoice?.userID?.email || invoice?.user?.email || '';
     if (nm) setName(prev => prev || nm);
     if (em) setEmail(prev => prev || em);
-  }, [invoice?._id, invoice?.userID]);
+  }, [invoice]);
 
   useEffect(() => {
     const handler = (e) => {

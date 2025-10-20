@@ -70,6 +70,9 @@ const useDebounceAction = (action, delay = 800) => {
   };
 };
 
+const TIER_ORDER = ["Puppy Pal", "Kitty Champ", "Guardian Woof", "Legendary Lion"];
+const tierRank = TIER_ORDER.reduce((acc, tier, idx) => ({ ...acc, [tier]: idx }), {});
+
 const STATUS_META = {
   available: { label: "Ready to use", pill: "success", card: "active", order: 0 },
   blocked: { label: "Blocked", pill: "warn", card: "blocked", order: 1 },
@@ -107,10 +110,13 @@ const normalizeCouponState = (coupon) => {
   };
 };
 
-const getGlobalCouponState = (coupon, walletCoupons) => {
+const getGlobalCouponState = (coupon, walletCoupons, userTier) => {
   const expired = new Date(coupon.expiryDate) < new Date();
   const exhausted = coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit;
   const alreadyClaimed = walletCoupons.some((c) => (c.parentTemplateId || c.parentId) === coupon._id);
+  const requiredTier = coupon.minTier || "Puppy Pal";
+  const userRank = tierRank[userTier || "Puppy Pal"] ?? 0;
+  const requiredRank = tierRank[requiredTier] ?? 0;
   let key = "available";
   let blockedReason = null;
   if (expired) {
@@ -118,6 +124,9 @@ const getGlobalCouponState = (coupon, walletCoupons) => {
   } else if (exhausted) {
     key = "exhausted";
     blockedReason = "All claimed";
+  } else if (userRank < requiredRank) {
+    key = "blocked";
+    blockedReason = `Unlocks at ${requiredTier}`;
   } else if (alreadyClaimed) {
     key = "claimed";
   }
@@ -161,6 +170,7 @@ export default function PromotionTab() {
   const [globalCoupons, setGlobalCoupons] = useState([]);
   const [showGuide, setShowGuide] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showTreasureHint, setShowTreasureHint] = useState(false);
 
   useBodyScrollLock(showGuide);
 
@@ -193,8 +203,11 @@ export default function PromotionTab() {
     }
   });
 
+  const userTier = loyalty?.tier || "Puppy Pal";
+  const userRank = tierRank[userTier] ?? 0;
+
   const sortedMyCoupons = sortCoupons(myCoupons);
-  const sortedGlobalCoupons = sortCoupons(globalCoupons, (coupon) => getGlobalCouponState(coupon, myCoupons));
+  const sortedGlobalCoupons = sortCoupons(globalCoupons, (coupon) => getGlobalCouponState(coupon, myCoupons, userTier));
 
   useEffect(() => {
     if (!ownerId) {
@@ -241,8 +254,43 @@ export default function PromotionTab() {
             🐾
           </button>
         </div>
-        <p className="muted">Your tail‑wagging hub for rewards, coupons, and loyalty points.</p>
+        <p className="muted">Track loyalty points, claim clinic offers, and see what’s already in your wallet.</p>
       </div>
+
+      <section className="pawperks-info">
+        <div className="pawperks-info-card" role="note">
+          <h3>How PawPerks works</h3>
+          <ul>
+            <li><strong>Earn</strong> 1 point for every Rs.500 spent on completed invoices.</li>
+            <li><strong>Unlock</strong> higher tiers for bonus rewards and early access to coupons.</li>
+            <li><strong>Claim</strong> clinic-wide offers below; they’ll move into your wallet immediately.</li>
+            <li><strong>Redeem</strong> coupons at checkout. Minimum spend and expiry are listed on each card.</li>
+          </ul>
+        </div>
+        <aside className="pawperks-info-card pawperks-info-card--tips">
+          <h4>Tips</h4>
+          <ul>
+            <li>Coupons that appear blocked usually need a higher invoice total or may already be in your wallet.</li>
+            <li className={`pawperks-scratch ${showTreasureHint ? "pawperks-scratch--revealed" : ""}`}>
+              {showTreasureHint ? (
+                <span className="pawperks-scratch-text">Click the paw icon to open the PawPerks treasure map.</span>
+              ) : (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  className="pawperks-scratch-teaser"
+                  onClick={() => setShowTreasureHint(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") setShowTreasureHint(true);
+                  }}
+                >
+                  psst… a hidden clue glows softly here
+                </span>
+              )}
+            </li>
+          </ul>
+        </aside>
+      </section>
 
       {authLoading && <div className="loading-skeleton">Loading your PawPerks…</div>}
       {authError && <div className="error-banner">{authError}</div>}
@@ -353,6 +401,12 @@ export default function PromotionTab() {
                         : `${fmtLKR(c.discountValue)} OFF`}
                     </div>
                   </div>
+                  <div className="pawperks-tier-row">
+                    <span className="pawperks-tier-badge">Requires {c.minTier || "Puppy Pal"}</span>
+                    {userRank < (tierRank[c.minTier || "Puppy Pal"] ?? 0) && (
+                      <span className="pawperks-tier-note">You’re currently {userTier}</span>
+                    )}
+                  </div>
                   <div className="pawperks-card-divider" aria-hidden="true"></div>
                   <div className="pawperks-card-meta">
                     <span className="meta-item">
@@ -398,7 +452,7 @@ export default function PromotionTab() {
         ) : (
           <div className="coupon-grid">
             {sortedGlobalCoupons.map((c) => {
-              const state = getGlobalCouponState(c, myCoupons);
+              const state = getGlobalCouponState(c, myCoupons, userTier);
               const disabled = state.key !== "available";
               const slotsLeft = c.usageLimit > 0 ? Math.max(c.usageLimit - c.usedCount, 0) : null;
               return (
@@ -460,6 +514,8 @@ export default function PromotionTab() {
                       ? "Claim"
                       : state.key === "claimed"
                         ? "In Wallet"
+                        : state.key === "blocked"
+                          ? state.blockedReason || "Locked"
                         : state.key === "exhausted"
                           ? "Fully Claimed"
                           : "Expired"}

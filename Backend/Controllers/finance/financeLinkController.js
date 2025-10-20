@@ -152,7 +152,7 @@ export const createInvoiceFromDaycare = async (req, res) => {
     let subtotal = care.nightsStay * nightlyRate;
 
     if (care.grooming) subtotal += 3500;
-    if (care.walking) subtotal += 2000;
+    if (care.walking) subtotal += 2500;
 
     const lineItems = [
       {
@@ -164,10 +164,10 @@ export const createInvoiceFromDaycare = async (req, res) => {
     ];
 
     if (care.grooming)
-      lineItems.push({ description: "Grooming service", quantity: 1, unitPrice: 500, total: 500 });
+      lineItems.push({ description: "Grooming service", quantity: 1, unitPrice: 3500, total: 3500 });
 
     if (care.walking)
-      lineItems.push({ description: "Daily Walking", quantity: care.nightsStay, unitPrice: 300, total: care.nightsStay * 300 });
+      lineItems.push({ description: "Daily Walking", quantity: 1, unitPrice: 2500, total: 2500 });
 
     const tax = +(subtotal * 0.08).toFixed(2);
     const total = subtotal + tax;

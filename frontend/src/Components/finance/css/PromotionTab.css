@@ -1,4 +1,3 @@
-/* PawPerks main shell with flat background color */
 .pawperks-shell {
   position: relative;
   min-height: 100vh;            /* fill viewport height */
@@ -39,7 +38,7 @@
   border-radius: 22px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
   padding: 1.8rem;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -190,6 +189,88 @@
   gap: 4px;
 }
 
+.pawperks-card-meta .pawperks-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: #54413C;
+}
+
+.pawperks-shell .pawperks-info {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  margin-bottom: 1rem;
+}
+
+.pawperks-shell .pawperks-info-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 243, 224, 0.9));
+  border: 1px solid rgba(120, 60, 15, 0.55);
+  outline: 1px solid rgba(220, 140, 40, 0.6);
+  border-radius: 18px;
+  padding: 20px 24px;
+  box-shadow: 0 16px 34px rgba(168, 112, 36, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+
+.pawperks-shell .pawperks-info-card h3,
+.pawperks-shell .pawperks-info-card h4 {
+  margin: 0 0 12px;
+  font-weight: 700;
+  color: #8b4513;
+}
+
+.pawperks-shell .pawperks-info-card ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pawperks-shell .pawperks-info-card p {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.pawperks-shell .pawperks-info-card--tips {
+  background: linear-gradient(135deg, rgba(255, 247, 237, 0.96), rgba(255, 236, 206, 0.96));
+  border-color: rgba(140, 70, 12, 0.55);
+  outline-color: rgba(225, 145, 32, 0.6);
+}
+
+.pawperks-shell .pawperks-info-card::after {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  top: -40px;
+  right: -40px;
+  background: radial-gradient(circle at center, rgba(255, 213, 142, 0.35), transparent 70%);
+  pointer-events: none;
+}
+
+.pawperks-shell .pawperks-info-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(140deg, rgba(255, 222, 173, 0.35), transparent 60%);
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .pawperks-shell .pawperks-info {
+    grid-template-columns: 1fr;
+  }
+}
+
 .pawperks-card-meta .meta-label {
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -238,6 +319,31 @@
   font-size: 1rem;
   font-weight: 600;
   color: #374151;
+}
+.pawperks-tier-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.pawperks-tier-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.15);
+  color: #1e3a8a;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.pawperks-tier-note {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-style: italic;
 }
 .coupon-card .meta {
   font-size: 0.85rem;

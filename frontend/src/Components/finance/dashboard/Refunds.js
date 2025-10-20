@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
 import { api } from '../services/financeApi';
 import Modal from './components/Modal';
@@ -9,9 +10,15 @@ import {
 } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 import '../css/dashboard/refunds.css';
-import { fmtDate, fmtLKR } from '../utils/financeFormatters'
+import { fmtDate, fmtDateTime, fmtLKR } from '../utils/financeFormatters';
 
-const STATUS_OPTIONS = ['All', 'Pending', 'Approved', 'Rejected', 'Refunded'];
+const PAYOUT_LABELS = {
+  NotRequired: 'Auto-paid (online)',
+  Pending: 'Awaiting cash payout',
+  Paid: 'Paid out',
+};
+
+const STATUS_OPTIONS = ['All', 'Pending', 'Approved', 'Rejected'];
 
 export default function Refunds() {
   const [items, setItems] = useState([]);
@@ -25,6 +32,10 @@ export default function Refunds() {
   const [rejectModal, setRejectModal] = useState(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [approveModal, setApproveModal] = useState(null);
+  const [payoutModal, setPayoutModal] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const hydrated = useRef(false);
 
   const kpi = useMemo(() => {
     const now = new Date();
@@ -35,6 +46,7 @@ export default function Refunds() {
       d.setDate(now.getDate() - i);
       dayMap[d.toISOString().slice(0,10)] = 0;
     }
+
     (items || []).forEach(r => {
       if (r.status === 'Pending') pendingCount++;
       const created = (r.createdAt || '').slice(0,10);
@@ -61,6 +73,32 @@ export default function Refunds() {
     }
   };
   useEffect(() => { load(); }, []);
+
+  useEffect(() => {
+    if (hydrated.current) return;
+    const params = new URLSearchParams(location.search);
+    const qStatus = params.get('status');
+    const qSearch = params.get('q');
+    const qPage = parseInt(params.get('page') || '1', 10);
+
+    if (qStatus && STATUS_OPTIONS.includes(qStatus)) setStatus(qStatus);
+    if (qSearch) setSearch(qSearch);
+    if (!Number.isNaN(qPage) && qPage > 0) setPage(qPage);
+    hydrated.current = true;
+  }, [location.search]);
+
+  useEffect(() => {
+    if (!hydrated.current) return;
+    const params = new URLSearchParams();
+    if (status !== 'All') params.set('status', status);
+    if (search.trim()) params.set('q', search.trim());
+    if (page > 1) params.set('page', String(page));
+    const next = params.toString();
+    const current = location.search.startsWith('?') ? location.search.slice(1) : location.search;
+    if (next !== current) {
+      navigate({ search: next ? `?${next}` : '' }, { replace: true });
+    }
+  }, [status, search, page, location.search, navigate]);
 
   const filtered = useMemo(() => {
     let arr = items || [];
@@ -127,6 +165,36 @@ export default function Refunds() {
     }
   };
 
+  const markPaid = async (id, body) => {
+    try {
+      await api.put(`/refund/payout/${id}`, body);
+      toast.success('Refund marked as paid');
+      load();
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Mark paid failed');
+    }
+  };
+
+  const getPayoutDisplay = (refund) => {
+    const status = refund?.status;
+    if (status === 'Pending') {
+      return { className: 'pending', label: 'Awaiting approval', showMeta: false };
+    }
+    if (status === 'Rejected') {
+      return { className: 'na', label: 'Not applicable', showMeta: false };
+    }
+    if (status !== 'Approved') {
+      return { className: 'na', label: 'Not applicable', showMeta: false };
+    }
+
+    const payoutStatus = refund?.payoutStatus || 'NotRequired';
+    return {
+      className: (payoutStatus || '').toLowerCase() || 'notrequired',
+      label: PAYOUT_LABELS[payoutStatus] || PAYOUT_LABELS.NotRequired,
+      showMeta: true,
+    };
+  };
+
   return (
     <div>
       <Toaster position="top-right" />
@@ -187,6 +255,7 @@ export default function Refunds() {
                   <th>Owner</th>
                   <th>Amount</th>
                   <th>Status</th>
+                  <th>Payout</th>
                   <th className="right">Actions</th>
                 </tr>
               </thead>
@@ -205,6 +274,27 @@ export default function Refunds() {
                     </td>
                     <td className="mono">{fmtLKR(r.amount)}</td>
                     <td><span className={`tag-pill ${r.status?.toLowerCase()}`}>{r.status}</span></td>
+                    <td>
+                      <div className="rf-payout-status">
+                        {(() => {
+                          const payout = getPayoutDisplay(r);
+                          return (
+                            <>
+                              <span className={`tag-pill ${payout.className}`}>{payout.label}</span>
+                              {payout.showMeta && (r.payoutHandledBy || r.payoutCompletedAt || r.payoutReference) && (
+                                <div className="rf-payout-meta">
+                                  {r.payoutHandledBy && (
+                                    <div>{r.payoutHandledBy === 'Stripe' ? 'Stripe (auto)' : r.payoutHandledBy}</div>
+                                  )}
+                                  {r.payoutReference && <div className="mono" title="Reference">{r.payoutReference}</div>}
+                                  {r.payoutCompletedAt && <div>{fmtDateTime(r.payoutCompletedAt)}</div>}
+                                </div>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </td>
                     <td className="right">
                       <div className="row end rf-actions">
                         <button className="fm-btn fm-btn-ghost" onClick={() => setView(r)}><Eye size={16} /></button>
@@ -220,6 +310,14 @@ export default function Refunds() {
                               <XCircle size={16} /> Reject
                             </button>
                           </>
+                        )}
+                        {r.status === 'Approved' && r.payoutStatus === 'Pending' && (
+                          <button
+                            className="fm-btn fm-btn-primary"
+                            onClick={() => setPayoutModal(r)}
+                          >
+                            Mark Paid
+                          </button>
                         )}
                       </div>
                     </td>
@@ -256,6 +354,14 @@ export default function Refunds() {
           onClose={() => setApproveModal(null)}
           onApprove={(id) => approve(id)}
           r={approveModal}
+        />
+      )}
+      {payoutModal && (
+        <PayoutModal
+          open
+          r={payoutModal}
+          onClose={() => setPayoutModal(null)}
+          onSubmit={(input) => markPaid(payoutModal._id, input)}
         />
       )}
     </div>
@@ -401,6 +507,44 @@ function ApproveModal({ open, onClose, onApprove, r }) {
       <div className="row end rf-view-actions" style={{ marginTop: '12px' }}>
         <button className="fm-btn fm-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
         <button className="fm-btn fm-btn-success" onClick={handleApprove} disabled={busy}>{busy ? 'Approving…' : 'Approve'}</button>
+      </div>
+    </Modal>
+  );
+}
+
+function PayoutModal({ open, onClose, onSubmit, r }) {
+  const [handledBy, setHandledBy] = useState('');
+  const [reference, setReference] = useState('');
+  const [busy, setBusy] = useState(false);
+  if (!r) return null;
+  const submit = async () => {
+    if (!handledBy.trim()) return toast.error('Handled by is required');
+    try {
+      setBusy(true);
+      const ret = onSubmit?.({ handledBy: handledBy.trim(), reference: reference.trim() || undefined });
+      if (ret && typeof ret.then === 'function') await ret;
+      onClose?.();
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Modal open={open} onClose={onClose} title="Record payout">
+      <div className="summary vlist">
+        <div className="kv"><span>Invoice</span><b className="mono">{r.paymentID?.invoiceID?.invoiceID || '-'}</b></div>
+        <div className="kv"><span>Amount</span><b>{fmtLKR(r.amount)}</b></div>
+      </div>
+      <div className="field">
+        <label>Handled by</label>
+        <input className="input" value={handledBy} onChange={e => setHandledBy(e.target.value)} />
+      </div>
+      <div className="field">
+        <label>Reference / Notes</label>
+        <input className="input" value={reference} onChange={e => setReference(e.target.value)} placeholder="Optional" />
+      </div>
+      <div className="row end rf-view-actions">
+        <button className="fm-btn fm-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
+        <button className="fm-btn fm-btn-success" onClick={submit} disabled={busy}>{busy ? 'Saving…' : 'Mark Paid'}</button>
       </div>
     </Modal>
   );

@@ -1,12 +1,12 @@
 import Payment from "../../Model/finance/paymentModel.js";
 import Invoice from "../../Model/finance/invoiceModel.js";
-import User from "../../Model/userModel.js";
 import Coupon from "../../Model/finance/couponModel.js";
 import Loyalty from "../../Model/finance/loyaltyModel.js";
 import Stripe from "stripe";
 import mongoose from "mongoose";
 import { sendPaymentEmail } from "../../config/finance/email.js";
 import { v4 as uuidv4 } from "uuid";
+import { resolveOwnerDoc } from "../../Services/finance/ownerHelper.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET);
 
@@ -143,29 +143,6 @@ async function cancelOtherPendingPayments(invoiceId, keepPaymentId) {
     status: "Pending",
     _id: { $ne: keepPaymentId },
   });
-}
-
-/**
- * Updated resolveOwnerDoc to use User model and "name/email"
- */
-async function resolveOwnerDoc({ invoice, payment }) {
-  if (invoice?.userID && typeof invoice.userID === "object" && (invoice.userID.name || invoice.userID.email)) {
-    return invoice.userID;
-  }
-  if (payment?.userID && typeof payment.userID === "object" && (payment.userID.name || payment.userID.email)) {
-    return payment.userID;
-  }
-  const id =
-    (invoice?.userID && (invoice.userID._id || invoice.userID)) ||
-    (payment?.userID && (payment.userID._id || payment.userID)) ||
-    null;
-  if (id) {
-    try {
-      const doc = await User.findById(id).select("name email").lean();
-      if (doc) return doc;
-    } catch (_) { }
-  }
-  return null;
 }
 
 // ----- OFFLINE -----

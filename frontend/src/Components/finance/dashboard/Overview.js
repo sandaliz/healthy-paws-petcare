@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
 import Skeleton from './components/Skeleton';
 import { api } from '../services/financeApi';
 import Card from './components/Card';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  AreaChart, Area
+  AreaChart, Area, BarChart, Bar, Cell
 } from 'recharts';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend as ChartLegend } from 'chart.js';
@@ -15,6 +16,8 @@ import '../css/dashboard/overview.css';
 import { fmt } from '../utils/financeFormatters';
 
 const METHOD_COLORS = ['#54413C', '#FFD58E', '#E07A5F', '#81B29A', '#F2CC8F'];
+const LOYALTY_TIERS = ['Puppy Pal', 'Kitty Champ', 'Guardian Woof', 'Legendary Lion'];
+const LOYALTY_COLORS = ['#FDBA74', '#F97316', '#EA580C', '#C2410C'];
 
 const centerTextPlugin = {
   id: 'paymentMethodsCenterLabel',
@@ -55,26 +58,33 @@ export default function Overview() {
     incomeExpense: true,
     methods: true,
     topCustomers: true,
+    loyalty: true,
   });
   const [invoices, setInvoices] = useState([]);
+  const [warnings, setWarnings] = useState([]);
 
   const revenueRef = useRef();
   const incomeExpenseRef = useRef();
   const payMethodsRef = useRef();
+  const loyaltyRef = useRef();
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         setLoading(true);
-        const dash = await api.get('/financial-dashboard');
-        const pays = await api.get('/payments');
-        const invs = await api.get('/invoices');
-        const sal = await api.get('/salaries');
-        const refunds = await api.get('/refunds');
+        const [dash, pays, invs, sal, refunds] = await Promise.all([
+          api.get('/financial-dashboard'),
+          api.get('/payments'),
+          api.get('/invoices'),
+          api.get('/salaries'),
+          api.get('/refunds'),
+        ]);
+
         if (!mounted) return;
 
         setSummary(dash);
+        setWarnings(dash.warnings || []);
         setPayments(pays.payments || []);
         setInvoices(invs.invoices || []);
 
@@ -139,6 +149,8 @@ export default function Overview() {
         setLoading(false);
       } catch (e) {
         console.error('Failed to fetch finance data', e);
+        toast.error('Failed to load finance dashboard');
+        setWarnings([{ scope: 'dashboard', message: e.message || 'Load failed' }]);
         setLoading(false);
       }
     })();
@@ -147,6 +159,16 @@ export default function Overview() {
 
   const revenueSeries = buildSeries(payments, Number(timeframe));
   const methodBreakdown = breakdown(payments, Number(timeframe));
+  const loyaltyMix = useMemo(() => {
+    const counts = LOYALTY_TIERS.reduce((acc, tier) => ({ ...acc, [tier]: 0 }), {});
+    (summary?.dashboard || []).forEach(entry => {
+      const tier = entry?.loyalty?.tier;
+      if (tier && counts[tier] != null) counts[tier] += 1;
+    });
+    const data = LOYALTY_TIERS.map(tier => ({ tier, count: counts[tier] }));
+    const total = data.reduce((sum, item) => sum + item.count, 0);
+    return { data, total };
+  }, [summary]);
 
   const paymentMethodsChart = useMemo(() => {
     if (!methodBreakdown.length) {
@@ -310,7 +332,7 @@ export default function Overview() {
     };
 
     // Dynamic chart height based on how many are selected
-    const selectedCharts = ['revenue', 'incomeExpense', 'methods'].filter(k => exportOpts[k]);
+    const selectedCharts = ['revenue', 'incomeExpense', 'methods', 'loyalty'].filter(k => exportOpts[k]);
     const chartCount = selectedCharts.length;
     const CHART_H = chartCount === 1 ? 110 : chartCount === 2 ? 92 : 80;
 
@@ -341,6 +363,22 @@ export default function Overview() {
     if (exportOpts.revenue) await addChart(revenueRef, `Revenue (last ${timeframe} days)`);
     if (exportOpts.incomeExpense) await addChart(incomeExpenseRef, 'Income vs Expenses');
     if (exportOpts.methods) await addChart(payMethodsRef, 'Payment Methods');
+    if (exportOpts.loyalty && loyaltyMix.total > 0) {
+      await addChart(loyaltyRef, 'Loyalty Tier Mix');
+      const LIST_LINE_H = 6;
+      const listHeight = (LOYALTY_TIERS.length * LIST_LINE_H) + 6;
+      ensureSpace(listHeight);
+      doc.setTextColor(BRAND_BROWN.r, BRAND_BROWN.g, BRAND_BROWN.b);
+      doc.setFont('helvetica', 'bold').setFontSize(12).text('Tier Breakdown', MARGIN_X, y);
+      doc.setFont('helvetica', 'normal').setFontSize(11);
+      y += LIST_LINE_H;
+      LOYALTY_TIERS.forEach((tier, idx) => {
+        const count = loyaltyMix.data[idx]?.count || 0;
+        doc.text(`${tier}: ${count}`, MARGIN_X + 4, y);
+        y += LIST_LINE_H;
+      });
+      y += 2;
+    }
 
     // Top Customers at the end, with smart pagination
     if (exportOpts.topCustomers) {
@@ -391,6 +429,17 @@ export default function Overview() {
 
   return (
     <>
+      <Toaster position="top-right" />
+      {warnings.length > 0 && (
+        <div className="bf-overview-warning">
+          <strong>Heads up:</strong>
+          <ul>
+            {warnings.map((warn, idx) => (
+              <li key={warn.scope || idx}>{warn.scope ? `${warn.scope}: ` : ''}{warn.message}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="bf-overview-head">
         <div className="bf-overview-controls">
           <label className="bf-overview-label">Timeframe:</label>
@@ -405,6 +454,7 @@ export default function Overview() {
           <label><input type="checkbox" checked={exportOpts.incomeExpense} onChange={e => setExportOpts(o => ({ ...o, incomeExpense: e.target.checked }))} /> Income vs Expenses</label>
           <label><input type="checkbox" checked={exportOpts.methods} onChange={e => setExportOpts(o => ({ ...o, methods: e.target.checked }))} /> Methods</label>
           <label><input type="checkbox" checked={exportOpts.topCustomers} onChange={e => setExportOpts(o => ({ ...o, topCustomers: e.target.checked }))} /> Top Customers</label>
+          <label><input type="checkbox" checked={exportOpts.loyalty} onChange={e => setExportOpts(o => ({ ...o, loyalty: e.target.checked }))} /> Loyalty Tier Mix</label>
         </div>
         <div className="bf-overview-help">Unselected sections are excluded in PDF (dimmed).</div>
         <button className="bf-overview-btn-export" onClick={exportPDF}>Export PDF</button>
@@ -520,6 +570,42 @@ export default function Overview() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className={`bf-overview-chart bf-overview-chart--loyalty ${exportOpts.loyalty ? '' : 'bf-excluded'}`}>
+          <div className="bf-overview-chart-title">Loyalty Tier Mix</div>
+          <p className="bf-overview-chart-sub">Live distribution of owners across PawPerks tiers.</p>
+          {loyaltyMix.total === 0 ? (
+            <div className="bf-overview-chart-empty">No loyalty accounts recorded yet.</div>
+          ) : (
+            <div className="bf-overview-loyalty" ref={loyaltyRef}>
+              <div className="bf-overview-loyalty-chart">
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={loyaltyMix.data}>
+                    <XAxis dataKey="tier" tickLine={false} axisLine={false} tick={{ fontSize: 12, fontWeight: 600 }} />
+                    <Tooltip
+                      cursor={{ fill: 'rgba(84, 65, 60, 0.08)' }}
+                      contentStyle={{ borderRadius: 12, border: '1px solid #f5d287', boxShadow: '0 12px 28px rgba(0,0,0,0.08)' }}
+                    />
+                    <Bar dataKey="count" radius={[8, 8, 0, 0]}>
+                      {LOYALTY_TIERS.map((tier, idx) => (
+                        <Cell key={tier} fill={LOYALTY_COLORS[idx % LOYALTY_COLORS.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <ul className="bf-overview-loyalty-legend">
+                {LOYALTY_TIERS.map((tier, idx) => (
+                  <li key={tier} className="bf-overview-loyalty-pill">
+                    <span className="dot" style={{ background: LOYALTY_COLORS[idx % LOYALTY_COLORS.length] }} />
+                    <span className="label">{tier}</span>
+                    <span className="value">{loyaltyMix.data[idx]?.count || 0}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <section className="bf-overview-activities">

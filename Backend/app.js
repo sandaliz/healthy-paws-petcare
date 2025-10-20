@@ -32,6 +32,7 @@ import eventRoutes from "./Routes/eventRoutes.js";
 import questionRoutes from "./Routes/quesionRoutes.js";
 import financeRoutes from "./Routes/finance/financeRoutes.js";
 import vaccineRoutes from "./Routes/VaccineRoutes.js";
+import { validateFinanceConfig } from "./config/finance/configGuard.js";
 
 // Background services
 import { scheduleReminderEmails } from "./services/ReminderScheduler.js";
@@ -158,6 +159,7 @@ mongoose
   .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/itp_project", { dbName: "test" })
   .then(async () => {
     console.log("✅ Connected to MongoDB (Database: test)");
+    validateFinanceConfig();
     await createSuperAdmin();
     scheduleReminderEmails(); // start reminder scheduler
     app.listen(port, () => {
