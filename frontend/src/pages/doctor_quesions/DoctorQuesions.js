@@ -165,7 +165,6 @@ const DoctorQuesions = () => {
         contentLabel="Answer Question"
       >
         <div className="modal-header">
-          <h3>{currentQuestion.answer ? "Edit Answer" : "Answer Question"}</h3>
           <button className="modal-close" onClick={() => setShowAnswerModal(false)}>×</button>
         </div>
         <form className="answer-form" onSubmit={handleSubmitAnswer}>

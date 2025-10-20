@@ -485,3 +485,54 @@
   font-size: 16px;
   margin: 0;
 }
+
+/* Prescription Total */
+.prescription-total {
+  margin-top: 16px;
+  padding: 12px;
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFE8CC 100%);
+  border-radius: 8px;
+  text-align: right;
+  border-left: 4px solid #E1C16E;
+}
+
+.prescription-total strong {
+  color: #54413c;
+  font-size: 16px;
+}
+
+/* Prescription Actions */
+.prescription-actions {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-download-prescription {
+  background: linear-gradient(135deg, #E1C16E 0%, #d4b45e 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(225, 193, 110, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-download-prescription:hover {
+  background: linear-gradient(135deg, #d4b45e 0%, #c4a44e 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(225, 193, 110, 0.4);
+}
+
+.btn-download-prescription:active {
+  transform: translateY(0);
+}
