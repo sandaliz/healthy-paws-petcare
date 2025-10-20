@@ -2,6 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:5001", // your backend
+  withCredentials: true, // Add this line - sends cookies with requests
 });
 
 // attach JWT from localStorage automatically

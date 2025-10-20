@@ -177,16 +177,37 @@ export const getAllDetails = async (req, res) => {
 export const addDetails = async (req, res) => {
   try {
     const userId = req.user.id;
+
+    // 1️⃣ Create appointment
     const careCustomer = new CareCustomer({ user: userId, ...req.body });
     await careCustomer.save();
+
+    // 2️⃣ Create standard reminders (24h and 3h)
     await createRemindersForAppointment(careCustomer);
 
+    // 3️⃣ Send immediate confirmation (using same template)
+    const appointmentDate = mergeDateAndTime(careCustomer.dateStay, careCustomer.dropOffTime);
+    const message = generateReminderMessage(careCustomer, null, appointmentDate);
+
+    const immediateReminder = new Reminder({
+      care: careCustomer._id,
+      email: careCustomer.email,
+      remindAt: new Date(), // send now
+      message,
+      sent: false,
+    });
+
+    await immediateReminder.save();
+    scheduleReminder(immediateReminder);
+
+    //  Send response
     return res.status(201).json({
-      message: "Appointment created successfully & reminders guaranteed",
+      message: "Appointment created successfully & reminders (immediate, 24h, 3h) scheduled",
       careCustomer,
     });
+
   } catch (err) {
-    console.error("❌ Error creating appointment:", err);
+    console.error("Error creating appointment:", err);
     return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
