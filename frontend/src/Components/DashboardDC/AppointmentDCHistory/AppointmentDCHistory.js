@@ -7,7 +7,6 @@ import autoTable from "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
 import "./AppointmentDCHistory.css";
 
-// Format datetime in Sri Lanka timezone
 const formatDateTimeSL = (dateTimeStr) => {
   if (!dateTimeStr) return "-";
   const dt = new Date(dateTimeStr);
@@ -24,28 +23,31 @@ function AppointmentDCHistory() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
+
   const fetchHistory = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Multiple API calls: completed, rejected, cancelled
       const [cioRes, rejectedRes, cancelledRes] = await Promise.all([
-        api.get("/checkInOut/history"), // Completed
+        api.get("/checkInOut/history"),
         api.get("/careCustomers/status/Rejected"),
-        api.get("/careCustomers/status/Cancelled")
+        api.get("/careCustomers/status/Cancelled"),
       ]);
 
       const cioHistory = (cioRes.data.history || []).map((rec) => {
-        // Extract appointment ID safely - handle both object and string cases
-        const appointmentId = rec.appointment?._id ||
-                             (typeof rec.appointment === 'string' ? rec.appointment : null) ||
-                             rec.appointment?.id ||
-                             rec.appointment;
+        const appointmentId =
+          rec.appointment?._id ||
+          (typeof rec.appointment === "string" ? rec.appointment : null) ||
+          rec.appointment?.id ||
+          rec.appointment;
 
         return {
           _id: rec._id,
-          appointmentId: appointmentId, // Use appointment ID for daily logs and emergency
+          appointmentId,
           ownerName: rec.appointment?.ownerName || "-",
           petName: rec.appointment?.petName || "-",
           status: rec.appointment?.status || "Completed",
@@ -54,14 +56,14 @@ function AppointmentDCHistory() {
           createdAt: rec.checkInTime,
           services: [
             rec.appointment?.grooming ? "Grooming" : null,
-            rec.appointment?.walking ? "Walking" : null
-          ].filter(Boolean)
+            rec.appointment?.walking ? "Walking" : null,
+          ].filter(Boolean),
         };
       });
 
       const rejectedCancelled = [
         ...(rejectedRes.data.careCustomers || []),
-        ...(cancelledRes.data.careCustomers || [])
+        ...(cancelledRes.data.careCustomers || []),
       ].map((appt) => ({
         _id: appt._id,
         ownerName: appt.ownerName,
@@ -72,8 +74,8 @@ function AppointmentDCHistory() {
         createdAt: appt.createdAt,
         services: [
           appt.grooming ? "Grooming" : null,
-          appt.walking ? "Walking" : null
-        ].filter(Boolean)
+          appt.walking ? "Walking" : null,
+        ].filter(Boolean),
       }));
 
       setHistory([...cioHistory, ...rejectedCancelled]);
@@ -87,11 +89,9 @@ function AppointmentDCHistory() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
-
     try {
       await api.delete(`/careCustomers/${id}`);
       setHistory((prev) => prev.filter((rec) => rec._id !== id));
-      setFiltered((prev) => prev.filter((rec) => rec._id !== id));
       alert("Record deleted successfully!");
     } catch (err) {
       console.error("Delete error:", err);
@@ -99,11 +99,11 @@ function AppointmentDCHistory() {
     }
   };
 
-
   const applyFilters = useCallback(() => {
     let data = [...history];
 
-    if (statusFilter !== "All") data = data.filter((rec) => rec.status === statusFilter);
+    if (statusFilter !== "All")
+      data = data.filter((rec) => rec.status === statusFilter);
 
     if (search.trim()) {
       data = data.filter(
@@ -118,7 +118,10 @@ function AppointmentDCHistory() {
       data = data.filter((rec) => {
         const date = rec.checkOutTime || rec.checkInTime || rec.createdAt;
         const dt = new Date(date);
-        return dt.getFullYear() === Number(year) && dt.getMonth() + 1 === Number(month);
+        return (
+          dt.getFullYear() === Number(year) &&
+          dt.getMonth() + 1 === Number(month)
+        );
       });
     }
 
@@ -129,11 +132,27 @@ function AppointmentDCHistory() {
     );
 
     setFiltered(data);
+    setCurrentPage(1); // reset pagination when filters change
   }, [history, search, statusFilter, monthFilter]);
 
-  useEffect(() => { fetchHistory(); }, []);
-  useEffect(() => { applyFilters(); }, [applyFilters]);
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filtered.length / recordsPerPage);
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = filtered.slice(indexOfFirstRecord, indexOfLastRecord);
+
+  const nextPage = () => currentPage < totalPages && setCurrentPage((p) => p + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage((p) => p - 1);
+
+  // Export to Excel
   const exportToExcel = () => {
     try {
       const ws = utils.json_to_sheet(
@@ -143,7 +162,7 @@ function AppointmentDCHistory() {
           Status: rec.status,
           "Check-In": formatDateTimeSL(rec.checkInTime),
           "Check-Out": formatDateTimeSL(rec.checkOutTime),
-          Services: rec.services.join(", ") || "-"
+          Services: rec.services.join(", ") || "-",
         }))
       );
       const wb = utils.book_new();
@@ -156,56 +175,66 @@ function AppointmentDCHistory() {
     }
   };
 
+  // Export to PDF
   const exportToPDF = () => {
     try {
       const doc = new jsPDF();
-      doc.text("Appointment History Report", 14, 16);
-      autoTable(doc, {
-        startY: 22,
-        head: [["Owner", "Pet", "Status", "Check-In", "Check-Out", "Services"]],
-        body: filtered.map((rec) => [
-          rec.ownerName,
-          rec.petName,
-          rec.status,
-          formatDateTimeSL(rec.checkInTime),
-          formatDateTimeSL(rec.checkOutTime),
-          rec.services.join(", ") || "-"
-        ]),
-        styles: {
-          fontSize: 8,
-          cellPadding: 3,
-        },
-        headStyles: {
-          fillColor: [84, 65, 60],
-          textColor: 255
-        }
-      });
-      doc.save("AppointmentHistory.pdf");
-      alert("PDF file downloaded successfully!");
+      const logo = new Image();
+      logo.src = `${window.location.origin}/images/HPlogo.png`;
+
+      logo.onload = () => {
+        doc.addImage(logo, "PNG", 14, 10, 25, 25);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("Appointment History Report", 105, 20, { align: "center" });
+
+        doc.setFontSize(10);
+        const generatedDate = new Date().toLocaleString("en-GB", {
+          timeZone: "Asia/Colombo",
+        });
+        doc.text(`Generated on: ${generatedDate}`, 195, 12, { align: "right" });
+
+        doc.setLineWidth(0.5);
+        doc.line(14, 38, 195, 38);
+
+        autoTable(doc, {
+          startY: 45,
+          head: [["Owner", "Pet", "Status", "Check-In", "Check-Out", "Services"]],
+          body: filtered.map((rec) => [
+            rec.ownerName,
+            rec.petName,
+            rec.status,
+            formatDateTimeSL(rec.checkInTime),
+            formatDateTimeSL(rec.checkOutTime),
+            rec.services.join(", ") || "-",
+          ]),
+          styles: { fontSize: 8, cellPadding: 3 },
+          headStyles: { fillColor: [84, 65, 60], textColor: 255 },
+        });
+
+        doc.save("AppointmentHistory.pdf");
+        alert("PDF file downloaded successfully!");
+      };
     } catch (err) {
       console.error("PDF export error:", err);
       alert("Error exporting to PDF");
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
       <div className="Ahistory-container">
-        <div className="Ahistory-loading"></div>
+        <p>Loading appointment history...</p>
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <div className="Ahistory-container">
-        <div className="Ahistory-error">
-          <p>{error}</p>
-          <button  onClick={fetchHistory}> Try Again</button>
-        </div>
+        <p>{error}</p>
+        <button onClick={fetchHistory}>Try Again</button>
       </div>
     );
-  }
 
   return (
     <div className="Ahistory-container">
@@ -228,7 +257,6 @@ function AppointmentDCHistory() {
           type="month"
           value={monthFilter}
           onChange={(e) => setMonthFilter(e.target.value)}
-          placeholder="Filter by month"
         />
         <div className="export-buttons">
           <button onClick={exportToExcel}>Export Excel</button>
@@ -236,56 +264,68 @@ function AppointmentDCHistory() {
         </div>
       </div>
 
-      {filtered.length > 0 ? (
-        <table className="history-table">
-          <thead>
-            <tr>
-              <th>Owner</th>
-              <th>Pet</th>
-              <th>Status</th>
-              <th>Check-In</th>
-              <th>Check-Out</th>
-              <th>Services</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((rec) => (
-              <tr key={rec._id}>
-                <td>{rec.ownerName}</td>
-                <td>{rec.petName}</td>
-                <td>
-                  <span className={`status-badge ${rec.status.toLowerCase()}`}>
-                    {rec.status}
-                  </span>
-                </td>
-                <td>{formatDateTimeSL(rec.checkInTime)}</td>
-                <td>{formatDateTimeSL(rec.checkOutTime)}</td>
-                <td>{rec.services.length > 0 ? rec.services.join(", ") : "-"}</td>
-                <td>
-                  {rec.status === "Completed" ? (
-                    <>
+      {currentRecords.length > 0 ? (
+        <>
+          <table className="history-table">
+            <thead>
+              <tr>
+                <th>Owner</th>
+                <th>Pet</th>
+                <th>Status</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Services</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRecords.map((rec) => (
+                <tr key={rec._id}>
+                  <td>{rec.ownerName}</td>
+                  <td>{rec.petName}</td>
+                  <td>
+                    <span className={`status-badge ${rec.status.toLowerCase()}`}>
+                      {rec.status}
+                    </span>
+                  </td>
+                  <td>{formatDateTimeSL(rec.checkInTime)}</td>
+                  <td>{formatDateTimeSL(rec.checkOutTime)}</td>
+                  <td>{rec.services.length > 0 ? rec.services.join(", ") : "-"}</td>
+                  <td>
+                    {rec.status === "Completed" && (
                       <button
-                          className="DC-btn-approve"
-                          onClick={() => navigate(`/dashboardDC/dailylog-history/${rec.appointmentId || rec._id}`)}
-                        >
+                        className="DC-btn-approve"
+                        onClick={() =>
+                          navigate(`/dashboardDC/dailylog-history/${rec.appointmentId || rec._id}`)
+                        }
+                      >
                         Daily Logs
                       </button>
-                      
-                    </>
-                  ) : null}
+                    )}
+                    <button
+                      className="DC-btn-reject"
+                      onClick={() => handleDelete(rec._id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-                  <button
-                    className="DC-btn-reject"
-                    onClick={() => handleDelete(rec._id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          <div className="pagination">
+            <button onClick={prevPage} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button onClick={nextPage} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        </>
       ) : (
         <p>No appointment history found matching your filters.</p>
       )}

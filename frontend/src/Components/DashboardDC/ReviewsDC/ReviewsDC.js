@@ -57,42 +57,73 @@ function ReviewsDC() {
 
   // Generate PDF of current reviews
   const generatePDF = () => {
-    const doc = new jsPDF();
-    doc.text("PetCare Reviews", 14, 15);
+    try {
+      const doc = new jsPDF();
 
-    const tableColumn = ["Owner", "Pet", "Species", "Services", "Rating", "Sentiment", "Comment"];
-    const tableRows = [];
+      // 🏢 Load logo (from public/images/HPlogo.png)
+      const logo = new Image();
+      logo.src = `${window.location.origin}/images/HPlogo.png`;
 
-    filteredReviews.forEach(review => {
-      const services = `${review.grooming ? 'Grooming ' : ''}${review.walking ? 'Walking' : ''}`.trim();
-      tableRows.push([
-        review.ownerName,
-        review.petName,
-        review.species,
-        services || "—",
-        review.rating,
-        review.sentiment,
-        review.comment
-      ]);
-    });
+      logo.onload = () => {
+        // Add logo top-left
+        doc.addImage(logo, "PNG", 14, 10, 25, 25);
 
-    autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      startY: 25,
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [84, 65, 60], textColor: 255 },
-      didParseCell: function (data) {
-        if (data.column.index === 5) {
-          const val = data.cell.raw;
-          if (val === 'good') data.cell.styles.textColor = [0, 128, 0];
-          else if (val === 'bad') data.cell.styles.textColor = [255, 0, 0];
-          else if (val === 'neutral') data.cell.styles.textColor = [85, 65, 60];
-        }
-      }
-    });
+        // 📄 Title centered
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("Customer Reviews Report", 105, 20, { align: "center" });
 
-    doc.save("PetCare_Reviews.pdf");
+        // 📅 Date top-right
+        doc.setFontSize(10);
+        const generatedDate = new Date().toLocaleString("en-GB", {
+          timeZone: "Asia/Colombo",
+        });
+        doc.text(`Generated on: ${generatedDate}`, 195, 12, { align: "right" });
+
+        // Separator line
+        doc.setLineWidth(0.5);
+        doc.line(14, 38, 195, 38);
+
+        // Table setup
+        const tableColumn = ["Owner", "Pet", "Species", "Services", "Rating", "Sentiment", "Comment"];
+        const tableRows = [];
+
+        filteredReviews.forEach((review) => {
+          const services = `${review.grooming ? "Grooming " : ""}${review.walking ? "Walking" : ""}`.trim();
+          tableRows.push([
+            review.ownerName,
+            review.petName,
+            review.species,
+            services || "—",
+            review.rating,
+            review.sentiment,
+            review.comment || "—",
+          ]);
+        });
+
+        autoTable(doc, {
+          head: [tableColumn],
+          body: tableRows,
+          startY: 45,
+          styles: { fontSize: 9, cellPadding: 3 },
+          headStyles: { fillColor: [84, 65, 60], textColor: 255 },
+          didParseCell: function (data) {
+            if (data.column.index === 5) {
+              const val = data.cell.raw;
+              if (val === "good") data.cell.styles.textColor = [0, 128, 0];
+              else if (val === "bad") data.cell.styles.textColor = [255, 0, 0];
+              else if (val === "neutral") data.cell.styles.textColor = [85, 65, 60];
+            }
+          },
+        });
+
+        doc.save("CustomerReviewsReport.pdf");
+        alert("PDF report downloaded successfully!");
+      };
+    } catch (err) {
+      console.error("PDF export error:", err);
+      alert("Error exporting to PDF");
+    }
   };
 
   // Render stars in UI
