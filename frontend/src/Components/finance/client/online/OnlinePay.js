@@ -173,7 +173,7 @@ export default function OnlinePay() {
       <Navbar />
     <div className="finance-scope op-bg op-full">
       <div className="pay-wrap">
-        <Toaster position="top-right" />
+        <Toaster position="top-right" containerStyle={{ top: 96 }} />
         <div className="page-header">
           <div>
             <h1>Pay Online</h1>

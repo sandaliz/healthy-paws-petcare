@@ -241,7 +241,7 @@ export default function PromotionTab() {
 
   return (
     <div className="pawperks-shell">
-      <Toaster position="top-right" />
+      <Toaster position="top-right" containerStyle={{ top: 96 }} />
 
       <div className="pawperks-header">
         <div className="pawperks-header-top">
