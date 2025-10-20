@@ -64,7 +64,7 @@ export default function ClientPay() {
       <Navbar />
     <div className="finance-scope cp-bg cp-full">
       <div className="pay-wrap">
-        <Toaster position="top-right" />
+        <Toaster position="top-right" containerStyle={{ top: 96 }} />
 
         <div className="page-header">
           <div>

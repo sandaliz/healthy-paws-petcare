@@ -10,7 +10,7 @@
 .bf-overview-head h2 {
   font-size: 22px;
   font-weight: 700;
-  color: #54413c;
+  color: #2D2D2D;
 }
 
 .bf-overview-btn-export {
@@ -19,7 +19,7 @@
   color: #54413c;
   font-weight: 700;
   padding: 8px 16px;
-  font-size: 14px;
+  font-size: 16px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -272,7 +272,7 @@
 .bf-overview-chart-title {
   font-size: 16px;
   font-weight: 700;
-  color: #54413c;
+  color: #2D2D2D;
   margin-bottom: 6px;
 }
 .bf-overview-chart-sub {

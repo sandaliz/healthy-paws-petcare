@@ -379,7 +379,7 @@ export default function PaymentSummary({ embedded = false }) {
       {!embedded && <Navbar />}
     <div className={scopeClasses}>
       <div className={shellClasses}>
-        <Toaster position="top-right" />
+        <Toaster position="top-right" containerStyle={{ top: embedded ? 24 : 112 }} />
         <div className="page-header">
           <div>
             <h1>Your Payment Ledger</h1>
