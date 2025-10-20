@@ -76,6 +76,8 @@ import StarRating from "./Components/StarRating/StarRating";
 import AppointmentDisplayDC from "./Components/AppointmentDisplayDC/AppointmentDisplayDC";
 import DailyLogsPet from "./Components/DailyLogsPet/DailyLogsPet";
 import VaccinePlanPage from "./Components/VaccinePlanPage/VaccinePlanPage";
+import AppHisDetailsDC from "./Components/AppHisDetailsDC/AppHisDetailsDC";
+
 
 // ---------------- Dashboard & nested pages (Daycare) ----------------
 import DashboardDC from "./Components/DashboardDC/DashboardDC/DashboardDC";
@@ -178,6 +180,8 @@ function App() {
       <Route path="/appointmentDisplayDC/:id" element={<AppointmentDisplayDC />} />
       <Route path="/daycareLogs/:appointmentId" element={<DailyLogsPet />} />
       <Route path="/vaccine" element={<VaccinePlanPage />} />
+      <Route path="/appHisDetailsDC/:id" element={<AppHisDetailsDC />} />
+
 
       {/* -------- Daycare Dashboard (Nested) -------- */}
       <Route path="/dashboardDC/*" element={<DashboardDC />}>
