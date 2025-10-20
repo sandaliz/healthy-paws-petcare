@@ -260,8 +260,8 @@
   transform: scale(0.95);
 }
 
-/* Form Field Icons (Optional) */
-.form-group::after {
+/* Form Field Icons (Optional) - Scoped to feedback form only */
+.feedback-form .form-group::after {
   font-family: 'Material Icons';
   position: absolute;
   right: 15px;
@@ -270,19 +270,19 @@
   font-size: 20px;
 }
 
-.form-group:nth-child(1)::after {
+.feedback-form .form-group:nth-child(1)::after {
   content: 'person';
 }
 
-.form-group:nth-child(2)::after {
+.feedback-form .form-group:nth-child(2)::after {
   content: 'pets';
 }
 
-.form-group:nth-child(3)::after {
+.feedback-form .form-group:nth-child(3)::after {
   content: 'email';
 }
 
-.form-group:nth-child(4)::after {
+.feedback-form .form-group:nth-child(4)::after {
   content: 'chat';
   top: 50px;
 }

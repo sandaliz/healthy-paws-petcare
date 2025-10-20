@@ -398,21 +398,48 @@
   animation-delay: 0.5s;
 }
 
-/* Services tags */
-.dcd-review-services {
+.dcd-review-header {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin: 0.5rem 0 !important;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  position: relative;
 }
 
-.dcd-service-tag {
-  padding: 0.3rem 0.8rem;
-  background: linear-gradient(135deg, #54413c 0%, #6b5b55 100%);
-  color: #ffd58e;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.dcd-delete-btn {
+  background: #fee2e2;
+  border: 2px solid #fecaca;
+  color: #dc2626;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.dcd-delete-btn:hover {
+  background: #dc2626;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.dcd-delete-btn:active {
+  transform: scale(0.95);
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  text-align: center;
+  margin-bottom: 1rem;
 }

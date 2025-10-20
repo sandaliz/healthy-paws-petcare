@@ -166,6 +166,71 @@ const UserAppointments = () => {
     setSelectedPrescriptions([]);
   };
 
+  const downloadPrescription = (prescription, index) => {
+    const doc = new jsPDF();
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(84, 65, 60); // Dark brown
+    doc.text("Healthy Paws Veterinary Clinic", 20, 20);
+    
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Prescription #${index + 1}`, 20, 35);
+    
+    // Prescription Info
+    doc.setFontSize(11);
+    doc.text(`Date: ${new Date(prescription.createdAt).toLocaleString()}`, 20, 45);
+    doc.text(`Owner Email: ${prescription.ownerEmail}`, 20, 52);
+    
+    // Line separator
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(255, 213, 142); // Golden color
+    doc.line(20, 59, 190, 59);
+    
+    // Medicines Table
+    doc.setFontSize(13);
+    doc.setTextColor(84, 65, 60);
+    doc.text("Prescribed Medicines:", 20, 75);
+    
+    const tableData = prescription.items.map((item, idx) => [
+      idx + 1,
+      item.productName,
+      item.quantity
+    ]);
+    
+    autoTable(doc, {
+      head: [['#', 'Medicine Name', 'Quantity']],
+      body: tableData,
+      startY: 80,
+      theme: 'striped',
+      headStyles: {
+        fillColor: [255, 213, 142], // Golden
+        textColor: [84, 65, 60], // Dark brown
+        fontStyle: 'bold'
+      },
+      styles: {
+        fontSize: 10,
+        cellPadding: 5
+      },
+      alternateRowStyles: {
+        fillColor: [255, 249, 240] // Light cream
+      }
+    });
+    
+    const finalY = doc.lastAutoTable.finalY + 10;
+    
+    // Footer
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(128, 128, 128);
+    doc.text("Thank you for choosing Healthy Paws!", 20, finalY + 10);
+    doc.text("For any queries, please contact us at healthypaws@vet.com", 20, finalY + 15);
+    
+    // Save the PDF
+    doc.save(`Prescription_${prescription._id}.pdf`);
+  };
+
   const handlePayment = async (appointment) => {
   if (!appointment?.user?._id) {
     alert("Login required or appointment not linked to a user");
@@ -333,9 +398,6 @@ const UserAppointments = () => {
                     <div key={prescription._id} className="prescription-card">
                       <div className="prescription-header">
                         <h4>Prescription #{index + 1}</h4>
-                        <span className={`prescription-status ${prescription.status}`}>
-                          {prescription.status.toUpperCase()}
-                        </span>
                       </div>
                       
                       <div className="prescription-info">
@@ -362,6 +424,15 @@ const UserAppointments = () => {
                           </tbody>
                         </table>
                       </div>
+                      
+                      <div className="prescription-actions">
+                        <button 
+                          className="btn-download-prescription"
+                          onClick={() => downloadPrescription(prescription, index)}
+                        >
+                          📥 Download PDF
+                        </button>
+                      </div>
                     </div>
                   ))
                 ) : (
@@ -378,9 +449,6 @@ const UserAppointments = () => {
           <div className="modal-overlay">
             <div className="modal">
               <div className="modal-header">
-                <h3>
-                  {editingAppointment ? "Edit Appointment" : "New Appointment"}
-                </h3>
                 <button className="modal-close" onClick={closeModal}>
                   &times;
                 </button>
