@@ -86,11 +86,16 @@ export default function VaccinePlanPage() {
       doc.setFont("helvetica", "bold");
       doc.text(`${plan.petName}'s Vaccine Plan`, 105, 20, { align: "center" });
 
-      // Date
+      //  Date top-right
       doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      const today = new Date();
-      doc.text(`Generated on: ${today.toLocaleDateString()}`, 105, 28, { align: "center" });
+      const generatedDate = new Date().toLocaleString("en-GB", {
+        timeZone: "Asia/Colombo",
+      });
+      doc.text(`Generated on: ${generatedDate}`, 195, 12, { align: "right" });
+
+      // Title line
+      doc.setLineWidth(0.5);
+      doc.line(14, 38, 195, 38); // ⬅ moved higher, above the table start position
 
       // Table data
       const tableData = plan.schedule?.map((item) => [
@@ -100,7 +105,7 @@ export default function VaccinePlanPage() {
       ]);
 
       autoTable(doc, {
-        startY: 35,
+        startY: 45, 
         head: [["Week", "Vaccines", "Due Date"]],
         body: tableData,
         theme: "striped",
