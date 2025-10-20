@@ -281,7 +281,6 @@ const DoctorEvents = () => {
         <div className="modal-overlay">
           <div className="modal">
             <div className="modal-header">
-              <h3>Create New Event</h3>
               <button onClick={() => setShowCreateModal(false)}>×</button>
             </div>
             <div className="modal-body">
